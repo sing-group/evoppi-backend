@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Tests
+  %%
+  Copyright (C) 2017 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<!--
+  Users' password is the user's login followed by "pass".
+  For example, password for "admin" is "adminpass".
+-->
+<dataset>
+  <!-- HTTP Basic token: YWRtaW46YWRtaW5wYXNz -->
+  <user login="admin" role="ADMIN" password="25E4EE4E9229397B6B17776BFCEAF8E7"
+    email="admin@email.com" />
+  <administrator login="admin" />
+
+  <!-- HTTP Basic token: YWRtaW4zOmFkbWluM3Bhc3M= -->
+  <user login="admin3" role="ADMIN" password="D3E6CA5A66D2657A15136AA7DEF49098"
+    email="admin3@email.com" />
+  <administrator login="admin3" />
+
+  <!-- HTTP Basic token: YWRtaW40OmFkbWluNHBhc3M= -->
+  <user login="admin4" role="ADMIN" password="0B32DC614713204765BAB388A115C420"
+    email="admin4@email.com" />
+  <administrator login="admin4" />
+
+
+  <!-- HTTP Basic token: cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw== -->
+  <user login="researcher" role="RESEARCHER" password="9ADF82A517DCDC0C2087598ABAC14916"
+    email="researcher@email.com" />
+  <researcher login="researcher" />
+
+  <!-- HTTP Basic token: cmVzZWFyY2hlcjI6cmVzZWFyY2hlcjJwYXNz -->
+  <user login="researcher2" role="RESEARCHER" password="3F1ACBADC4E0E185C6BEB34777E4823A"
+    email="researcher2@email.com" />
+  <researcher login="researcher2" />
+
+  <!-- HTTP Basic token: cmVzZWFyY2hlcjM6cmVzZWFyY2hlcjNwYXNz -->
+  <user login="researcher3" role="RESEARCHER" password="BD6DB019B9C3E6261A4598AF6E4FD143"
+    email="researcher3@email.com" />
+  <researcher login="researcher3" />
+
+  <!-- HTTP Basic token: cmVzZWFyY2hlcjQ6cmVzZWFyY2hlcjRwYXNz -->
+  <user login="researcher4" role="RESEARCHER" password="2CC6022C0DEAC778FED9E12278B88EFF"
+    email="researcher4@email.com" />
+  <researcher login="researcher4" />
+</dataset>
