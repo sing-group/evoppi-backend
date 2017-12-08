@@ -1,6 +1,6 @@
 DROP TABLE `interaction`;
 DROP TABLE `interactome`;
-DROP TABLE `specie`;
+DROP TABLE `species`;
 DROP TABLE `gene`;
 
 DROP TABLE `researcher`;

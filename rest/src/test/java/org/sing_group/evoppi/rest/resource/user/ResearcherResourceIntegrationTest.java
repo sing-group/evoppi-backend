@@ -213,7 +213,7 @@ public class ResearcherResourceIntegrationTest {
     @ArquillianResteasyResource(BASE_PATH) ResteasyWebTarget webTarget
   ) {
     final Researcher newResearcher = newResearcher();
-    final ResearcherEditionData userData = userMapper.toEditionData(newResearcher, passwordOf(newResearcher));
+    final ResearcherEditionData userData = userMapper.toResearcherEditionData(newResearcher, passwordOf(newResearcher));
     
     final Response response = webTarget
       .request()
@@ -242,7 +242,7 @@ public class ResearcherResourceIntegrationTest {
     @ArquillianResteasyResource(BASE_PATH) ResteasyWebTarget webTarget
   ) {
     final Researcher modifiedAdmin = modifiedResearcher();
-    final ResearcherEditionData userData = userMapper.toEditionData(modifiedAdmin, newPasswordOf(modifiedAdmin));
+    final ResearcherEditionData userData = userMapper.toResearcherEditionData(modifiedAdmin, newPasswordOf(modifiedAdmin));
     
     final Response response = webTarget
       .request()

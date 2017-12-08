@@ -36,7 +36,7 @@ import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
 @Default
 public class DefaultUserMapper implements UserMapper {
   @Override
-  public AdministratorData toData(Administrator admin) {
+  public AdministratorData toAdministratorData(Administrator admin) {
     return new AdministratorData(
       admin.getLogin(),
       admin.getEmail()
@@ -44,7 +44,7 @@ public class DefaultUserMapper implements UserMapper {
   }
 
   @Override
-  public AdministratorEditionData toEditionData(Administrator admin, String password) {
+  public AdministratorEditionData toAdministratorEditionData(Administrator admin, String password) {
     return new AdministratorEditionData(
       admin.getLogin(),
       password,
@@ -53,12 +53,12 @@ public class DefaultUserMapper implements UserMapper {
   }
 
   @Override
-  public ResearcherData toData(Researcher researcher) {
+  public ResearcherData toResearcherData(Researcher researcher) {
     return new ResearcherData(researcher.getLogin(), researcher.getEmail());
   }
 
   @Override
-  public ResearcherEditionData toEditionData(Researcher researcher, String password) {
+  public ResearcherEditionData toResearcherEditionData(Researcher researcher, String password) {
     return new ResearcherEditionData(
       researcher.getLogin(),
       password,

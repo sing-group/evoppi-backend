@@ -25,25 +25,14 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
    http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1">
-  <display-name>JavaEE Sample REST</display-name>
+  <display-name>EvoPPI REST</display-name>
 
-  <!-- servlet-mapping>
-    <servlet-name>javax.ws.rs.core.Application</servlet-name>
-    <url-pattern>/api/*</url-pattern>
-  </servlet-mapping-->
-  
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>swagger</web-resource-name>
-      <url-pattern>/api/swagger*</url-pattern>
-      <http-method>*</http-method>
-    </web-resource-collection>
-  </security-constraint>
-  
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>public</web-resource-name>
+      <url-pattern>/api/swagger*</url-pattern>
       <url-pattern>/api/session/*</url-pattern>
+      <url-pattern>/api/specie/*</url-pattern>
       <http-method>*</http-method>
     </web-resource-collection>
   </security-constraint>

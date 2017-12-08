@@ -31,17 +31,17 @@ import org.sing_group.evoppi.rest.entity.user.ResearcherData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
 
 public interface UserMapper {
-
-  public AdministratorData toData(Administrator admin);
-
-  public AdministratorEditionData toEditionData(Administrator admin, String password);
-
-  public ResearcherData toData(Researcher researcher);
-
-  public ResearcherEditionData toEditionData(Researcher researcher, String password);
-
+  
   public Administrator toAdministrator(AdministratorEditionData data);
 
+  public AdministratorData toAdministratorData(Administrator admin);
+
+  public AdministratorEditionData toAdministratorEditionData(Administrator admin, String password);
+  
   public Researcher toResearcher(ResearcherEditionData data);
+
+  public ResearcherData toResearcherData(Researcher researcher);
+
+  public ResearcherEditionData toResearcherEditionData(Researcher researcher, String password);
 
 }

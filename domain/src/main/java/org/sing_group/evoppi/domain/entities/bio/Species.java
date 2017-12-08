@@ -16,8 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "specie")
-public class Specie implements Serializable {
+@Table(name = "species")
+public class Species implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -27,7 +27,7 @@ public class Specie implements Serializable {
   @Column(name = "name", length = 100, nullable = false, unique = true)
   private String name;
 
-  @OneToMany(mappedBy = "specie", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interactome> interactomes;
   
   public Integer getId() {
@@ -62,7 +62,7 @@ public class Specie implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    Specie other = (Specie) obj;
+    Species other = (Species) obj;
     if (id == null) {
       if (other.id != null)
         return false;

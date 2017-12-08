@@ -28,14 +28,16 @@ import java.net.URI;
 import javax.ws.rs.core.UriBuilder;
 
 public class AdminRestPathBuilder implements RestPathBuilder {
-  private final UriBuilder builder;
+  private UriBuilder builder;
   
   public AdminRestPathBuilder(UriBuilder builder) {
     this.builder = builder.clone().path("admin");
   }
   
   public AdminRestPathBuilder(UriBuilder builder, String login) {
-    this.builder = builder.clone().path("admin").path(login);
+    this(builder);
+    
+    this.builder = this.builder.path("admin").path(login);
   }
   
   @Override

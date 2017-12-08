@@ -110,7 +110,7 @@ public class DefaultAdministratorResource implements AdministratorResource {
   public Response get(@PathParam("login") String login) {
     final Administrator user = this.service.get(login);
 
-    return Response.ok(mapper.toData(user)).build();
+    return Response.ok(mapper.toAdministratorData(user)).build();
   }
   
   @Override
@@ -131,7 +131,7 @@ public class DefaultAdministratorResource implements AdministratorResource {
     final ListingOptions options = new ListingOptions(start, end, order, sort);
     
     final AdministratorData[] admins = this.service.list(options)
-      .map(mapper::toData)
+      .map(mapper::toAdministratorData)
     .toArray(AdministratorData[]::new);
     
     return Response.ok(admins)

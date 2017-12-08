@@ -32,21 +32,21 @@ CREATE TABLE `gene` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `specie` (
+CREATE TABLE `species` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_specie_name` (`name`)
+  UNIQUE KEY `UK_species_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `interactome` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `specieId` int(11) NOT NULL,
+  `speciesId` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_interactome_name` (`name`),
-  KEY `FK_interactome_specie` (`specieId`),
-  CONSTRAINT `FK_interactome_specie` FOREIGN KEY (`specieId`) REFERENCES `specie` (`id`)
+  KEY `FK_interactome_species` (`speciesId`),
+  CONSTRAINT `FK_interactome_species` FOREIGN KEY (`speciesId`) REFERENCES `species` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `interaction` (

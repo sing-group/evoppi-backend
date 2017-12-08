@@ -211,7 +211,7 @@ public class AdministratorResourceIntegrationTest {
     @ArquillianResteasyResource(BASE_PATH) ResteasyWebTarget webTarget
   ) {
     final Administrator newAdmin = newAdministrator();
-    final AdministratorEditionData userData = userMapper.toEditionData(newAdmin, passwordOf(newAdmin));
+    final AdministratorEditionData userData = userMapper.toAdministratorEditionData(newAdmin, passwordOf(newAdmin));
     
     final Response response = webTarget
       .request()
@@ -240,7 +240,7 @@ public class AdministratorResourceIntegrationTest {
     @ArquillianResteasyResource(BASE_PATH) ResteasyWebTarget webTarget
   ) {
     final Administrator modifiedAdmin = modifiedAdministrator();
-    final AdministratorEditionData userData = userMapper.toEditionData(modifiedAdmin, newPasswordOf(modifiedAdmin));
+    final AdministratorEditionData userData = userMapper.toAdministratorEditionData(modifiedAdmin, newPasswordOf(modifiedAdmin));
     
     final Response response = webTarget
       .request()

@@ -30,8 +30,8 @@ public class Interactome implements Serializable {
   private String name;
   
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-  @JoinColumn(name = "specieId", referencedColumnName = "id", nullable = false)
-  private Specie specie;
+  @JoinColumn(name = "speciesId", referencedColumnName = "id", nullable = false)
+  private Species species;
 
   @OneToMany(mappedBy = "interactome", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactions;
@@ -44,8 +44,8 @@ public class Interactome implements Serializable {
     return name;
   }
 
-  public Specie getSpecie() {
-    return specie;
+  public Species getSpecies() {
+    return species;
   }
   
   public Stream<Interaction> getInteractions() {

@@ -110,7 +110,7 @@ public class DefaultResearcherResource implements ResearcherResource {
   public Response get(@PathParam("login") String login) {
     final Researcher user = this.service.get(login);
 
-    return Response.ok(userMapper.toData(user)).build();
+    return Response.ok(userMapper.toResearcherData(user)).build();
   }
   
   @GET
@@ -131,7 +131,7 @@ public class DefaultResearcherResource implements ResearcherResource {
     final ListingOptions options = new ListingOptions(start, end, order, sort);
     
     final ResearcherData[] researchers = this.service.list(options)
-      .map(userMapper::toData)
+      .map(userMapper::toResearcherData)
     .toArray(ResearcherData[]::new);
     
     return Response.ok(researchers)
