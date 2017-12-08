@@ -25,3 +25,38 @@ CREATE TABLE `researcher` (
   PRIMARY KEY (`login`),
   CONSTRAINT `FK_researcher_user` FOREIGN KEY (`login`) REFERENCES `user` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `gene` (
+  `id` int(11) NOT NULL,
+  `sequence` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `specie` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_specie_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `interactome` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `specieId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_interactome_name` (`name`),
+  KEY `FK_interactome_specie` (`specieId`),
+  CONSTRAINT `FK_interactome_specie` FOREIGN KEY (`specieId`) REFERENCES `specie` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `interaction` (
+  `interactome` int(11) NOT NULL,
+  `geneFrom` int(11) NOT NULL,
+  `geneTo` int(11) NOT NULL,
+  PRIMARY KEY (`interactome`,`geneFrom`,`geneTo`),
+  KEY `FK_interaction_geneFrom_idx` (`geneFrom`),
+  KEY `FK_interaction_geneTo_idx` (`geneTo`),
+  CONSTRAINT `FK_interaction_interactome` FOREIGN KEY (`interactome`) REFERENCES `interactome` (`id`),
+  CONSTRAINT `FK_interaction_geneFrom` FOREIGN KEY (`geneFrom`) REFERENCES `gene` (`id`),
+  CONSTRAINT `FK_interaction_geneTo` FOREIGN KEY (`geneTo`) REFERENCES `gene` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
