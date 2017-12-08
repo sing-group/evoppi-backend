@@ -13,7 +13,7 @@ import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 import io.swagger.annotations.ApiModel;
 
 @XmlRootElement(name = "species-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 @ApiModel(value = "species-data", description = "Data of a species entity.")
 public class SpeciesData implements Serializable {
   private static final long serialVersionUID = 1L;

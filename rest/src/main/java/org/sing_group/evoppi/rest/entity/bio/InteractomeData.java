@@ -12,7 +12,7 @@ import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 import io.swagger.annotations.ApiModel;
 
 @XmlRootElement(name = "interactome-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 @ApiModel(value = "interactome-data", description = "Data of an interactome entity.")
 public class InteractomeData implements Serializable {
   private static final long serialVersionUID = 1L;
