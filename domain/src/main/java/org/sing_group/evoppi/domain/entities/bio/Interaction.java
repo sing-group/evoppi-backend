@@ -1,0 +1,141 @@
+package org.sing_group.evoppi.domain.entities.bio;
+
+import java.io.Serializable;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.sing_group.evoppi.domain.entities.bio.Interaction.InteractionId;
+
+@Entity
+@Table(name = "interaction")
+@IdClass(InteractionId.class)
+public class Interaction implements Serializable {
+  private static final long serialVersionUID = 1L;
+
+  @Id
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(name = "interactome", referencedColumnName = "id", nullable = false)
+  private Interactome interactome;
+
+  @Id
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(name = "geneFrom", referencedColumnName = "id", nullable = false)
+  private Gene geneFrom;
+  
+  @Id
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(name = "geneTo", referencedColumnName = "id", nullable = false)
+  private Gene geneTo;
+
+  public Interactome getInteractome() {
+    return interactome;
+  }
+
+  public Gene getGeneFrom() {
+    return geneFrom;
+  }
+
+  public Gene getGeneTo() {
+    return geneTo;
+  }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((geneFrom == null) ? 0 : geneFrom.hashCode());
+    result = prime * result + ((geneTo == null) ? 0 : geneTo.hashCode());
+    result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Interaction other = (Interaction) obj;
+    if (geneFrom == null) {
+      if (other.geneFrom != null)
+        return false;
+    } else if (!geneFrom.equals(other.geneFrom))
+      return false;
+    if (geneTo == null) {
+      if (other.geneTo != null)
+        return false;
+    } else if (!geneTo.equals(other.geneTo))
+      return false;
+    if (interactome == null) {
+      if (other.interactome != null)
+        return false;
+    } else if (!interactome.equals(other.interactome))
+      return false;
+    return true;
+  }
+
+  protected static class InteractionId implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    private int interactome;
+    private int geneFrom;
+    private int geneTo;
+    
+    InteractionId() {}
+    
+    public InteractionId(int interactome, int geneFrom, int geneTo) {
+      this.interactome = interactome;
+      this.geneFrom = geneFrom;
+      this.geneTo = geneTo;
+    }
+
+    public int getInteractome() {
+      return interactome;
+    }
+
+    public int getGeneFrom() {
+      return geneFrom;
+    }
+
+    public int getGeneTo() {
+      return geneTo;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + geneFrom;
+      result = prime * result + geneTo;
+      result = prime * result + interactome;
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      InteractionId other = (InteractionId) obj;
+      if (geneFrom != other.geneFrom)
+        return false;
+      if (geneTo != other.geneTo)
+        return false;
+      if (interactome != other.interactome)
+        return false;
+      return true;
+    }
+  }
+}

@@ -21,8 +21,6 @@
   #L%
   -->
 
-
-
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
@@ -32,9 +30,13 @@
   <persistence-unit name="runtime">
     <jta-data-source>java:jboss/datasources/evoppi</jta-data-source>
 
-    <class>org.sing_group.evoppi.domain.entities.user.Administrator</class>
     <class>org.sing_group.evoppi.domain.entities.user.User</class>
+    <class>org.sing_group.evoppi.domain.entities.user.Administrator</class>
     <class>org.sing_group.evoppi.domain.entities.user.Researcher</class>
+    <class>org.sing_group.evoppi.domain.entities.bio.Gene</class>
+    <class>org.sing_group.evoppi.domain.entities.bio.Specie</class>
+    <class>org.sing_group.evoppi.domain.entities.bio.Interactome</class>
+    <class>org.sing_group.evoppi.domain.entities.bio.Interaction</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
     <properties>
