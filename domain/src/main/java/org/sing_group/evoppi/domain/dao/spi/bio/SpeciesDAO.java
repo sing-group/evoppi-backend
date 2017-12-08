@@ -8,4 +8,6 @@ public interface SpeciesDAO {
 
   public Stream<Species> listSpecies();
 
+  public Species getSpecie(int id);
+
 }

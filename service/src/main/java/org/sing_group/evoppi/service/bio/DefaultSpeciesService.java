@@ -20,4 +20,9 @@ public class DefaultSpeciesService implements SpeciesService {
   public Stream<Species> listSpecies() {
     return this.dao.listSpecies();
   }
+
+  @Override
+  public Species getSpecies(int id) {
+    return this.dao.getSpecie(id);
+  }
 }

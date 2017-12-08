@@ -4,8 +4,6 @@ import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
 @Local
-public interface SpeciesResource {
-  public Response listSpecies();
-  
-  public Response getSpecies(int id);
+public interface InteractomeResource {
+  public Response getInteractome(int id);
 }

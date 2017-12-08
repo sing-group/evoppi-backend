@@ -10,5 +10,7 @@ import org.sing_group.evoppi.domain.entities.bio.Species;
 public interface SpeciesService {
 
   public Stream<Species> listSpecies();
+
+  public Species getSpecies(int id);
   
 }
