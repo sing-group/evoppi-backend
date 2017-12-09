@@ -101,13 +101,11 @@
     <license.addJavaLicenseAfterPackage>false</license.addJavaLicenseAfterPackage>
 
     <!-- BOM versions -->
-    <arquillian.version>1.1.13.Final</arquillian.version>
-    <arquillian.selenium.version>3.4.0</arquillian.selenium.version>
+    <arquillian.version>1.1.15.Final</arquillian.version>
     <javaee.api.version>7.0</javaee.api.version>
 
     <!-- Dependencies versions -->
     <wildfly.arquillian.container.version>2.1.0.Final</wildfly.arquillian.container.version>
-    <wildfly.arquillian.server.version>3.0.1.Final</wildfly.arquillian.server.version>
     <wildfly.version>8.2.1.Final</wildfly.version>
     <wildfly10.version>10.1.0.Final</wildfly10.version>
     <fluent-commons.version>0.1.0-SNAPSHOT</fluent-commons.version>
@@ -120,8 +118,7 @@
     <arquillian.jacoco.version>1.0.0.Alpha9</arquillian.jacoco.version>
     <arquillian.persistence.dbunit.version>1.0.0.Alpha7</arquillian.persistence.dbunit.version>
     <arquillian.rest.version>1.0.0.Alpha4</arquillian.rest.version>
-    <easymock.version>3.4</easymock.version>
-    <graphene.webdrive.version>2.2.0</graphene.webdrive.version>
+    <easymock.version>3.5.1</easymock.version>
     <hamcrest.version>2.0.0.0</hamcrest.version>
     <jacoco.version>0.7.9</jacoco.version>
     <junit.version>4.12</junit.version>
@@ -140,7 +137,7 @@
     <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
     <maven.surefire.plugin.version>2.20</maven.surefire.plugin.version>
     <maven.failsafe.plugin.version>2.20</maven.failsafe.plugin.version>
-    <wildfly.maven.plugin.version>1.2.0.Final</wildfly.maven.plugin.version>
+    <wildfly.maven.plugin.version>1.2.1.Final</wildfly.maven.plugin.version>
   </properties>
 
   <modules>
@@ -163,13 +160,6 @@
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
         <version>${arquillian.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.arquillian.selenium</groupId>
-        <artifactId>selenium-bom</artifactId>
-        <version>${arquillian.selenium.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -291,6 +281,11 @@
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-arquillian-container-embedded</artifactId>
         <version>${wildfly.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.arquillian</groupId>
+        <artifactId>wildfly-arquillian-container-embedded</artifactId>
+        <version>${wildfly.arquillian.container.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -580,11 +575,6 @@
         <dependency>
           <groupId>org.wildfly.arquillian</groupId>
           <artifactId>wildfly-arquillian-container-embedded</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly.core</groupId>
-          <artifactId>wildfly-embedded</artifactId>
           <scope>test</scope>
         </dependency>
         <dependency>
