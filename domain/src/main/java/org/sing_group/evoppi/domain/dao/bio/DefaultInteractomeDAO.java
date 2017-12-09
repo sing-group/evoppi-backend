@@ -55,7 +55,7 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   }
 
   @Override
-  public Interactome getSpecie(int id) {
+  public Interactome getInteractome(int id) {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown interactome: " + id));
   }

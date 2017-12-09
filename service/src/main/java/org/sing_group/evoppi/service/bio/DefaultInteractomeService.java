@@ -37,6 +37,6 @@ public class DefaultInteractomeService implements InteractomeService {
   
   @Override
   public Interactome getInteractome(int id) {
-    return this.dao.getSpecie(id);
+    return this.dao.getInteractome(id);
   }
 }
