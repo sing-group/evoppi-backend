@@ -40,7 +40,6 @@ import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
-import org.sing_group.evoppi.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.evoppi.rest.resource.spi.bio.SpeciesResource;
 import org.sing_group.evoppi.service.spi.bio.SpeciesService;
 
@@ -51,10 +50,6 @@ import io.swagger.annotations.ApiResponses;
 
 @Path("species")
 @Api(value = "species")
-@ApiResponses({
-  @ApiResponse(code = 401, message = SecurityExceptionMapper.UNAUTHORIZED_MESSAGE),
-  @ApiResponse(code = 403, message = SecurityExceptionMapper.FORBIDDEN_MESSAGE)
-})
 @Produces({ APPLICATION_JSON, APPLICATION_XML })
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
