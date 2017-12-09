@@ -39,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.evoppi.rest.resource.spi.bio.SpeciesResource;
 import org.sing_group.evoppi.service.spi.bio.SpeciesService;
@@ -58,6 +59,7 @@ import io.swagger.annotations.ApiResponses;
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
 @Default
+@CrossDomain
 public class DefaultSpeciesResource implements SpeciesResource {
   @Inject
   private SpeciesService service;

@@ -40,6 +40,7 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.InteractomeResource;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 
@@ -54,6 +55,7 @@ import io.swagger.annotations.ApiResponses;
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
 @Default
+@CrossDomain
 public class DefaultInteractomeResource implements InteractomeResource {
   @Inject
   private InteractomeService service;
