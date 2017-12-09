@@ -69,6 +69,7 @@ public class DefaultSpeciesResource implements SpeciesResource {
   @ApiOperation(
     value = "Returns a list with all the species information.",
     response = SpeciesData.class,
+    responseContainer = "List",
     code = 200
   )
   @Override
