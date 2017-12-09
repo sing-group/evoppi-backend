@@ -34,6 +34,7 @@
       <url-pattern>/api/session/*</url-pattern>
       <url-pattern>/api/species/*</url-pattern>
       <url-pattern>/api/interactome/*</url-pattern>
+      <url-pattern>/api/gene/*</url-pattern>
       <http-method>*</http-method>
     </web-resource-collection>
   </security-constraint>
