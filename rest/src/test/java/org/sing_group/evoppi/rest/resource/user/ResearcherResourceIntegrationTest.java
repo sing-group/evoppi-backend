@@ -140,7 +140,7 @@ public class ResearcherResourceIntegrationTest {
     .get();
     
     assertThat(response, hasOkStatus());
-    assertThat(response, hasHttpHeaderContaining("Access-Control-Allow-Headers", "X-Total-Count"));
+    assertThat(response, hasHttpHeaderContaining("Access-Control-Expose-Headers", "X-Total-Count"));
     assertThat(response, hasHttpHeader("X-Total-Count", countResearchers()));
     
     final List<ResearcherData> userData = response.readEntity(RESEARCHER_DATA_LIST_TYPE);
@@ -186,7 +186,7 @@ public class ResearcherResourceIntegrationTest {
     .get();
     
     assertThat(response, hasOkStatus());
-    assertThat(response, hasHttpHeaderContaining("Access-Control-Allow-Headers", "X-Total-Count"));
+    assertThat(response, hasHttpHeaderContaining("Access-Control-Expose-Headers", "X-Total-Count"));
     assertThat(response, hasHttpHeader("X-Total-Count", countResearchers()));
     
     final List<ResearcherData> researcherData = response.readEntity(RESEARCHER_DATA_LIST_TYPE);
