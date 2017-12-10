@@ -57,8 +57,8 @@ public class SwaggerConfiguration implements ReaderListener {
     config.setSchemes(this.schemes.split(","));
     config.setHost(this.host);
     
-    config.setTitle("MultiTasking Cubes");
-    config.setDescription("MultiTasking Cubes is an open tool");
+    config.setTitle("EvoPPI");
+    config.setDescription("Evolution protein-protein interactions");
     config.setVersion(this.version);
     config.setLicense("GPLv3");
     config.setLicenseUrl("https://www.gnu.org/licenses/gpl-3.0.en.html");
