@@ -84,4 +84,10 @@ public class DefaultGeneDAO implements GeneDAO {
       .getResultList()
     .stream();
   }
+
+  @Override
+  public Gene getGene(int geneId) {
+    return this.dh.get(geneId)
+      .orElseThrow(() -> new IllegalArgumentException("Unknown gene: " + geneId));
+  }
 }

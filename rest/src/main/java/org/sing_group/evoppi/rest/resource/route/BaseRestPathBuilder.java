@@ -27,6 +27,7 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.user.Administrator;
@@ -89,6 +90,18 @@ public final class BaseRestPathBuilder implements RestPathBuilder {
   
   public InteractomeRestPathBuilder interactome(Interactome interactome) {
     return interactome(interactome.getId());
+  }
+  
+  public InteractionRestPathBuilder interaction() {
+    return new InteractionRestPathBuilder(this.builder);
+  }
+
+  public GeneRestPathBuilder gene(Gene gene) {
+    return gene(gene.getId());
+  }
+
+  public GeneRestPathBuilder gene(int id) {
+    return new GeneRestPathBuilder(this.builder, id);
   }
   
   public URI build() {

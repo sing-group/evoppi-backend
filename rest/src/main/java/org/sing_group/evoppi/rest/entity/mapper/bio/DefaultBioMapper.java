@@ -23,8 +23,11 @@ package org.sing_group.evoppi.rest.entity.mapper.bio;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.rest.entity.bio.InteractionData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
@@ -60,6 +63,21 @@ public class DefaultBioMapper implements BioMapper {
         interactome.getSpecies().getId(),
         pathBuilder.species(interactome.getSpecies()).build()
       )
+    );
+  }
+
+  @Override
+  public InteractionData toInteractionData(Interaction interaction, UriBuilder uriBuilder) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+    
+    final Interactome interactome = interaction.getInteractome();
+    final Gene geneFrom = interaction.getGeneFrom();
+    final Gene geneTo = interaction.getGeneTo();
+    
+    return new InteractionData(
+      new IdAndUri(interactome.getId(), pathBuilder.interactome(interactome).build()),
+      new IdAndUri(geneFrom.getId(), pathBuilder.gene(geneFrom).build()),
+      new IdAndUri(geneTo.getId(), pathBuilder.gene(geneTo).build())
     );
   }
 

@@ -27,4 +27,6 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 
 public interface GeneDAO {
   public Stream<Gene> findByIdPrefix(int idPrefix, int maxResults);
+
+  public Gene getGene(int geneId);
 }

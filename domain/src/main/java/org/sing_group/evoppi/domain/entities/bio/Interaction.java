@@ -104,7 +104,7 @@ public class Interaction implements Serializable {
     return true;
   }
 
-  protected static class InteractionId implements Serializable {
+  public static class InteractionId implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private int interactome;
