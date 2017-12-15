@@ -23,10 +23,10 @@ package org.sing_group.evoppi.service.spi.bio;
 
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
+import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
 
 public interface InteractionService {
 
-  public Stream<Interaction> findInteractionsByGene(int geneId, int[] interactomes);
+  public Stream<InteractionGroup> findInteractionsByGene(int geneId, int[] interactomes);
   
 }

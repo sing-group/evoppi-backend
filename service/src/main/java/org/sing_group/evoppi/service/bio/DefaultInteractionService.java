@@ -21,8 +21,11 @@
  */
 package org.sing_group.evoppi.service.bio;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,6 +38,8 @@ import javax.inject.Inject;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interaction;
+import org.sing_group.evoppi.service.entity.bio.InteractingGenes;
+import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 
 @Stateless
@@ -44,7 +49,7 @@ public class DefaultInteractionService implements InteractionService {
   private GeneDAO geneDao;
 
   @Override
-  public Stream<Interaction> findInteractionsByGene(int geneId, int[] interactomes) {
+  public Stream<InteractionGroup> findInteractionsByGene(int geneId, int[] interactomes) {
     requireNonEmpty(interactomes, "At least one interactome id should be provided");
     
     final Gene gene = this.geneDao.getGene(geneId);
@@ -53,8 +58,13 @@ public class DefaultInteractionService implements InteractionService {
       .boxed()
     .collect(Collectors.toSet());
     
-    return gene.getInteractsWith()
-      .filter(interaction -> interactomesIds.contains(interaction.getInteractome().getId()));
+    final Map<InteractingGenes, Set<Interaction>> interactingGenes = gene.getInteractsWith()
+      .filter(interaction -> interactomesIds.contains(interaction.getInteractome().getId()))
+      .collect(groupingBy(InteractingGenes::new, toSet()));
+    
+    
+    return interactingGenes.values().stream()
+      .map(InteractionGroup::new);
   }
 
 }

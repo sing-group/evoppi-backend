@@ -22,10 +22,12 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sing_group.evoppi.rest.entity.user.IdAndUri;
@@ -38,8 +40,9 @@ import io.swagger.annotations.ApiModel;
 public class InteractionData implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @XmlElement(name = "interactome", required = true)
-  private IdAndUri interactome;
+  @XmlElementWrapper(name = "interactomes")
+  @XmlElement(name = "interactomes", required = true)
+  private IdAndUri[] interactomes;
 
   @XmlElement(name = "geneFrom", required = true)
   private IdAndUri geneFrom;
@@ -49,18 +52,18 @@ public class InteractionData implements Serializable {
   
   InteractionData() {}
 
-  public InteractionData(IdAndUri interactome, IdAndUri geneFrom, IdAndUri geneTo) {
-    this.interactome = interactome;
+  public InteractionData(IdAndUri geneFrom, IdAndUri geneTo, IdAndUri[] interactome) {
+    this.interactomes = interactome;
     this.geneFrom = geneFrom;
     this.geneTo = geneTo;
   }
 
-  public IdAndUri getInteractome() {
-    return interactome;
+  public IdAndUri[] getInteractomes() {
+    return interactomes;
   }
 
-  public void setInteractome(IdAndUri interactome) {
-    this.interactome = interactome;
+  public void setInteractome(IdAndUri[] interactomes) {
+    this.interactomes = interactomes;
   }
 
   public IdAndUri getGeneFrom() {
@@ -85,7 +88,7 @@ public class InteractionData implements Serializable {
     int result = 1;
     result = prime * result + ((geneFrom == null) ? 0 : geneFrom.hashCode());
     result = prime * result + ((geneTo == null) ? 0 : geneTo.hashCode());
-    result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
+    result = prime * result + Arrays.hashCode(interactomes);
     return result;
   }
 
@@ -108,10 +111,7 @@ public class InteractionData implements Serializable {
         return false;
     } else if (!geneTo.equals(other.geneTo))
       return false;
-    if (interactome == null) {
-      if (other.interactome != null)
-        return false;
-    } else if (!interactome.equals(other.interactome))
+    if (!Arrays.equals(interactomes, other.interactomes))
       return false;
     return true;
   }

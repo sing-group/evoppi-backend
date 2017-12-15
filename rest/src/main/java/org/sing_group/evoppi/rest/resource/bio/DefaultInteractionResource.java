@@ -78,7 +78,7 @@ public class DefaultInteractionResource implements InteractionResource {
     requireNonEmpty(interactomes, "At least one interactome id should be provided");
     
     final InteractionData[] interactions = this.service.findInteractionsByGene(geneId, interactomes)
-      .map(interaction -> mapper.toInteractionData(interaction, this.uriInfo.getAbsolutePathBuilder()))
+      .map(interaction -> mapper.toInteractionsData(interaction, this.uriInfo.getAbsolutePathBuilder()))
     .toArray(InteractionData[]::new);
     
     return Response.ok(interactions).build();

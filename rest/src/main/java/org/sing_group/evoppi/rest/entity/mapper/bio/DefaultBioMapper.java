@@ -21,10 +21,11 @@
  */
 package org.sing_group.evoppi.rest.entity.mapper.bio;
 
+import java.util.stream.Stream;
+
 import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.rest.entity.bio.InteractionData;
@@ -33,6 +34,7 @@ import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
+import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
 
 public class DefaultBioMapper implements BioMapper {
 
@@ -67,18 +69,20 @@ public class DefaultBioMapper implements BioMapper {
   }
 
   @Override
-  public InteractionData toInteractionData(Interaction interaction, UriBuilder uriBuilder) {
+  public InteractionData toInteractionsData(InteractionGroup interactions, UriBuilder uriBuilder) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
     
-    final Interactome interactome = interaction.getInteractome();
-    final Gene geneFrom = interaction.getGeneFrom();
-    final Gene geneTo = interaction.getGeneTo();
+    final Stream<Interactome> interactomes = interactions.getInteractomes();
+    final Gene geneFrom = interactions.getGeneFrom();
+    final Gene geneTo = interactions.getGeneTo();
     
     return new InteractionData(
-      new IdAndUri(interactome.getId(), pathBuilder.interactome(interactome).build()),
       new IdAndUri(geneFrom.getId(), pathBuilder.gene(geneFrom).build()),
-      new IdAndUri(geneTo.getId(), pathBuilder.gene(geneTo).build())
+      new IdAndUri(geneTo.getId(), pathBuilder.gene(geneTo).build()),
+      interactomes
+        .map(interactome -> new IdAndUri(interactome.getId(), pathBuilder.interactome(interactome).build()))
+      .toArray(IdAndUri[]::new)
     );
   }
-
+  
 }
