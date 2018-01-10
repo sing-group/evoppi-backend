@@ -1,3 +1,24 @@
+/*-
+ * #%L
+ * Service
+ * %%
+ * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
 package org.sing_group.evoppi.service.entity.bio;
 
 import java.util.Collection;
@@ -13,19 +34,21 @@ import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
 public class InteractionGroup {
-  private final Gene geneA;
-  private final Gene geneB;
+  private final InteractingGenes interactingGenes;
   private final Set<Interaction> interactions;
+  
+  private final int degree;
 
-  public InteractionGroup(Collection<Interaction> interactions) {
+  public InteractionGroup(Collection<Interaction> interactions, int degree) {
     if (!doInteractionsHaveSameGenes(interactions)) {
       throw new IllegalArgumentException("Interactions do not have same genes");
     }
     
     final Interaction firstInteraction = interactions.iterator().next();
-    this.geneA = firstInteraction.getGeneA();
-    this.geneB = firstInteraction.getGeneB();
+    this.interactingGenes = new InteractingGenes(firstInteraction);
     this.interactions = new HashSet<>(interactions);
+    
+    this.degree = degree;
   }
 
   private static boolean doInteractionsHaveSameGenes(Collection<Interaction> interactions) {
@@ -39,12 +62,16 @@ public class InteractionGroup {
       && countGenes.applyAsLong(Interaction::getGeneB) == 1;
   }
   
-  public Gene getGeneB() {
-    return geneB;
+  public InteractingGenes getInteractingGenes() {
+    return interactingGenes;
   }
   
   public Gene getGeneA() {
-    return geneA;
+    return this.interactingGenes.getGeneA();
+  }
+  
+  public Gene getGeneB() {
+    return this.interactingGenes.getGeneB();
   }
 
   public Stream<Interaction> getInteractions() {
@@ -56,13 +83,17 @@ public class InteractionGroup {
       .map(Interaction::getInteractome)
     .distinct();
   }
+  
+  public int getDegree() {
+    return degree;
+  }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
-    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
+    result = prime * result + degree;
+    result = prime * result + ((interactingGenes == null) ? 0 : interactingGenes.hashCode());
     result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
     return result;
   }
@@ -76,15 +107,12 @@ public class InteractionGroup {
     if (getClass() != obj.getClass())
       return false;
     InteractionGroup other = (InteractionGroup) obj;
-    if (geneA == null) {
-      if (other.geneA != null)
-        return false;
-    } else if (!geneA.equals(other.geneA))
+    if (degree != other.degree)
       return false;
-    if (geneB == null) {
-      if (other.geneB != null)
+    if (interactingGenes == null) {
+      if (other.interactingGenes != null)
         return false;
-    } else if (!geneB.equals(other.geneB))
+    } else if (!interactingGenes.equals(other.interactingGenes))
       return false;
     if (interactions == null) {
       if (other.interactions != null)
@@ -96,12 +124,12 @@ public class InteractionGroup {
 
   @Override
   public String toString() {
-    final String interactomes = interactions.stream()
+    final String interactomes = this.getInteractions()
       .map(Interaction::getInteractome)
       .map(Interactome::getId)
       .map(Object::toString)
     .collect(Collectors.joining(","));
     
-    return "InteractionGroup [geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + ", interactions=" + interactomes + "]";
+    return "InteractionGroup [genes=" + this.interactingGenes + ", interactions=" + interactomes + ", degree=" + degree + "]";
   }
 }

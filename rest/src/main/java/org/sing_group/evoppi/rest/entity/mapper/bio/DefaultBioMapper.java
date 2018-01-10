@@ -81,7 +81,8 @@ public class DefaultBioMapper implements BioMapper {
       new IdAndUri(geneB.getId(), pathBuilder.gene(geneB).build()),
       interactomes
         .map(interactome -> new IdAndUri(interactome.getId(), pathBuilder.interactome(interactome).build()))
-      .toArray(IdAndUri[]::new)
+      .toArray(IdAndUri[]::new),
+      interactions.getDegree()
     );
   }
   

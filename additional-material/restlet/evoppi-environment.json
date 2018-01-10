@@ -1,0 +1,29 @@
+{
+  "front-version": "2.13.2",
+  "version": 3,
+  "nodes": [
+    {
+      "type": "Context",
+      "id": "51ebd819-e6cb-46c3-83a9-2f426ceba561",
+      "lastModified": "2017-12-08T20:05:24.405+01:00",
+      "name": "EvoPPI",
+      "variables": [
+        {
+          "enabled": true,
+          "name": "restUrl",
+          "value": "localhost:8080/evoppi/rest/api"
+        },
+        {
+          "enabled": true,
+          "name": "adminToken",
+          "value": "bXJqYXRvQHV2aWdvLmVzOm1yamF0b3Bhc3M="
+        },
+        {
+          "enabled": true,
+          "name": "researcherToken",
+          "value": "cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ]
+    }
+  ]
+}

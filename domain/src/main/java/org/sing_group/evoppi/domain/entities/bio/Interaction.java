@@ -66,14 +66,14 @@ public class Interaction implements Serializable {
   public Gene getGeneB() {
     return geneB;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
-    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
-    result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
+    result = prime * result + getGeneA().getId();
+    result = prime * result + getGeneB().getId();
+    result = prime * result + getInteractome().getId();
     return result;
   }
 
@@ -83,23 +83,14 @@ public class Interaction implements Serializable {
       return true;
     if (obj == null)
       return false;
-    if (getClass() != obj.getClass())
+    if (!getClass().isAssignableFrom(obj.getClass()))
       return false;
     Interaction other = (Interaction) obj;
-    if (geneA == null) {
-      if (other.geneA != null)
-        return false;
-    } else if (!geneA.equals(other.geneA))
+    if (getGeneA().getId() != other.getGeneA().getId())
       return false;
-    if (geneB == null) {
-      if (other.geneB != null)
-        return false;
-    } else if (!geneB.equals(other.geneB))
+    if (getGeneB().getId() != other.getGeneB().getId())
       return false;
-    if (interactome == null) {
-      if (other.interactome != null)
-        return false;
-    } else if (!interactome.equals(other.interactome))
+    if (!getInteractome().getId().equals(other.getInteractome().getId()))
       return false;
     return true;
   }

@@ -50,12 +50,16 @@ public class InteractionData implements Serializable {
   @XmlElement(name = "geneB", required = true)
   private IdAndUri geneB;
   
+  @XmlElement(name = "degree", required = true)
+  private int degree;
+  
   InteractionData() {}
 
-  public InteractionData(IdAndUri geneA, IdAndUri geneB, IdAndUri[] interactome) {
-    this.interactomes = interactome;
+  public InteractionData(IdAndUri geneA, IdAndUri geneB, IdAndUri[] interactome, int degree) {
     this.geneA = geneA;
     this.geneB = geneB;
+    this.interactomes = interactome;
+    this.degree = degree;
   }
 
   public IdAndUri[] getInteractomes() {
@@ -81,11 +85,20 @@ public class InteractionData implements Serializable {
   public void setGeneB(IdAndUri geneB) {
     this.geneB = geneB;
   }
+  
+  public int getDegree() {
+    return degree;
+  }
+  
+  public void setDegree(int degree) {
+    this.degree = degree;
+  }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + degree;
     result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
     result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
     result = prime * result + Arrays.hashCode(interactomes);
@@ -101,6 +114,8 @@ public class InteractionData implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     InteractionData other = (InteractionData) obj;
+    if (degree != other.degree)
+      return false;
     if (geneA == null) {
       if (other.geneA != null)
         return false;

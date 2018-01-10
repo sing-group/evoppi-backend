@@ -27,6 +27,6 @@ import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
 
 public interface InteractionService {
 
-  public Stream<InteractionGroup> findInteractionsByGene(int geneId, int[] interactomes);
+  public Stream<InteractionGroup> findInteractionsByGene(int geneId, int[] interactomes, int maxDegree);
   
 }

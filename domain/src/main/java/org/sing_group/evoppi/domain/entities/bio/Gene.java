@@ -36,7 +36,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "gene")
-public class Gene implements Serializable, Comparable<Gene> {
+public class Gene implements Serializable {
   private static final long serialVersionUID = 1L;
   
   @Id
@@ -83,16 +83,16 @@ public class Gene implements Serializable, Comparable<Gene> {
       return true;
     if (obj == null)
       return false;
-    if (getClass() != obj.getClass())
+    if (!getClass().isAssignableFrom(obj.getClass()))
       return false;
     Gene other = (Gene) obj;
-    if (id != other.id)
+    if (getId() != other.getId())
       return false;
     return true;
   }
-
+  
   @Override
-  public int compareTo(Gene o) {
-    return o == null ? 1 : Integer.compare(this.getId(), o.getId());
+  public String toString() {
+    return Integer.toString(this.id);
   }
 }

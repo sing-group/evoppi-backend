@@ -29,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -73,11 +74,14 @@ public class DefaultInteractionResource implements InteractionResource {
   @Override
   public Response getInteractions(
     @QueryParam("gene") int geneId,
-    @QueryParam("interactome") int[] interactomes
+    @QueryParam("interactome") int[] interactomes,
+    @QueryParam("maxDegree") @DefaultValue("1") int maxDegree
   ) {
+    if (maxDegree < 1 || maxDegree > 3)
+      throw new IllegalArgumentException("maxDegree must be between 1 and 3");
     requireNonEmpty(interactomes, "At least one interactome id should be provided");
     
-    final InteractionData[] interactions = this.service.findInteractionsByGene(geneId, interactomes)
+    final InteractionData[] interactions = this.service.findInteractionsByGene(geneId, interactomes, maxDegree)
       .map(interaction -> mapper.toInteractionsData(interaction, this.uriInfo.getAbsolutePathBuilder()))
     .toArray(InteractionData[]::new);
     

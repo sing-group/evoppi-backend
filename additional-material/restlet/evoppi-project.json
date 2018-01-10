@@ -1,0 +1,337 @@
+{
+  "front-version": "2.13.2",
+  "version": 3,
+  "nodes": [
+    {
+      "type": "Project",
+      "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
+      "lastModified": "2018-01-10T19:45:16.028+01:00",
+      "name": "EvoPPI"
+    },
+    {
+      "type": "Scenario",
+      "id": "cea10757-0408-4553-8e04-cee8174a031d",
+      "lastModified": "2018-01-10T18:55:10.797+01:00",
+      "name": "Bio",
+      "requestOrder": [
+        "List species",
+        "Get species",
+        "Get interactome",
+        "Get genes",
+        "Get genes of interactome",
+        "Interactions",
+        "Interactions with Degree"
+      ],
+      "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/species"
+      },
+      "id": "e1ac096f-d0fe-43b2-9051-7d3d1ed6e5cb",
+      "lastModified": "2017-12-08T20:40:01.492+01:00",
+      "name": "List species",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/species/1"
+      },
+      "id": "1c889208-520e-424f-b30a-b34f1a3f4ca3",
+      "lastModified": "2017-12-08T20:40:13.727+01:00",
+      "name": "Get species",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interactome/2"
+      },
+      "id": "bcc140d3-e6b5-4a8b-9f51-a91fad8d3a0f",
+      "lastModified": "2017-12-08T21:05:46.250+01:00",
+      "name": "Get interactome",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "prefix",
+              "value": "5"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/gene"
+      },
+      "id": "3cdf6b52-1ba0-49ed-ba68-ef925fa351c9",
+      "lastModified": "2017-12-09T22:57:33.075+01:00",
+      "name": "Get genes",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "prefix",
+              "value": "6"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "1"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "2"
+            },
+            {
+              "enabled": true,
+              "name": "maxResults",
+              "value": "10"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/gene"
+      },
+      "id": "129b2709-f109-4b98-8e6e-32fddc09f96d",
+      "lastModified": "2017-12-09T23:29:17.879+01:00",
+      "name": "Get genes of interactome",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "gene",
+              "value": "60"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "1"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "2"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction"
+      },
+      "id": "b4f2c2a6-9eba-46ca-a990-aa7e5204bbec",
+      "lastModified": "2017-12-26T13:34:00.471+01:00",
+      "name": "Interactions",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "gene",
+              "value": "58"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "1"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "2"
+            },
+            {
+              "enabled": true,
+              "name": "maxDegree",
+              "value": "3"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction"
+      },
+      "id": "5ec87a73-1779-46e4-aa1b-ba06615bdd82",
+      "lastModified": "2018-01-10T19:45:16.028+01:00",
+      "name": "Interactions with Degree",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    }
+  ]
+}
