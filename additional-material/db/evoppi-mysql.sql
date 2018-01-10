@@ -51,12 +51,12 @@ CREATE TABLE `interactome` (
 
 CREATE TABLE `interaction` (
   `interactome` int(11) NOT NULL,
-  `geneFrom` int(11) NOT NULL,
-  `geneTo` int(11) NOT NULL,
-  PRIMARY KEY (`interactome`,`geneFrom`,`geneTo`),
-  KEY `FK_interaction_geneFrom_idx` (`geneFrom`),
-  KEY `FK_interaction_geneTo_idx` (`geneTo`),
+  `geneA` int(11) NOT NULL,
+  `geneB` int(11) NOT NULL,
+  PRIMARY KEY (`interactome`,`geneA`,`geneB`),
+  KEY `FK_interaction_geneA_idx` (`geneA`),
+  KEY `FK_interaction_geneB_idx` (`geneB`),
   CONSTRAINT `FK_interaction_interactome` FOREIGN KEY (`interactome`) REFERENCES `interactome` (`id`),
-  CONSTRAINT `FK_interaction_geneFrom` FOREIGN KEY (`geneFrom`) REFERENCES `gene` (`id`),
-  CONSTRAINT `FK_interaction_geneTo` FOREIGN KEY (`geneTo`) REFERENCES `gene` (`id`)
+  CONSTRAINT `FK_interaction_geneA` FOREIGN KEY (`geneA`) REFERENCES `gene` (`id`),
+  CONSTRAINT `FK_interaction_geneB` FOREIGN KEY (`geneB`) REFERENCES `gene` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

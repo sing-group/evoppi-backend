@@ -73,12 +73,12 @@ public class DefaultBioMapper implements BioMapper {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
     
     final Stream<Interactome> interactomes = interactions.getInteractomes();
-    final Gene geneFrom = interactions.getGeneFrom();
-    final Gene geneTo = interactions.getGeneTo();
+    final Gene geneA = interactions.getGeneA();
+    final Gene geneB = interactions.getGeneB();
     
     return new InteractionData(
-      new IdAndUri(geneFrom.getId(), pathBuilder.gene(geneFrom).build()),
-      new IdAndUri(geneTo.getId(), pathBuilder.gene(geneTo).build()),
+      new IdAndUri(geneA.getId(), pathBuilder.gene(geneA).build()),
+      new IdAndUri(geneB.getId(), pathBuilder.gene(geneB).build()),
       interactomes
         .map(interactome -> new IdAndUri(interactome.getId(), pathBuilder.interactome(interactome).build()))
       .toArray(IdAndUri[]::new)

@@ -44,18 +44,18 @@ public class InteractionData implements Serializable {
   @XmlElement(name = "interactomes", required = true)
   private IdAndUri[] interactomes;
 
-  @XmlElement(name = "geneFrom", required = true)
-  private IdAndUri geneFrom;
+  @XmlElement(name = "geneA", required = true)
+  private IdAndUri geneA;
 
-  @XmlElement(name = "geneTo", required = true)
-  private IdAndUri geneTo;
+  @XmlElement(name = "geneB", required = true)
+  private IdAndUri geneB;
   
   InteractionData() {}
 
-  public InteractionData(IdAndUri geneFrom, IdAndUri geneTo, IdAndUri[] interactome) {
+  public InteractionData(IdAndUri geneA, IdAndUri geneB, IdAndUri[] interactome) {
     this.interactomes = interactome;
-    this.geneFrom = geneFrom;
-    this.geneTo = geneTo;
+    this.geneA = geneA;
+    this.geneB = geneB;
   }
 
   public IdAndUri[] getInteractomes() {
@@ -66,28 +66,28 @@ public class InteractionData implements Serializable {
     this.interactomes = interactomes;
   }
 
-  public IdAndUri getGeneFrom() {
-    return geneFrom;
+  public IdAndUri getGeneA() {
+    return geneA;
   }
 
-  public void setGeneFrom(IdAndUri geneFrom) {
-    this.geneFrom = geneFrom;
+  public void setGeneA(IdAndUri geneA) {
+    this.geneA = geneA;
   }
 
-  public IdAndUri getGeneTo() {
-    return geneTo;
+  public IdAndUri getGeneB() {
+    return geneB;
   }
 
-  public void setGeneTo(IdAndUri geneTo) {
-    this.geneTo = geneTo;
+  public void setGeneB(IdAndUri geneB) {
+    this.geneB = geneB;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((geneFrom == null) ? 0 : geneFrom.hashCode());
-    result = prime * result + ((geneTo == null) ? 0 : geneTo.hashCode());
+    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
+    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
     result = prime * result + Arrays.hashCode(interactomes);
     return result;
   }
@@ -101,15 +101,15 @@ public class InteractionData implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     InteractionData other = (InteractionData) obj;
-    if (geneFrom == null) {
-      if (other.geneFrom != null)
+    if (geneA == null) {
+      if (other.geneA != null)
         return false;
-    } else if (!geneFrom.equals(other.geneFrom))
+    } else if (!geneA.equals(other.geneA))
       return false;
-    if (geneTo == null) {
-      if (other.geneTo != null)
+    if (geneB == null) {
+      if (other.geneB != null)
         return false;
-    } else if (!geneTo.equals(other.geneTo))
+    } else if (!geneB.equals(other.geneB))
       return false;
     if (!Arrays.equals(interactomes, other.interactomes))
       return false;

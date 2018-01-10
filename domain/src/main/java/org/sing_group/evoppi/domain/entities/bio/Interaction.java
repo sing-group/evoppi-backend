@@ -47,32 +47,32 @@ public class Interaction implements Serializable {
 
   @Id
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-  @JoinColumn(name = "geneFrom", referencedColumnName = "id", nullable = false)
-  private Gene geneFrom;
+  @JoinColumn(name = "geneA", referencedColumnName = "id", nullable = false)
+  private Gene geneA;
   
   @Id
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-  @JoinColumn(name = "geneTo", referencedColumnName = "id", nullable = false)
-  private Gene geneTo;
+  @JoinColumn(name = "geneB", referencedColumnName = "id", nullable = false)
+  private Gene geneB;
 
   public Interactome getInteractome() {
     return interactome;
   }
 
-  public Gene getGeneFrom() {
-    return geneFrom;
+  public Gene getGeneA() {
+    return geneA;
   }
 
-  public Gene getGeneTo() {
-    return geneTo;
+  public Gene getGeneB() {
+    return geneB;
   }
   
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((geneFrom == null) ? 0 : geneFrom.hashCode());
-    result = prime * result + ((geneTo == null) ? 0 : geneTo.hashCode());
+    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
+    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
     result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
     return result;
   }
@@ -86,15 +86,15 @@ public class Interaction implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     Interaction other = (Interaction) obj;
-    if (geneFrom == null) {
-      if (other.geneFrom != null)
+    if (geneA == null) {
+      if (other.geneA != null)
         return false;
-    } else if (!geneFrom.equals(other.geneFrom))
+    } else if (!geneA.equals(other.geneA))
       return false;
-    if (geneTo == null) {
-      if (other.geneTo != null)
+    if (geneB == null) {
+      if (other.geneB != null)
         return false;
-    } else if (!geneTo.equals(other.geneTo))
+    } else if (!geneB.equals(other.geneB))
       return false;
     if (interactome == null) {
       if (other.interactome != null)
@@ -108,35 +108,35 @@ public class Interaction implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private int interactome;
-    private int geneFrom;
-    private int geneTo;
+    private int geneA;
+    private int geneB;
     
     InteractionId() {}
     
-    public InteractionId(int interactome, int geneFrom, int geneTo) {
+    public InteractionId(int interactome, int geneA, int geneB) {
       this.interactome = interactome;
-      this.geneFrom = geneFrom;
-      this.geneTo = geneTo;
+      this.geneA = geneA;
+      this.geneB = geneB;
     }
 
     public int getInteractome() {
       return interactome;
     }
 
-    public int getGeneFrom() {
-      return geneFrom;
+    public int getGeneA() {
+      return geneA;
     }
 
-    public int getGeneTo() {
-      return geneTo;
+    public int getGeneB() {
+      return geneB;
     }
 
     @Override
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + geneFrom;
-      result = prime * result + geneTo;
+      result = prime * result + geneA;
+      result = prime * result + geneB;
       result = prime * result + interactome;
       return result;
     }
@@ -150,13 +150,18 @@ public class Interaction implements Serializable {
       if (getClass() != obj.getClass())
         return false;
       InteractionId other = (InteractionId) obj;
-      if (geneFrom != other.geneFrom)
+      if (geneA != other.geneA)
         return false;
-      if (geneTo != other.geneTo)
+      if (geneB != other.geneB)
         return false;
       if (interactome != other.interactome)
         return false;
       return true;
     }
+  }
+
+  @Override
+  public String toString() {
+    return "Interaction [interactome=" + interactome.getId() + ", geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + "]";
   }
 }

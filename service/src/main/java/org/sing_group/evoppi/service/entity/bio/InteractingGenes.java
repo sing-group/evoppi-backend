@@ -1,31 +1,45 @@
 package org.sing_group.evoppi.service.entity.bio;
 
+import static java.util.Objects.requireNonNull;
+
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interaction;
 
 public class InteractingGenes {
-  private final Gene geneFrom;
-  private final Gene geneTo;
+  private final Gene geneA;
+  private final Gene geneB;
   
   public InteractingGenes(Interaction interaction) {
-    this(interaction.getGeneFrom(), interaction.getGeneTo());
+    this(interaction.getGeneA(), interaction.getGeneB());
   }
   
-  public InteractingGenes(Gene geneFrom, Gene geneTo) {
-    this.geneFrom = geneFrom;
-    this.geneTo = geneTo;
+  public InteractingGenes(Gene geneA, Gene geneB) {
+    requireNonNull(geneA, "geneA can't be null");
+    requireNonNull(geneB, "geneB can't be null");
+    
+    if (geneA.compareTo(geneB) < 0) {
+      this.geneA = geneA;
+      this.geneB = geneB;
+    } else {
+      this.geneA = geneB;
+      this.geneB = geneA;
+    }
   }
 
-  public Gene getGeneFrom() {
-    return geneFrom;
+  public Gene getGeneA() {
+    return geneA;
+  }
+  
+  public Gene getGeneB() {
+    return geneB;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((geneFrom == null) ? 0 : geneFrom.hashCode());
-    result = prime * result + ((geneTo == null) ? 0 : geneTo.hashCode());
+    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
+    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
     return result;
   }
 
@@ -38,17 +52,21 @@ public class InteractingGenes {
     if (getClass() != obj.getClass())
       return false;
     InteractingGenes other = (InteractingGenes) obj;
-    if (geneFrom == null) {
-      if (other.geneFrom != null)
+    if (geneA == null) {
+      if (other.geneA != null)
         return false;
-    } else if (!geneFrom.equals(other.geneFrom))
+    } else if (!geneA.equals(other.geneA))
       return false;
-    if (geneTo == null) {
-      if (other.geneTo != null)
+    if (geneB == null) {
+      if (other.geneB != null)
         return false;
-    } else if (!geneTo.equals(other.geneTo))
+    } else if (!geneB.equals(other.geneB))
       return false;
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "InteractingGenes [geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + "]";
+  }
 }

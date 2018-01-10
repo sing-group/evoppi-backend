@@ -3,6 +3,9 @@ package org.sing_group.evoppi.service.entity.bio;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.ToLongFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -10,8 +13,8 @@ import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
 public class InteractionGroup {
-  private final Gene geneFrom;
-  private final Gene geneTo;
+  private final Gene geneA;
+  private final Gene geneB;
   private final Set<Interaction> interactions;
 
   public InteractionGroup(Collection<Interaction> interactions) {
@@ -20,35 +23,28 @@ public class InteractionGroup {
     }
     
     final Interaction firstInteraction = interactions.iterator().next();
-    this.geneFrom = firstInteraction.getGeneFrom();
-    this.geneTo = firstInteraction.getGeneTo();
+    this.geneA = firstInteraction.getGeneA();
+    this.geneB = firstInteraction.getGeneB();
     this.interactions = new HashSet<>(interactions);
   }
 
-  private static boolean doInteractionsHaveSameGenes(Collection<Interaction> interaction) {
-    final long geneFromCount = interaction.stream()
-      .map(Interaction::getGeneFrom)
-      .distinct()
-    .count();
+  private static boolean doInteractionsHaveSameGenes(Collection<Interaction> interactions) {
+    final ToLongFunction<Function<Interaction, Gene>> countGenes =
+      getter -> interactions.stream()
+        .map(getter)
+        .distinct()
+      .count();
     
-    if (geneFromCount != 1) {
-      return false;
-    }
-    
-    final long geneToCount = interaction.stream()
-      .map(Interaction::getGeneTo)
-      .distinct()
-    .count();
-    
-    return geneToCount == 1;
+    return countGenes.applyAsLong(Interaction::getGeneA) == 1
+      && countGenes.applyAsLong(Interaction::getGeneB) == 1;
   }
   
-  public Gene getGeneTo() {
-    return geneTo;
+  public Gene getGeneB() {
+    return geneB;
   }
   
-  public Gene getGeneFrom() {
-    return geneFrom;
+  public Gene getGeneA() {
+    return geneA;
   }
 
   public Stream<Interaction> getInteractions() {
@@ -65,8 +61,8 @@ public class InteractionGroup {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((geneFrom == null) ? 0 : geneFrom.hashCode());
-    result = prime * result + ((geneTo == null) ? 0 : geneTo.hashCode());
+    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
+    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
     result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
     return result;
   }
@@ -80,15 +76,15 @@ public class InteractionGroup {
     if (getClass() != obj.getClass())
       return false;
     InteractionGroup other = (InteractionGroup) obj;
-    if (geneFrom == null) {
-      if (other.geneFrom != null)
+    if (geneA == null) {
+      if (other.geneA != null)
         return false;
-    } else if (!geneFrom.equals(other.geneFrom))
+    } else if (!geneA.equals(other.geneA))
       return false;
-    if (geneTo == null) {
-      if (other.geneTo != null)
+    if (geneB == null) {
+      if (other.geneB != null)
         return false;
-    } else if (!geneTo.equals(other.geneTo))
+    } else if (!geneB.equals(other.geneB))
       return false;
     if (interactions == null) {
       if (other.interactions != null)
@@ -96,5 +92,16 @@ public class InteractionGroup {
     } else if (!interactions.equals(other.interactions))
       return false;
     return true;
+  }
+
+  @Override
+  public String toString() {
+    final String interactomes = interactions.stream()
+      .map(Interaction::getInteractome)
+      .map(Interactome::getId)
+      .map(Object::toString)
+    .collect(Collectors.joining(","));
+    
+    return "InteractionGroup [geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + ", interactions=" + interactomes + "]";
   }
 }

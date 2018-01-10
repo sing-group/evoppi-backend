@@ -27,7 +27,6 @@ import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -56,12 +55,13 @@ public class DefaultInteractionService implements InteractionService {
     
     final Set<Integer> interactomesIds = IntStream.of(interactomes)
       .boxed()
-    .collect(Collectors.toSet());
+    .collect(toSet());
     
-    final Map<InteractingGenes, Set<Interaction>> interactingGenes = gene.getInteractsWith()
+    final Map<InteractingGenes, Set<Interaction>> interactingGenes = gene.getInteractions()
       .filter(interaction -> interactomesIds.contains(interaction.getInteractome().getId()))
-      .collect(groupingBy(InteractingGenes::new, toSet()));
+    .collect(groupingBy(InteractingGenes::new, toSet()));
     
+    System.out.println(interactingGenes);
     
     return interactingGenes.values().stream()
       .map(InteractionGroup::new);

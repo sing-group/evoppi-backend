@@ -61,8 +61,11 @@ public class DefaultGeneService implements GeneService {
   private Stream<Gene> findByInteractome(int idPrefix, int interactomeId, int maxResults) {
     final Interactome interactome = this.interactomeDAO.getInteractome(interactomeId);
 
-    return interactome.getInteractions()
-      .map(Interaction::getGeneFrom)
-      .filter(gene -> Integer.toString(gene.getId()).startsWith(Integer.toString(idPrefix)));
+    return Stream.concat(
+      interactome.getInteractions().map(Interaction::getGeneA),
+      interactome.getInteractions().map(Interaction::getGeneB)
+    )
+      .distinct()
+    .filter(gene -> Integer.toString(gene.getId()).startsWith(Integer.toString(idPrefix)));
   }
 }

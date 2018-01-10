@@ -36,7 +36,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "gene")
-public class Gene implements Serializable {
+public class Gene implements Serializable, Comparable<Gene> {
   private static final long serialVersionUID = 1L;
   
   @Id
@@ -46,11 +46,11 @@ public class Gene implements Serializable {
   @Column(name = "sequence", nullable = false)
   private String sequence;
   
-  @OneToMany(mappedBy = "geneFrom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Interaction> interactsWith;
+  @OneToMany(mappedBy = "geneA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Interaction> interactsA;
   
-  @OneToMany(mappedBy = "geneTo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Interaction> interactedBy;
+  @OneToMany(mappedBy = "geneA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Interaction> interactsB;
   
   public int getId() {
     return id;
@@ -59,21 +59,14 @@ public class Gene implements Serializable {
   public String getSequence() {
     return sequence;
   }
-
-  public Stream<Interaction> getInteractsWith() {
-    return this.interactsWith.stream();
+  
+  public Stream<Interaction> getInteractions() {
+    return Stream.concat(this.interactsA.stream(), this.interactsB.stream())
+      .distinct();
   }
-
-  public boolean hasInteractionWith(Interaction interaction) {
-    return this.interactsWith.contains(interaction);
-  }
-
-  public Stream<Interaction> getInteractedBy() {
-    return this.interactedBy.stream();
-  }
-
-  public boolean hasInteractedBy(Interaction interaction) {
-    return this.interactedBy.contains(interaction);
+  
+  public boolean hasInteraction(Interaction interaction) {
+    return this.interactsA.contains(interaction) || this.interactsB.contains(interaction);
   }
 
   @Override
@@ -96,5 +89,10 @@ public class Gene implements Serializable {
     if (id != other.id)
       return false;
     return true;
+  }
+
+  @Override
+  public int compareTo(Gene o) {
+    return o == null ? 1 : Integer.compare(this.getId(), o.getId());
   }
 }
