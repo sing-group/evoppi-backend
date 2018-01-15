@@ -5,13 +5,13 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-01-10T19:45:16.028+01:00",
+      "lastModified": "2018-01-15T18:43:08.094+01:00",
       "name": "EvoPPI"
     },
     {
       "type": "Scenario",
       "id": "cea10757-0408-4553-8e04-cee8174a031d",
-      "lastModified": "2018-01-10T18:55:10.797+01:00",
+      "lastModified": "2018-01-15T18:42:57.187+01:00",
       "name": "Bio",
       "requestOrder": [
         "List species",
@@ -20,7 +20,8 @@
         "Get genes",
         "Get genes of interactome",
         "Interactions",
-        "Interactions with Degree"
+        "Interactions with Degree",
+        "Get gene"
       ],
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
     },
@@ -161,10 +162,10 @@
           "version": "V11"
         },
         "host": "${restUrl}",
-        "path": "/gene"
+        "path": "/gene/name"
       },
       "id": "3cdf6b52-1ba0-49ed-ba68-ef925fa351c9",
-      "lastModified": "2017-12-09T22:57:33.075+01:00",
+      "lastModified": "2018-01-15T18:42:48.567+01:00",
       "name": "Get genes",
       "headers": [],
       "metaInfo": {},
@@ -329,6 +330,41 @@
       "id": "5ec87a73-1779-46e4-aa1b-ba06615bdd82",
       "lastModified": "2018-01-10T19:45:16.028+01:00",
       "name": "Interactions with Degree",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/gene/59"
+      },
+      "id": "eefc79aa-343a-42cd-b70e-bd50cb8e36b9",
+      "lastModified": "2018-01-15T18:43:08.094+01:00",
+      "name": "Get gene",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"

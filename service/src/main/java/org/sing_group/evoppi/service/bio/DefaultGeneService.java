@@ -45,6 +45,11 @@ public class DefaultGeneService implements GeneService {
   private InteractomeDAO interactomeDAO;
   
   @Override
+  public Gene get(int id) {
+    return this.dao.getGene(id);
+  }
+  
+  @Override
   public Stream<Gene> findByIdPrefixAndInteractome(int idPrefix, Set<Integer> interactomeIds, int maxResults) {
     if (interactomeIds.isEmpty()) {
       return this.dao.findByIdPrefix(idPrefix, maxResults);

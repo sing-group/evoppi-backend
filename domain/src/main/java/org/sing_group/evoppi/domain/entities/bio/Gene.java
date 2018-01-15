@@ -30,6 +30,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -51,6 +52,10 @@ public class Gene implements Serializable {
   
   @OneToMany(mappedBy = "geneB", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactsB;
+
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "geneId", referencedColumnName = "id")
+  private Set<GeneNames> names;
   
   public int getId() {
     return id;
@@ -67,6 +72,10 @@ public class Gene implements Serializable {
   
   public boolean hasInteraction(Interaction interaction) {
     return this.interactsA.contains(interaction) || this.interactsB.contains(interaction);
+  }
+
+  public Stream<GeneNames> getNames() {
+    return this.names.stream();
   }
 
   @Override

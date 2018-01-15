@@ -36,17 +36,22 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.GeneResource;
 import org.sing_group.evoppi.service.spi.bio.GeneService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Path("gene")
 @Api(value = "gene")
@@ -56,15 +61,18 @@ import io.swagger.annotations.ApiOperation;
 @Default
 @CrossDomain
 public class DefaultGeneResource implements GeneResource {
-  
   @Inject
   private GeneService service;
+  
+  @Inject
+  private BioMapper mapper;
 
+  @Path("name")
   @GET
   @ApiOperation(
     value = "Returns a list of genes. This list can be filtered with a prefix and, optionally a list of interactomes to"
       + " which the gene belongs. The maximum number of returned genes can also be set.",
-    response = int.class,
+    response = GeneNamesData.class,
     responseContainer = "List",
     code = 200
   )
@@ -81,9 +89,49 @@ public class DefaultGeneResource implements GeneResource {
     
     final Stream<Gene> genes = this.service.findByIdPrefixAndInteractome(idPrefix, interactomeIds, maxResults);
     
-    final int[] geneNames = genes.mapToInt(Gene::getId).toArray();
+    final GeneNamesData[] geneNames = genes
+      .map(this.mapper::toGeneNamesData)
+    .toArray(GeneNamesData[]::new);
     
     return Response.ok(geneNames).build();
+  }
+
+  @Path("{id: \\d+}")
+  @GET
+  @ApiOperation(
+    value = "Return the data of a gene.",
+    response = GeneNamesData.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown gene: {id}")
+  )
+  @Override
+  public Response getGene(
+    @PathParam("id") int id
+  ) {
+    return Response
+      .ok(this.mapper.toGeneData(this.service.get(id)))
+    .build();
+  }
+
+  @Path("{id: \\d+}/name")
+  @GET
+  @ApiOperation(
+    value = "Returns the list of names of a gene.",
+    response = GeneNamesData.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown gene: {id}")
+  )
+  @Override
+  public Response getGeneNames(
+    @PathParam("id") int id
+  ) {
+    return Response
+      .ok(this.mapper.toGeneNamesData(this.service.get(id)))
+    .build();
   }
 
 }

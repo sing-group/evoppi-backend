@@ -26,5 +26,9 @@ import javax.ws.rs.core.Response;
 
 @Local
 public interface GeneResource {
+  public Response getGene(int id);
+  
+  public Response getGeneNames(int id);
+  
   public Response listGenes(int idPrefix, int[] interactomes, int maxValues);
 }

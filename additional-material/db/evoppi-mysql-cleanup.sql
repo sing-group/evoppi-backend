@@ -1,6 +1,8 @@
 DELETE FROM `interaction`;
 DELETE FROM `interactome`;
 DELETE FROM `species`;
+DELETE FROM `gene_name_value`;
+DELETE FROM `gene_name`;
 DELETE FROM `gene`;
 
 DELETE FROM `researcher`;

@@ -27,5 +27,7 @@ import java.util.stream.Stream;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 
 public interface GeneService {
+  public Gene get(int id);
+  
   public Stream<Gene> findByIdPrefixAndInteractome(int idPrefix, Set<Integer> interactomeIds, int maxResults);
 }
