@@ -35,7 +35,7 @@ public class SpeciesRestPathBuilder implements RestPathBuilder {
   public SpeciesRestPathBuilder(UriBuilder builder, int id) {
     this(builder);
     
-    this.builder = this.builder.path("species").path(Integer.toString(id));
+    this.builder = this.builder.path(Integer.toString(id));
   }
 
   @Override

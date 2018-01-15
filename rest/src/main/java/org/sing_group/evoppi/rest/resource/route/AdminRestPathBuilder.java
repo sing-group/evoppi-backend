@@ -37,7 +37,7 @@ public class AdminRestPathBuilder implements RestPathBuilder {
   public AdminRestPathBuilder(UriBuilder builder, String login) {
     this(builder);
     
-    this.builder = this.builder.path("admin").path(login);
+    this.builder = this.builder.path(login);
   }
   
   @Override

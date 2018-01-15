@@ -35,7 +35,7 @@ public class GeneRestPathBuilder implements RestPathBuilder {
   public GeneRestPathBuilder(UriBuilder builder, int id) {
     this(builder);
     
-    this.builder = this.builder.path("gene").path(Integer.toString(id));
+    this.builder = this.builder.path(Integer.toString(id));
   }
   
   @Override

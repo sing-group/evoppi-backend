@@ -37,7 +37,7 @@ public class ResearcherRestPathBuilder implements RestPathBuilder {
   public ResearcherRestPathBuilder(UriBuilder builder, String login) {
     this(builder);
     
-    this.builder = this.builder.path("researcher").path(login);
+    this.builder = this.builder.path(login);
   }
 
   @Override
