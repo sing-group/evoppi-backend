@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.resource.execution;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -65,6 +66,11 @@ public class DefaultWorkResource implements WorkResource {
   @Context
   private UriInfo uriInfo;
   
+  @PostConstruct
+  public void postConstruct() {
+    this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
+  }
+  
   @Path("{id: \\d+}")
   @GET
   @ApiOperation(
@@ -82,7 +88,7 @@ public class DefaultWorkResource implements WorkResource {
     final Work work = this.service.get(id);
     
     return Response
-      .ok(this.mapper.toWorkData(work, uriInfo.getBaseUriBuilder()))
+      .ok(this.mapper.toWorkData(work))
     .build();
   }
 

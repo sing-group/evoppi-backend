@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.resource.bio;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -37,7 +38,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -65,6 +65,11 @@ public class DefaultInteractomeResource implements InteractomeResource {
 
   @Context
   private UriInfo uriInfo;
+  
+  @PostConstruct
+  public void postConstruct() {
+    this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
+  }
 
   @GET
   @Path("{id}")
@@ -81,12 +86,7 @@ public class DefaultInteractomeResource implements InteractomeResource {
     final Interactome interactome = this.service.getInteractome(id);
     
     return Response
-      .ok(mapInteractomeToData(interactome))
+      .ok(this.mapper.toInteractomeData(interactome))
     .build();
   }
-
-  private InteractomeData mapInteractomeToData(final Interactome interactome) {
-    return this.mapper.toInteractomeData(interactome, this.uriInfo.getBaseUriBuilder());
-  }
-
 }

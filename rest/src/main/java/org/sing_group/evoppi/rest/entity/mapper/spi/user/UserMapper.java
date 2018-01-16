@@ -31,7 +31,6 @@ import org.sing_group.evoppi.rest.entity.user.ResearcherData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
 
 public interface UserMapper {
-  
   public Administrator toAdministrator(AdministratorEditionData data);
 
   public AdministratorData toAdministratorData(Administrator admin);
@@ -43,5 +42,4 @@ public interface UserMapper {
   public ResearcherData toResearcherData(Researcher researcher);
 
   public ResearcherEditionData toResearcherEditionData(Researcher researcher, String password);
-
 }

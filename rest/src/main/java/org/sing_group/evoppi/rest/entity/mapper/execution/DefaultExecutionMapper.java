@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.rest.entity.mapper.execution;
 
+import static java.util.Objects.requireNonNull;
+
 import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriBuilder;
 
@@ -34,9 +36,16 @@ import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 
 @Default
 public class DefaultExecutionMapper implements ExecutionMapper {
+  private UriBuilder uriBuilder;
+
   @Override
-  public WorkData toWorkData(Work work, UriBuilder uriBuilder) {
-    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+  public void setUriBuilder(UriBuilder uriBuilder) {
+    this.uriBuilder = requireNonNull(uriBuilder);
+  }
+  
+  @Override
+  public WorkData toWorkData(Work work) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new WorkData(
       new IdAndUri(work.getId(), pathBuilder.work(work.getId()).build()),

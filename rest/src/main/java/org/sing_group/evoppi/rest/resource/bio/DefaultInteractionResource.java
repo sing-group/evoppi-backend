@@ -27,6 +27,7 @@ import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 
 import java.util.function.Function;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -77,6 +78,13 @@ public class DefaultInteractionResource implements InteractionResource {
   @Context
   private UriInfo uriInfo;
   
+  @PostConstruct
+  public void postConstruct() {
+    final UriBuilder uriBuilder = this.uriInfo.getBaseUriBuilder();
+    this.bioMapper.setUriBuilder(uriBuilder);
+    this.executionMapper.setUriBuilder(uriBuilder);
+  }
+  
   @GET
   @ApiOperation(
     value = "Calculates the interactions of a gene according to one or many interactomes. "
@@ -96,8 +104,8 @@ public class DefaultInteractionResource implements InteractionResource {
     requireNonEmpty(interactomes, "At least one interactome id should be provided");
     
     final UriBuilder uriBuilder = this.uriInfo.getBaseUriBuilder();
-    
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+    
     final Function<Integer, String> resultUriBuilder =
       id -> pathBuilder.interaction().result(id).build().toString();
       
@@ -105,7 +113,7 @@ public class DefaultInteractionResource implements InteractionResource {
       geneId, interactomes, maxDegree, resultUriBuilder
     );
     
-    return Response.ok(this.executionMapper.toWorkData(work, uriInfo.getBaseUriBuilder())).build();
+    return Response.ok(this.executionMapper.toWorkData(work)).build();
   }
 
   @GET
@@ -122,12 +130,10 @@ public class DefaultInteractionResource implements InteractionResource {
   public Response getInterationResult(
     @PathParam("id") int id
   ) {
-    final UriBuilder uriBuilder = this.uriInfo.getBaseUriBuilder();
-    
     final InteractionsResult result = this.service.getResult(id);
     
     return Response
-      .ok(this.bioMapper.toInteractionQueryResult(result, uriBuilder))
+      .ok(this.bioMapper.toInteractionQueryResult(result))
     .build();
   }
 }

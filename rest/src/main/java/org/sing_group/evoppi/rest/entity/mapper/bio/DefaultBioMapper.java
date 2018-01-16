@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.rest.entity.mapper.bio;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.Default;
@@ -46,9 +48,16 @@ import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
 
 @Default
 public class DefaultBioMapper implements BioMapper {
+  private UriBuilder uriBuilder;
+
   @Override
-  public SpeciesData toSpeciesData(Species species, UriBuilder uriBuilder) {
-    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+  public void setUriBuilder(UriBuilder uriBuilder) {
+    this.uriBuilder = requireNonNull(uriBuilder);
+  }
+  
+  @Override
+  public SpeciesData toSpeciesData(Species species) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new SpeciesData(
       species.getId(),
@@ -63,8 +72,8 @@ public class DefaultBioMapper implements BioMapper {
   }
 
   @Override
-  public InteractomeData toInteractomeData(Interactome interactome, UriBuilder uriBuilder) {
-    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+  public InteractomeData toInteractomeData(Interactome interactome) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new InteractomeData(
       interactome.getId(),
@@ -77,8 +86,8 @@ public class DefaultBioMapper implements BioMapper {
   }
 
   @Override
-  public InteractionData toInteractionData(InteractionGroup interactions, UriBuilder uriBuilder) {
-    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+  public InteractionData toInteractionData(InteractionGroup interactions) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     final Stream<Interactome> interactomes = interactions.getInteractomes();
     final Gene geneA = interactions.getGeneA();
@@ -95,8 +104,8 @@ public class DefaultBioMapper implements BioMapper {
   }
   
   @Override
-  public InteractionData toInteractionData(InteractionGroupResult interaction, UriBuilder uriBuilder) {
-    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+  public InteractionData toInteractionData(InteractionGroupResult interaction) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new InteractionData(
       new IdAndUri(interaction.getGeneAId(), pathBuilder.gene(interaction.getGeneAId()).build()),
@@ -109,8 +118,8 @@ public class DefaultBioMapper implements BioMapper {
   }
   
   @Override
-  public InteractionQueryResult toInteractionQueryResult(InteractionsResult result, UriBuilder uriBuilder) {
-    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
+  public InteractionQueryResult toInteractionQueryResult(InteractionsResult result) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new InteractionQueryResult(
       new IdAndUri(result.getId(), pathBuilder.interaction().result(result.getId()).build()),
@@ -120,7 +129,7 @@ public class DefaultBioMapper implements BioMapper {
         .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
       .toArray(IdAndUri[]::new),
       result.getInteractions()
-        .map(interaction -> this.toInteractionData(interaction, uriBuilder))
+        .map(interaction -> this.toInteractionData(interaction))
       .toArray(InteractionData[]::new),
       result.getStatus()
     );

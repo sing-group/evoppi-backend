@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.resource.bio;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -64,6 +65,11 @@ public class DefaultSpeciesResource implements SpeciesResource {
 
   @Context
   private UriInfo uriInfo;
+  
+  @PostConstruct
+  public void postConstruct() {
+    this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
+  }
 
   @GET
   @ApiOperation(
@@ -75,7 +81,7 @@ public class DefaultSpeciesResource implements SpeciesResource {
   @Override
   public Response listSpecies() {
     final SpeciesData[] speciesData = this.service.listSpecies()
-      .map(this::mapSpeciesToData)
+      .map(this.mapper::toSpeciesData)
     .toArray(SpeciesData[]::new);
     
     return Response.ok(speciesData).build();
@@ -96,12 +102,8 @@ public class DefaultSpeciesResource implements SpeciesResource {
     final Species species = this.service.getSpecies(id);
     
     return Response
-      .ok(mapSpeciesToData(species))
+      .ok(this.mapper.toSpeciesData(species))
     .build();
-  }
-
-  private SpeciesData mapSpeciesToData(final Species species) {
-    return this.mapper.toSpeciesData(species, this.uriInfo.getBaseUriBuilder());
   }
 
 }

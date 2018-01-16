@@ -39,13 +39,15 @@ import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
 
 public interface BioMapper {
-  public SpeciesData toSpeciesData(Species species, UriBuilder uriBuilder);
+  public void setUriBuilder(UriBuilder uriBuilder);
   
-  public InteractomeData toInteractomeData(Interactome interactome, UriBuilder uriBuilder);
+  public SpeciesData toSpeciesData(Species species);
   
-  public InteractionData toInteractionData(InteractionGroup interactions, UriBuilder uriBuilder);
+  public InteractomeData toInteractomeData(Interactome interactome);
   
-  public InteractionData toInteractionData(InteractionGroupResult interaction, UriBuilder uriBuilder);
+  public InteractionData toInteractionData(InteractionGroup interactions);
+  
+  public InteractionData toInteractionData(InteractionGroupResult interaction);
   
   public GeneData toGeneData(Gene gene);
   
@@ -53,5 +55,5 @@ public interface BioMapper {
   
   public GeneNameData toGeneNameData(GeneNames geneNames);
 
-  public InteractionQueryResult toInteractionQueryResult(InteractionsResult result, UriBuilder uriBuilder);
+  public InteractionQueryResult toInteractionQueryResult(InteractionsResult result);
 }

@@ -27,5 +27,7 @@ import org.sing_group.evoppi.domain.entities.execution.Work;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 
 public interface ExecutionMapper {
-  public WorkData toWorkData(Work work, UriBuilder uriBuilder);
+  public void setUriBuilder(UriBuilder uriBuilder);
+  
+  public WorkData toWorkData(Work work);
 }
