@@ -21,12 +21,16 @@
  */
 package org.sing_group.evoppi.service.spi.bio;
 
-import java.util.stream.Stream;
+import java.util.function.Function;
 
-import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.entities.execution.Work;
 
 public interface InteractionService {
 
-  public Stream<InteractionGroup> findInteractionsByGene(int geneId, int[] interactomes, int maxDegree);
+  public Work findInteractionsByGene(
+    int geneId, int[] interactomes, int maxDegree, Function<Integer, String> resultReferenceBuilder
+  );
   
+  public InteractionsResult getResult(int id);
 }

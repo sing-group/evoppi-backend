@@ -1,8 +1,8 @@
 /*-
  * #%L
- * REST
+ * Domain
  * %%
- * Copyright (C) 2017 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,12 +19,14 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.rest.resource.spi.bio;
+package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
-import javax.ws.rs.core.Response;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 
-public interface InteractionResource {
-  public Response getInteractions(int geneId, int[] interactomes, int degree);
+public interface InteractionsResultDAO {
 
-  public Response getInterationResult(int id);
+  public InteractionsResult get(int interactionResultId);
+
+  public InteractionsResult createNew(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds);
+
 }

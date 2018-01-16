@@ -5,13 +5,55 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-01-15T18:43:08.094+01:00",
+      "lastModified": "2018-01-16T12:06:52.266+01:00",
       "name": "EvoPPI"
+    },
+    {
+      "type": "Service",
+      "id": "d33bf036-b611-4c1b-a713-680dd3fe8adf",
+      "lastModified": "2018-01-16T12:06:44.016+01:00",
+      "name": "Execution",
+      "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/work/1"
+      },
+      "id": "db56d41c-16bb-484b-8e82-a085635050e2",
+      "lastModified": "2018-01-16T12:06:52.266+01:00",
+      "name": "Work",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "d33bf036-b611-4c1b-a713-680dd3fe8adf"
     },
     {
       "type": "Scenario",
       "id": "cea10757-0408-4553-8e04-cee8174a031d",
-      "lastModified": "2018-01-15T18:42:57.187+01:00",
+      "lastModified": "2018-01-16T12:06:52.284+01:00",
       "name": "Bio",
       "requestOrder": [
         "List species",
@@ -21,7 +63,8 @@
         "Get genes of interactome",
         "Interactions",
         "Interactions with Degree",
-        "Get gene"
+        "Get gene",
+        "Interaction Results"
       ],
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
     },
@@ -365,6 +408,41 @@
       "id": "eefc79aa-343a-42cd-b70e-bd50cb8e36b9",
       "lastModified": "2018-01-15T18:43:08.094+01:00",
       "name": "Get gene",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:8080",
+        "path": "/evoppi/rest/api/interaction/result/30"
+      },
+      "id": "d36381b0-d2b4-493b-8b5d-53358cea1d12",
+      "lastModified": "2018-01-16T12:06:19.841+01:00",
+      "name": "Interaction Results",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"

@@ -19,12 +19,25 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.rest.resource.spi.bio;
 
-import javax.ws.rs.core.Response;
 
-public interface InteractionResource {
-  public Response getInteractions(int geneId, int[] interactomes, int degree);
+package org.sing_group.evoppi.rest.entity;
 
-  public Response getInterationResult(int id);
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+public class LocalDateTimeToIsoStringAdapter extends XmlAdapter<String, LocalDateTime> {
+
+  @Override
+  public LocalDateTime unmarshal(String isoDateTime) throws Exception {
+    return LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME);
+  }
+
+  @Override
+  public String marshal(LocalDateTime date) throws Exception {
+    return date.format(DateTimeFormatter.ISO_DATE_TIME);
+  }
+
 }

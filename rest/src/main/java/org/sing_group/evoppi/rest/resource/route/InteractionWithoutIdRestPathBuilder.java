@@ -25,11 +25,15 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class InteractionRestPathBuilder implements RestPathBuilder {
+public class InteractionWithoutIdRestPathBuilder implements RestPathBuilder {
   protected UriBuilder builder;
 
-  public InteractionRestPathBuilder(UriBuilder builder) {
+  public InteractionWithoutIdRestPathBuilder(UriBuilder builder) {
     this.builder = builder.clone().path("interaction");
+  }
+  
+  public ResultRestPathBuilder result(int id) {
+    return new ResultRestPathBuilder(this.builder, id);
   }
 
   @Override

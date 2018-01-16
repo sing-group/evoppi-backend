@@ -19,12 +19,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.rest.resource.spi.bio;
+package org.sing_group.evoppi.rest.resource.route;
 
-import javax.ws.rs.core.Response;
+import java.net.URI;
 
-public interface InteractionResource {
-  public Response getInteractions(int geneId, int[] interactomes, int degree);
+import javax.ws.rs.core.UriBuilder;
 
-  public Response getInterationResult(int id);
+public class WorkRestPathBuilder implements RestPathBuilder {
+  private UriBuilder builder;
+  
+  public WorkRestPathBuilder(UriBuilder builder, int id) {
+    this.builder = builder.clone().path("work").path(Integer.toString(id));
+  }
+  
+  @Override
+  public URI build() {
+    return this.builder.clone().build();
+  }
 }

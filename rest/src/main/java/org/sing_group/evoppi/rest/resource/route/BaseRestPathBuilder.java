@@ -92,8 +92,12 @@ public final class BaseRestPathBuilder implements RestPathBuilder {
     return interactome(interactome.getId());
   }
   
-  public InteractionRestPathBuilder interaction() {
-    return new InteractionRestPathBuilder(this.builder);
+  public InteractionWithoutIdRestPathBuilder interaction() {
+    return new InteractionWithoutIdRestPathBuilder(this.builder);
+  }
+  
+  public InteractionWithIdRestPathBuilder interaction(int id) {
+    return new InteractionWithIdRestPathBuilder(this.builder, id);
   }
 
   public GeneRestPathBuilder gene(Gene gene) {
@@ -102,6 +106,10 @@ public final class BaseRestPathBuilder implements RestPathBuilder {
 
   public GeneRestPathBuilder gene(int id) {
     return new GeneRestPathBuilder(this.builder, id);
+  }
+  
+  public WorkRestPathBuilder work(int id) {
+    return new WorkRestPathBuilder(this.builder, id);
   }
   
   public URI build() {

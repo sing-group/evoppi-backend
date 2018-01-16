@@ -27,10 +27,13 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneNames;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionData;
+import org.sing_group.evoppi.rest.entity.bio.InteractionQueryResult;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
@@ -40,11 +43,15 @@ public interface BioMapper {
   
   public InteractomeData toInteractomeData(Interactome interactome, UriBuilder uriBuilder);
   
-  public InteractionData toInteractionsData(InteractionGroup interactions, UriBuilder uriBuilder);
+  public InteractionData toInteractionData(InteractionGroup interactions, UriBuilder uriBuilder);
+  
+  public InteractionData toInteractionData(InteractionGroupResult interaction, UriBuilder uriBuilder);
   
   public GeneData toGeneData(Gene gene);
   
   public GeneNamesData toGeneNamesData(Gene gene);
   
   public GeneNameData toGeneNameData(GeneNames geneNames);
+
+  public InteractionQueryResult toInteractionQueryResult(InteractionsResult result, UriBuilder uriBuilder);
 }

@@ -40,10 +40,6 @@ import io.swagger.annotations.ApiModel;
 public class InteractionData implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @XmlElementWrapper(name = "interactomes")
-  @XmlElement(name = "interactomes", required = true)
-  private IdAndUri[] interactomes;
-
   @XmlElement(name = "geneA", required = true)
   private IdAndUri geneA;
 
@@ -52,22 +48,18 @@ public class InteractionData implements Serializable {
   
   @XmlElement(name = "degree", required = true)
   private int degree;
+
+  @XmlElementWrapper(name = "interactomes")
+  @XmlElement(name = "interactomes", required = true)
+  private IdAndUri[] interactomes;
   
   InteractionData() {}
 
-  public InteractionData(IdAndUri geneA, IdAndUri geneB, IdAndUri[] interactome, int degree) {
+  public InteractionData(IdAndUri geneA, IdAndUri geneB, int degree, IdAndUri[] interactome) {
     this.geneA = geneA;
     this.geneB = geneB;
-    this.interactomes = interactome;
     this.degree = degree;
-  }
-
-  public IdAndUri[] getInteractomes() {
-    return interactomes;
-  }
-
-  public void setInteractome(IdAndUri[] interactomes) {
-    this.interactomes = interactomes;
+    this.interactomes = interactome;
   }
 
   public IdAndUri getGeneA() {
@@ -92,6 +84,14 @@ public class InteractionData implements Serializable {
   
   public void setDegree(int degree) {
     this.degree = degree;
+  }
+
+  public IdAndUri[] getInteractomes() {
+    return interactomes;
+  }
+
+  public void setInteractome(IdAndUri[] interactomes) {
+    this.interactomes = interactomes;
   }
 
   @Override

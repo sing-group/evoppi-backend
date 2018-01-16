@@ -36,6 +36,7 @@
       <url-pattern>/api/interactome/*</url-pattern>
       <url-pattern>/api/interaction/*</url-pattern>
       <url-pattern>/api/gene/*</url-pattern>
+      <url-pattern>/api/work/*</url-pattern>
       <http-method>*</http-method>
     </web-resource-collection>
   </security-constraint>

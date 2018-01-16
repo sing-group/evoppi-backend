@@ -1,8 +1,8 @@
 /*-
  * #%L
- * REST
+ * Domain
  * %%
- * Copyright (C) 2017 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,24 +19,23 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.domain.entities;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-package org.sing_group.evoppi.rest.entity;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-import java.util.Date;
-
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-public class DateToTimestampAdapter extends XmlAdapter<Long, Date> {
-
+@Converter(autoApply = true)
+public class LocalDateTimeAttributeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
   @Override
-  public Date unmarshal(Long timestamp) throws Exception {
-    return new Date(timestamp);
+  public Timestamp convertToDatabaseColumn(LocalDateTime localDate) {
+    return localDate == null ? null : Timestamp.valueOf(localDate);
   }
 
   @Override
-  public Long marshal(Date date) throws Exception {
-    return date.getTime();
+  public LocalDateTime convertToEntityAttribute(Timestamp date) {
+    return date == null ? null : date.toLocalDateTime();
   }
-
 }
