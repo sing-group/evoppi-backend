@@ -38,15 +38,15 @@ public class GeneData implements Serializable {
 
   private int id;
   
-  private String sequence;
-
   private GeneNameData[] names;
+  
+  private String[] sequences;
 
   GeneData() {}
   
-  public GeneData(int id, String sequence, GeneNameData[] names) {
+  public GeneData(int id, GeneNameData[] names, String[] sequences) {
     this.id = id;
-    this.sequence = sequence;
+    this.sequences = sequences;
     this.names = names;
   }
 
@@ -58,12 +58,12 @@ public class GeneData implements Serializable {
     this.id = id;
   }
 
-  public String getSequence() {
-    return sequence;
+  public String[] getSequences() {
+    return sequences;
   }
 
-  public void setSequence(String sequence) {
-    this.sequence = sequence;
+  public void setSequences(String[] sequences) {
+    this.sequences = sequences;
   }
 
   public GeneNameData[] getNames() {
@@ -80,7 +80,7 @@ public class GeneData implements Serializable {
     int result = 1;
     result = prime * result + id;
     result = prime * result + Arrays.hashCode(names);
-    result = prime * result + ((sequence == null) ? 0 : sequence.hashCode());
+    result = prime * result + Arrays.hashCode(sequences);
     return result;
   }
 
@@ -97,10 +97,7 @@ public class GeneData implements Serializable {
       return false;
     if (!Arrays.equals(names, other.names))
       return false;
-    if (sequence == null) {
-      if (other.sequence != null)
-        return false;
-    } else if (!sequence.equals(other.sequence))
+    if (!Arrays.equals(sequences, other.sequences))
       return false;
     return true;
   }

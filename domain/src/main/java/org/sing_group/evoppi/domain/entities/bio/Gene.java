@@ -26,12 +26,11 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -39,43 +38,55 @@ import javax.persistence.Table;
 @Table(name = "gene")
 public class Gene implements Serializable {
   private static final long serialVersionUID = 1L;
-  
+
   @Id
   private int id;
-  
-  @Lob
-  @Column(name = "sequence", nullable = false)
-  private String sequence;
-  
+
   @OneToMany(mappedBy = "geneA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactsA;
-  
+
   @OneToMany(mappedBy = "geneB", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactsB;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "geneId", referencedColumnName = "id")
   private Set<GeneNames> names;
-  
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(name = "speciesId", referencedColumnName = "id", nullable = false)
+  private Species species;
+
+  @OneToMany(mappedBy = "gene", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<GeneSequence> geneSequence;
+
   public int getId() {
     return id;
   }
-  
-  public String getSequence() {
-    return sequence;
-  }
-  
+
   public Stream<Interaction> getInteractions() {
     return Stream.concat(this.interactsA.stream(), this.interactsB.stream())
       .distinct();
   }
-  
+
   public boolean hasInteraction(Interaction interaction) {
     return this.interactsA.contains(interaction) || this.interactsB.contains(interaction);
+  }
+  
+  public Stream<GeneSequence> getGeneSequence() {
+    return geneSequence.stream();
+  }
+  
+  public Stream<String> getSequences() {
+    return this.getGeneSequence()
+      .map(GeneSequence::getSequence);
   }
 
   public Stream<GeneNames> getNames() {
     return this.names.stream();
+  }
+
+  public Species getSpecies() {
+    return species;
   }
 
   @Override
@@ -99,7 +110,7 @@ public class Gene implements Serializable {
       return false;
     return true;
   }
-  
+
   @Override
   public String toString() {
     return Integer.toString(this.id);

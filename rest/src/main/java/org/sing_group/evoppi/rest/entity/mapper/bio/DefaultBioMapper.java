@@ -137,9 +137,9 @@ public class DefaultBioMapper implements BioMapper {
   
   @Override
   public GeneData toGeneData(Gene gene) {
-    return new GeneData(gene.getId(), gene.getSequence(), gene.getNames()
+    return new GeneData(gene.getId(), gene.getNames()
       .map(this::toGeneNameData)
-    .toArray(GeneNameData[]::new));
+    .toArray(GeneNameData[]::new), gene.getSequences().toArray(String[]::new));
   }
 
   @Override

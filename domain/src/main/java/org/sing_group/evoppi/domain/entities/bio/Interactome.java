@@ -37,9 +37,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "interactome")
+@Table(
+  name = "interactome",
+  uniqueConstraints = @UniqueConstraint(columnNames = {"name", "speciesId"})
+)
 public class Interactome implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -47,7 +51,7 @@ public class Interactome implements Serializable {
   @GeneratedValue(strategy = IDENTITY)
   private Integer id;
 
-  @Column(name = "name", length = 100, nullable = false, unique = true)
+  @Column(name = "name", length = 100, nullable = false)
   private String name;
   
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)

@@ -51,6 +51,9 @@ public class Species implements Serializable {
   @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interactome> interactomes;
   
+  @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Gene> genes;
+  
   public Integer getId() {
     return id;
   }
@@ -65,6 +68,10 @@ public class Species implements Serializable {
   
   public boolean hasInteractome(Interactome interactome) {
     return this.interactomes.contains(interactome);
+  }
+  
+  public Set<Gene> getGenes() {
+    return genes;
   }
   
   @Override

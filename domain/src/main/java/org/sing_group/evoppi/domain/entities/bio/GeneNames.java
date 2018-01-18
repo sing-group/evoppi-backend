@@ -59,8 +59,8 @@ public class GeneNames implements Serializable {
   @CollectionTable(
     name = "gene_name_value",
     joinColumns = {
-      @JoinColumn(name = "gene_id", referencedColumnName = "geneId"),
-      @JoinColumn(name = "gene_source", referencedColumnName = "source"),
+      @JoinColumn(name = "geneId", referencedColumnName = "geneId"),
+      @JoinColumn(name = "geneSource", referencedColumnName = "source"),
     },
     foreignKey = @ForeignKey(name = "FK_gene_name_gene_name_values")
   )
