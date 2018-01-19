@@ -24,10 +24,15 @@ package org.sing_group.evoppi.domain.entities.execution;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.sing_group.evoppi.domain.entities.execution.WorkStep.WorkStepId;
@@ -40,8 +45,14 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @Column(name = "workId")
-  private int workId;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @JoinColumn(
+    name = "workId", referencedColumnName = "id",
+    insertable = false, updatable = false,
+    nullable = false,
+    foreignKey = @ForeignKey(name = "FK_work_work_step")
+  )
+  private Work work;
   
   @Id
   @Column(name = "stepOrder")
@@ -55,8 +66,8 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
 
   WorkStep() {}
 
-  public WorkStep(int workId, int order, String description, Double progress) {
-    this.workId = workId;
+  public WorkStep(Work work, int order, String description, Double progress) {
+    this.work = work;
     this.order = order;
     this.description = description;
     this.progress = progress;
@@ -84,23 +95,23 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
   public static class WorkStepId implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private int workId;
+    private int work;
     
     private int order;
     
     WorkStepId() {}
     
-    public WorkStepId(int workId, int order) {
-      this.workId = workId;
+    public WorkStepId(int work, int order) {
+      this.work = work;
       this.order = order;
     }
 
-    public int getWorkId() {
-      return workId;
+    public int getWork() {
+      return work;
     }
 
-    public void setWorkId(int workId) {
-      this.workId = workId;
+    public void setWork(int workId) {
+      this.work = workId;
     }
 
     public int getOrder() {
@@ -116,7 +127,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
       final int prime = 31;
       int result = 1;
       result = prime * result + order;
-      result = prime * result + workId;
+      result = prime * result + work;
       return result;
     }
 
@@ -131,7 +142,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
       WorkStepId other = (WorkStepId) obj;
       if (order != other.order)
         return false;
-      if (workId != other.workId)
+      if (work != other.work)
         return false;
       return true;
     }

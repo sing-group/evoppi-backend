@@ -35,10 +35,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -71,13 +69,7 @@ public class Work implements Serializable {
   @Column(name = "resultReference", length = 1023, nullable = true)
   private String resultReference;
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(
-    name = "workId", referencedColumnName = "id",
-    insertable = false, updatable = false,
-    nullable = false,
-    foreignKey = @ForeignKey(name = "FK_work_work_step")
-  )
+  @OneToMany(mappedBy = "work", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("order ASC")
   private SortedSet<WorkStep> steps;
   
@@ -161,7 +153,7 @@ public class Work implements Serializable {
     try {
       this.stepsLock.writeLock().lock();
       
-      final WorkStep step = new WorkStep(this.id, this.steps.size() + 1, description, progress);
+      final WorkStep step = new WorkStep(this, this.steps.size() + 1, description, progress);
       
       this.steps.add(step);
       
