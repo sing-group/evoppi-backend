@@ -21,13 +21,13 @@
  */
 package org.sing_group.evoppi.service.spi.bio;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.query.GeneQueryOptions;
 
 public interface GeneService {
   public Gene get(int id);
   
-  public Stream<Gene> findByIdPrefixAndInteractome(int idPrefix, Set<Integer> interactomeIds, int maxResults);
+  public Stream<Gene> find(GeneQueryOptions queryOptions) ;
 }

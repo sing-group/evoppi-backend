@@ -21,7 +21,6 @@
  */
 package org.sing_group.evoppi.service.bio;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
@@ -29,10 +28,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.query.GeneQueryOptions;
 import org.sing_group.evoppi.service.spi.bio.GeneService;
 
 @Stateless
@@ -41,36 +38,13 @@ public class DefaultGeneService implements GeneService {
   @Inject
   private GeneDAO dao;
   
-  @Inject
-  private InteractomeDAO interactomeDAO;
-  
   @Override
   public Gene get(int id) {
     return this.dao.getGene(id);
   }
   
   @Override
-  public Stream<Gene> findByIdPrefixAndInteractome(int idPrefix, Set<Integer> interactomeIds, int maxResults) {
-    if (interactomeIds.isEmpty()) {
-      return this.dao.findByIdPrefix(idPrefix, maxResults);
-    } else {
-      return interactomeIds.stream()
-        .map(interactomeId -> this.findByInteractome(idPrefix, interactomeId, maxResults))
-        .reduce(Stream.empty(), Stream::concat)
-        .distinct()
-        .sorted((g1, g2) -> Integer.compare(g1.getId(), g2.getId()))
-        .limit(maxResults);
-    }
-  }
-
-  private Stream<Gene> findByInteractome(int idPrefix, int interactomeId, int maxResults) {
-    final Interactome interactome = this.interactomeDAO.getInteractome(interactomeId);
-
-    return Stream.concat(
-      interactome.getInteractions().map(Interaction::getGeneA),
-      interactome.getInteractions().map(Interaction::getGeneB)
-    )
-      .distinct()
-    .filter(gene -> Integer.toString(gene.getId()).startsWith(Integer.toString(idPrefix)));
+  public Stream<Gene> find(GeneQueryOptions queryOptions) {
+    return this.dao.find(queryOptions);
   }
 }

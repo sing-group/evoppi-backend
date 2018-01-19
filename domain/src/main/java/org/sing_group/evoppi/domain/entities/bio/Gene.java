@@ -42,12 +42,6 @@ public class Gene implements Serializable {
   @Id
   private int id;
 
-  @OneToMany(mappedBy = "geneA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Interaction> interactsA;
-
-  @OneToMany(mappedBy = "geneB", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Interaction> interactsB;
-
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "geneId", referencedColumnName = "id")
   private Set<GeneNames> names;
@@ -58,6 +52,12 @@ public class Gene implements Serializable {
 
   @OneToMany(mappedBy = "gene", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<GeneSequence> geneSequence;
+
+  @OneToMany(mappedBy = "geneA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Interaction> interactsA;
+
+  @OneToMany(mappedBy = "geneB", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Interaction> interactsB;
 
   public int getId() {
     return id;

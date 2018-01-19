@@ -23,9 +23,12 @@ package org.sing_group.evoppi.service.spi.bio;
 
 import java.util.function.Function;
 
+import javax.ejb.Local;
+
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.Work;
 
+@Local
 public interface InteractionService {
 
   public Work findInteractionsByGene(

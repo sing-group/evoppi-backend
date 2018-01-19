@@ -21,14 +21,12 @@
  */
 package org.sing_group.evoppi.rest.resource.bio;
 
-import static java.util.stream.Collectors.toSet;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
-import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -39,9 +37,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.query.GeneQueryOptions;
+import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -65,42 +68,22 @@ public class DefaultGeneResource implements GeneResource {
   private GeneService service;
   
   @Inject
-  private BioMapper mapper;
+  private BioMapper bioMapper;
 
-  @Path("name")
-  @GET
-  @ApiOperation(
-    value = "Returns a list of genes. This list can be filtered with a prefix and, optionally a list of interactomes to"
-      + " which the gene belongs. The maximum number of returned genes can also be set.",
-    response = GeneNamesData.class,
-    responseContainer = "List",
-    code = 200
-  )
-  @Override
-  public Response listGenes(
-    @QueryParam("prefix") int idPrefix,
-    @QueryParam("interactome") int[] interactomes,
-    @QueryParam("maxResults") @DefaultValue("10") int maxResults
-  ) {
-    final Set<Integer> interactomeIds = IntStream.of(interactomes)
-      .distinct()
-      .boxed()
-    .collect(toSet());
-    
-    final Stream<Gene> genes = this.service.findByIdPrefixAndInteractome(idPrefix, interactomeIds, maxResults);
-    
-    final GeneNamesData[] geneNames = genes
-      .map(this.mapper::toGeneNamesData)
-    .toArray(GeneNamesData[]::new);
-    
-    return Response.ok(geneNames).build();
+  @Context
+  private UriInfo uriInfo;
+  
+  @PostConstruct
+  public void postConstruct() {
+    final UriBuilder uriBuilder = this.uriInfo.getBaseUriBuilder();
+    this.bioMapper.setUriBuilder(uriBuilder);
   }
-
+  
   @Path("{id: \\d+}")
   @GET
   @ApiOperation(
     value = "Return the data of a gene.",
-    response = GeneNamesData.class,
+    response = GeneData.class,
     code = 200
   )
   @ApiResponses(
@@ -111,7 +94,7 @@ public class DefaultGeneResource implements GeneResource {
     @PathParam("id") int id
   ) {
     return Response
-      .ok(this.mapper.toGeneData(this.service.get(id)))
+      .ok(this.bioMapper.toGeneData(this.service.get(id)))
     .build();
   }
 
@@ -130,8 +113,57 @@ public class DefaultGeneResource implements GeneResource {
     @PathParam("id") int id
   ) {
     return Response
-      .ok(this.mapper.toGeneNamesData(this.service.get(id)))
+      .ok(this.bioMapper.toGeneNamesData(this.service.get(id)))
     .build();
+  }
+
+  @GET
+  @ApiOperation(
+    value = "Returns a list of genes. This list can be filtered with a prefix and, optionally a list of interactomes to"
+      + " which the gene belongs. The maximum number of returned genes can also be set.",
+    response = GeneData.class,
+    responseContainer = "List",
+    code = 200
+  )
+  @Override
+  public Response listGenes(
+    @QueryParam("prefix") String prefix,
+    @QueryParam("interactome") int[] interactomes,
+    @QueryParam("maxResults") @DefaultValue("10") int maxResults
+  ) {
+    final GeneQueryOptions queryOptions = new GeneQueryOptions(prefix, interactomes, maxResults);
+    final Stream<Gene> genes = this.service.find(queryOptions);
+    
+    final GeneData[] genesData = genes
+      .map(this.bioMapper::toGeneData)
+    .toArray(GeneData[]::new);
+    
+    return Response.ok(genesData).build();
+  }
+
+  @Path("name")
+  @GET
+  @ApiOperation(
+    value = "Returns a list of genes names. This list can be filtered with a prefix and, optionally a list of "
+      + "interactomes to which the gene belongs. The maximum number of returned genes can also be set.",
+    response = GeneNamesData.class,
+    responseContainer = "List",
+    code = 200
+  )
+  @Override
+  public Response listGeneNames(
+    @QueryParam("prefix") String prefix,
+    @QueryParam("interactome") int[] interactomes,
+    @QueryParam("maxResults") @DefaultValue("10") int maxResults
+  ) {
+    final GeneQueryOptions queryOptions = new GeneQueryOptions(prefix, interactomes, maxResults);
+    final Stream<Gene> genes = this.service.find(queryOptions);
+    
+    final GeneNamesData[] geneNames = genes
+      .map(this.bioMapper::toGeneNamesData)
+    .toArray(GeneNamesData[]::new);
+    
+    return Response.ok(geneNames).build();
   }
 
 }

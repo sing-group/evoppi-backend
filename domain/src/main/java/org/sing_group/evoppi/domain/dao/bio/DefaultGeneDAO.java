@@ -32,6 +32,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -40,6 +42,8 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.query.GeneQueryOptions;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -75,12 +79,52 @@ public class DefaultGeneDAO implements GeneDAO {
     
     final Predicate predicate = cb.like(fieldId, idPrefix + "%");
     
+    
     return em.createQuery(
       query.select(root)
         .where(predicate)
         .orderBy(cb.asc(fieldId))
     )
       .setMaxResults(maxResults)
+      .getResultList()
+    .stream();
+  }
+
+  @Override
+  public Stream<Gene> find(GeneQueryOptions queryOptions) {
+    final CriteriaBuilder cb = this.dh.cb();
+    
+    final CriteriaQuery<Gene> query = this.dh.createCBQuery();
+    final Root<Gene> root = query.from(Gene.class);
+    final Path<Object> fieldId = root.get("id");
+    final Expression<String> fieldIdString = fieldId.as(String.class);
+    
+    final Join<Gene, String> joinNames = root.join("names").join("names");
+    
+    Predicate predicate = cb.or(
+      cb.like(fieldIdString, queryOptions.getPrefix() + "%"),
+      cb.like(joinNames, queryOptions.getPrefix() + "%")
+    );
+    
+    if (queryOptions.hasInteractomeIds()) {
+      final Join<Gene, Interactome> joinInteractsA = root.join("interactsA").join("interactome");
+      final Join<Gene, Interactome> joinInteractsB = root.join("interactsB").join("interactome");
+      
+      predicate = cb.and(
+        predicate,
+        cb.or(
+          joinInteractsA.get("id").in(queryOptions.getInteractomeIds()),
+          joinInteractsB.get("id").in(queryOptions.getInteractomeIds())
+        )
+      );
+    }
+    
+    return em.createQuery(
+      query.select(root)
+        .where(predicate)
+        .orderBy(cb.asc(fieldId))
+    )
+      .setMaxResults(queryOptions.getMaxResults())
       .getResultList()
     .stream();
   }

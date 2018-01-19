@@ -24,9 +24,12 @@ package org.sing_group.evoppi.domain.dao.spi.bio;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.query.GeneQueryOptions;
 
 public interface GeneDAO {
   public Stream<Gene> findByIdPrefix(int idPrefix, int maxResults);
 
   public Gene getGene(int geneId);
+
+  public Stream<Gene> find(GeneQueryOptions queryOptions);
 }

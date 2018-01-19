@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-01-16T12:06:52.266+01:00",
+      "lastModified": "2018-01-19T11:33:06.188+01:00",
       "name": "EvoPPI"
     },
     {
@@ -53,18 +53,21 @@
     {
       "type": "Scenario",
       "id": "cea10757-0408-4553-8e04-cee8174a031d",
-      "lastModified": "2018-01-16T12:06:52.284+01:00",
+      "lastModified": "2018-01-19T11:16:49.493+01:00",
       "name": "Bio",
       "requestOrder": [
         "List species",
         "Get species",
         "Get interactome",
-        "Get genes",
-        "Get genes of interactome",
+        "Find genes",
+        "Find genes of interactome",
         "Interactions",
         "Interactions with Degree",
-        "Get gene",
-        "Interaction Results"
+        "Find genes names",
+        "Interaction Results",
+        "Get genes names",
+        "Get gene name",
+        "Find genes names of interactome"
       ],
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
     },
@@ -196,7 +199,7 @@
             {
               "enabled": true,
               "name": "prefix",
-              "value": "5"
+              "value": "55"
             }
           ]
         },
@@ -205,11 +208,11 @@
           "version": "V11"
         },
         "host": "${restUrl}",
-        "path": "/gene/name"
+        "path": "/gene"
       },
       "id": "3cdf6b52-1ba0-49ed-ba68-ef925fa351c9",
-      "lastModified": "2018-01-15T18:42:48.567+01:00",
-      "name": "Get genes",
+      "lastModified": "2018-01-19T11:14:42.087+01:00",
+      "name": "Find genes",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
@@ -237,7 +240,7 @@
             {
               "enabled": true,
               "name": "prefix",
-              "value": "6"
+              "value": "55"
             },
             {
               "enabled": true,
@@ -252,7 +255,7 @@
             {
               "enabled": true,
               "name": "maxResults",
-              "value": "10"
+              "value": "5"
             }
           ]
         },
@@ -264,8 +267,8 @@
         "path": "/gene"
       },
       "id": "129b2709-f109-4b98-8e6e-32fddc09f96d",
-      "lastModified": "2017-12-09T23:29:17.879+01:00",
-      "name": "Get genes of interactome",
+      "lastModified": "2018-01-19T11:15:32.631+01:00",
+      "name": "Find genes of interactome",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
@@ -293,17 +296,17 @@
             {
               "enabled": true,
               "name": "gene",
-              "value": "60"
-            },
-            {
-              "enabled": true,
-              "name": "interactome",
-              "value": "1"
+              "value": "10002"
             },
             {
               "enabled": true,
               "name": "interactome",
               "value": "2"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "3"
             }
           ]
         },
@@ -315,7 +318,7 @@
         "path": "/interaction"
       },
       "id": "b4f2c2a6-9eba-46ca-a990-aa7e5204bbec",
-      "lastModified": "2017-12-26T13:34:00.471+01:00",
+      "lastModified": "2018-01-19T11:33:06.188+01:00",
       "name": "Interactions",
       "headers": [],
       "metaInfo": {},
@@ -349,12 +352,12 @@
             {
               "enabled": true,
               "name": "interactome",
-              "value": "1"
+              "value": "2"
             },
             {
               "enabled": true,
               "name": "interactome",
-              "value": "2"
+              "value": "3"
             },
             {
               "enabled": true,
@@ -371,7 +374,7 @@
         "path": "/interaction"
       },
       "id": "5ec87a73-1779-46e4-aa1b-ba06615bdd82",
-      "lastModified": "2018-01-10T19:45:16.028+01:00",
+      "lastModified": "2018-01-19T11:19:07.455+01:00",
       "name": "Interactions with Degree",
       "headers": [],
       "metaInfo": {},
@@ -396,18 +399,24 @@
       "uri": {
         "query": {
           "delimiter": "&",
-          "items": []
+          "items": [
+            {
+              "enabled": true,
+              "name": "prefix",
+              "value": "55"
+            }
+          ]
         },
         "scheme": {
           "name": "http",
           "version": "V11"
         },
         "host": "${restUrl}",
-        "path": "/gene/59"
+        "path": "/gene/name"
       },
       "id": "eefc79aa-343a-42cd-b70e-bd50cb8e36b9",
-      "lastModified": "2018-01-15T18:43:08.094+01:00",
-      "name": "Get gene",
+      "lastModified": "2018-01-19T11:15:59.692+01:00",
+      "name": "Find genes names",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
@@ -443,6 +452,138 @@
       "id": "d36381b0-d2b4-493b-8b5d-53358cea1d12",
       "lastModified": "2018-01-16T12:06:19.841+01:00",
       "name": "Interaction Results",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "prefix",
+              "value": "5"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/gene/name"
+      },
+      "id": "53a2791c-f6af-4f81-8a7a-d0485f924398",
+      "lastModified": "2018-01-19T11:11:51.014+01:00",
+      "name": "Get genes names",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/gene/59/name"
+      },
+      "id": "05de24b2-3043-4430-9cdf-b00fd5f16869",
+      "lastModified": "2018-01-19T11:13:32.303+01:00",
+      "name": "Get gene name",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "prefix",
+              "value": "55"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "1"
+            },
+            {
+              "enabled": true,
+              "name": "interactome",
+              "value": "2"
+            },
+            {
+              "enabled": true,
+              "name": "maxResults",
+              "value": "5"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/gene/name"
+      },
+      "id": "276fce03-b2a2-45bb-ae34-dbda75f46f09",
+      "lastModified": "2018-01-19T11:17:00.910+01:00",
+      "name": "Find genes names of interactome",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"

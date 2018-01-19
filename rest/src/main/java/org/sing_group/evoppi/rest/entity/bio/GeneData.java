@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.sing_group.evoppi.rest.entity.user.IdAndUri;
+
 import io.swagger.annotations.ApiModel;
 
 @XmlRootElement(name = "gene-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
@@ -38,13 +40,16 @@ public class GeneData implements Serializable {
 
   private int id;
   
+  private IdAndUri speciesId;
+  
   private GeneNameData[] names;
   
   private String[] sequences;
 
   GeneData() {}
   
-  public GeneData(int id, GeneNameData[] names, String[] sequences) {
+  public GeneData(int id, IdAndUri speciesId, GeneNameData[] names, String[] sequences) {
+    this.speciesId = speciesId;
     this.id = id;
     this.sequences = sequences;
     this.names = names;
@@ -56,6 +61,14 @@ public class GeneData implements Serializable {
 
   public void setId(int id) {
     this.id = id;
+  }
+  
+  public IdAndUri getSpeciesId() {
+    return speciesId;
+  }
+
+  public void setSpeciesId(IdAndUri speciesId) {
+    this.speciesId = speciesId;
   }
 
   public String[] getSequences() {
@@ -81,6 +94,7 @@ public class GeneData implements Serializable {
     result = prime * result + id;
     result = prime * result + Arrays.hashCode(names);
     result = prime * result + Arrays.hashCode(sequences);
+    result = prime * result + ((speciesId == null) ? 0 : speciesId.hashCode());
     return result;
   }
 
@@ -98,6 +112,11 @@ public class GeneData implements Serializable {
     if (!Arrays.equals(names, other.names))
       return false;
     if (!Arrays.equals(sequences, other.sequences))
+      return false;
+    if (speciesId == null) {
+      if (other.speciesId != null)
+        return false;
+    } else if (!speciesId.equals(other.speciesId))
       return false;
     return true;
   }
