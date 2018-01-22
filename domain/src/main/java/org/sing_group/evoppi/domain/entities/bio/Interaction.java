@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.domain.entities.bio;
 
 import java.io.Serializable;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -65,6 +66,10 @@ public class Interaction implements Serializable {
 
   public Gene getGeneB() {
     return geneB;
+  }
+  
+  public Stream<Gene> getGenes() {
+    return Stream.of(this.geneA, this.geneB);
   }
 
   @Override

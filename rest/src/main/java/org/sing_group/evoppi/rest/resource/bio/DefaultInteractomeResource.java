@@ -29,16 +29,18 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
+import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.InteractomeResource;
@@ -74,19 +76,30 @@ public class DefaultInteractomeResource implements InteractomeResource {
   @GET
   @Path("{id}")
   @ApiOperation(
-    value = "Finds an interactome by identifier.",
-    response = SpeciesData.class,
+    value = "Finds an interactome by identifier. If the query parameter 'includeInteractions' is set to true, the"
+      + " 'genes' and 'interactions' fields are returned as part of the result. Otherwise, these fields are not "
+      + "returned.",
+    response = InteractomeWithInteractionsData.class,
     code = 200
   )
   @ApiResponses(
     @ApiResponse(code = 400, message = "Unknown interactome: {id}")
   )
   @Override
-  public Response getInteractome(@PathParam("id") int id) {
+  public Response getInteractome(
+    @PathParam("id") int id,
+    @DefaultValue("false") @QueryParam("includeInteractions") boolean includeInteractions
+  ) {
     final Interactome interactome = this.service.getInteractome(id);
     
-    return Response
-      .ok(this.mapper.toInteractomeData(interactome))
-    .build();
+    if (includeInteractions) {
+      return Response
+        .ok(this.mapper.toInteractomeWithInteractionsData(interactome))
+      .build();
+    } else {
+      return Response
+        .ok(this.mapper.toInteractomeData(interactome))
+      .build();
+    }
   }
 }

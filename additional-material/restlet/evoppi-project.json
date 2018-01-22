@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-01-19T11:33:06.188+01:00",
+      "lastModified": "2018-01-22T14:16:01.922+01:00",
       "name": "EvoPPI"
     },
     {
@@ -53,7 +53,7 @@
     {
       "type": "Scenario",
       "id": "cea10757-0408-4553-8e04-cee8174a031d",
-      "lastModified": "2018-01-19T11:16:49.493+01:00",
+      "lastModified": "2018-01-22T14:15:09.289+01:00",
       "name": "Bio",
       "requestOrder": [
         "List species",
@@ -67,7 +67,8 @@
         "Interaction Results",
         "Get genes names",
         "Get gene name",
-        "Find genes names of interactome"
+        "Find genes names of interactome",
+        "Get interactome With Interactions"
       ],
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
     },
@@ -170,7 +171,7 @@
         "path": "/interactome/2"
       },
       "id": "bcc140d3-e6b5-4a8b-9f51-a91fad8d3a0f",
-      "lastModified": "2017-12-08T21:05:46.250+01:00",
+      "lastModified": "2018-01-22T14:16:01.923+01:00",
       "name": "Get interactome",
       "headers": [],
       "metaInfo": {},
@@ -584,6 +585,47 @@
       "id": "276fce03-b2a2-45bb-ae34-dbda75f46f09",
       "lastModified": "2018-01-19T11:17:00.910+01:00",
       "name": "Find genes names of interactome",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "includeInteractions",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interactome/2"
+      },
+      "id": "b019c5da-d084-41b9-b40d-2ed294608b05",
+      "lastModified": "2018-01-22T14:15:09.290+01:00",
+      "name": "Get interactome With Interactions",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"

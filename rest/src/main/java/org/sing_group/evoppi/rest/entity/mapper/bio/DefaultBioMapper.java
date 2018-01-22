@@ -36,10 +36,11 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
-import org.sing_group.evoppi.rest.entity.bio.InteractionData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionQueryResult;
 import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
+import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
+import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData.InteractingGenes;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.user.IdAndUri;
@@ -70,12 +71,14 @@ public class DefaultBioMapper implements BioMapper {
     );
   }
 
-  @Override
   public InteractomeData toInteractomeData(Interactome interactome) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new InteractomeData(
-      interactome.getId(),
+      new IdAndUri(
+        interactome.getId(),
+        pathBuilder.interactome(interactome.getId()).build()
+      ),
       interactome.getName(),
       new IdAndUri(
         interactome.getSpecies().getId(),
@@ -83,19 +86,40 @@ public class DefaultBioMapper implements BioMapper {
       )
     );
   }
-
+  
   @Override
-  public InteractionData toInteractionData(Interaction interaction) {
+  public InteractomeWithInteractionsData toInteractomeWithInteractionsData(Interactome interactome) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
-    final Interactome interactome = interaction.getInteractome();
-    final Gene geneA = interaction.getGeneA();
-    final Gene geneB = interaction.getGeneB();
+    final IdAndUri[] genes = interactome.getInteractions()
+      .flatMap(Interaction::getGenes)
+      .distinct()
+      .map(gene -> new IdAndUri(gene.getId(), pathBuilder.gene(gene).build()))
+    .toArray(IdAndUri[]::new);
     
-    return new InteractionData(
-      new IdAndUri(geneA.getId(), pathBuilder.gene(geneA).build()),
-      new IdAndUri(geneB.getId(), pathBuilder.gene(geneB).build()),
-      new IdAndUri(interactome.getId(), pathBuilder.interactome(interactome.getId()).build())
+    final InteractingGenes[] interactions = interactome.getInteractions()
+      .map(interaction -> new InteractingGenes(interaction.getGeneA().getId(), interaction.getGeneB().getId()))
+    .toArray(InteractingGenes[]::new);
+    
+    return new InteractomeWithInteractionsData(
+      new IdAndUri(
+        interactome.getId(),
+        pathBuilder.interactome(interactome.getId()).build()
+      ),
+      interactome.getName(),
+      new IdAndUri(
+        interactome.getSpecies().getId(),
+        pathBuilder.species(interactome.getSpecies()).build()
+      ),
+      genes,
+      interactions
+    );
+  }
+
+  public InteractingGenes toInteractingGenes(Interaction interaction) {
+    return new InteractingGenes(
+      interaction.getGeneA().getId(),
+      interaction.getGeneB().getId()
     );
   }
   
