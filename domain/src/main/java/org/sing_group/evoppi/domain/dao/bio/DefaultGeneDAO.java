@@ -93,7 +93,7 @@ public class DefaultGeneDAO implements GeneDAO {
   @Override
   public Stream<Gene> find(GeneQueryOptions queryOptions) {
     final CriteriaBuilder cb = this.dh.cb();
-    
+
     final CriteriaQuery<Gene> query = this.dh.createCBQuery();
     final Root<Gene> root = query.from(Gene.class);
     final Path<Object> fieldId = root.get("id");
@@ -121,6 +121,7 @@ public class DefaultGeneDAO implements GeneDAO {
     
     return em.createQuery(
       query.select(root)
+        .distinct(true)
         .where(predicate)
         .orderBy(cb.asc(fieldId))
     )
