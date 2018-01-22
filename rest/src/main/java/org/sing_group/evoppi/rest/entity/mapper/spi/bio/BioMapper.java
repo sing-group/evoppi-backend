@@ -25,6 +25,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneNames;
+import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
@@ -34,9 +35,9 @@ import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionQueryResult;
+import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
-import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
 
 public interface BioMapper {
   public void setUriBuilder(UriBuilder uriBuilder);
@@ -45,9 +46,7 @@ public interface BioMapper {
   
   public InteractomeData toInteractomeData(Interactome interactome);
   
-  public InteractionData toInteractionData(InteractionGroup interactions);
-  
-  public InteractionData toInteractionData(InteractionGroupResult interaction);
+  public InteractionData toInteractionData(Interaction interaction);
   
   public GeneData toGeneData(Gene gene);
   
@@ -56,4 +55,7 @@ public interface BioMapper {
   public GeneNameData toGeneNameData(GeneNames geneNames);
 
   public InteractionQueryResult toInteractionQueryResult(InteractionsResult result);
+  
+  public InteractionResultData toInteractionResultData(InteractionGroupResult interaction);
+
 }

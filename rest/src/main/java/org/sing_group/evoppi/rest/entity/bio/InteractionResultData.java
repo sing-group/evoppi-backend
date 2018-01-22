@@ -22,70 +22,84 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "interaction-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
+@XmlRootElement(name = "interaction-result-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "interaction-data", description = "Information of an interaction between two genes.")
-public class InteractionData implements Serializable {
+@ApiModel(value = "interaction-result-data", description = "Information of an interaction between two genes.")
+public class InteractionResultData implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @XmlElement(name = "geneA", required = true)
-  private IdAndUri geneA;
+  private long geneA;
 
   @XmlElement(name = "geneB", required = true)
-  private IdAndUri geneB;
+  private long geneB;
   
-  @XmlElement(name = "interactomes", required = true)
-  private IdAndUri interactome;
-  
-  InteractionData() {}
+  @XmlElement(name = "degree", required = true)
+  private int degree;
 
-  public InteractionData(IdAndUri geneA, IdAndUri geneB, IdAndUri interactome) {
+  @XmlElementWrapper(name = "interactomes")
+  @XmlElement(name = "interactomes", required = true)
+  private long[] interactomes;
+  
+  InteractionResultData() {}
+
+  public InteractionResultData(long geneA, long geneB, int degree, long[] interactome) {
     this.geneA = geneA;
     this.geneB = geneB;
-    this.interactome = interactome;
+    this.degree = degree;
+    this.interactomes = interactome;
   }
 
-  public IdAndUri getGeneA() {
+  public long getGeneA() {
     return geneA;
   }
 
-  public void setGeneA(IdAndUri geneA) {
+  public void setGeneA(long geneA) {
     this.geneA = geneA;
   }
 
-  public IdAndUri getGeneB() {
+  public long getGeneB() {
     return geneB;
   }
 
-  public void setGeneB(IdAndUri geneB) {
+  public void setGeneB(long geneB) {
     this.geneB = geneB;
   }
-
-  public IdAndUri getInteractome() {
-    return interactome;
+  
+  public int getDegree() {
+    return degree;
+  }
+  
+  public void setDegree(int degree) {
+    this.degree = degree;
   }
 
-  public void setInteractome(IdAndUri interactome) {
-    this.interactome = interactome;
+  public long[] getInteractomes() {
+    return interactomes;
+  }
+
+  public void setInteractome(long[] interactomes) {
+    this.interactomes = interactomes;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
-    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
-    result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
+    result = prime * result + degree;
+    result = prime * result + (int) (geneA ^ (geneA >>> 32));
+    result = prime * result + (int) (geneB ^ (geneB >>> 32));
+    result = prime * result + Arrays.hashCode(interactomes);
     return result;
   }
 
@@ -97,21 +111,14 @@ public class InteractionData implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractionData other = (InteractionData) obj;
-    if (geneA == null) {
-      if (other.geneA != null)
-        return false;
-    } else if (!geneA.equals(other.geneA))
+    InteractionResultData other = (InteractionResultData) obj;
+    if (degree != other.degree)
       return false;
-    if (geneB == null) {
-      if (other.geneB != null)
-        return false;
-    } else if (!geneB.equals(other.geneB))
+    if (geneA != other.geneA)
       return false;
-    if (interactome == null) {
-      if (other.interactome != null)
-        return false;
-    } else if (!interactome.equals(other.interactome))
+    if (geneB != other.geneB)
+      return false;
+    if (!Arrays.equals(interactomes, other.interactomes))
       return false;
     return true;
   }

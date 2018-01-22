@@ -41,24 +41,36 @@ public class InteractionQueryResult implements Serializable {
 
   private IdAndUri id;
 
-  private IdAndUri queryGene;
+  private long queryGene;
 
+  private long[] queryInteractomes;
+  
   private int queryMaxDegree;
 
-  private IdAndUri[] queryInteractomes;
+  private IdAndUri[] interactomes;
 
-  private InteractionData[] interactions;
+  private IdAndUri[] genes;
+
+  private InteractionResultData[] interactions;
 
   private ExecutionStatus status;
 
   public InteractionQueryResult(
-    IdAndUri id, IdAndUri queryGene, int queryMaxDegree, IdAndUri[] queryInteractomes, InteractionData[] interactions,
+    IdAndUri id,
+    long queryGene,
+    long[] queryInteractomes,
+    int queryMaxDegree,
+    IdAndUri[] interactomes,
+    IdAndUri[] genes,
+    InteractionResultData[] interactions,
     ExecutionStatus status
   ) {
     this.id = id;
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
     this.queryInteractomes = queryInteractomes;
+    this.interactomes = interactomes;
+    this.genes = genes;
     this.interactions = interactions;
     this.status = status;
   }
@@ -71,11 +83,11 @@ public class InteractionQueryResult implements Serializable {
     this.id = id;
   }
 
-  public IdAndUri getQueryGene() {
+  public long getQueryGene() {
     return queryGene;
   }
 
-  public void setQueryGene(IdAndUri queryGene) {
+  public void setQueryGene(long queryGene) {
     this.queryGene = queryGene;
   }
 
@@ -87,20 +99,36 @@ public class InteractionQueryResult implements Serializable {
     this.queryMaxDegree = queryMaxDegree;
   }
 
-  public IdAndUri[] getQueryInteractomes() {
+  public long[] getQueryInteractomes() {
     return queryInteractomes;
   }
 
-  public void setQueryInteractomes(IdAndUri[] queryInteractomes) {
+  public void setQueryInteractomes(long[] queryInteractomes) {
     this.queryInteractomes = queryInteractomes;
   }
 
-  public InteractionData[] getInteractions() {
+  public InteractionResultData[] getInteractions() {
     return interactions;
   }
 
-  public void setInteractions(InteractionData[] interactions) {
+  public void setInteractions(InteractionResultData[] interactions) {
     this.interactions = interactions;
+  }
+  
+  public IdAndUri[] getInteractomes() {
+    return interactomes;
+  }
+
+  public void setInteractomes(IdAndUri[] interactomes) {
+    this.interactomes = interactomes;
+  }
+
+  public IdAndUri[] getGenes() {
+    return genes;
+  }
+
+  public void setGenes(IdAndUri[] genes) {
+    this.genes = genes;
   }
 
   public ExecutionStatus getStatus() {
@@ -115,9 +143,11 @@ public class InteractionQueryResult implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + Arrays.hashCode(genes);
     result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + Arrays.hashCode(interactions);
-    result = prime * result + ((queryGene == null) ? 0 : queryGene.hashCode());
+    result = prime * result + Arrays.hashCode(interactomes);
+    result = prime * result + (int) (queryGene ^ (queryGene >>> 32));
     result = prime * result + Arrays.hashCode(queryInteractomes);
     result = prime * result + queryMaxDegree;
     result = prime * result + ((status == null) ? 0 : status.hashCode());
@@ -133,6 +163,8 @@ public class InteractionQueryResult implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     InteractionQueryResult other = (InteractionQueryResult) obj;
+    if (!Arrays.equals(genes, other.genes))
+      return false;
     if (id == null) {
       if (other.id != null)
         return false;
@@ -140,10 +172,9 @@ public class InteractionQueryResult implements Serializable {
       return false;
     if (!Arrays.equals(interactions, other.interactions))
       return false;
-    if (queryGene == null) {
-      if (other.queryGene != null)
-        return false;
-    } else if (!queryGene.equals(other.queryGene))
+    if (!Arrays.equals(interactomes, other.interactomes))
+      return false;
+    if (queryGene != other.queryGene)
       return false;
     if (!Arrays.equals(queryInteractomes, other.queryInteractomes))
       return false;

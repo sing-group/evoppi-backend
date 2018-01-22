@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -97,13 +97,17 @@ public class InteractionGroupResult implements Serializable {
   public int getGeneBId() {
     return geneBId;
   }
+  
+  public IntStream getGeneIds() {
+    return IntStream.of(this.getGeneAId(), this.getGeneBId());
+  }
 
   public int getDegree() {
     return degree;
   }
 
-  public Stream<Integer> getInteractomeIds() {
-    return interactomeIds.stream();
+  public IntStream getInteractomeIds() {
+    return interactomeIds.stream().mapToInt(Integer::intValue);
   }
 
   public static class InteractionGroupResultId implements Serializable {
