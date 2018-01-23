@@ -75,10 +75,7 @@ public class DefaultBioMapper implements BioMapper {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new InteractomeData(
-      new IdAndUri(
-        interactome.getId(),
-        pathBuilder.interactome(interactome.getId()).build()
-      ),
+      interactome.getId(),
       interactome.getName(),
       new IdAndUri(
         interactome.getSpecies().getId(),
@@ -102,10 +99,7 @@ public class DefaultBioMapper implements BioMapper {
     .toArray(InteractingGenes[]::new);
     
     return new InteractomeWithInteractionsData(
-      new IdAndUri(
-        interactome.getId(),
-        pathBuilder.interactome(interactome.getId()).build()
-      ),
+      interactome.getId(),
       interactome.getName(),
       new IdAndUri(
         interactome.getSpecies().getId(),
