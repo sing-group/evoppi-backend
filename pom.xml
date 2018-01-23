@@ -105,11 +105,12 @@
     <javaee.api.version>7.0</javaee.api.version>
 
     <!-- Dependencies versions -->
+    <docker-java.version>3.0.14</docker-java.version>
+    <fluent-commons.version>0.1.0-SNAPSHOT</fluent-commons.version>
+    <swagger.version>1.5.16</swagger.version>
     <wildfly.arquillian.container.version>2.1.0.Final</wildfly.arquillian.container.version>
     <wildfly.version>8.2.1.Final</wildfly.version>
     <wildfly10.version>10.1.0.Final</wildfly10.version>
-    <fluent-commons.version>0.1.0-SNAPSHOT</fluent-commons.version>
-    <swagger.version>1.5.16</swagger.version>
     
     <!-- Resteasy specific version required, as it fixes ResourceInfo injection bug -->
     <resteasy.version>3.0.24.Final</resteasy.version>
@@ -207,6 +208,17 @@
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-client</artifactId>
         <version>${resteasy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java</artifactId>
+        <version>${docker-java.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- Testing -->

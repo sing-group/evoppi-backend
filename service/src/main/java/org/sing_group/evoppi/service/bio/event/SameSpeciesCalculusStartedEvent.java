@@ -24,7 +24,6 @@ package org.sing_group.evoppi.service.bio.event;
 import static java.util.stream.Collectors.joining;
 
 import java.io.Serializable;
-import java.util.stream.IntStream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
@@ -46,7 +45,7 @@ implements Serializable, WorkStepEvent {
   public String getDescription() {
     return String.format("Calculating interactions for gene %d in interactomes: %s",
       this.getGeneId(),
-      IntStream.of(this.getInteractomes()).mapToObj(Integer::toString).collect(joining(", "))
+      this.getInteractomes().mapToObj(Integer::toString).collect(joining(", "))
     );
   }
 

@@ -70,8 +70,8 @@ public class Species implements Serializable {
     return this.interactomes.contains(interactome);
   }
   
-  public Set<Gene> getGenes() {
-    return genes;
+  public Stream<Gene> getGenes() {
+    return genes.stream();
   }
   
   @Override

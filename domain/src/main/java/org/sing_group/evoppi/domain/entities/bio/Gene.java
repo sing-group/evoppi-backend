@@ -72,6 +72,13 @@ public class Gene implements Serializable {
     return this.interactsA.contains(interaction) || this.interactsB.contains(interaction);
   }
   
+  public boolean belongsToInteractome(int interactomeId) {
+    return this.getInteractions()
+      .map(Interaction::getInteractome)
+      .mapToInt(Interactome::getId)
+    .anyMatch(id -> id == interactomeId);
+  }
+  
   public Stream<GeneSequence> getGeneSequence() {
     return geneSequence.stream();
   }

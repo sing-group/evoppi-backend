@@ -23,8 +23,8 @@ package org.sing_group.evoppi.service.spi.bio;
 
 import javax.ejb.Local;
 
-import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusDegreeFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusDegreeStartedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusStartedEvent;
 
@@ -33,9 +33,9 @@ public interface SameSpeciesInteractionEventManager {
 
   public void manageStart(SameSpeciesCalculusStartedEvent event);
 
-  public void manageDegreeCalculusStart(SameSpeciesCalculusDegreeStartedEvent event);
+  public void manageInteractionCalculusStart(SameSpeciesInteractionsCalculusStartedEvent event);
 
-  public void manageDegreeCalculusFinish(SameSpeciesCalculusDegreeFinishedEvent event);
+  public void manageInteractionCalculusFinish(SameSpeciesInteractionCalculusFinishedEvent event);
 
   public void manageFinish(SameSpeciesCalculusFinishedEvent event);
 

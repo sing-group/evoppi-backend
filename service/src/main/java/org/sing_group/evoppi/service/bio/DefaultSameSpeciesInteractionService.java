@@ -21,15 +21,9 @@
  */
 package org.sing_group.evoppi.service.bio;
 
-import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
@@ -41,17 +35,18 @@ import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusDegreeFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusDegreeFinishedEvent.GeneInteraction;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusDegreeStartedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusStartedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsRequestEvent;
-import org.sing_group.evoppi.service.entity.bio.InteractingGenes;
-import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
+import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
+import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
+import org.sing_group.evoppi.service.spi.bio.SameSpeciesInteractionService;
+import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 
 @Stateless
 @PermitAll
@@ -60,131 +55,63 @@ public class DefaultSameSpeciesInteractionService implements SameSpeciesInteract
   private GeneDAO geneDao;
   
   @Inject
+  private InteractomeDAO interactomeDao;
+  
+  @Inject
   private Event<SameSpeciesCalculusStartedEvent> startEvents;
   
   @Inject
-  private Event<SameSpeciesCalculusDegreeStartedEvent> startDegreeEvents;
+  private Event<SameSpeciesInteractionsCalculusStartedEvent> startDegreeEvents;
   
   @Inject
-  private Event<SameSpeciesCalculusDegreeFinishedEvent> finishDegreeEvents;
+  private Event<SameSpeciesInteractionCalculusFinishedEvent> finishDegreeEvents;
   
   @Inject
   private Event<SameSpeciesCalculusFinishedEvent> finishEvents;
+  
+  @Inject
+  private InteractionsCalculator interactionsCalculator;
   
   @Override
   @Asynchronous
   public void calculateSameSpeciesInteractions(
     @Observes(during = TransactionPhase.AFTER_SUCCESS) SameSpeciesInteractionsRequestEvent event
   ) {
-    notifyCalculusStarted(event);
+    final InteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(event);
     
     final Gene gene = this.geneDao.getGene(event.getGeneId());
-    final Set<Integer> interactomesIds = IntStream.of(event.getInteractomes())
-      .boxed()
+    final Collection<Interactome> interactomes = event.getInteractomes()
+      .mapToObj(this.interactomeDao::getInteractome)
     .collect(toSet());
     
-    final InteractionGroupsAccumulator accumulator = new InteractionGroupsAccumulator();
-
-    Set<Gene> genes = singleton(gene);
-    Set<Interaction> interactions = new HashSet<>();
-    for (int degree = 1; degree <= event.getMaxDegree(); degree++) {
-      final int currentDegree = degree;
-      notifyDegreeCalculusStarted(event, currentDegree);
-      
-      accumulator.addGroups(calculateInteractions(
-        degree,
-        genes,
-        interaction ->
-          !interactions.contains(interaction) &&
-          interactomesIds.contains(interaction.getInteractome().getId())
-      ));
- 
-      genes = accumulator.getGenes().collect(toSet());
-      accumulator.getInteractions().forEach(interactions::add);
-      
-      notifyDegreeCalculusFinished(event, accumulator, degree);
-    }
-
-    notifyCalculusFinished(event);
+    this.interactionsCalculator.calculateInteractions(gene, interactomes, event.getMaxDegree(), callback);
   }
   
-  private void notifyCalculusStarted(SameSpeciesInteractionsRequestEvent requestEvent) {
-    this.startEvents.fire(new SameSpeciesCalculusStartedEvent(requestEvent));
-  }
-  
-  private void notifyDegreeCalculusStarted(SameSpeciesInteractionsRequestEvent requestEvent, final int currentDegree) {
-    this.startDegreeEvents.fire(new SameSpeciesCalculusDegreeStartedEvent(requestEvent, currentDegree));
-  }
+  private class BridgeInteractionsCalculusCallback implements InteractionsCalculusCallback {
+    private final SameSpeciesInteractionsRequestEvent baseEvent;
+    
+    private BridgeInteractionsCalculusCallback(SameSpeciesInteractionsRequestEvent baseEvent) {
+      this.baseEvent = baseEvent;
+    }
+    
+    @Override
+    public void calculusStarted() {
+      startEvents.fire(new SameSpeciesCalculusStartedEvent(this.baseEvent));
+    }
 
-  private void notifyDegreeCalculusFinished(
-    SameSpeciesInteractionsRequestEvent requestEvent,
-    InteractionGroupsAccumulator accumulator, int currentDegree
-  ) {
-    final Set<GeneInteraction> interactions = accumulator.getGroupsByDegree(currentDegree)
-      .map(group -> new GeneInteraction(
-        group.getGeneA().getId(),
-        group.getGeneB().getId(),
-        group.getInteractomes()
-          .mapToInt(Interactome::getId)
-        .toArray()
-      ))
-    .collect(toSet());
-    
-    this.finishDegreeEvents.fire(new SameSpeciesCalculusDegreeFinishedEvent(requestEvent, currentDegree, interactions));
-  }
-
-  private void notifyCalculusFinished(SameSpeciesInteractionsRequestEvent requestEvent) {
-    this.finishEvents.fire(new SameSpeciesCalculusFinishedEvent(requestEvent));
-  }
-  
-  private static class InteractionGroupsAccumulator {
-    private final Set<InteractionGroup> groups;
-    
-    public InteractionGroupsAccumulator() {
-      this.groups = new HashSet<>();
+    @Override
+    public void degreeCalculusStarted(int degree) {
+      startDegreeEvents.fire(new SameSpeciesInteractionsCalculusStartedEvent(this.baseEvent, degree));
     }
     
-    public void addGroups(Collection<InteractionGroup> groups) {
-      groups.stream()
-        .filter(group -> !this.hasGroup(group))
-        .forEach(this.groups::add);
+    @Override
+    public void degreeCalculusFinished(int degree, Stream<GeneInteraction> interactions) {
+      finishDegreeEvents.fire(new SameSpeciesInteractionCalculusFinishedEvent(this.baseEvent, degree, interactions.collect(toSet())));
     }
     
-    public Stream<InteractionGroup> getGroupsByDegree(int degree) {
-      return groups.stream()
-        .filter(group -> group.getDegree() == degree);
-    }
-    
-    public Stream<Gene> getGenes() {
-      return this.groups.stream()
-        .map(InteractionGroup::getInteractingGenes)
-        .flatMap(InteractingGenes::getGenes)
-        .distinct();
-    }
-    
-    public Stream<Interaction> getInteractions() {
-      return this.groups.stream()
-        .flatMap(InteractionGroup::getInteractions)
-        .distinct();
-    }
-    
-    private boolean hasGroup(InteractionGroup group) {
-      return this.groups.stream()
-        .anyMatch(storedGroup -> storedGroup.getInteractingGenes().equals(group.getInteractingGenes()));
+    @Override
+    public void calculusFinished() {
+      finishEvents.fire(new SameSpeciesCalculusFinishedEvent(this.baseEvent));
     }
   }
-  
-  private Set<InteractionGroup> calculateInteractions(
-    int degree, Collection<Gene> genes, Predicate<Interaction> interactionFilter
-  ) {
-    return genes.stream()
-      .flatMap(Gene::getInteractions)
-      .filter(interactionFilter)
-      .distinct()
-      .collect(groupingBy(InteractingGenes::new, toSet()))
-      .values().stream()
-      .map(interactions -> new InteractionGroup(interactions, degree))
-    .collect(toSet());
-  }
-
 }

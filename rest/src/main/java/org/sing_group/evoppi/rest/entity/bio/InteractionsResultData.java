@@ -21,73 +21,44 @@
  */
 package org.sing_group.evoppi.rest.entity.bio;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
-import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 
-import io.swagger.annotations.ApiModel;
-
-@XmlRootElement(name = "interaction-query-result", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
-@XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "interaction-query-result", description = "Result of an interaction query.")
-public class InteractionQueryResult implements Serializable {
-  private static final long serialVersionUID = 1L;
-
-  private IdAndUri id;
-
-  private long queryGene;
-
-  private long[] queryInteractomes;
-  
+public abstract class InteractionsResultData {
+  private int id;
+  private int queryGene;
   private int queryMaxDegree;
-
-  private IdAndUri[] interactomes;
-
-  private IdAndUri[] genes;
-
   private InteractionResultData[] interactions;
-
   private ExecutionStatus status;
 
-  public InteractionQueryResult(
-    IdAndUri id,
-    long queryGene,
-    long[] queryInteractomes,
-    int queryMaxDegree,
-    IdAndUri[] interactomes,
-    IdAndUri[] genes,
-    InteractionResultData[] interactions,
-    ExecutionStatus status
+  public InteractionsResultData() {
+    super();
+  }
+
+  public InteractionsResultData(
+    int id, int queryGene, int queryMaxDegree, InteractionResultData[] interactions, ExecutionStatus status
   ) {
     this.id = id;
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
-    this.queryInteractomes = queryInteractomes;
-    this.interactomes = interactomes;
-    this.genes = genes;
     this.interactions = interactions;
     this.status = status;
   }
 
-  public IdAndUri getId() {
+  public int getId() {
     return id;
   }
 
-  public void setId(IdAndUri id) {
+  public void setId(int id) {
     this.id = id;
   }
 
-  public long getQueryGene() {
+  public int getQueryGene() {
     return queryGene;
   }
 
-  public void setQueryGene(long queryGene) {
+  public void setQueryGene(int queryGene) {
     this.queryGene = queryGene;
   }
 
@@ -99,36 +70,12 @@ public class InteractionQueryResult implements Serializable {
     this.queryMaxDegree = queryMaxDegree;
   }
 
-  public long[] getQueryInteractomes() {
-    return queryInteractomes;
-  }
-
-  public void setQueryInteractomes(long[] queryInteractomes) {
-    this.queryInteractomes = queryInteractomes;
-  }
-
   public InteractionResultData[] getInteractions() {
     return interactions;
   }
 
   public void setInteractions(InteractionResultData[] interactions) {
     this.interactions = interactions;
-  }
-  
-  public IdAndUri[] getInteractomes() {
-    return interactomes;
-  }
-
-  public void setInteractomes(IdAndUri[] interactomes) {
-    this.interactomes = interactomes;
-  }
-
-  public IdAndUri[] getGenes() {
-    return genes;
-  }
-
-  public void setGenes(IdAndUri[] genes) {
-    this.genes = genes;
   }
 
   public ExecutionStatus getStatus() {
@@ -143,12 +90,9 @@ public class InteractionQueryResult implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + Arrays.hashCode(genes);
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + id;
     result = prime * result + Arrays.hashCode(interactions);
-    result = prime * result + Arrays.hashCode(interactomes);
-    result = prime * result + (int) (queryGene ^ (queryGene >>> 32));
-    result = prime * result + Arrays.hashCode(queryInteractomes);
+    result = prime * result + queryGene;
     result = prime * result + queryMaxDegree;
     result = prime * result + ((status == null) ? 0 : status.hashCode());
     return result;
@@ -162,21 +106,12 @@ public class InteractionQueryResult implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractionQueryResult other = (InteractionQueryResult) obj;
-    if (!Arrays.equals(genes, other.genes))
-      return false;
-    if (id == null) {
-      if (other.id != null)
-        return false;
-    } else if (!id.equals(other.id))
+    InteractionsResultData other = (InteractionsResultData) obj;
+    if (id != other.id)
       return false;
     if (!Arrays.equals(interactions, other.interactions))
       return false;
-    if (!Arrays.equals(interactomes, other.interactomes))
-      return false;
     if (queryGene != other.queryGene)
-      return false;
-    if (!Arrays.equals(queryInteractomes, other.queryInteractomes))
       return false;
     if (queryMaxDegree != other.queryMaxDegree)
       return false;

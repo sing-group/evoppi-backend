@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.service.bio;
 
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
+import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -29,9 +30,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusDegreeFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusDegreeStartedEvent;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusStartedEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
@@ -39,38 +40,41 @@ import org.sing_group.evoppi.service.spi.bio.SameSpeciesInteractionEventManager;
 
 @Stateless
 @PermitAll
-@Transactional(REQUIRES_NEW)
-public class DefaultSameSpeciesInteractionEventManager implements SameSpeciesInteractionEventManager {
+@Transactional(NOT_SUPPORTED)
+public class DefaultSameSpeciesInteractionPersistenceManager implements SameSpeciesInteractionEventManager {
   @Inject
   public InteractionService interactionsService;
 
-  public DefaultSameSpeciesInteractionEventManager() {}
+  public DefaultSameSpeciesInteractionPersistenceManager() {}
   
+  @Transactional(REQUIRES_NEW)
   @Override
   public void manageStart(@Observes SameSpeciesCalculusStartedEvent event) {
-    final InteractionsResult result = this.interactionsService.getResult(event.getResultId());
+    final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(event.getResultId());
     
     result.running();
   }
   
   @Override
-  public void manageDegreeCalculusStart(@Observes SameSpeciesCalculusDegreeStartedEvent event) {}
+  public void manageInteractionCalculusStart(@Observes SameSpeciesInteractionsCalculusStartedEvent event) {}
   
+  @Transactional(REQUIRES_NEW)
   @Override
-  public void manageDegreeCalculusFinish(@Observes SameSpeciesCalculusDegreeFinishedEvent event) {
-    final InteractionsResult result = this.interactionsService.getResult(event.getResultId());
+  public void manageInteractionCalculusFinish(@Observes SameSpeciesInteractionCalculusFinishedEvent event) {
+    final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(event.getResultId());
     
     event.getInteractions().forEach(interaction -> result.addInteraction(
       interaction.getGeneAId(),
       interaction.getGeneBId(),
-      event.getCurrentDegree(),
+      interaction.getDegree(),
       interaction.getInteractomeIds().toArray()
     ));
   }
   
+  @Transactional(REQUIRES_NEW)
   @Override
   public void manageFinish(@Observes SameSpeciesCalculusFinishedEvent event) {
-    final InteractionsResult result = this.interactionsService.getResult(event.getResultId());
+    final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(event.getResultId());
     
     result.completed();
   }

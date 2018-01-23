@@ -24,7 +24,10 @@ package org.sing_group.evoppi.rest.resource.spi.bio;
 import javax.ws.rs.core.Response;
 
 public interface InteractionResource {
-  public Response getInteractions(int geneId, int[] interactomes, int degree);
+  public Response getInteractions(
+    int geneId, int[] interactomes, Integer referenceInteractome, Integer targetInteractome, int maxDegree,
+    double evalue, int maxTargetSeqs, double minimumIdentity, int minimumAlignmentLength
+  );
 
   public Response getInterationResult(int id);
 }

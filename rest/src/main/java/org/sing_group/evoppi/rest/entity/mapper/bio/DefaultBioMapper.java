@@ -31,16 +31,20 @@ import org.sing_group.evoppi.domain.entities.bio.GeneNames;
 import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.rest.entity.bio.BlastResultData;
+import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
-import org.sing_group.evoppi.rest.entity.bio.InteractionQueryResult;
 import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData.InteractingGenes;
+import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.user.IdAndUri;
@@ -128,7 +132,7 @@ public class DefaultBioMapper implements BioMapper {
   }
   
   @Override
-  public InteractionQueryResult toInteractionQueryResult(InteractionsResult result) {
+  public SameSpeciesInteractionsResultData toInteractionQueryResult(SameSpeciesInteractionsResult result) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     final IdAndUri[] interactomeIds = result.getInteractions()
@@ -147,15 +151,71 @@ public class DefaultBioMapper implements BioMapper {
       .map(this::toInteractionResultData)
     .toArray(InteractionResultData[]::new);
     
-    return new InteractionQueryResult(
-      new IdAndUri(result.getId(), pathBuilder.interaction().result(result.getId()).build()),
+    return new SameSpeciesInteractionsResultData(
+      result.getId(),
       result.getQueryGeneId(),
-      result.getQueryInteractomeIds().mapToLong(i -> (long) i).toArray(),
+      result.getQueryInteractomeIds().toArray(),
       result.getQueryMaxDegree(),
       interactomeIds,
       geneIds,
       data,
       result.getStatus()
+    );
+  }
+
+  @Override
+  public DifferentSpeciesInteractionsResultData toInteractionQueryResult(DifferentSpeciesInteractionsResult result) {
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
+    
+    final InteractionResultData[] interactionData = result.getInteractions()
+      .map(this::toInteractionResultData)
+    .toArray(InteractionResultData[]::new);
+    
+    final BlastResultData[] blastResults = result.getBlastResults()
+      .map(this::toBlastResultData)
+    .toArray(BlastResultData[]::new);
+    
+    final IdAndUri[] referenceGenes = result.getReferenceGeneIds()
+      .map(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
+    .toArray(IdAndUri[]::new);
+    
+    final IdAndUri[] targetGenes = result.getTargetGeneIds()
+      .map(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
+    .toArray(IdAndUri[]::new);
+    
+    final int referenceInteractomeId = result.getReferenceInteractomeId();
+    final int targetInteractomeId = result.getTargetInteractomeId();
+    
+    return new DifferentSpeciesInteractionsResultData(
+      result.getId(),
+      result.getQueryGeneId(),
+      new IdAndUri(referenceInteractomeId, pathBuilder.interactome(referenceInteractomeId).build()),
+      new IdAndUri(targetInteractomeId, pathBuilder.interactome(targetInteractomeId).build()),
+      result.getQueryMaxDegree(),
+      referenceGenes,
+      targetGenes,
+      interactionData,
+      blastResults,
+      result.getStatus()
+    );
+  }
+  
+  private BlastResultData toBlastResultData(BlastResult result) {
+    return new BlastResultData(
+      result.getQseqid(),
+      result.getQseqversion(),
+      result.getSseqid(),
+      result.getSseqversion(),
+      result.getPident(),
+      result.getLength(),
+      result.getMismatch(),
+      result.getGapopen(),
+      result.getQstart(),
+      result.getQend(),
+      result.getSstart(),
+      result.getSend(),
+      result.getEvalue(),
+      result.getBitscore()
     );
   }
   

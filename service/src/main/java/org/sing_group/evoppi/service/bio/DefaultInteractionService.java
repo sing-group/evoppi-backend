@@ -31,18 +31,26 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionsResultDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
+import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.service.bio.event.DifferentSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 
 @Stateless
 @PermitAll
 public class DefaultInteractionService implements InteractionService {
+  @Inject GeneDAO geneDao;
+  
   @Inject
   private InteractomeDAO interactomeDao;
   
@@ -50,18 +58,39 @@ public class DefaultInteractionService implements InteractionService {
   private WorkDAO workDao;
   
   @Inject
-  private InteractionsResultDAO interactionResultDao;
+  private SameSpeciesInteractionsResultDAO sameInteractionsResultDao;
   
   @Inject
-  private Event<SameSpeciesInteractionsRequestEvent> taskEvents;
+  private DifferentSpeciesInteractionsResultDAO differentInteractionsResultDao;
+  
+  @Inject
+  private Event<SameSpeciesInteractionsRequestEvent> taskSameEvents;
+  
+  @Inject
+  private Event<DifferentSpeciesInteractionsRequestEvent> taskDifferentEvents;
   
   @Override
-  public InteractionsResult getResult(int id) {
-    return this.interactionResultDao.get(id);
+  public boolean isSameSpeciesResult(int id) {
+    return this.sameInteractionsResultDao.exists(id);
   }
-
+  
   @Override
-  public Work findInteractionsByGene(
+  public boolean isDifferentSpeciesResult(int id) {
+    return this.differentInteractionsResultDao.exists(id);
+  }
+  
+  @Override
+  public SameSpeciesInteractionsResult getSameSpeciesResult(int id) {
+    return this.sameInteractionsResultDao.get(id);
+  }
+  
+  @Override
+  public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(int id) {
+    return this.differentInteractionsResultDao.get(id);
+  }
+  
+  @Override
+  public Work findSameSpeciesInteractions(
     int geneId, int[] interactomes, int maxDegree, Function<Integer, String> resultReferenceBuilder
   ) {
     if (maxDegree < 1 || maxDegree > 3)
@@ -69,26 +98,62 @@ public class DefaultInteractionService implements InteractionService {
     
     requireNonEmpty(interactomes, "At least one interactome id should be provided");
     
-    if (this.haveSameSpecies(interactomes)) {
-      final InteractionsResult result = this.interactionResultDao.createNew(geneId, maxDegree, interactomes);
-      
-      final Work work = this.workDao.createNew(
-        "Same species interactions",
-        "Find same species interactions",
-        resultReferenceBuilder.apply(result.getId())
-      );
-      
-      this.taskEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomes, maxDegree, work.getId(), result.getId()));
-      
-      result.scheduled();
-      
-      return work;
-    } else {
-      throw new UnsupportedOperationException("Function not implemented yet");
+    if (!this.haveSameSpecies(interactomes)) {
+      throw new IllegalArgumentException("All the interactomes must belong to the same species");
     }
+    
+    final SameSpeciesInteractionsResult result = this.sameInteractionsResultDao.create(geneId, maxDegree, interactomes);
+    
+    final Work work = this.workDao.createNew(
+      "Same species interactions",
+      "Find same species interactions",
+      resultReferenceBuilder.apply(result.getId())
+    );
+    
+    this.taskSameEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomes, maxDegree, work.getId(), result.getId()));
+    
+    result.scheduled();
+    
+    return work;
   }
   
-  private boolean haveSameSpecies(int[] interactomes) {
+  @Override
+  public Work findDifferentSpeciesInteractions(
+    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions,
+    int maxDegree, Function<Integer, String> resultReferenceBuilder
+  ) {
+    if (maxDegree < 1 || maxDegree > 3)
+      throw new IllegalArgumentException("maxDegree must be between 1 and 3");
+    
+    final Gene gene = this.geneDao.getGene(geneId);
+    
+    if (!gene.belongsToInteractome(referenceInteractome))
+      throw new IllegalArgumentException("gene must belong to referenceInteractome");
+    
+    if (this.haveSameSpecies(referenceInteractome, targetInteractome)) {
+      throw new IllegalArgumentException("All the interactomes must belong to the different species");
+    }
+    
+    final DifferentSpeciesInteractionsResult result = this.differentInteractionsResultDao.create(
+      geneId, referenceInteractome, targetInteractome, blastOptions, maxDegree
+    );
+    
+    final Work work = this.workDao.createNew(
+      "Different species interactions",
+      "Find different species interactions",
+      resultReferenceBuilder.apply(result.getId())
+    );
+    
+    this.taskDifferentEvents.fire(new DifferentSpeciesInteractionsRequestEvent(
+      geneId, referenceInteractome, targetInteractome, blastOptions, maxDegree, work.getId(), result.getId())
+    );
+    
+    result.scheduled();
+    
+    return work;
+  }
+  
+  private boolean haveSameSpecies(int... interactomes) {
     return IntStream.of(interactomes)
       .mapToObj(this.interactomeDao::getInteractome)
       .map(Interactome::getSpecies)

@@ -27,12 +27,14 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneNames;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
-import org.sing_group.evoppi.rest.entity.bio.InteractionQueryResult;
+import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
@@ -53,8 +55,10 @@ public interface BioMapper {
   
   public GeneNameData toGeneNameData(GeneNames geneNames);
 
-  public InteractionQueryResult toInteractionQueryResult(InteractionsResult result);
+  public SameSpeciesInteractionsResultData toInteractionQueryResult(SameSpeciesInteractionsResult result);
   
   public InteractionResultData toInteractionResultData(InteractionGroupResult interaction);
+
+  public DifferentSpeciesInteractionsResultData toInteractionQueryResult(DifferentSpeciesInteractionsResult result);
 
 }

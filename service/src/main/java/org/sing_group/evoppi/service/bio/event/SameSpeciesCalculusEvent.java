@@ -21,9 +21,13 @@
  */
 package org.sing_group.evoppi.service.bio.event;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
-public abstract class SameSpeciesCalculusEvent {
+public abstract class SameSpeciesCalculusEvent implements Serializable {
+  private static final long serialVersionUID = 1L;
+  
   private final int geneId;
   private final int[] interactomes;
   private final int maxDegree;
@@ -31,7 +35,7 @@ public abstract class SameSpeciesCalculusEvent {
   private final int resultId;
   
   public SameSpeciesCalculusEvent(SameSpeciesCalculusEvent event) {
-    this(event.getGeneId(), event.getInteractomes(), event.getMaxDegree(), event.getWorkId(), event.getResultId());
+    this(event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getResultId());
   }
   
   public SameSpeciesCalculusEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId) {
@@ -46,8 +50,8 @@ public abstract class SameSpeciesCalculusEvent {
     return geneId;
   }
 
-  public int[] getInteractomes() {
-    return interactomes;
+  public IntStream getInteractomes() {
+    return IntStream.of(interactomes);
   }
 
   public int getMaxDegree() {

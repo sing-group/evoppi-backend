@@ -19,15 +19,23 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.bio;
+package org.sing_group.evoppi.service.bio.event;
 
-import javax.ejb.Local;
+import java.io.Serializable;
 
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsRequestEvent;
+import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
 
-@Local
-public interface SameSpeciesInteractionService {
+public class DifferentSpeciesInteractionsRequestEvent extends DifferentSpeciesCalculusEvent implements Serializable {
+  private static final long serialVersionUID = 1L;
 
-  public void calculateSameSpeciesInteractions(SameSpeciesInteractionsRequestEvent event);
+  public DifferentSpeciesInteractionsRequestEvent(DifferentSpeciesCalculusEvent event) {
+    super(event);
+  }
 
+  public DifferentSpeciesInteractionsRequestEvent(
+    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
+    int workId, int resultId
+  ) {
+    super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
+  }
 }

@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Domain
+ * Service
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,14 +19,23 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.dao.spi.bio.execution;
+package org.sing_group.evoppi.service.spi.execution;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import static java.util.Collections.emptyMap;
 
-public interface InteractionsResultDAO {
+import java.util.Map;
 
-  public InteractionsResult get(int interactionResultId);
-
-  public InteractionsResult createNew(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds);
-
+public interface DockerExecutor {
+  public default void exec(String ... command) {
+    this.exec(emptyMap(), command);
+  }
+  
+  public default void exec(String command) {
+    this.exec(emptyMap(), command.split("\\s+"));
+  }
+  public void exec(Map<String, String> mounts, String ... command);
+  
+  public default void exec(Map<String, String> mounts, String command) {
+    this.exec(mounts, command.split("\\s+"));
+  }
 }

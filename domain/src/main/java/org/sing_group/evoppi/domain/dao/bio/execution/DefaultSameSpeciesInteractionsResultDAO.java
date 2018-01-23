@@ -29,39 +29,50 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
-import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionsResultDAO;
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultInteractionsResultDAO implements InteractionsResultDAO {
+public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInteractionsResultDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<Integer, InteractionsResult> dh;
+  protected DAOHelper<Integer, SameSpeciesInteractionsResult> dh;
 
-  public DefaultInteractionsResultDAO() {
+  public DefaultSameSpeciesInteractionsResultDAO() {
     super();
   }
 
-  public DefaultInteractionsResultDAO(EntityManager em) {
+  public DefaultSameSpeciesInteractionsResultDAO(EntityManager em) {
     this.em = em;
     createDAOHelper();
   }
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(Integer.class, InteractionsResult.class, this.em);
+    this.dh = DAOHelper.of(Integer.class, SameSpeciesInteractionsResult.class, this.em);
+  }
+  
+  @Override
+  public boolean exists(int interactionResultId) {
+    try {
+      this.get(interactionResultId);
+      
+      return true;
+    } catch (IllegalArgumentException iae) {
+      return false;
+    }
   }
 
   @Override
-  public InteractionsResult get(int interactionResultId) {
+  public SameSpeciesInteractionsResult get(int interactionResultId) {
     return this.dh.get(interactionResultId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown interaction result: " + interactionResultId));
   }
   
   @Override
-  public InteractionsResult createNew(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds) {
-    return this.dh.persist(new InteractionsResult(queryGeneId, queryMaxDegree, queryInteractomeIds));
+  public SameSpeciesInteractionsResult create(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds) {
+    return this.dh.persist(new SameSpeciesInteractionsResult(queryGeneId, queryMaxDegree, queryInteractomeIds));
   }
 }

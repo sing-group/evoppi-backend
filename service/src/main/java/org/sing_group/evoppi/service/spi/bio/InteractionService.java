@@ -25,15 +25,26 @@ import java.util.function.Function;
 
 import javax.ejb.Local;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.Work;
 
 @Local
 public interface InteractionService {
-
-  public Work findInteractionsByGene(
+  public Work findSameSpeciesInteractions(
     int geneId, int[] interactomes, int maxDegree, Function<Integer, String> resultReferenceBuilder
   );
   
-  public InteractionsResult getResult(int id);
+  public Work findDifferentSpeciesInteractions(
+    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions, int maxDegree, Function<Integer, String> resultReferenceBuilder
+  );
+  
+  public SameSpeciesInteractionsResult getSameSpeciesResult(int id);
+
+  public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(int id);
+
+  public boolean isSameSpeciesResult(int id);
+
+  public boolean isDifferentSpeciesResult(int id);
 }

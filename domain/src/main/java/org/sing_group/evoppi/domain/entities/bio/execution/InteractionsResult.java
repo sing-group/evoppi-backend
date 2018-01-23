@@ -24,16 +24,15 @@ package org.sing_group.evoppi.domain.entities.bio.execution;
 import static java.util.stream.Collectors.toSet;
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -41,41 +40,27 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "type", length = 4)
 @Table(name = "interactions_result")
-public class InteractionsResult implements Serializable {
-  private static final long serialVersionUID = 1L;
+public abstract class InteractionsResult {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
   private Integer id;
-
+  
   @Column(name = "queryGeneId", nullable = false)
   private int queryGeneId;
   
   @Column(name = "queryMaxDegree", nullable = false)
   private int queryMaxDegree;
-
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(
-    name = "interactions_result_query_interactome",
-    joinColumns = @JoinColumn(name = "interactionsResultId", referencedColumnName = "id"),
-    foreignKey = @ForeignKey(name = "FK_interactions_result_query_interactome")
-  )
-  @Column(name = "interactomeId", nullable = false)
-  private Set<Integer> queryInteractomeIds;
-
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(
-    name = "interactionsResultId",
-    referencedColumnName = "id",
-    foreignKey = @ForeignKey(name = "FK_interactions_result_interaction_group_result")
-  )
-  private Set<InteractionGroupResult> interactions;
   
   @Column(name = "creationDateTime", nullable = false)
   private LocalDateTime creationDateTime;
@@ -84,12 +69,21 @@ public class InteractionsResult implements Serializable {
   @Enumerated(EnumType.STRING)
   private ExecutionStatus status;
 
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(
+    name = "interactionsResultId", referencedColumnName = "id", foreignKey = @ForeignKey(
+      name = "FK_interactions_result_interaction_group_result"
+    )
+  )
+  private Set<InteractionGroupResult> interactions;
+
   InteractionsResult() {}
   
-  public InteractionsResult(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds) {
+  public InteractionsResult(int queryGeneId, int queryMaxDegree) {
     this.queryGeneId = queryGeneId;
     this.queryMaxDegree = queryMaxDegree;
-    this.queryInteractomeIds = IntStream.of(queryInteractomeIds).boxed().collect(toSet());
+    
+    this.interactions = new HashSet<>();
     this.creationDateTime = LocalDateTime.now();
     this.status = ExecutionStatus.CREATED;
   }
@@ -106,55 +100,49 @@ public class InteractionsResult implements Serializable {
     return queryMaxDegree;
   }
 
-  public IntStream getQueryInteractomeIds() {
-    return queryInteractomeIds.stream().mapToInt(Integer::intValue);
+  public ExecutionStatus getStatus() {
+    return status;
+  }
+
+  public LocalDateTime getCreationDateTime() {
+    return creationDateTime;
+  }
+
+  public void scheduled() {
+    this.checkAndChangeStatus(ExecutionStatus.CREATED, ExecutionStatus.SCHEDULED);
+  }
+
+  public void running() {
+    this.checkAndChangeStatus(ExecutionStatus.SCHEDULED, ExecutionStatus.RUNNING);
+  }
+
+  public void completed() {
+    this.checkAndChangeStatus(ExecutionStatus.RUNNING, ExecutionStatus.COMPLETED);
+  }
+
+  public void failed() {
+    this.checkAndChangeStatus(ExecutionStatus.RUNNING, ExecutionStatus.FAILED);
+  }
+
+  private void checkAndChangeStatus(ExecutionStatus expectedActual, ExecutionStatus requested) {
+    if (this.status != expectedActual)
+      throw new IllegalStateException(String.format("Invalid status change, from %s to %s", this.status, requested));
+
+    this.status = requested;
   }
 
   public Stream<InteractionGroupResult> getInteractions() {
     return interactions.stream();
   }
-  
-  public InteractionGroupResult addInteraction(
-    int geneAId, int geneBId, int degree, int[] interactomeIds
-  ) {
+
+  public InteractionGroupResult addInteraction(int geneAId, int geneBId, int degree, int[] interactomeIds) {
     final Set<Integer> interactomeIdsCollection = IntStream.of(interactomeIds).boxed().collect(toSet());
     
-    final InteractionGroupResult group = new InteractionGroupResult(this.id, geneAId, geneBId, degree, interactomeIdsCollection);
+    final InteractionGroupResult group = new InteractionGroupResult(this.getId(), geneAId, geneBId, degree, interactomeIdsCollection);
     
     this.interactions.add(group);
     
     return group;
-  }
-  
-  public ExecutionStatus getStatus() {
-    return status;
-  }
-  
-  public LocalDateTime getCreationDateTime() {
-    return creationDateTime;
-  }
-  
-  public void scheduled() {
-    this.checkAndChangeStatus(ExecutionStatus.CREATED, ExecutionStatus.SCHEDULED);
-  }
-  
-  public void running() {
-    this.checkAndChangeStatus(ExecutionStatus.SCHEDULED, ExecutionStatus.RUNNING);
-  }
-  
-  public void completed() {
-    this.checkAndChangeStatus(ExecutionStatus.RUNNING, ExecutionStatus.COMPLETED);
-  }
-  
-  public void failed() {
-    this.checkAndChangeStatus(ExecutionStatus.RUNNING, ExecutionStatus.FAILED);
-  }
-  
-  private void checkAndChangeStatus(ExecutionStatus expectedActual, ExecutionStatus requested) {
-    if (this.status != expectedActual)
-      throw new IllegalStateException(String.format("Invalid status change, from %s to %s", this.status, requested));
-    
-    this.status = requested;
   }
 
   @Override
