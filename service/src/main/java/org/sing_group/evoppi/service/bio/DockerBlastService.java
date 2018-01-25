@@ -106,10 +106,10 @@ public class DockerBlastService implements BlastService {
     
     final String[] blast = generateCommand(this.blastCmd, blastReplacements);
     
-    final Map<String, String> mounts = new HashMap<>();
-    mounts.put(hostOutputPath.toString(), this.sharedPathContainerOutput);
-    mounts.put(genome.toString(), containerGenomePath.toString());
-    mounts.put(genes.toString(), containerGenesPath.toString());
+    final Map<Path, Path> mounts = new HashMap<>();
+    mounts.put(hostOutputPath, Paths.get(this.sharedPathContainerOutput));
+    mounts.put(genome, containerGenomePath);
+    mounts.put(genes, containerGenesPath);
 
     try {
       Files.createDirectories(hostOutputPath);

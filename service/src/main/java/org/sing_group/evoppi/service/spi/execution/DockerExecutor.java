@@ -23,6 +23,7 @@ package org.sing_group.evoppi.service.spi.execution;
 
 import static java.util.Collections.emptyMap;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 public interface DockerExecutor {
@@ -33,9 +34,9 @@ public interface DockerExecutor {
   public default void exec(String command) {
     this.exec(emptyMap(), command.split("\\s+"));
   }
-  public void exec(Map<String, String> mounts, String ... command);
+  public void exec(Map<Path, Path> mounts, String ... command);
   
-  public default void exec(Map<String, String> mounts, String command) {
+  public default void exec(Map<Path, Path> mounts, String command) {
     this.exec(mounts, command.split("\\s+"));
   }
 }

@@ -304,6 +304,7 @@
                 <simple name="java:global/evoppi/swagger/basePath" value="/evoppi/rest/api" type="java.lang.String"/>
                 
                 <simple name="java:global/evoppi/docker/image/name" value="nvazquezg/blast:latest" type="java.lang.String"/>
+                <simple name="java:global/evoppi/docker/path/separator" value="/" type="java.lang.String"/>
                 <simple name="java:global/evoppi/docker/path/shared/host" value="/tmp/evoppi/docker" type="java.lang.String"/>
                 <simple name="java:global/evoppi/docker/path/shared/container/input" value="/mnt/shared/input" type="java.lang.String"/>
                 <simple name="java:global/evoppi/docker/path/shared/container/output" value="/mnt/shared/output" type="java.lang.String"/>

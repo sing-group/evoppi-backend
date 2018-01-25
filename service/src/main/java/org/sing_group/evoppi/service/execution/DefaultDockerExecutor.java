@@ -61,6 +61,9 @@ public class DefaultDockerExecutor implements DockerExecutor {
 
   @Resource(name = "java:global/evoppi/docker/host")
   private String dockerHost;
+  
+  @Resource(name = "java:global/evoppi/docker/path/separator")
+  private String pathSeparator;
 
   private Builder dockerBuilder;
 
@@ -83,9 +86,19 @@ public class DefaultDockerExecutor implements DockerExecutor {
       }
     }
   }
+  
+  private String pathToDocker(Path path) {
+    StringBuilder sb = new StringBuilder();
+    
+    for (Path subpath : path) {
+      sb.append(this.pathSeparator).append(subpath.getFileName().toString());
+    }
+    
+    return sb.toString();
+  }
 
   @Override
-  public void exec(Map<String, String> mounts, String... command) {
+  public void exec(Map<Path, Path> mounts, String... command) {
     System.out.println("BUILDING");
     final DockerClientConfig config = this.dockerBuilder.build();
 
@@ -98,7 +111,7 @@ public class DefaultDockerExecutor implements DockerExecutor {
 
     System.out.println("CREATING CONTAINER");
     final List<Bind> binds = mounts.entrySet().stream()
-      .map(entry -> new Bind(entry.getKey(), new Volume(entry.getValue())))
+      .map(entry -> new Bind(entry.getKey().toString(), new Volume(this.pathToDocker(entry.getValue()))))
     .collect(toList());
     
     final List<Volume> volumes = binds.stream()
