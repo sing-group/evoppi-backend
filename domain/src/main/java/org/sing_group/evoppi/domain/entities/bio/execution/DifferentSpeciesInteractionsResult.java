@@ -42,8 +42,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
-
 @Entity
 @DiscriminatorValue("DIFF")
 @Table(name = "different_species_interactions_result")

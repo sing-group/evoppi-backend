@@ -23,7 +23,7 @@ package org.sing_group.evoppi.service.bio.event;
 
 import java.io.Serializable;
 
-import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 
 public abstract class DifferentSpeciesCalculusEvent implements Serializable {
   private static final long serialVersionUID = 1L;

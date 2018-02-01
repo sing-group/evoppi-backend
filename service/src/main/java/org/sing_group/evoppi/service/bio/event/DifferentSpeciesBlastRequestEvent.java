@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 
 public class DifferentSpeciesBlastRequestEvent extends DifferentSpeciesCalculusEvent implements Serializable {

@@ -21,7 +21,7 @@
  */
 package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
-import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 
 public interface DifferentSpeciesInteractionsResultDAO {

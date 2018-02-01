@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.IntStream;
 
-import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 

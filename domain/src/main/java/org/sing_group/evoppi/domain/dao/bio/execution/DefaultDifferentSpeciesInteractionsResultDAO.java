@@ -30,6 +30,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 
 @Default

@@ -31,7 +31,6 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
@@ -39,6 +38,7 @@ import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteraction
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.Work;

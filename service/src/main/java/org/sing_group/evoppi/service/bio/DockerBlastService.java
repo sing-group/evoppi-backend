@@ -42,7 +42,7 @@ import javax.annotation.Resource;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.sing_group.evoppi.domain.dao.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.service.spi.bio.BlastService;
 import org.sing_group.evoppi.service.spi.execution.DockerExecutor;

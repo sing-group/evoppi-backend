@@ -26,6 +26,7 @@ package org.sing_group.evoppi.rest.resource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.sing_group.fluent.checker.Checks;
 
 public final class Deployments {
@@ -34,11 +35,12 @@ public final class Deployments {
   public static WebArchive createDeployment() {
     return ShrinkWrap.create(WebArchive.class, "test.war")
       .addClass(Checks.class)
-      .addPackages(true, "org.sing_group.evoppi")
+      .addPackages(true, "org.sing_group.evoppi.rest")
       .addAsLibraries(
         Maven.resolver()
           .loadPomFromFile("pom.xml")
-          .importRuntimeDependencies()
+          .importCompileAndRuntimeDependencies()
+          .importDependencies(ScopeType.PROVIDED)
           .resolve().withTransitivity()
         .asFile()
       )
