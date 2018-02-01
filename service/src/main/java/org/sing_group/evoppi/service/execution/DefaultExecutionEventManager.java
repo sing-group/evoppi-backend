@@ -48,12 +48,17 @@ public class DefaultExecutionEventManager implements ExecutionEventManager {
     work.addStep(event.getDescription(), event.getProgress());
     
     switch(event.getWorkStatus()) {
+      case SCHEDULED:
+        work.setScheduled();
+        break;
       case RUNNING:
-        if (!work.isStarted())
-          work.start();
+        work.setRunning();
         break;
       case COMPLETED:
-        work.finish();
+        work.setFinished();
+        break;
+      case FAILED:
+        work.setFailed(null);
         break;
       default:
     }

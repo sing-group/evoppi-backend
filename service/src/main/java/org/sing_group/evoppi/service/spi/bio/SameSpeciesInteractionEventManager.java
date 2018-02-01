@@ -25,6 +25,7 @@ import javax.ejb.Local;
 
 import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFailedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusStartedEvent;
 
@@ -38,5 +39,7 @@ public interface SameSpeciesInteractionEventManager {
   public void manageInteractionCalculusFinish(SameSpeciesInteractionCalculusFinishedEvent event);
 
   public void manageFinish(SameSpeciesCalculusFinishedEvent event);
+  
+  public void manageFailure(SameSpeciesCalculusFailedEvent event);
 
 }

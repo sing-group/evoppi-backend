@@ -21,8 +21,8 @@
  */
 package org.sing_group.evoppi.service.bio;
 
-import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
+import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -31,10 +31,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFailedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusStartedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.bio.SameSpeciesInteractionEventManager;
 
@@ -52,11 +53,11 @@ public class DefaultSameSpeciesInteractionPersistenceManager implements SameSpec
   public void manageStart(@Observes SameSpeciesCalculusStartedEvent event) {
     final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(event.getResultId());
     
-    result.running();
+    result.setRunning();
   }
   
   @Override
-  public void manageInteractionCalculusStart(@Observes SameSpeciesInteractionsCalculusStartedEvent event) {}
+  public void manageInteractionCalculusStart(SameSpeciesInteractionsCalculusStartedEvent event) {}
   
   @Transactional(REQUIRES_NEW)
   @Override
@@ -76,6 +77,14 @@ public class DefaultSameSpeciesInteractionPersistenceManager implements SameSpec
   public void manageFinish(@Observes SameSpeciesCalculusFinishedEvent event) {
     final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(event.getResultId());
     
-    result.completed();
+    result.setFinished();
+  }
+
+  @Transactional(REQUIRES_NEW)
+  @Override
+  public void manageFailure(@Observes SameSpeciesCalculusFailedEvent event) {
+    final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(event.getResultId());
+    
+    result.setFailed(event.getCause());
   }
 }

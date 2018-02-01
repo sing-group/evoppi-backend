@@ -26,6 +26,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -33,9 +34,8 @@ import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -46,11 +46,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.ExecutionStatusAndTime;
+import org.sing_group.evoppi.domain.entities.execution.HasExecutionStatus;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", length = 4)
 @Table(name = "interactions_result")
-public abstract class InteractionsResult {
+public abstract class InteractionsResult implements HasExecutionStatus {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -61,13 +65,6 @@ public abstract class InteractionsResult {
   
   @Column(name = "queryMaxDegree", nullable = false)
   private int queryMaxDegree;
-  
-  @Column(name = "creationDateTime", nullable = false)
-  private LocalDateTime creationDateTime;
-  
-  @Column(name = "status", length = 9, nullable = false)
-  @Enumerated(EnumType.STRING)
-  private ExecutionStatus status;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(
@@ -76,16 +73,21 @@ public abstract class InteractionsResult {
     )
   )
   private Set<InteractionGroupResult> interactions;
+  
+  @Embedded
+  private ExecutionStatusAndTime status;
 
-  InteractionsResult() {}
+  InteractionsResult() {
+    this.interactions = new HashSet<>();
+    this.status = new ExecutionStatusAndTime();
+    
+  }
   
   public InteractionsResult(int queryGeneId, int queryMaxDegree) {
+    this();
+    
     this.queryGeneId = queryGeneId;
     this.queryMaxDegree = queryMaxDegree;
-    
-    this.interactions = new HashSet<>();
-    this.creationDateTime = LocalDateTime.now();
-    this.status = ExecutionStatus.CREATED;
   }
 
   public Integer getId() {
@@ -100,35 +102,41 @@ public abstract class InteractionsResult {
     return queryMaxDegree;
   }
 
-  public ExecutionStatus getStatus() {
-    return status;
-  }
-
   public LocalDateTime getCreationDateTime() {
-    return creationDateTime;
+    return this.status.getCreationDateTime();
   }
 
-  public void scheduled() {
-    this.checkAndChangeStatus(ExecutionStatus.CREATED, ExecutionStatus.SCHEDULED);
+  public Optional<LocalDateTime> getStartDateTime() {
+    return this.status.getStartDateTime();
   }
 
-  public void running() {
-    this.checkAndChangeStatus(ExecutionStatus.SCHEDULED, ExecutionStatus.RUNNING);
+  public Optional<LocalDateTime> getEndDateTime() {
+    return this.status.getEndDateTime();
   }
 
-  public void completed() {
-    this.checkAndChangeStatus(ExecutionStatus.RUNNING, ExecutionStatus.COMPLETED);
+  @Override
+  public ExecutionStatus getStatus() {
+    return this.status.getStatus();
   }
 
-  public void failed() {
-    this.checkAndChangeStatus(ExecutionStatus.RUNNING, ExecutionStatus.FAILED);
+  @Override
+  public void setScheduled() throws IllegalStateException {
+    this.status.setScheduled();
+  }
+  
+  @Override
+  public void setRunning() throws IllegalStateException {
+    this.status.setRunning();
   }
 
-  private void checkAndChangeStatus(ExecutionStatus expectedActual, ExecutionStatus requested) {
-    if (this.status != expectedActual)
-      throw new IllegalStateException(String.format("Invalid status change, from %s to %s", this.status, requested));
+  @Override
+  public void setFinished() throws IllegalStateException {
+    this.status.setFinished();
+  }
 
-    this.status = requested;
+  @Override
+  public void setFailed(String cause) throws IllegalStateException {
+    this.status.setFailed(cause);
   }
 
   public Stream<InteractionGroupResult> getInteractions() {

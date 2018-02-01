@@ -23,38 +23,44 @@ package org.sing_group.evoppi.service.bio.event;
 
 import java.io.Serializable;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
-public class DifferentSpeciesFastaCreationStartedEvent
-extends DifferentSpeciesCalculusEvent
+public class SameSpeciesCalculusFailedEvent
+extends SameSpeciesCalculusEvent
 implements Serializable, WorkStepEvent {
   private static final long serialVersionUID = 1L;
+  
+  private final String cause;
 
-  public DifferentSpeciesFastaCreationStartedEvent(DifferentSpeciesCalculusEvent event) {
+  public SameSpeciesCalculusFailedEvent(SameSpeciesCalculusEvent event, String cause) {
     super(event);
+    
+    this.cause = cause;
+  }
+
+  public SameSpeciesCalculusFailedEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId, String cause) {
+    super(geneId, interactomes, maxDegree, workId, resultId);
+    
+    this.cause = cause;
   }
   
-  public DifferentSpeciesFastaCreationStartedEvent(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId
-  ) {
-    super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
+  public String getCause() {
+    return cause;
   }
 
   @Override
   public String getDescription() {
-    return "Crearting FASTA file for reference genes and target genome.";
+    return "Execution failed. Cause: " + this.cause;
   }
 
   @Override
   public double getProgress() {
-    return 0.2d;
+    return Double.NaN;
   }
 
   @Override
   public ExecutionStatus getWorkStatus() {
-    return ExecutionStatus.RUNNING;
+    return ExecutionStatus.FAILED;
   }
 }

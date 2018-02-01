@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -44,7 +45,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "work")
-public class Work implements Serializable {
+public class Work implements HasExecutionStatus, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -57,15 +58,6 @@ public class Work implements Serializable {
   @Column(name = "description", length = 255, nullable = true)
   private String description;
 
-  @Column(name = "creationDateTime", nullable = false)
-  private LocalDateTime creationDateTime;
-
-  @Column(name = "startDateTime", nullable = true)
-  private LocalDateTime startDateTime;
-
-  @Column(name = "endDateTime", nullable = true)
-  private LocalDateTime endDateTime;
-
   @Column(name = "resultReference", length = 1023, nullable = true)
   private String resultReference;
 
@@ -73,22 +65,27 @@ public class Work implements Serializable {
   @OrderBy("order ASC")
   private SortedSet<WorkStep> steps;
   
+  @Embedded
+  private ExecutionStatusAndTime status;
+  
   @Transient
-  private ReentrantReadWriteLock stepsLock;
+  private final ReentrantReadWriteLock stepsLock;
 
   Work() {
     this.stepsLock = new ReentrantReadWriteLock();
+    this.status = new ExecutionStatusAndTime();
   }
   
   public Work(String name) {
     this();
+    
     this.name = name;
-    this.creationDateTime = LocalDateTime.now();
     this.steps = new TreeSet<>();
   }
 
   public Work(String name, String description, String resultReference) {
     this(name);
+    
     this.description = description;
     this.resultReference = resultReference;
   }
@@ -106,33 +103,15 @@ public class Work implements Serializable {
   }
 
   public LocalDateTime getCreationDateTime() {
-    return creationDateTime;
+    return this.status.getCreationDateTime();
   }
 
   public Optional<LocalDateTime> getStartDateTime() {
-    return Optional.ofNullable(startDateTime);
-  }
-  
-  public void start() throws IllegalStateException {
-    if (this.isStarted())
-      throw new IllegalStateException("Work is already started");
-    if (this.isFinished())
-      throw new IllegalStateException("Work is finished");
-    
-    this.startDateTime = LocalDateTime.now();
+    return this.status.getStartDateTime();
   }
 
   public Optional<LocalDateTime> getEndDateTime() {
-    return Optional.ofNullable(endDateTime);
-  }
-  
-  public void finish() throws IllegalStateException {
-    if (!this.isStarted())
-      throw new IllegalStateException("Work is not started");
-    if (this.isFinished())
-      throw new IllegalStateException("Work is already finished");
-    
-    this.endDateTime = LocalDateTime.now();
+    return this.status.getEndDateTime();
   }
 
   public Optional<String> getResultReference() {
@@ -140,9 +119,9 @@ public class Work implements Serializable {
   }
 
   public Stream<WorkStep> getSteps() {
-    try {
-      this.stepsLock.readLock().lock();
+    this.stepsLock.readLock().lock();
     
+    try {
       return steps.stream();
     } finally {
       this.stepsLock.readLock().unlock();
@@ -150,9 +129,9 @@ public class Work implements Serializable {
   }
   
   public WorkStep addStep(String description, Double progress) {
+    this.stepsLock.writeLock().lock();
+    
     try {
-      this.stepsLock.writeLock().lock();
-      
       final WorkStep step = new WorkStep(this, this.steps.size() + 1, description, progress);
       
       this.steps.add(step);
@@ -162,13 +141,29 @@ public class Work implements Serializable {
       this.stepsLock.writeLock().unlock();
     }
   }
+
+  @Override
+  public ExecutionStatus getStatus() {
+    return this.status.getStatus();
+  }
+
+  @Override
+  public void setScheduled() throws IllegalStateException {
+    this.status.setScheduled();
+  }
   
-  public boolean isStarted() {
-    return this.startDateTime != null;
+  @Override
+  public void setRunning() throws IllegalStateException {
+    this.status.setRunning();
   }
 
-  public boolean isFinished() {
-    return this.endDateTime != null;
+  @Override
+  public void setFinished() throws IllegalStateException {
+    this.status.setFinished();
   }
 
+  @Override
+  public void setFailed(String cause) throws IllegalStateException {
+    this.status.setFailed(cause);
+  }
 }

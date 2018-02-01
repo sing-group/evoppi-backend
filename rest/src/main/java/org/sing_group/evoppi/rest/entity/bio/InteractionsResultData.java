@@ -23,7 +23,7 @@ package org.sing_group.evoppi.rest.entity.bio;
 
 import java.util.Arrays;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 
 public abstract class InteractionsResultData {
   private int id;

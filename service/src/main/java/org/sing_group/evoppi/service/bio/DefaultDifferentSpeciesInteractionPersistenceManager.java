@@ -34,6 +34,7 @@ import javax.transaction.Transactional;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesBlastAlignmentFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesBlastAlignmentStartedEvent;
+import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusFailedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusStartedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesFastaCreationFinishedEvent;
@@ -58,7 +59,7 @@ public class DefaultDifferentSpeciesInteractionPersistenceManager implements Dif
     final DifferentSpeciesInteractionsResult result =
       this.interactionsService.getDifferentSpeciesResult(event.getResultId());
 
-    result.running();
+    result.setRunning();
   }
 
   @Override
@@ -133,7 +134,16 @@ public class DefaultDifferentSpeciesInteractionPersistenceManager implements Dif
     final DifferentSpeciesInteractionsResult result =
       this.interactionsService.getDifferentSpeciesResult(event.getResultId());
 
-    result.completed();
+    result.setFinished();
+  }
+
+  @Transactional(REQUIRES_NEW)
+  @Override
+  public void manageFailure(@Observes DifferentSpeciesCalculusFailedEvent event) {
+    final DifferentSpeciesInteractionsResult result =
+      this.interactionsService.getDifferentSpeciesResult(event.getResultId());
+    
+    result.setFailed(event.getCause());
   }
 
 }

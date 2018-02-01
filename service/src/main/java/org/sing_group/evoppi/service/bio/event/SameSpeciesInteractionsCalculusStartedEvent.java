@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.joining;
 
 import java.io.Serializable;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
 public class SameSpeciesInteractionsCalculusStartedEvent

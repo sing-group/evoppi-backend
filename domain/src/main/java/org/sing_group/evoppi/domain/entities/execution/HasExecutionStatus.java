@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,16 +19,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.execution.event;
+package org.sing_group.evoppi.domain.entities.execution;
 
-import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+public interface HasExecutionStatus {
+  public ExecutionStatus getStatus();
+  
+  public void setRunning() throws IllegalStateException;
 
-public interface WorkStepEvent {
-  public int getWorkId();
-  
-  public String getDescription();
-  
-  public double getProgress();
-  
-  public ExecutionStatus getWorkStatus();
+  public void setFinished() throws IllegalStateException;
+
+  public void setFailed(String cause) throws IllegalStateException;
+
+  public void setScheduled() throws IllegalStateException;
 }

@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Domain
+ * Service
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,8 +19,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.entities.bio.execution;
+package org.sing_group.evoppi.service.spi.bio.event;
 
-public enum ExecutionStatus {
-  CREATED, SCHEDULED, RUNNING, COMPLETED, FAILED;
+import java.util.Collection;
+
+import javax.ejb.Local;
+
+import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusEvent;
+import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
+
+@Local
+public interface SameSpeciesInteractionEventNotifier {
+  public void notifyCalculusStarted(SameSpeciesCalculusEvent event);
+
+  public void notifyDegreeCalculusStarted(SameSpeciesCalculusEvent event, int degree);
+  
+  public void notifyDegreeCalculusFinished(SameSpeciesCalculusEvent event, int degree, Collection<GeneInteraction> interactions);
+  
+  public void notifyCalculusFinished(SameSpeciesCalculusEvent event);
+  
+  public void notifyCalculusFailed(SameSpeciesCalculusEvent event, String cause);
 }

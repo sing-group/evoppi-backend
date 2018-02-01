@@ -24,11 +24,12 @@ package org.sing_group.evoppi.service.bio.event;
 import static java.util.stream.Collectors.joining;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
@@ -41,16 +42,16 @@ implements Serializable, WorkStepEvent {
   private final Set<GeneInteraction> interactions;
 
   public SameSpeciesInteractionCalculusFinishedEvent(
-    SameSpeciesCalculusEvent event, int currentDegree, Set<GeneInteraction> interactions
+    SameSpeciesCalculusEvent event, int currentDegree, Collection<GeneInteraction> interactions
   ) {
     super(event);
     this.currentDegree = currentDegree;
-    this.interactions = interactions;
+    this.interactions = new HashSet<>(interactions);
   }
 
   public SameSpeciesInteractionCalculusFinishedEvent(
     int geneId, int[] interactomes, int maxDegree, int workId, int resultId, int currentDegree,
-    Set<GeneInteraction> interactions
+    Collection<GeneInteraction> interactions
   ) {
     super(geneId, interactomes, maxDegree, workId, resultId);
 

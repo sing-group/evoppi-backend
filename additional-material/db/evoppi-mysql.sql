@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `evoppi` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `evoppi`;
 -- MySQL dump 10.13  Distrib 5.6.33, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: evoppi
+-- Host: 127.0.0.1    Database: evoppi
 -- ------------------------------------------------------
 -- Server version	5.6.33-0ubuntu0.14.04.1-log
 
@@ -235,28 +237,16 @@ DROP TABLE IF EXISTS `interactions_result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `interactions_result` (
+  `type` varchar(4) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `creationDateTime` datetime NOT NULL,
   `queryGeneId` int(11) NOT NULL,
   `queryMaxDegree` int(11) NOT NULL,
+  `creationDateTime` datetime NOT NULL,
+  `endDateTime` datetime DEFAULT NULL,
+  `failureCause` varchar(255) DEFAULT NULL,
+  `startDateTime` datetime DEFAULT NULL,
   `status` varchar(9) NOT NULL,
-  `type` varchar(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `interactions_result_query_interactome`
---
-
-DROP TABLE IF EXISTS `interactions_result_query_interactome`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `interactions_result_query_interactome` (
-  `interactionsResultId` int(11) NOT NULL,
-  `interactomeId` int(11) NOT NULL,
-  PRIMARY KEY (`interactionsResultId`,`interactomeId`),
-  CONSTRAINT `FK_interactions_result_query_interactome` FOREIGN KEY (`interactionsResultId`) REFERENCES `interactions_result` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -333,7 +323,7 @@ CREATE TABLE `species` (
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_29ixq8ot8e88rk6v7jpkisgr3` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -362,12 +352,14 @@ DROP TABLE IF EXISTS `work`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `work` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `creationDateTime` datetime NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `endDateTime` datetime DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `resultReference` varchar(1023) DEFAULT NULL,
+  `creationDateTime` datetime NOT NULL,
+  `endDateTime` datetime DEFAULT NULL,
+  `failureCause` varchar(255) DEFAULT NULL,
   `startDateTime` datetime DEFAULT NULL,
+  `status` varchar(9) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -399,4 +391,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-24 21:55:38
+-- Dump completed on 2018-02-01 19:52:51

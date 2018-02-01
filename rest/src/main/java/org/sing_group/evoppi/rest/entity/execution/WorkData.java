@@ -58,7 +58,7 @@ public class WorkData implements Serializable {
 
   private String resultReference;
 
-  private boolean finished;
+  private String status;
 
   private WorkStepData[] steps;
 
@@ -66,7 +66,7 @@ public class WorkData implements Serializable {
 
   public WorkData(
     IdAndUri id, String name, String description, LocalDateTime creationDateTime, LocalDateTime startDateTime,
-    LocalDateTime endDateTime, String resultReference, boolean finished, WorkStepData[] steps
+    LocalDateTime endDateTime, String resultReference, String status, WorkStepData[] steps
   ) {
     this.id = id;
     this.name = name;
@@ -75,7 +75,7 @@ public class WorkData implements Serializable {
     this.startDateTime = startDateTime;
     this.endDateTime = endDateTime;
     this.resultReference = resultReference;
-    this.finished = finished;
+    this.status = status;
     this.steps = steps;
   }
 
@@ -135,12 +135,12 @@ public class WorkData implements Serializable {
     this.resultReference = resultReference;
   }
 
-  public boolean isFinished() {
-    return finished;
+  public String getStatus() {
+    return status;
   }
 
-  public void setFinished(boolean complete) {
-    this.finished = complete;
+  public void setStatus(String status) {
+    this.status = status;
   }
 
   public WorkStepData[] getSteps() {
@@ -158,11 +158,11 @@ public class WorkData implements Serializable {
     result = prime * result + ((creationDateTime == null) ? 0 : creationDateTime.hashCode());
     result = prime * result + ((description == null) ? 0 : description.hashCode());
     result = prime * result + ((endDateTime == null) ? 0 : endDateTime.hashCode());
-    result = prime * result + (finished ? 1231 : 1237);
     result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((resultReference == null) ? 0 : resultReference.hashCode());
     result = prime * result + ((startDateTime == null) ? 0 : startDateTime.hashCode());
+    result = prime * result + ((status == null) ? 0 : status.hashCode());
     result = prime * result + Arrays.hashCode(steps);
     return result;
   }
@@ -191,8 +191,6 @@ public class WorkData implements Serializable {
         return false;
     } else if (!endDateTime.equals(other.endDateTime))
       return false;
-    if (finished != other.finished)
-      return false;
     if (id == null) {
       if (other.id != null)
         return false;
@@ -212,6 +210,11 @@ public class WorkData implements Serializable {
       if (other.startDateTime != null)
         return false;
     } else if (!startDateTime.equals(other.startDateTime))
+      return false;
+    if (status == null) {
+      if (other.status != null)
+        return false;
+    } else if (!status.equals(other.status))
       return false;
     if (!Arrays.equals(steps, other.steps))
       return false;

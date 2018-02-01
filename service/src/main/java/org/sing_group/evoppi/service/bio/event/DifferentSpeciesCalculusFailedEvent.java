@@ -27,34 +27,44 @@ import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
-public class DifferentSpeciesFastaCreationStartedEvent
+public class DifferentSpeciesCalculusFailedEvent
 extends DifferentSpeciesCalculusEvent
 implements Serializable, WorkStepEvent {
   private static final long serialVersionUID = 1L;
+  
+  private final String cause;
 
-  public DifferentSpeciesFastaCreationStartedEvent(DifferentSpeciesCalculusEvent event) {
+  public DifferentSpeciesCalculusFailedEvent(DifferentSpeciesCalculusEvent event, String cause) {
     super(event);
+    this.cause = cause;
   }
   
-  public DifferentSpeciesFastaCreationStartedEvent(
+  public DifferentSpeciesCalculusFailedEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId
+    int workId, int resultId, String cause
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
+    
+    this.cause = cause;
+  }
+  
+  public String getCause() {
+    return cause;
   }
 
   @Override
   public String getDescription() {
-    return "Crearting FASTA file for reference genes and target genome.";
+    return "Execution failed. Cause: " + this.cause;
   }
 
   @Override
   public double getProgress() {
-    return 0.2d;
+    return Double.NaN;
   }
 
   @Override
   public ExecutionStatus getWorkStatus() {
-    return ExecutionStatus.RUNNING;
+    return ExecutionStatus.FAILED;
   }
+
 }

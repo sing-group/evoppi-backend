@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 
 import io.swagger.annotations.ApiModel;

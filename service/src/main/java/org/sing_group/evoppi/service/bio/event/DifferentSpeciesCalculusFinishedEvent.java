@@ -24,7 +24,7 @@ package org.sing_group.evoppi.service.bio.event;
 import java.io.Serializable;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
-import org.sing_group.evoppi.domain.entities.bio.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
 public class DifferentSpeciesCalculusFinishedEvent

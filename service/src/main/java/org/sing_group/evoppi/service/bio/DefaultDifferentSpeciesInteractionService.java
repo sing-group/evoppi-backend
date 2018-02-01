@@ -29,7 +29,6 @@ import static javax.ejb.TransactionAttributeType.NOT_SUPPORTED;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -51,23 +50,14 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesBlastAlignmentFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesBlastAlignmentStartedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesBlastRequestEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculateTargetInteractionsRequestEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusStartedEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesFastaCreationFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesFastaCreationStartedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesInteractionsRequestEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesReferenceInteractionsCalculusFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesReferenceInteractionsCalculusStartedEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesTargetInteractionsCalculusFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesTargetInteractionsCalculusStartedEvent;
 import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 import org.sing_group.evoppi.service.spi.bio.BlastService;
 import org.sing_group.evoppi.service.spi.bio.DifferentSpeciesInteractionService;
 import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
+import org.sing_group.evoppi.service.spi.bio.event.DifferentSpeciesInteractionEventNotifier;
 import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback.SimpleInteractionsCalculusCallback;
 import org.sing_group.evoppi.service.spi.storage.GeneStorageService;
 import org.sing_group.evoppi.service.spi.storage.GenomeStorageService;
@@ -80,42 +70,12 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
   
   @Inject
   private InteractomeDAO interactomeDao;
-  
-  @Inject
-  private Event<DifferentSpeciesBlastRequestEvent> blastRequestEvent;
-  
+
   @Inject
   private Event<DifferentSpeciesCalculateTargetInteractionsRequestEvent> calculateTargetInteractionsEvent;
   
   @Inject
-  private Event<DifferentSpeciesCalculusStartedEvent> calculusStartedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesReferenceInteractionsCalculusStartedEvent> referenceInteractionsStartedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesReferenceInteractionsCalculusFinishedEvent> referenceInteractionsFinishedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesFastaCreationStartedEvent> fastaCreationStartedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesFastaCreationFinishedEvent> fastaCreationFinishedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesBlastAlignmentStartedEvent> blastAlignmentStartedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesBlastAlignmentFinishedEvent> blastAlignmentFinishedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesTargetInteractionsCalculusStartedEvent> targetInteractionsStartedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesTargetInteractionsCalculusFinishedEvent> targetInteractionsFinishedEvent;
-  
-  @Inject
-  private Event<DifferentSpeciesCalculusFinishedEvent> calculusFinishedEvent;
+  private Event<DifferentSpeciesBlastRequestEvent> blastRequestEvent;
   
   @Inject
   private GeneStorageService geneStorageService;
@@ -129,15 +89,18 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
   @Inject
   private InteractionsCalculator interactionsCalculator;
   
+  @Inject
+  private DifferentSpeciesInteractionEventNotifier eventManager;
+  
   @Override
   @Asynchronous
   public void calculateReferenceInteractions(
     @Observes(during = TransactionPhase.AFTER_SUCCESS) DifferentSpeciesInteractionsRequestEvent event
   ) {
     try {
-      this.notifyCalculusStarted(event);
+      this.eventManager.notifyCalculusStarted(event);
       
-      this.notifyReferenceInteractionsCalculusStarted(event);
+      this.eventManager.notifyReferenceInteractionsCalculusStarted(event);
       
       final Interactome targetInteractome = this.interactomeDao.getInteractome(event.getTargetInteractome());
       
@@ -156,18 +119,18 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
         .map(Gene::getId)
       .collect(Collectors.toSet());
       
-      this.notifyReferenceInteractionsCalculusFinished(event, referenceGeneIds, referenceInteractions);
+      this.eventManager.notifyReferenceInteractionsCalculusFinished(event, referenceGeneIds, referenceInteractions);
 
-      this.notifyFastaCreationStarted(event);
+      this.eventManager.notifyFastaCreationStarted(event);
       
       final Path referenceFastaPath = this.geneStorageService.createFasta(referenceGenes);
       final Path targetFastaPath = this.genomeStorageService.getGenomePath(targetInteractome.getSpecies());
       
-      this.notifyFastaFinishedStarted(event, referenceFastaPath, targetFastaPath);
+      this.eventManager.notifyFastaFinishedStarted(event, referenceFastaPath, targetFastaPath);
       
       this.blastRequestEvent.fire(new DifferentSpeciesBlastRequestEvent(event, referenceFastaPath, targetFastaPath, referenceInteractions));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    } catch (Exception e) {
+      this.eventManager.notifyCalculusFailed(event, e.getMessage());
     }
   }
 
@@ -178,19 +141,19 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
     @Observes(during = TransactionPhase.AFTER_SUCCESS) DifferentSpeciesBlastRequestEvent event
   ) {
     try {
-      this.notifyBlastAlignmentStarted(event);
+      this.eventManager.notifyBlastAlignmentStarted(event);
       
       final Set<BlastResult> blastResults = this.blastService.blast(
         event.getTargetFastaPath(), event.getReferenceFastaPath(), event.getBlastQueryOptions()
       ).collect(toSet());
       
-      this.notifyBlastAlignmentFinished(event, blastResults);
+      this.eventManager.notifyBlastAlignmentFinished(event, blastResults);
       
       this.calculateTargetInteractionsEvent.fire(new DifferentSpeciesCalculateTargetInteractionsRequestEvent(
         event, event.getReferenceInteractions().collect(toSet()), blastResults)
       );
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    } catch (Exception e) {
+      this.eventManager.notifyCalculusFailed(event, e.getMessage());
     } finally {
       try {
         Files.deleteIfExists(event.getReferenceFastaPath());
@@ -205,26 +168,30 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
   public void calculateTargetInteractions(
     @Observes(during = TransactionPhase.AFTER_SUCCESS) DifferentSpeciesCalculateTargetInteractionsRequestEvent event
   ) {
-    final Set<Integer> targtGeneIds = event.getBlastResults()
-      .mapToInt(BlastResult::getSseqid)
-      .distinct()
-      .boxed()
-    .collect(toSet());
-    
-    this.notifyTargetInteractionsCalculusStarted(event, targtGeneIds);
-    
-    final Interactome targetInteractome = this.interactomeDao.getInteractome(event.getTargetInteractome());
-    
-    final Gene[] targetGenes = targtGeneIds.stream()
-      .map(this.geneDao::getGene)
-    .toArray(Gene[]::new);
-    
-    final Set<GeneInteraction> targetInteractions = getDirectGeneInteractons(targetInteractome, targetGenes)
+    try {
+      final Set<Integer> targtGeneIds = event.getBlastResults()
+        .mapToInt(BlastResult::getSseqid)
+        .distinct()
+        .boxed()
       .collect(toSet());
-    
-    this.notifyTargetInteractionsCalculusFinished(event, targtGeneIds, targetInteractions);
-    
-    this.notifyCalculusFinished(event);
+      
+      this.eventManager.notifyTargetInteractionsCalculusStarted(event, targtGeneIds);
+      
+      final Interactome targetInteractome = this.interactomeDao.getInteractome(event.getTargetInteractome());
+      
+      final Gene[] targetGenes = targtGeneIds.stream()
+        .map(this.geneDao::getGene)
+      .toArray(Gene[]::new);
+      
+      final Set<GeneInteraction> targetInteractions = getDirectGeneInteractons(targetInteractome, targetGenes)
+        .collect(toSet());
+      
+      this.eventManager.notifyTargetInteractionsCalculusFinished(event, targtGeneIds, targetInteractions);
+      
+      this.eventManager.notifyCalculusFinished(event);
+    } catch (Exception e) {
+      this.eventManager.notifyCalculusFailed(event, e.getMessage());
+    }
   }
   
   private Stream<GeneInteraction> getDirectGeneInteractons(Interactome interactome, Gene ... genes) {
@@ -267,60 +234,5 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
     public void degreeCalculusFinished(int degree, Stream<GeneInteraction> interactions) {
       interactions.forEach(this.interactions::add);
     }
-  }
-
-  private void notifyCalculusStarted(DifferentSpeciesInteractionsRequestEvent event) {
-    this.calculusStartedEvent.fire(new DifferentSpeciesCalculusStartedEvent(event));
-  }
-
-  private void notifyReferenceInteractionsCalculusStarted(DifferentSpeciesInteractionsRequestEvent event) {
-    this.referenceInteractionsStartedEvent.fire(new DifferentSpeciesReferenceInteractionsCalculusStartedEvent(event));
-  }
-
-  private void notifyReferenceInteractionsCalculusFinished(
-    DifferentSpeciesInteractionsRequestEvent event, Set<Integer> referenceGeneIds, Collection<GeneInteraction> interactions
-  ) {
-    this.referenceInteractionsFinishedEvent
-      .fire(new DifferentSpeciesReferenceInteractionsCalculusFinishedEvent(event, referenceGeneIds, interactions));
-  }
-
-  private void notifyFastaCreationStarted(DifferentSpeciesInteractionsRequestEvent event) {
-    this.fastaCreationStartedEvent.fire(new DifferentSpeciesFastaCreationStartedEvent(event));
-  }
-  
-  private void notifyFastaFinishedStarted(
-    DifferentSpeciesInteractionsRequestEvent event, Path referenceFastaPath, Path targetFastaPath
-  ) {
-    this.fastaCreationFinishedEvent
-      .fire(new DifferentSpeciesFastaCreationFinishedEvent(event, referenceFastaPath, targetFastaPath));
-  }
-
-  private void notifyBlastAlignmentStarted(DifferentSpeciesBlastRequestEvent event) {
-    this.blastAlignmentStartedEvent.fire(new DifferentSpeciesBlastAlignmentStartedEvent(event));
-  }
-
-  private void notifyBlastAlignmentFinished(
-    DifferentSpeciesBlastRequestEvent event, Collection<BlastResult> blastResults
-  ) {
-    this.blastAlignmentFinishedEvent.fire(new DifferentSpeciesBlastAlignmentFinishedEvent(event, blastResults));
-  }
-
-  private void notifyTargetInteractionsCalculusStarted(
-    DifferentSpeciesCalculateTargetInteractionsRequestEvent event, Collection<Integer> geneIds
-  ) {
-    this.targetInteractionsStartedEvent
-      .fire(new DifferentSpeciesTargetInteractionsCalculusStartedEvent(event, geneIds));
-  }
-
-  private void notifyTargetInteractionsCalculusFinished(
-    DifferentSpeciesCalculateTargetInteractionsRequestEvent event, Collection<Integer> geneIds,
-    Collection<GeneInteraction> interactions
-  ) {
-    this.targetInteractionsFinishedEvent
-      .fire(new DifferentSpeciesTargetInteractionsCalculusFinishedEvent(event, geneIds, interactions));
-  }
-
-  private void notifyCalculusFinished(DifferentSpeciesCalculateTargetInteractionsRequestEvent event) {
-    this.calculusFinishedEvent.fire(new DifferentSpeciesCalculusFinishedEvent(event));
   }
 }

@@ -112,7 +112,8 @@ public class DefaultInteractionService implements InteractionService {
     
     this.taskSameEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomes, maxDegree, work.getId(), result.getId()));
     
-    result.scheduled();
+    result.setScheduled();
+    work.setScheduled();
     
     return work;
   }
@@ -148,7 +149,8 @@ public class DefaultInteractionService implements InteractionService {
       geneId, referenceInteractome, targetInteractome, blastOptions, maxDegree, work.getId(), result.getId())
     );
     
-    result.scheduled();
+    result.setScheduled();
+    work.setScheduled();
     
     return work;
   }

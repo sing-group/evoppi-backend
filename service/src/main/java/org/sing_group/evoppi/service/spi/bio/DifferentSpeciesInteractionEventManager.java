@@ -25,6 +25,7 @@ import javax.ejb.Local;
 
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesBlastAlignmentFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesBlastAlignmentStartedEvent;
+import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusFailedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesCalculusStartedEvent;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesFastaCreationFinishedEvent;
@@ -60,5 +61,7 @@ public interface DifferentSpeciesInteractionEventManager {
   public void manageTargetInteractionsCalculusFinished(DifferentSpeciesTargetInteractionsCalculusFinishedEvent event);
 
   public void manageCalculusFinishedEvent(DifferentSpeciesCalculusFinishedEvent event);
+  
+  public void manageFailure(DifferentSpeciesCalculusFailedEvent event);
 
 }
