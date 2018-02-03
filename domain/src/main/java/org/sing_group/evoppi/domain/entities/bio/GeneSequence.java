@@ -39,7 +39,9 @@ import org.sing_group.evoppi.domain.entities.bio.GeneSequence.GeneSequenceId;
 @Entity
 @Table(name = "gene_sequence")
 @IdClass(GeneSequenceId.class)
-public class GeneSequence {
+public class GeneSequence implements Serializable {
+  private static final long serialVersionUID = 1L;
+
   @Id
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
   @JoinColumn(name = "geneId", referencedColumnName = "id", nullable = false)

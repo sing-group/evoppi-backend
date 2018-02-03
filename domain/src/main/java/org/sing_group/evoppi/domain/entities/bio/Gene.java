@@ -85,6 +85,7 @@ public class Gene implements Serializable {
   
   public Stream<String> getSequences() {
     return this.getGeneSequence()
+      .sorted((g1, g2) -> g1.getVersion() - g2.getVersion())
       .map(GeneSequence::getSequence);
   }
 
