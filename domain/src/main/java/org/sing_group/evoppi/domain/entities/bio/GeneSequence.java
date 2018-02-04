@@ -57,6 +57,10 @@ public class GeneSequence implements Serializable {
   public Gene getGene() {
     return gene;
   }
+  
+  public int getGeneId() {
+    return this.gene.getId();
+  }
 
   public int getVersion() {
     return version;

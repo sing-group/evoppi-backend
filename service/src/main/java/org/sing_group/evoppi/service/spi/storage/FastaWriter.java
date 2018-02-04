@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.service.spi.storage;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -29,6 +30,16 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 
 public interface FastaWriter {
 
-  public void createFasta(Collection<Gene> genes, Path path) throws IOException;
+  public default void createFasta(Collection<Gene> genes, Path path) throws IOException {
+    this.createFasta(genes, path, new FastaOutputConfiguration());
+  }
+  
+  public void createFasta(Collection<Gene> genes, Path path, FastaOutputConfiguration config) throws IOException;
+  
+  public default void createFasta(Collection<Gene> genes, Writer writer) throws IOException {
+    this.createFasta(genes, writer, new FastaOutputConfiguration());
+  }
+  
+  public void createFasta(Collection<Gene> genes, Writer writer, FastaOutputConfiguration config) throws IOException;
 
 }

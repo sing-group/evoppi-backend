@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-01-22T14:16:01.922+01:00",
+      "lastModified": "2018-02-04T21:02:45.780+01:00",
       "name": "EvoPPI"
     },
     {
@@ -53,7 +53,7 @@
     {
       "type": "Scenario",
       "id": "cea10757-0408-4553-8e04-cee8174a031d",
-      "lastModified": "2018-01-22T14:15:09.289+01:00",
+      "lastModified": "2018-02-04T20:01:02.203+01:00",
       "name": "Bio",
       "requestOrder": [
         "List species",
@@ -68,7 +68,9 @@
         "Get genes names",
         "Get gene name",
         "Find genes names of interactome",
-        "Get interactome With Interactions"
+        "Get interactome With Interactions",
+        "Different Species Interactions",
+        "Interaction Results Fasta"
       ],
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
     },
@@ -626,6 +628,103 @@
       "id": "b019c5da-d084-41b9-b40d-2ed294608b05",
       "lastModified": "2018-01-22T14:15:09.290+01:00",
       "name": "Get interactome With Interactions",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "gene",
+              "value": "6500"
+            },
+            {
+              "enabled": true,
+              "name": "referenceInteractome",
+              "value": "2"
+            },
+            {
+              "enabled": true,
+              "name": "targetInteractome",
+              "value": "1"
+            },
+            {
+              "enabled": true,
+              "name": "maxDegree",
+              "value": "1"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction"
+      },
+      "id": "6b2aaa4e-4a6d-4b5a-b52f-7a89359b3679",
+      "lastModified": "2018-01-24T20:34:14.052+01:00",
+      "name": "Different Species Interactions",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:8080",
+        "path": "/evoppi/rest/api/interaction/result/1/interactome/2/fasta"
+      },
+      "id": "41f841d7-5b7e-458b-bb36-21bcc47efb11",
+      "lastModified": "2018-02-04T21:02:45.780+01:00",
+      "name": "Interaction Results Fasta",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"

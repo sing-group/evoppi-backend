@@ -25,18 +25,22 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.Default;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneSequence;
+import org.sing_group.evoppi.service.spi.storage.FastaOutputConfiguration;
 import org.sing_group.evoppi.service.spi.storage.FastaWriter;
+import org.sing_group.fluent.compare.Compare;
 
 @Default
 public class DefaultFastaWriter implements FastaWriter {
@@ -47,8 +51,15 @@ public class DefaultFastaWriter implements FastaWriter {
   private String lineSeparator;
   
   @Override
-  public void createFasta(Collection<Gene> genes, Path path) throws IOException {
+  public void createFasta(Collection<Gene> genes, Path path, FastaOutputConfiguration config) throws IOException {
     try (BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName(this.fileCharset), CREATE)) {
+      this.createFasta(genes, writer, config);
+    }
+  }
+
+  @Override
+  public void createFasta(Collection<Gene> genes, Writer writer, FastaOutputConfiguration config) throws IOException {
+    try {
       final Consumer<String> writeLine = line -> {
         try {
           writer.append(line).append(this.lineSeparator);
@@ -57,9 +68,18 @@ public class DefaultFastaWriter implements FastaWriter {
         }
       };
       
-      genes.stream()
-        .flatMap(Gene::getGeneSequence)
-        .forEachOrdered(geneSequence -> appendGeneSequence(geneSequence, writeLine));
+      Stream<GeneSequence> sequences = genes.stream()
+        .flatMap(Gene::getGeneSequence);
+      
+      if (config.isSorted()) {
+        sequences = sequences
+          .sorted((gs1, gs2) -> Compare.objects(gs1, gs2)
+            .by(GeneSequence::getGeneId)
+            .thenBy(GeneSequence::getVersion)
+          .andGet());
+      }
+      
+      sequences.forEachOrdered(geneSequence -> appendGeneSequence(geneSequence, config, writeLine));
     } catch (RuntimeException re) {
       if (re.getCause() instanceof IOException) {
         throw (IOException) re.getCause();
@@ -69,10 +89,12 @@ public class DefaultFastaWriter implements FastaWriter {
     }
   }
   
-  private static void appendGeneSequence(GeneSequence geneSequence, Consumer<String> lineConsumer) {
+  private static void appendGeneSequence(GeneSequence geneSequence, FastaOutputConfiguration config, Consumer<String> lineConsumer) {
     final StringBuilder idBuilder = new StringBuilder()
-      .append('>').append(geneSequence.getGene().getId())
-      .append('_').append(geneSequence.getVersion());
+      .append('>').append(geneSequence.getGene().getId());
+    
+    if (config.isIncludeVersionSuffix())
+      idBuilder.append('_').append(geneSequence.getVersion());
     
     lineConsumer.accept(idBuilder.toString());
     wrapText(geneSequence.getSequence(), 80, lineConsumer);

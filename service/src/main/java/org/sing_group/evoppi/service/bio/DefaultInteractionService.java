@@ -21,10 +21,15 @@
  */
 package org.sing_group.evoppi.service.bio;
 
+import static java.util.stream.Collectors.toSet;
 import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -40,11 +45,14 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.Work;
 import org.sing_group.evoppi.service.bio.event.DifferentSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
+import org.sing_group.evoppi.service.spi.storage.FastaOutputConfiguration;
+import org.sing_group.evoppi.service.spi.storage.FastaWriter;
 
 @Stateless
 @PermitAll
@@ -53,6 +61,9 @@ public class DefaultInteractionService implements InteractionService {
   
   @Inject
   private InteractomeDAO interactomeDao;
+  
+  @Inject
+  private FastaWriter fastaWriter;
   
   @Inject
   private WorkDAO workDao;
@@ -153,6 +164,49 @@ public class DefaultInteractionService implements InteractionService {
     work.setScheduled();
     
     return work;
+  }
+  
+  @Override
+  public String getSameSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix) {
+    final SameSpeciesInteractionsResult result = this.getSameSpeciesResult(resultId);
+    
+    if (result.getQueryInteractomeIds().noneMatch(id -> id == interactomeId))
+      throw new IllegalArgumentException("Invalid interactome id: " + interactomeId);
+
+    return createFastaFromInteractions(interactomeId, result.getInteractions(), includeVersionSuffix);
+  }
+  
+  @Override
+  public String getDifferentSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix) {
+    final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
+    
+    if (result.getReferenceInteractomeId() != interactomeId && result.getTargetInteractomeId() != interactomeId) {
+      throw new IllegalArgumentException("Invalid interactome id: " + interactomeId);
+    }
+    
+    return createFastaFromInteractions(interactomeId, result.getInteractions(), includeVersionSuffix);
+  }
+
+  private String createFastaFromInteractions(
+    int interactomeId,
+    Stream<InteractionGroupResult> interactions,
+    boolean includeVersionSuffix
+  ) {
+    final Set<Gene> genes = interactions
+      .filter(interaction -> interaction.getInteractomeIds().anyMatch(id -> id == interactomeId))
+      .flatMapToInt(InteractionGroupResult::getGeneIds)
+      .mapToObj(this.geneDao::getGene)
+    .collect(toSet());
+    
+    final StringWriter writer = new StringWriter();
+    
+    try {
+      this.fastaWriter.createFasta(genes, writer, new FastaOutputConfiguration(includeVersionSuffix, true));
+      
+      return writer.toString();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   private boolean haveSameSpecies(int... interactomes) {

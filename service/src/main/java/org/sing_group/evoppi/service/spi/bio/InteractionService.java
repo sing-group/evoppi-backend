@@ -47,4 +47,8 @@ public interface InteractionService {
   public boolean isSameSpeciesResult(int id);
 
   public boolean isDifferentSpeciesResult(int id);
+
+  public String getSameSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix);
+
+  public String getDifferentSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix);
 }
