@@ -19,40 +19,39 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.rest.filter;
-
-import static java.util.Arrays.asList;
+package org.sing_group.evoppi.rest.mapper;
 
 import java.io.IOException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
-@Provider
-@PreMatching
-public class CrossDomainFilter implements ContainerResponseFilter {
-  private final CrossDomainBuilder builder;
-  
-  public CrossDomainFilter() {
-    this.builder = new CrossDomainBuilder();
-  }
-  
-  @Override
-  public void filter(ContainerRequestContext containerRequest, ContainerResponseContext containerResponse) throws IOException {
-    if (containerRequest.getMethod().equals("OPTIONS")) {
-      final MultivaluedMap<String, Object> responseHeaders = containerResponse.getHeaders();
+import org.sing_group.evoppi.rest.filter.CrossDomainBuilder;
+import org.sing_group.evoppi.rest.filter.CrossDomainConfiguration;
+import org.sing_group.evoppi.rest.filter.DefaultCrossDomainConfiguration;
 
-      final CrossDomain annotation = CrossDomainInterceptor.class.getAnnotation(CrossDomain.class);
-      
-      this.builder.buildCorsPreFlightHeaders(
-        new AnnotationCrossDomainConfiguration(annotation),
-        (key, value) -> responseHeaders.put(key, asList(value)),
-        containerRequest::getHeaderString
-      );
+@Provider
+public class ErrorResponseFilter implements ContainerResponseFilter {
+  private CrossDomainBuilder corsBuilder;
+  
+  public ErrorResponseFilter() {
+    this.corsBuilder = new CrossDomainBuilder();
+  }
+
+  @Override
+  public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
+  throws IOException {
+    if (requestContext.getHeaderString("Origin") != null) {
+      if (responseContext.getStatus() >= 400) {
+        final MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
+        final CrossDomainConfiguration configuration = new DefaultCrossDomainConfiguration();
+
+        this.corsBuilder.buildCorsHeaders(configuration, responseHeaders::putSingle, requestContext::getHeaderString);
+      }
     }
   }
+
 }
