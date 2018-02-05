@@ -50,19 +50,21 @@ public class CrossDomainInterceptor {
   
   @AroundInvoke
   public Object invoke(InvocationContext ctx) throws Exception {
-    final Object responseObject = ctx.proceed();
-    final CrossDomain annotation = getAnnotation(ctx.getMethod(), ctx.getTarget().getClass());
+    final CrossDomain annotation;
+    final Object responseObject;
     
-    if (request.getHeader("Origin") != null && responseObject instanceof Response && annotation != null) {
-      final Response response = (Response) responseObject;
-      final CrossDomainBuilder.ResponseHeaderBuilder newResponse = new CrossDomainBuilder.ResponseHeaderBuilder(response);
-
-      this.builder.buildCorsHeaders(new AnnotationCrossDomainConfiguration(annotation), newResponse::header, request::getHeader);
-      
-      return newResponse.build();
-    } else {
+    if (request.getHeader("Origin") == null
+      || (annotation = getAnnotation(ctx.getMethod(), ctx.getTarget().getClass())) == null
+      || !((responseObject = ctx.proceed()) instanceof Response)) {
       return ctx.proceed();
     }
+    
+    final Response response = (Response) responseObject;
+    final CrossDomainBuilder.ResponseHeaderBuilder newResponse = new CrossDomainBuilder.ResponseHeaderBuilder(response);
+
+    this.builder.buildCorsHeaders(new AnnotationCrossDomainConfiguration(annotation), newResponse::header, request::getHeader);
+    
+    return newResponse.build();
   }
   
   private static CrossDomain getAnnotation(Method method, Class<?> targetClass) {
