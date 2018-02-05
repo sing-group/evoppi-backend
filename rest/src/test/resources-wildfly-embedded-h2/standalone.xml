@@ -360,6 +360,25 @@
           <simple name="java:global/evoppi/swagger/schemes" value="http" type="java.lang.String"/>
           <simple name="java:global/evoppi/swagger/host" value="localhost:8080" type="java.lang.String"/>
           <simple name="java:global/evoppi/swagger/basePath" value="/evoppi/rest/api" type="java.lang.String"/>
+          
+          <simple name="java:global/evoppi/docker/image/name" value="nvazquezg/blast:latest" type="java.lang.String"/>
+          <simple name="java:global/evoppi/docker/path/separator" value="/" type="java.lang.String"/>
+          <simple name="java:global/evoppi/docker/path/shared/host" value="/tmp/evoppi/docker" type="java.lang.String"/>
+          <simple name="java:global/evoppi/docker/path/shared/container/input" value="/mnt/shared/input" type="java.lang.String"/>
+          <simple name="java:global/evoppi/docker/path/shared/container/output" value="/mnt/shared/output" type="java.lang.String"/>
+          <simple name="java:global/evoppi/docker/host" value="tcp://localhost:2375" type="java.lang.String"/>
+          
+          <simple name="java:global/evoppi/docker/blast/makeblastdb/command" value="/opt/blast/bin/makeblastdb -in [INPUT] -dbtype prot -out [OUTPUT]" type="java.lang.String"/>
+          <simple name="java:global/evoppi/docker/blast/blast/command" value="/opt/blast/bin/blastp -query [QUERY] -db [DATABASE] -outfmt 6 -evalue [EVALUE] -max_target_seqs [MAX_TARGET_SEQS] -out [OUTPUT]" type="java.lang.String"/>
+          <simple name="java:global/evoppi/docker/blast/file/deleteOnFinish" value="false" type="boolean"/>
+          
+          <simple name="java:global/evoppi/storage/genome/path" value="/tmp/evoppi/genome" type="java.lang.String"/>
+          
+          <simple name="java:global/evoppi/storage/fasta/path" value="/tmp/evoppi/fasta" type="java.lang.String"/>
+          
+          <simple name="java:global/evoppi/storage/file/charset" value="UTF-8" type="java.lang.String"/>
+          <!-- Valid values: windows (\r\n) or unix (\r) -->
+          <simple name="java:global/evoppi/storage/file/lineSeparator" value="unix" type="java.lang.String"/>
       </bindings>
       <remote-naming />
     </subsystem>

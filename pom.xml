@@ -101,7 +101,7 @@
     <license.addJavaLicenseAfterPackage>false</license.addJavaLicenseAfterPackage>
 
     <!-- BOM versions -->
-    <arquillian.version>1.1.15.Final</arquillian.version>
+    <arquillian.version>1.2.1.Final</arquillian.version>
     <javaee.api.version>7.0</javaee.api.version>
 
     <!-- Dependencies versions -->
@@ -121,7 +121,7 @@
     <arquillian.rest.version>1.0.0.Alpha4</arquillian.rest.version>
     <easymock.version>3.5.1</easymock.version>
     <hamcrest.version>2.0.0.0</hamcrest.version>
-    <jacoco.version>0.7.9</jacoco.version>
+    <jacoco.version>0.8.0</jacoco.version>
     <junit.version>4.12</junit.version>
     <mysql.connector.java.version>5.1.21</mysql.connector.java.version>
     <slf4j.version>1.5.11</slf4j.version>

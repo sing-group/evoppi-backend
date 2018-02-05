@@ -19,28 +19,28 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-
 package org.sing_group.evoppi.rest.resource;
+
+import static org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies.createDependency;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.sing_group.fluent.checker.Checks;
 
 public final class Deployments {
   private Deployments() {}
   
   public static WebArchive createDeployment() {
     return ShrinkWrap.create(WebArchive.class, "test.war")
-      .addClass(Checks.class)
       .addPackages(true, "org.sing_group.evoppi.rest")
       .addAsLibraries(
         Maven.resolver()
           .loadPomFromFile("pom.xml")
           .importCompileAndRuntimeDependencies()
-          .importDependencies(ScopeType.PROVIDED)
+          .addDependencies(createDependency("org.sing_group:evoppi-domain", ScopeType.RUNTIME, false))
+          .addDependencies(createDependency("org.sing_group:evoppi-service", ScopeType.RUNTIME, false))
+          .addDependencies(createDependency("org.sing_group:evoppi-tests", ScopeType.TEST, false))
           .resolve().withTransitivity()
         .asFile()
       )

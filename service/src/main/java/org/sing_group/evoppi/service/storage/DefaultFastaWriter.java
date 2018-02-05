@@ -46,10 +46,21 @@ import org.sing_group.fluent.compare.Compare;
 public class DefaultFastaWriter implements FastaWriter {
   @Resource(name = "java:global/evoppi/storage/file/charset")
   private String fileCharset;
-  
+
   @Resource(name = "java:global/evoppi/storage/file/lineSeparator")
   private String lineSeparator;
-  
+
+  private String newLine() {
+    switch (this.lineSeparator) {
+      case "unix":
+        return "\n";
+      case "windows":
+        return "\r\n";
+      default:
+        throw new IllegalStateException("Invalid line separator type: " + this.lineSeparator);
+    }
+  }
+
   @Override
   public void createFasta(Collection<Gene> genes, Path path, FastaOutputConfiguration config) throws IOException {
     try (BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName(this.fileCharset), CREATE)) {
@@ -62,23 +73,26 @@ public class DefaultFastaWriter implements FastaWriter {
     try {
       final Consumer<String> writeLine = line -> {
         try {
-          writer.append(line).append(this.lineSeparator);
+          writer.append(line).append(this.newLine());
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
       };
-      
-      Stream<GeneSequence> sequences = genes.stream()
-        .flatMap(Gene::getGeneSequence);
-      
+
+      Stream<GeneSequence> sequences =
+        genes.stream()
+          .flatMap(Gene::getGeneSequence);
+
       if (config.isSorted()) {
-        sequences = sequences
-          .sorted((gs1, gs2) -> Compare.objects(gs1, gs2)
-            .by(GeneSequence::getGeneId)
-            .thenBy(GeneSequence::getVersion)
-          .andGet());
+        sequences =
+          sequences
+            .sorted((gs1, gs2) -> Compare.objects(gs1, gs2)
+              .by(GeneSequence::getGeneId)
+              .thenBy(GeneSequence::getVersion)
+              .andGet()
+            );
       }
-      
+
       sequences.forEachOrdered(geneSequence -> appendGeneSequence(geneSequence, config, writeLine));
     } catch (RuntimeException re) {
       if (re.getCause() instanceof IOException) {
@@ -88,25 +102,28 @@ public class DefaultFastaWriter implements FastaWriter {
       }
     }
   }
-  
-  private static void appendGeneSequence(GeneSequence geneSequence, FastaOutputConfiguration config, Consumer<String> lineConsumer) {
-    final StringBuilder idBuilder = new StringBuilder()
-      .append('>').append(geneSequence.getGene().getId());
-    
+
+  private static void appendGeneSequence(
+    GeneSequence geneSequence, FastaOutputConfiguration config, Consumer<String> lineConsumer
+  ) {
+    final StringBuilder idBuilder =
+      new StringBuilder()
+        .append('>').append(geneSequence.getGene().getId());
+
     if (config.isIncludeVersionSuffix())
       idBuilder.append('_').append(geneSequence.getVersion());
-    
+
     lineConsumer.accept(idBuilder.toString());
     wrapText(geneSequence.getSequence(), 80, lineConsumer);
   }
-  
+
   private static void wrapText(String text, int columns, Consumer<String> lineConsumer) {
     while (text.length() >= columns) {
       lineConsumer.accept(text.substring(0, columns));
-      
+
       text = text.substring(columns);
     }
-    
+
     if (!text.isEmpty()) {
       lineConsumer.accept(text);
     }

@@ -319,7 +319,8 @@
                 <simple name="java:global/evoppi/storage/fasta/path" value="/tmp/evoppi/fasta" type="java.lang.String"/>
                 
                 <simple name="java:global/evoppi/storage/file/charset" value="UTF-8" type="java.lang.String"/>
-                <simple name="java:global/evoppi/storage/file/lineSeparator" value="&#xA;" type="java.lang.String"/>
+                <!-- Valid values: windows (\r\n) or unix (\r) -->
+                <simple name="java:global/evoppi/storage/file/lineSeparator" value="unix" type="java.lang.String"/>
             </bindings>
             <remote-naming/>
         </subsystem>
