@@ -31,5 +31,7 @@ public interface InteractionResource {
 
   public Response getInterationResult(int id);
 
+  public Response getInterationResultInteractomeSingleFasta(int resultId, boolean includeVersionSuffix);
+  
   public Response getInterationResultInteractomeFasta(int id, int interactomeId, boolean includeVersionSuffix);
 }

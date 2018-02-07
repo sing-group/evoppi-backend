@@ -176,11 +176,11 @@ public class DefaultBioMapper implements BioMapper {
     .toArray(BlastResultData[]::new);
     
     final IdAndUri[] referenceGenes = result.getReferenceGeneIds()
-      .map(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
+      .mapToObj(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
     .toArray(IdAndUri[]::new);
     
     final IdAndUri[] targetGenes = result.getTargetGeneIds()
-      .map(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
+      .mapToObj(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
     .toArray(IdAndUri[]::new);
     
     final int referenceInteractomeId = result.getReferenceInteractomeId();

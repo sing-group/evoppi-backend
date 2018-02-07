@@ -23,7 +23,6 @@ package org.sing_group.evoppi.rest.resource.bio;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 import java.util.function.Function;
 
@@ -180,10 +179,43 @@ public class DefaultInteractionResource implements InteractionResource {
   }
 
   @GET
-  @Path("result/{id: \\d+}/interactome/{interactomeId: \\d+}/fasta")
-  @Produces(TEXT_PLAIN)
+  @Path("result/{id: \\d+}/interactome/fasta")
+  @Produces("text/x-fasta")
   @ApiOperation(
-    value = "Returns a Fasta file with the genes in the result that belong to one of the query interactomes.",
+    value = "Returns a FASTA file with the genes in the result that belong to both query interactomes.",
+    response = String.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown interaction result: {id}")
+  )
+  @Override
+  public Response getInterationResultInteractomeSingleFasta(
+    @PathParam("id") int resultId,
+    @QueryParam("addVersionSuffix") @DefaultValue("false") boolean includeVersionSuffix
+  ) {
+    if (this.service.isSameSpeciesResult(resultId)) {
+      final String fasta = this.service.getSameSpeciesResultSingleFasta(resultId, includeVersionSuffix);
+      
+      return Response
+        .ok(fasta)
+      .build();
+    } else if (this.service.isDifferentSpeciesResult(resultId)) {
+      final String fasta = this.service.getDifferentSpeciesResultSingleFasta(resultId, includeVersionSuffix);
+      
+      return Response
+        .ok(fasta)
+      .build();
+    } else {
+      throw new IllegalArgumentException("Unknown interactions results id: " + resultId);
+    }
+  }
+
+  @GET
+  @Path("result/{id: \\d+}/interactome/{interactomeId: \\d+}/fasta")
+  @Produces("text/x-fasta")
+  @ApiOperation(
+    value = "Returns a FASTA file with the genes in the result that belong to one of the query interactomes.",
     response = String.class,
     code = 200
   )

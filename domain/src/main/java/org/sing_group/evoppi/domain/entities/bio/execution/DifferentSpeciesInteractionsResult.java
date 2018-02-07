@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
@@ -123,15 +124,17 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     this.referenceGeneIds = new HashSet<>(geneIds);
   }
   
-  public Stream<Integer> getReferenceGeneIds() {
-    return referenceGeneIds.stream();
+  public IntStream getReferenceGeneIds() {
+    return referenceGeneIds.stream()
+      .mapToInt(Integer::intValue);
   }
   
   public void setTargetGeneIds(Collection<Integer> geneIds) {
     this.targetGeneIds = new HashSet<>(geneIds);
   }
   
-  public Stream<Integer> getTargetGeneIds() {
-    return targetGeneIds.stream();
+  public IntStream getTargetGeneIds() {
+    return targetGeneIds.stream()
+      .mapToInt(Integer::intValue);
   }
 }

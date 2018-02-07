@@ -51,4 +51,8 @@ public interface InteractionService {
   public String getSameSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix);
 
   public String getDifferentSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix);
+
+  public String getSameSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix);
+
+  public String getDifferentSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix);
 }

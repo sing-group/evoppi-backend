@@ -44,6 +44,7 @@ import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
@@ -167,34 +168,59 @@ public class DefaultInteractionService implements InteractionService {
   }
   
   @Override
+  public String getSameSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix) {
+    final SameSpeciesInteractionsResult result = this.getSameSpeciesResult(resultId);
+
+    return createFastaFromInteractions(result.getInteractions(), includeVersionSuffix);
+  }
+  
+  @Override
+  public String getDifferentSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix) {
+    final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
+    
+    final IntStream orthologIds = result.getBlastResults()
+      .mapToInt(BlastResult::getSseqid)
+      .distinct();
+
+    return createFastaFromGeneIds(IntStream.concat(result.getReferenceGeneIds(), orthologIds), includeVersionSuffix);
+  }
+  
+  @Override
   public String getSameSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix) {
     final SameSpeciesInteractionsResult result = this.getSameSpeciesResult(resultId);
     
     if (result.getQueryInteractomeIds().noneMatch(id -> id == interactomeId))
       throw new IllegalArgumentException("Invalid interactome id: " + interactomeId);
 
-    return createFastaFromInteractions(interactomeId, result.getInteractions(), includeVersionSuffix);
+    final Stream<InteractionGroupResult> interactions = result.getInteractions()
+      .filter(interaction -> interaction.getInteractomeIds().anyMatch(id -> id == interactomeId));
+    
+    return createFastaFromInteractions(interactions, includeVersionSuffix);
   }
   
   @Override
   public String getDifferentSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix) {
     final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
     
-    if (result.getReferenceInteractomeId() != interactomeId && result.getTargetInteractomeId() != interactomeId) {
+    if (result.getReferenceInteractomeId() == interactomeId) {
+      return createFastaFromGeneIds(result.getReferenceGeneIds(), includeVersionSuffix);
+    } else if (result.getTargetInteractomeId() == interactomeId) {
+      final IntStream orthologIds = result.getBlastResults()
+        .mapToInt(BlastResult::getSseqid)
+        .distinct();
+      
+      return createFastaFromGeneIds(orthologIds, includeVersionSuffix);
+    } else {
       throw new IllegalArgumentException("Invalid interactome id: " + interactomeId);
     }
-    
-    return createFastaFromInteractions(interactomeId, result.getInteractions(), includeVersionSuffix);
   }
 
-  private String createFastaFromInteractions(
-    int interactomeId,
-    Stream<InteractionGroupResult> interactions,
+  private String createFastaFromGeneIds(
+    IntStream geneIds,
     boolean includeVersionSuffix
   ) {
-    final Set<Gene> genes = interactions
-      .filter(interaction -> interaction.getInteractomeIds().anyMatch(id -> id == interactomeId))
-      .flatMapToInt(InteractionGroupResult::getGeneIds)
+    final Set<Gene> genes = geneIds
+      .sorted()
       .mapToObj(this.geneDao::getGene)
     .collect(toSet());
     
@@ -207,6 +233,15 @@ public class DefaultInteractionService implements InteractionService {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private String createFastaFromInteractions(
+    Stream<InteractionGroupResult> interactions,
+    boolean includeVersionSuffix
+  ) {
+    final IntStream geneIds = interactions.flatMapToInt(InteractionGroupResult::getGeneIds);
+    
+    return createFastaFromGeneIds(geneIds, includeVersionSuffix);
   }
   
   private boolean haveSameSpecies(int... interactomes) {

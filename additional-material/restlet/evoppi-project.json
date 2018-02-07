@@ -1,11 +1,11 @@
 {
-  "front-version": "2.13.2",
+  "front-version": "2.14.1",
   "version": 3,
   "nodes": [
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-02-04T21:02:45.780+01:00",
+      "lastModified": "2018-02-07T19:38:20.741+01:00",
       "name": "EvoPPI"
     },
     {
@@ -53,7 +53,7 @@
     {
       "type": "Scenario",
       "id": "cea10757-0408-4553-8e04-cee8174a031d",
-      "lastModified": "2018-02-04T20:01:02.203+01:00",
+      "lastModified": "2018-02-07T19:38:20.742+01:00",
       "name": "Bio",
       "requestOrder": [
         "List species",
@@ -70,7 +70,8 @@
         "Find genes names of interactome",
         "Get interactome With Interactions",
         "Different Species Interactions",
-        "Interaction Results Fasta"
+        "Interaction Results Fasta",
+        "Interaction Results Single Fasta"
       ],
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
     },
@@ -725,6 +726,47 @@
       "id": "41f841d7-5b7e-458b-bb36-21bcc47efb11",
       "lastModified": "2018-02-04T21:02:45.780+01:00",
       "name": "Interaction Results Fasta",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:8080",
+        "path": "/evoppi/rest/api/interaction/result/1/interactome/fasta"
+      },
+      "id": "96ce7718-2cfe-4b5d-a33f-0a10815eea3c",
+      "lastModified": "2018-02-07T19:38:20.742+01:00",
+      "name": "Interaction Results Single Fasta",
       "headers": [],
       "metaInfo": {},
       "parentId": "cea10757-0408-4553-8e04-cee8174a031d"
