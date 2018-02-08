@@ -70,7 +70,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
     this.work = work;
     this.order = order;
     this.description = description;
-    this.progress = progress;
+    this.progress = progress == null || progress.isNaN() ? null : progress;
   }
 
   public int getOrder() {
