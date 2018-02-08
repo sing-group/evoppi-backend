@@ -23,6 +23,7 @@ package org.sing_group.evoppi.service.bio;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toSet;
 import static javax.ejb.TransactionAttributeType.NOT_SUPPORTED;
 
@@ -199,15 +200,12 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
     final Predicate<Interaction> hasValidGenes = interaction -> 
       genesSet.contains(interaction.getGeneA()) && genesSet.contains(interaction.getGeneB());
     
-    final int[] interactomeId = { interactome.getId() };
-    
     return interactome.getInteractions()
       .filter(hasValidGenes)
       .map(interaction -> new GeneInteraction(
         interaction.getGeneA().getId(),
         interaction.getGeneB().getId(),
-        interactomeId,
-        1
+        singletonMap(interactome.getId(), 1)
       ));
   }
   
@@ -229,9 +227,9 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
     public Stream<GeneInteraction> getInteractions() {
       return this.interactions.stream();
     }
-
+    
     @Override
-    public void degreeCalculusFinished(int degree, Stream<GeneInteraction> interactions) {
+    public void interactionsCalculated(Stream<GeneInteraction> interactions) {
       interactions.forEach(this.interactions::add);
     }
   }

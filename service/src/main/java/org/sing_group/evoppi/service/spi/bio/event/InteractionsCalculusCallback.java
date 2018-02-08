@@ -27,19 +27,15 @@ import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 
 public interface InteractionsCalculusCallback {
   public void calculusStarted();
-  public void degreeCalculusStarted(int degree);
-  public void degreeCalculusFinished(int degree, Stream<GeneInteraction> interactions);
+  public void interactionsCalculated(Stream<GeneInteraction> interactions);
   public void calculusFinished();
   
   public static class SimpleInteractionsCalculusCallback implements InteractionsCalculusCallback {
     @Override
     public void calculusStarted() {}
-
+    
     @Override
-    public void degreeCalculusStarted(int degree) {}
-
-    @Override
-    public void degreeCalculusFinished(int degree, Stream<GeneInteraction> interactions) {}
+    public void interactionsCalculated(Stream<GeneInteraction> interactions) {}
 
     @Override
     public void calculusFinished() {}

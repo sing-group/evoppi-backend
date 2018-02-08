@@ -12,7 +12,6 @@ DROP TABLE `same_species_interactions_result`;
 DROP TABLE `interaction_group_result_interactome`;
 DROP TABLE `interaction_group_result`;
 DROP TABLE `interactions_result`;
-DROP TABLE `interactions_result_query_interactome`;
 
 DROP TABLE `interaction`;
 DROP TABLE `interactome`;

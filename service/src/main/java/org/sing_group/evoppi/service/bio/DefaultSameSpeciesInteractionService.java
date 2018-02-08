@@ -85,15 +85,10 @@ public class DefaultSameSpeciesInteractionService implements SameSpeciesInteract
     public void calculusStarted() {
       eventManager.notifyCalculusStarted(this.baseEvent);
     }
-
-    @Override
-    public void degreeCalculusStarted(int degree) {
-      eventManager.notifyDegreeCalculusStarted(this.baseEvent, degree);
-    }
     
     @Override
-    public void degreeCalculusFinished(int degree, Stream<GeneInteraction> interactions) {
-      eventManager.notifyDegreeCalculusFinished(this.baseEvent, degree, interactions.collect(toSet()));
+    public void interactionsCalculated(Stream<GeneInteraction> interactions) {
+      eventManager.notifyInteractionsCalculusFinished(this.baseEvent, interactions.collect(toSet()));
     }
     
     @Override

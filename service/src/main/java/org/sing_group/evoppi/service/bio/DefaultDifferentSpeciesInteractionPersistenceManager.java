@@ -79,8 +79,7 @@ public class DefaultDifferentSpeciesInteractionPersistenceManager implements Dif
       interaction -> result.addInteraction(
         interaction.getGeneAId(),
         interaction.getGeneBId(),
-        interaction.getDegree(),
-        interaction.getInteractomeIds().toArray()
+        interaction.getInteractomeDegrees()
       )
     );
     
@@ -120,8 +119,7 @@ public class DefaultDifferentSpeciesInteractionPersistenceManager implements Dif
       interaction -> result.addInteraction(
         interaction.getGeneAId(),
         interaction.getGeneBId(),
-        interaction.getDegree(),
-        interaction.getInteractomeIds().toArray()
+        interaction.getInteractomeDegrees()
       )
     );
     

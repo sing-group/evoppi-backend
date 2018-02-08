@@ -126,8 +126,7 @@ public class DefaultBioMapper implements BioMapper {
     return new InteractionResultData(
       interaction.getGeneAId(),
       interaction.getGeneBId(),
-      interaction.getDegree(),
-      interaction.getInteractomeIds().mapToLong(i -> (long) i).toArray()
+      interaction.getInteractomeDegrees()
     );
   }
   

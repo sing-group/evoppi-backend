@@ -21,10 +21,11 @@
  */
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import javax.persistence.CollectionTable;
@@ -58,9 +59,6 @@ public class InteractionGroupResult implements Serializable {
   @Column(name = "geneBId")
   private int geneBId;
 
-  @Column(name = "degree", nullable = false)
-  private int degree;
-
   @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(
     name = "interaction_group_result_interactome",
@@ -71,19 +69,18 @@ public class InteractionGroupResult implements Serializable {
     },
     foreignKey = @ForeignKey(name = "FK_interaction_group_result_interactome")
   )
-  @Column(name = "interactomeId", nullable = false)
-  private Set<Integer> interactomeIds;
+  @Column(name = "degree", nullable = false)
+  private Map<Integer, Integer> interactomeDegrees;
 
   InteractionGroupResult() {}
   
   public InteractionGroupResult(
-    int interactionsResultId, int geneAId, int geneBId, int degree, Collection<Integer> interactomeIds
+    int interactionsResultId, int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees
   ) {
     this.interactionsResultId = interactionsResultId;
     this.geneAId = geneAId;
     this.geneBId = geneBId;
-    this.degree = degree;
-    this.interactomeIds = new HashSet<>(interactomeIds);
+    this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
 
   public int getInteractionsResultId() {
@@ -102,12 +99,12 @@ public class InteractionGroupResult implements Serializable {
     return IntStream.of(this.getGeneAId(), this.getGeneBId());
   }
 
-  public int getDegree() {
-    return degree;
-  }
-
   public IntStream getInteractomeIds() {
-    return interactomeIds.stream().mapToInt(Integer::intValue);
+    return interactomeDegrees.keySet().stream().mapToInt(Integer::intValue);
+  }
+  
+  public Map<Integer, Integer> getInteractomeDegrees() {
+    return unmodifiableMap(interactomeDegrees);
   }
 
   public static class InteractionGroupResultId implements Serializable {

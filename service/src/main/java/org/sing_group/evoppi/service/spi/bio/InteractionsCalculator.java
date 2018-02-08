@@ -22,12 +22,11 @@
 package org.sing_group.evoppi.service.spi.bio;
 
 import java.util.Collection;
-import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
+import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback.SimpleInteractionsCalculusCallback;
 
 public interface InteractionsCalculator {
 
@@ -38,20 +37,7 @@ public interface InteractionsCalculator {
   public default void calculateInteractions(
     Gene gene, Collection<Interactome> interactomes, int maxDegree
   ) {
-    this.calculateInteractions(gene, interactomes, maxDegree, new InteractionsCalculusCallback() {
-      
-      @Override
-      public void degreeCalculusStarted(int degree) {}
-      
-      @Override
-      public void degreeCalculusFinished(int degree, Stream<GeneInteraction> interactions) {}
-      
-      @Override
-      public void calculusStarted() {}
-      
-      @Override
-      public void calculusFinished() {}
-    });
+    this.calculateInteractions(gene, interactomes, maxDegree, new SimpleInteractionsCalculusCallback());
   }
   
 }

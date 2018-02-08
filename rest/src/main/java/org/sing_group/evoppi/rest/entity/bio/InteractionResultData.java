@@ -22,13 +22,14 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.swagger.annotations.ApiModel;
 
@@ -43,21 +44,16 @@ public class InteractionResultData implements Serializable {
 
   @XmlElement(name = "geneB", required = true)
   private long geneB;
-  
-  @XmlElement(name = "degree", required = true)
-  private int degree;
 
-  @XmlElementWrapper(name = "interactomes")
-  @XmlElement(name = "interactomes", required = true)
-  private long[] interactomes;
+  @XmlJavaTypeAdapter(InteractomeDegreeAdapter.class)
+  private Map<Integer, Integer> interactomeDegrees;
   
   InteractionResultData() {}
 
-  public InteractionResultData(long geneA, long geneB, int degree, long[] interactome) {
+  public InteractionResultData(long geneA, long geneB, Map<Integer, Integer> interactomeDegrees) {
     this.geneA = geneA;
     this.geneB = geneB;
-    this.degree = degree;
-    this.interactomes = interactome;
+    this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
 
   public long getGeneA() {
@@ -76,30 +72,21 @@ public class InteractionResultData implements Serializable {
     this.geneB = geneB;
   }
   
-  public int getDegree() {
-    return degree;
-  }
-  
-  public void setDegree(int degree) {
-    this.degree = degree;
+  public Map<Integer, Integer> getInteractomeDegrees() {
+    return interactomeDegrees;
   }
 
-  public long[] getInteractomes() {
-    return interactomes;
-  }
-
-  public void setInteractome(long[] interactomes) {
-    this.interactomes = interactomes;
+  public void setInteractomeDegrees(Map<Integer, Integer> interactomeDegrees) {
+    this.interactomeDegrees = interactomeDegrees;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + degree;
     result = prime * result + (int) (geneA ^ (geneA >>> 32));
     result = prime * result + (int) (geneB ^ (geneB >>> 32));
-    result = prime * result + Arrays.hashCode(interactomes);
+    result = prime * result + ((interactomeDegrees == null) ? 0 : interactomeDegrees.hashCode());
     return result;
   }
 
@@ -112,13 +99,14 @@ public class InteractionResultData implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     InteractionResultData other = (InteractionResultData) obj;
-    if (degree != other.degree)
-      return false;
     if (geneA != other.geneA)
       return false;
     if (geneB != other.geneB)
       return false;
-    if (!Arrays.equals(interactomes, other.interactomes))
+    if (interactomeDegrees == null) {
+      if (other.interactomeDegrees != null)
+        return false;
+    } else if (!interactomeDegrees.equals(other.interactomeDegrees))
       return false;
     return true;
   }

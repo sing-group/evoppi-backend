@@ -21,12 +21,14 @@
  */
 package org.sing_group.evoppi.service.entity.bio;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.joining;
+
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -35,20 +37,16 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
 public class InteractionGroup {
   private final InteractingGenes interactingGenes;
-  private final Set<Interaction> interactions;
-  
-  private final int degree;
+  private final Map<Interaction, Integer> interactions;
 
-  public InteractionGroup(Collection<Interaction> interactions, int degree) {
-    if (!doInteractionsHaveSameGenes(interactions)) {
+  public InteractionGroup(Map<Interaction, Integer> interactions) {
+    if (!doInteractionsHaveSameGenes(interactions.keySet())) {
       throw new IllegalArgumentException("Interactions do not have same genes");
     }
     
-    final Interaction firstInteraction = interactions.iterator().next();
+    final Interaction firstInteraction = interactions.keySet().iterator().next();
     this.interactingGenes = new InteractingGenes(firstInteraction);
-    this.interactions = new HashSet<>(interactions);
-    
-    this.degree = degree;
+    this.interactions = new HashMap<>(interactions);
   }
 
   private static boolean doInteractionsHaveSameGenes(Collection<Interaction> interactions) {
@@ -75,7 +73,7 @@ public class InteractionGroup {
   }
 
   public Stream<Interaction> getInteractions() {
-    return interactions.stream();
+    return interactions.keySet().stream();
   }
   
   public Stream<Interactome> getInteractomes() {
@@ -84,15 +82,18 @@ public class InteractionGroup {
     .distinct();
   }
   
-  public int getDegree() {
-    return degree;
+  public Map<Interaction, Integer> getInteractionDegrees() {
+    return unmodifiableMap(this.interactions);
   }
-
+  
+  public int getDegree(Interaction interaction) {
+    return this.interactions.get(interaction);
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + degree;
     result = prime * result + ((interactingGenes == null) ? 0 : interactingGenes.hashCode());
     result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
     return result;
@@ -107,8 +108,6 @@ public class InteractionGroup {
     if (getClass() != obj.getClass())
       return false;
     InteractionGroup other = (InteractionGroup) obj;
-    if (degree != other.degree)
-      return false;
     if (interactingGenes == null) {
       if (other.interactingGenes != null)
         return false;
@@ -128,8 +127,8 @@ public class InteractionGroup {
       .map(Interaction::getInteractome)
       .map(Interactome::getId)
       .map(Object::toString)
-    .collect(Collectors.joining(","));
+    .collect(joining(","));
     
-    return "InteractionGroup [genes=" + this.interactingGenes + ", interactions=" + interactomes + ", degree=" + degree + "]";
+    return "InteractionGroup [genes=" + this.interactingGenes + ", interactions=" + interactomes + "]";
   }
 }

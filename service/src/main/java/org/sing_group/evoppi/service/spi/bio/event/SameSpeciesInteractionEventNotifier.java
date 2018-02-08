@@ -31,10 +31,8 @@ import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 @Local
 public interface SameSpeciesInteractionEventNotifier {
   public void notifyCalculusStarted(SameSpeciesCalculusEvent event);
-
-  public void notifyDegreeCalculusStarted(SameSpeciesCalculusEvent event, int degree);
   
-  public void notifyDegreeCalculusFinished(SameSpeciesCalculusEvent event, int degree, Collection<GeneInteraction> interactions);
+  public void notifyInteractionsCalculusFinished(SameSpeciesCalculusEvent event, Collection<GeneInteraction> interactions);
   
   public void notifyCalculusFinished(SameSpeciesCalculusEvent event);
   

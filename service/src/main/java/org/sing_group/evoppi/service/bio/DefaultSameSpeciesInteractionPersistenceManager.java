@@ -34,8 +34,7 @@ import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractio
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFailedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusStartedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.bio.SameSpeciesInteractionEventManager;
 
@@ -55,21 +54,18 @@ public class DefaultSameSpeciesInteractionPersistenceManager implements SameSpec
     
     result.setRunning();
   }
-  
-  @Override
-  public void manageInteractionCalculusStart(SameSpeciesInteractionsCalculusStartedEvent event) {}
-  
+
   @Transactional(REQUIRES_NEW)
   @Override
-  public void manageInteractionCalculusFinish(@Observes SameSpeciesInteractionCalculusFinishedEvent event) {
+  public void manageInteractions(@Observes SameSpeciesGeneInteractionsEvent event) {
     final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(event.getResultId());
     
     event.getInteractions().forEach(interaction -> result.addInteraction(
       interaction.getGeneAId(),
       interaction.getGeneBId(),
-      interaction.getDegree(),
-      interaction.getInteractomeIds().toArray()
+      interaction.getInteractomeDegrees()
     ));
+    
   }
   
   @Transactional(REQUIRES_NEW)

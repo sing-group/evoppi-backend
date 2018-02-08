@@ -205,7 +205,6 @@ CREATE TABLE `interaction_group_result` (
   `geneAId` int(11) NOT NULL,
   `geneBId` int(11) NOT NULL,
   `interactionsResultId` int(11) NOT NULL,
-  `degree` int(11) NOT NULL,
   PRIMARY KEY (`geneAId`,`geneBId`,`interactionsResultId`),
   KEY `FK_interactions_result_interaction_group_result` (`interactionsResultId`),
   CONSTRAINT `FK_interactions_result_interaction_group_result` FOREIGN KEY (`interactionsResultId`) REFERENCES `interactions_result` (`id`)
@@ -223,8 +222,9 @@ CREATE TABLE `interaction_group_result_interactome` (
   `geneAId` int(11) NOT NULL,
   `geneBId` int(11) NOT NULL,
   `interactionsResultId` int(11) NOT NULL,
-  `interactomeId` int(11) NOT NULL,
-  PRIMARY KEY (`geneAId`,`geneBId`,`interactionsResultId`,`interactomeId`),
+  `degree` int(11) NOT NULL,
+  `interactomeDegrees_KEY` int(11) NOT NULL,
+  PRIMARY KEY (`geneAId`,`geneBId`,`interactionsResultId`,`interactomeDegrees_KEY`),
   CONSTRAINT `FK_interaction_group_result_interactome` FOREIGN KEY (`geneAId`, `geneBId`, `interactionsResultId`) REFERENCES `interaction_group_result` (`geneAId`, `geneBId`, `interactionsResultId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -391,4 +391,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-01 19:52:51
+-- Dump completed on 2018-02-08 11:33:02

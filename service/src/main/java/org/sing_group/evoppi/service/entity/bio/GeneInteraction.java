@@ -21,8 +21,11 @@
  */
 package org.sing_group.evoppi.service.entity.bio;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class GeneInteraction implements Serializable {
@@ -30,14 +33,12 @@ public class GeneInteraction implements Serializable {
 
   private final int geneAId;
   private final int geneBId;
-  private final int[] interactomeIds;
-  private final int degree;
+  private final Map<Integer, Integer> interactomeDegrees;
 
-  public GeneInteraction(int geneAId, int geneBId, int[] interactomeIds, int degree) {
+  public GeneInteraction(int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees) {
     this.geneAId = geneAId;
     this.geneBId = geneBId;
-    this.interactomeIds = interactomeIds;
-    this.degree = degree;
+    this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
 
   public int getGeneAId() {
@@ -53,11 +54,16 @@ public class GeneInteraction implements Serializable {
   }
 
   public IntStream getInteractomeIds() {
-    return IntStream.of(interactomeIds);
+    return this.interactomeDegrees.keySet().stream()
+      .mapToInt(Integer::intValue);
   }
   
-  public int getDegree() {
-    return degree;
+  public int getDegree(int interactomeId) {
+    return this.interactomeDegrees.get(interactomeId);
+  }
+  
+  public Map<Integer, Integer> getInteractomeDegrees() {
+    return unmodifiableMap(interactomeDegrees);
   }
 
   @Override
@@ -66,7 +72,7 @@ public class GeneInteraction implements Serializable {
     int result = 1;
     result = prime * result + geneAId;
     result = prime * result + geneBId;
-    result = prime * result + Arrays.hashCode(interactomeIds);
+    result = prime * result + ((interactomeDegrees == null) ? 0 : interactomeDegrees.hashCode());
     return result;
   }
 
@@ -83,7 +89,10 @@ public class GeneInteraction implements Serializable {
       return false;
     if (geneBId != other.geneBId)
       return false;
-    if (!Arrays.equals(interactomeIds, other.interactomeIds))
+    if (interactomeDegrees == null) {
+      if (other.interactomeDegrees != null)
+        return false;
+    } else if (!interactomeDegrees.equals(other.interactomeDegrees))
       return false;
     return true;
   }

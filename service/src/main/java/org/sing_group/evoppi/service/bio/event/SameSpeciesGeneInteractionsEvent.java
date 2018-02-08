@@ -24,37 +24,42 @@ package org.sing_group.evoppi.service.bio.event;
 import static java.util.stream.Collectors.joining;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
-public class SameSpeciesInteractionsCalculusStartedEvent
+public class SameSpeciesGeneInteractionsEvent
 extends SameSpeciesCalculusEvent
 implements Serializable, WorkStepEvent {
   private static final long serialVersionUID = 1L;
-
-  private final int currentDegree;
   
-  public SameSpeciesInteractionsCalculusStartedEvent(SameSpeciesCalculusEvent event, int currentDegree) {
+  private final Set<GeneInteraction> interactions;
+
+  public SameSpeciesGeneInteractionsEvent(SameSpeciesCalculusEvent event, Collection<GeneInteraction> interactions) {
     super(event);
-    this.currentDegree = currentDegree;
+    this.interactions = new HashSet<>(interactions);
   }
 
-  public SameSpeciesInteractionsCalculusStartedEvent(
-    int geneId, int[] interactomes, int maxDegree, int workId, int resultId, int currentDegree
+  public SameSpeciesGeneInteractionsEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId,
+    Collection<GeneInteraction> interactions
   ) {
     super(geneId, interactomes, maxDegree, workId, resultId);
-    this.currentDegree = currentDegree;
-  }
-  
-  public int getCurrentDegree() {
-    return currentDegree;
+    this.interactions = new HashSet<>(interactions);
   }
 
+  public Stream<GeneInteraction> getInteractions() {
+    return interactions.stream();
+  }
+  
   @Override
   public String getDescription() {
-    return String.format("Calculating interactions in degree %d for gene %d in interactomes: %s",
-      this.getCurrentDegree(),
+    return String.format("%d interactions found for gene %d in interactomes: %s",
+      this.getInteractions().count(),
       this.getGeneId(),
       this.getInteractomes().mapToObj(Integer::toString).collect(joining(", "))
     );
@@ -62,34 +67,11 @@ implements Serializable, WorkStepEvent {
 
   @Override
   public double getProgress() {
-    return (this.getCurrentDegree() - 1d) / ((double) this.getMaxDegree() + 1);
+    return 0.5d;
   }
 
   @Override
   public ExecutionStatus getWorkStatus() {
     return ExecutionStatus.RUNNING;
   }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = super.hashCode();
-    result = prime * result + currentDegree;
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (!super.equals(obj))
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    SameSpeciesInteractionsCalculusStartedEvent other = (SameSpeciesInteractionsCalculusStartedEvent) obj;
-    if (currentDegree != other.currentDegree)
-      return false;
-    return true;
-  }
-
 }

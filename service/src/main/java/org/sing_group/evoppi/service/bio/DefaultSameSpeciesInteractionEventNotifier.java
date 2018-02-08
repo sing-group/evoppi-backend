@@ -32,8 +32,7 @@ import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFailedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusFinishedEvent;
 import org.sing_group.evoppi.service.bio.event.SameSpeciesCalculusStartedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionCalculusFinishedEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsCalculusStartedEvent;
+import org.sing_group.evoppi.service.bio.event.SameSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
 import org.sing_group.evoppi.service.spi.bio.event.SameSpeciesInteractionEventNotifier;
 
@@ -46,10 +45,7 @@ public class DefaultSameSpeciesInteractionEventNotifier implements SameSpeciesIn
   private Event<SameSpeciesCalculusStartedEvent> startEvents;
   
   @Inject
-  private Event<SameSpeciesInteractionsCalculusStartedEvent> startDegreeEvents;
-  
-  @Inject
-  private Event<SameSpeciesInteractionCalculusFinishedEvent> finishDegreeEvents;
+  private Event<SameSpeciesGeneInteractionsEvent> interactionsEvents;
   
   @Inject
   private Event<SameSpeciesCalculusFinishedEvent> finishEvents;
@@ -61,15 +57,12 @@ public class DefaultSameSpeciesInteractionEventNotifier implements SameSpeciesIn
   public void notifyCalculusStarted(SameSpeciesCalculusEvent baseEvent) {
     startEvents.fire(new SameSpeciesCalculusStartedEvent(baseEvent));
   }
-
-  @Override
-  public void notifyDegreeCalculusStarted(SameSpeciesCalculusEvent baseEvent, int degree) {
-    startDegreeEvents.fire(new SameSpeciesInteractionsCalculusStartedEvent(baseEvent, degree));
-  }
   
   @Override
-  public void notifyDegreeCalculusFinished(SameSpeciesCalculusEvent baseEvent, int degree, Collection<GeneInteraction> interactions) {
-    finishDegreeEvents.fire(new SameSpeciesInteractionCalculusFinishedEvent(baseEvent, degree, interactions));
+  public void notifyInteractionsCalculusFinished(
+    SameSpeciesCalculusEvent event, Collection<GeneInteraction> interactions
+  ) {
+    this.interactionsEvents.fire(new SameSpeciesGeneInteractionsEvent(event, interactions));
   }
   
   @Override

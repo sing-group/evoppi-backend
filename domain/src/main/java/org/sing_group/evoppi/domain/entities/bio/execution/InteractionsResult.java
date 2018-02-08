@@ -21,14 +21,13 @@
  */
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
-import static java.util.stream.Collectors.toSet;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
@@ -143,10 +142,8 @@ public abstract class InteractionsResult implements HasExecutionStatus {
     return interactions.stream();
   }
 
-  public InteractionGroupResult addInteraction(int geneAId, int geneBId, int degree, int[] interactomeIds) {
-    final Set<Integer> interactomeIdsCollection = IntStream.of(interactomeIds).boxed().collect(toSet());
-    
-    final InteractionGroupResult group = new InteractionGroupResult(this.getId(), geneAId, geneBId, degree, interactomeIdsCollection);
+  public InteractionGroupResult addInteraction(int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees) {
+    final InteractionGroupResult group = new InteractionGroupResult(this.getId(), geneAId, geneBId, interactomeDegrees);
     
     this.interactions.add(group);
     
