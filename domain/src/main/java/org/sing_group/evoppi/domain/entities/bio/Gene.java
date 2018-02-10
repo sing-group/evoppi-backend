@@ -29,13 +29,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "gene")
+@Table(name = "gene",
+  indexes = @Index(columnList = "id, species")
+)
 public class Gene implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -47,7 +50,7 @@ public class Gene implements Serializable {
   private Set<GeneNames> names;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-  @JoinColumn(name = "speciesId", referencedColumnName = "id", nullable = false)
+  @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
   private Species species;
 
   @OneToMany(mappedBy = "gene", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -15,6 +15,7 @@ TRUNCATE TABLE `interaction_group_result`;
 TRUNCATE TABLE `interactions_result`;
 
 TRUNCATE TABLE `interaction`;
+TRUNCATE TABLE `gene_in_interactome`;
 TRUNCATE TABLE `interactome`;
 TRUNCATE TABLE `gene_name_value`;
 TRUNCATE TABLE `gene_name`;

@@ -33,6 +33,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -42,7 +43,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(
   name = "interactome",
-  uniqueConstraints = @UniqueConstraint(columnNames = {"name", "speciesId"})
+  uniqueConstraints = @UniqueConstraint(columnNames = {"name", "species"}),
+  indexes = @Index(columnList = "id, species")
 )
 public class Interactome implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -55,7 +57,7 @@ public class Interactome implements Serializable {
   private String name;
   
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-  @JoinColumn(name = "speciesId", referencedColumnName = "id", nullable = false)
+  @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
   private Species species;
 
   @OneToMany(mappedBy = "interactome", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

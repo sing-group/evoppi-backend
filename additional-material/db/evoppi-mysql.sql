@@ -120,10 +120,31 @@ DROP TABLE IF EXISTS `gene`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gene` (
   `id` int(11) NOT NULL,
-  `speciesId` int(11) NOT NULL,
+  `species` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKn08pyesip9oqsfm4lujvtpleb` (`speciesId`),
-  CONSTRAINT `FKn08pyesip9oqsfm4lujvtpleb` FOREIGN KEY (`speciesId`) REFERENCES `species` (`id`)
+  KEY `IDXnkshoslla6kq08gqh38grefke` (`id`,`species`),
+  KEY `FKg5uaph3wq3eu765ch9lkq6qi1` (`species`),
+  CONSTRAINT `FKg5uaph3wq3eu765ch9lkq6qi1` FOREIGN KEY (`species`) REFERENCES `species` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `gene_in_interactome`
+--
+
+DROP TABLE IF EXISTS `gene_in_interactome`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `gene_in_interactome` (
+  `gene` int(11) NOT NULL,
+  `interactome` int(11) NOT NULL,
+  `species` int(11) NOT NULL,
+  PRIMARY KEY (`gene`,`interactome`,`species`),
+  KEY `FKsswgs3cc7avkugqvq78sv21xg` (`interactome`),
+  KEY `FKtpcnom6fs9jal4qfgao444cse` (`species`),
+  CONSTRAINT `FKa02a13n65pbhq1m1ehk63f4es` FOREIGN KEY (`gene`) REFERENCES `gene` (`id`),
+  CONSTRAINT `FKsswgs3cc7avkugqvq78sv21xg` FOREIGN KEY (`interactome`) REFERENCES `interactome` (`id`),
+  CONSTRAINT `FKtpcnom6fs9jal4qfgao444cse` FOREIGN KEY (`species`) REFERENCES `species` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -185,12 +206,18 @@ CREATE TABLE `interaction` (
   `geneA` int(11) NOT NULL,
   `geneB` int(11) NOT NULL,
   `interactome` int(11) NOT NULL,
-  PRIMARY KEY (`geneA`,`geneB`,`interactome`),
-  KEY `FKekyhguctj9hvu5qevfo5v3rvj` (`geneB`),
+  `species` int(11) NOT NULL,
+  PRIMARY KEY (`geneA`,`geneB`,`interactome`,`species`),
   KEY `FKno3mlamen4lj75iywf6kxh8l8` (`interactome`),
+  KEY `FK7q2wc7gxivblkb8b3117djryx` (`species`),
+  KEY `FKkrjwgfrrkhptj43ex3yiat7ip` (`geneA`,`interactome`,`species`),
+  KEY `FKtnwk6qwdvtao7vqp002k8f8uo` (`geneB`,`interactome`,`species`),
+  CONSTRAINT `FK7q2wc7gxivblkb8b3117djryx` FOREIGN KEY (`species`) REFERENCES `species` (`id`),
   CONSTRAINT `FKekyhguctj9hvu5qevfo5v3rvj` FOREIGN KEY (`geneB`) REFERENCES `gene` (`id`),
   CONSTRAINT `FKkpnlx65nno3hups2cwudtmg90` FOREIGN KEY (`geneA`) REFERENCES `gene` (`id`),
-  CONSTRAINT `FKno3mlamen4lj75iywf6kxh8l8` FOREIGN KEY (`interactome`) REFERENCES `interactome` (`id`)
+  CONSTRAINT `FKkrjwgfrrkhptj43ex3yiat7ip` FOREIGN KEY (`geneA`, `interactome`, `species`) REFERENCES `gene_in_interactome` (`gene`, `interactome`, `species`),
+  CONSTRAINT `FKno3mlamen4lj75iywf6kxh8l8` FOREIGN KEY (`interactome`) REFERENCES `interactome` (`id`),
+  CONSTRAINT `FKtnwk6qwdvtao7vqp002k8f8uo` FOREIGN KEY (`geneB`, `interactome`, `species`) REFERENCES `gene_in_interactome` (`gene`, `interactome`, `species`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -260,11 +287,12 @@ DROP TABLE IF EXISTS `interactome`;
 CREATE TABLE `interactome` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `speciesId` int(11) NOT NULL,
+  `species` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UKkxnt74528325j5rt5jon19ips` (`name`,`speciesId`),
-  KEY `FKglc54t69v5a3veskvhr86penc` (`speciesId`),
-  CONSTRAINT `FKglc54t69v5a3veskvhr86penc` FOREIGN KEY (`speciesId`) REFERENCES `species` (`id`)
+  UNIQUE KEY `UKp5x9ydinmkxbuy09ha9unypf7` (`name`,`species`),
+  KEY `IDXauoiyeswmacye8t54i4uf98x0` (`id`,`species`),
+  KEY `FK9tl8gsonmm6ksaxy4wt4xs8mr` (`species`),
+  CONSTRAINT `FK9tl8gsonmm6ksaxy4wt4xs8mr` FOREIGN KEY (`species`) REFERENCES `species` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -391,4 +419,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-08 11:33:02
+-- Dump completed on 2018-02-10 22:45:28

@@ -14,6 +14,7 @@ DROP TABLE `interaction_group_result`;
 DROP TABLE `interactions_result`;
 
 DROP TABLE `interaction`;
+DROP TABLE `gene_in_interactome`;
 DROP TABLE `interactome`;
 DROP TABLE `gene_name_value`;
 DROP TABLE `gene_name`;

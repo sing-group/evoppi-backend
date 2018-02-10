@@ -36,6 +36,7 @@
     <class>org.sing_group.evoppi.domain.entities.bio.GeneNames</class>
     <class>org.sing_group.evoppi.domain.entities.bio.GeneSequence</class>
     <class>org.sing_group.evoppi.domain.entities.bio.Species</class>
+    <class>org.sing_group.evoppi.domain.entities.bio.GeneInInteractome</class>
     <class>org.sing_group.evoppi.domain.entities.bio.Interactome</class>
     <class>org.sing_group.evoppi.domain.entities.bio.Interaction</class>
     <class>org.sing_group.evoppi.domain.entities.bio.execution.BlastResult</class>
