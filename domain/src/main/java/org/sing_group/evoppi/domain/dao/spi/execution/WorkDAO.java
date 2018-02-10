@@ -24,7 +24,7 @@ package org.sing_group.evoppi.domain.dao.spi.execution;
 import org.sing_group.evoppi.domain.entities.execution.Work;
 
 public interface WorkDAO {
-  public Work get(int workId);
+  public Work get(String workId);
 
   public Work createNew(String name, String description, String resultReference);
 }

@@ -28,8 +28,8 @@ import javax.ws.rs.core.UriBuilder;
 public class WorkRestPathBuilder implements RestPathBuilder {
   private UriBuilder builder;
   
-  public WorkRestPathBuilder(UriBuilder builder, int id) {
-    this.builder = builder.clone().path("work").path(Integer.toString(id));
+  public WorkRestPathBuilder(UriBuilder builder, String id) {
+    this.builder = builder.clone().path("work").path(id);
   }
   
   @Override

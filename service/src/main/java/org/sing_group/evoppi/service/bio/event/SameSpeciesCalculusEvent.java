@@ -31,14 +31,14 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
   private final int geneId;
   private final int[] interactomes;
   private final int maxDegree;
-  private final int workId;
-  private final int resultId;
+  private final String workId;
+  private final String resultId;
   
   public SameSpeciesCalculusEvent(SameSpeciesCalculusEvent event) {
     this(event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getResultId());
   }
   
-  public SameSpeciesCalculusEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId) {
+  public SameSpeciesCalculusEvent(int geneId, int[] interactomes, int maxDegree, String workId, String resultId) {
     this.geneId = geneId;
     this.interactomes = interactomes;
     this.maxDegree = maxDegree;
@@ -58,11 +58,11 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
     return maxDegree;
   }
 
-  public int getWorkId() {
+  public String getWorkId() {
     return workId;
   }
 
-  public int getResultId() {
+  public String getResultId() {
     return resultId;
   }
 
@@ -73,8 +73,8 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
     result = prime * result + geneId;
     result = prime * result + Arrays.hashCode(interactomes);
     result = prime * result + maxDegree;
-    result = prime * result + resultId;
-    result = prime * result + workId;
+    result = prime * result + ((resultId == null) ? 0 : resultId.hashCode());
+    result = prime * result + ((workId == null) ? 0 : workId.hashCode());
     return result;
   }
 
@@ -93,9 +93,15 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
       return false;
     if (maxDegree != other.maxDegree)
       return false;
-    if (resultId != other.resultId)
+    if (resultId == null) {
+      if (other.resultId != null)
+        return false;
+    } else if (!resultId.equals(other.resultId))
       return false;
-    if (workId != other.workId)
+    if (workId == null) {
+      if (other.workId != null)
+        return false;
+    } else if (!workId.equals(other.workId))
       return false;
     return true;
   }

@@ -30,7 +30,7 @@ public class SameSpeciesInteractionsRequestEvent extends SameSpeciesCalculusEven
     super(event);
   }
 
-  public SameSpeciesInteractionsRequestEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId) {
+  public SameSpeciesInteractionsRequestEvent(int geneId, int[] interactomes, int maxDegree, String workId, String resultId) {
     super(geneId, interactomes, maxDegree, workId, resultId);
   }
 }

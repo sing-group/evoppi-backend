@@ -28,10 +28,10 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.execution.Work;
 import org.sing_group.evoppi.domain.entities.execution.WorkStep;
+import org.sing_group.evoppi.rest.entity.UuidAndUri;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.execution.WorkStepData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
-import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 
 @Default
@@ -48,7 +48,7 @@ public class DefaultExecutionMapper implements ExecutionMapper {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new WorkData(
-      new IdAndUri(work.getId(), pathBuilder.work(work.getId()).build()),
+      new UuidAndUri(work.getId(), pathBuilder.work(work.getId()).build()),
       work.getName(),
       work.getDescription().orElse(null),
       work.getCreationDateTime(),

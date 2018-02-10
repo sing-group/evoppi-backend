@@ -49,7 +49,7 @@ public class DifferentSpeciesBlastRequestEvent extends DifferentSpeciesCalculusE
 
   public DifferentSpeciesBlastRequestEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId, Path referenceFastaPath, Path targetFastaPath, Collection<GeneInteraction> referenceInteractions
+    String workId, String resultId, Path referenceFastaPath, Path targetFastaPath, Collection<GeneInteraction> referenceInteractions
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
 

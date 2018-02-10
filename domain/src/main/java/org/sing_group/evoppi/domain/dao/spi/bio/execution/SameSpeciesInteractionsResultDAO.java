@@ -25,9 +25,9 @@ import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractio
 
 public interface SameSpeciesInteractionsResultDAO {
 
-  public boolean exists(int interactionResultId);
+  public boolean exists(String interactionResultId);
   
-  public SameSpeciesInteractionsResult get(int interactionResultId);
+  public SameSpeciesInteractionsResult get(String interactionResultId);
 
   public SameSpeciesInteractionsResult create(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds);
 

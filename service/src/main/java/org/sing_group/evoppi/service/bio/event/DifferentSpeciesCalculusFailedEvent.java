@@ -41,7 +41,7 @@ implements Serializable, WorkStepEvent {
   
   public DifferentSpeciesCalculusFailedEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId, String cause
+    String workId, String resultId, String cause
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
     

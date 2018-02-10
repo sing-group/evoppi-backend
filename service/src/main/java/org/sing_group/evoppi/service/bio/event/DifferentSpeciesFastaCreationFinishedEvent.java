@@ -47,7 +47,7 @@ implements Serializable, WorkStepEvent {
   
   public DifferentSpeciesFastaCreationFinishedEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId, Path referenceFastaPath, Path targetFastaPath
+    String workId, String resultId, Path referenceFastaPath, Path targetFastaPath
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
     

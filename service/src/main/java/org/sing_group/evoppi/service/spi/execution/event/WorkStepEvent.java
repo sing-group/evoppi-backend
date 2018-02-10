@@ -24,7 +24,7 @@ package org.sing_group.evoppi.service.spi.execution.event;
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 
 public interface WorkStepEvent {
-  public int getWorkId();
+  public String getWorkId();
   
   public String getDescription();
   

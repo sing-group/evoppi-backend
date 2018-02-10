@@ -50,7 +50,7 @@ implements Serializable, WorkStepEvent {
   
   public DifferentSpeciesReferenceInteractionsCalculusFinishedEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId, Set<Integer> referenceGeneIds, Collection<GeneInteraction> referenceInteractions
+    String workId, String resultId, Set<Integer> referenceGeneIds, Collection<GeneInteraction> referenceInteractions
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
     

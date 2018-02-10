@@ -33,26 +33,26 @@ import org.sing_group.evoppi.domain.entities.execution.Work;
 @Local
 public interface InteractionService {
   public Work findSameSpeciesInteractions(
-    int geneId, int[] interactomes, int maxDegree, Function<Integer, String> resultReferenceBuilder
+    int geneId, int[] interactomes, int maxDegree, Function<String, String> resultReferenceBuilder
   );
   
   public Work findDifferentSpeciesInteractions(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions, int maxDegree, Function<Integer, String> resultReferenceBuilder
+    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions, int maxDegree, Function<String, String> resultReferenceBuilder
   );
   
-  public SameSpeciesInteractionsResult getSameSpeciesResult(int id);
+  public SameSpeciesInteractionsResult getSameSpeciesResult(String id);
 
-  public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(int id);
+  public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(String id);
 
-  public boolean isSameSpeciesResult(int id);
+  public boolean isSameSpeciesResult(String id);
 
-  public boolean isDifferentSpeciesResult(int id);
+  public boolean isDifferentSpeciesResult(String id);
 
-  public String getSameSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix);
+  public String getSameSpeciesResultFasta(String resultId, int interactomeId, boolean includeVersionSuffix);
 
-  public String getDifferentSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix);
+  public String getDifferentSpeciesResultFasta(String resultId, int interactomeId, boolean includeVersionSuffix);
 
-  public String getSameSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix);
+  public String getSameSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix);
 
-  public String getDifferentSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix);
+  public String getDifferentSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix);
 }

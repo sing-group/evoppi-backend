@@ -45,7 +45,7 @@ implements Serializable, WorkStepEvent {
     this.interactions = new HashSet<>(interactions);
   }
 
-  public SameSpeciesGeneInteractionsEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId,
+  public SameSpeciesGeneInteractionsEvent(int geneId, int[] interactomes, int maxDegree, String workId, String resultId,
     Collection<GeneInteraction> interactions
   ) {
     super(geneId, interactomes, maxDegree, workId, resultId);

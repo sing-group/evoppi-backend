@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
-import org.sing_group.evoppi.rest.entity.user.IdAndUri;
+import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
 
@@ -46,7 +46,7 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
   private IdAndUri[] genes;
 
   public SameSpeciesInteractionsResultData(
-    int id,
+    String id,
     int queryGene,
     int[] queryInteractomes,
     int queryMaxDegree,

@@ -49,7 +49,7 @@ public class InteractionGroupResult implements Serializable {
 
   @Id
   @Column(name = "interactionsResultId")
-  private int interactionsResultId;
+  private String interactionsResultId;
 
   @Id
   @Column(name = "geneAId")
@@ -75,7 +75,7 @@ public class InteractionGroupResult implements Serializable {
   InteractionGroupResult() {}
   
   public InteractionGroupResult(
-    int interactionsResultId, int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees
+    String interactionsResultId, int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees
   ) {
     this.interactionsResultId = interactionsResultId;
     this.geneAId = geneAId;
@@ -83,7 +83,7 @@ public class InteractionGroupResult implements Serializable {
     this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
 
-  public int getInteractionsResultId() {
+  public String getInteractionsResultId() {
     return interactionsResultId;
   }
 
@@ -110,7 +110,7 @@ public class InteractionGroupResult implements Serializable {
   public static class InteractionGroupResultId implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer interactionsResultId;
+    private String interactionsResultId;
 
     private int geneAId;
 
@@ -118,18 +118,17 @@ public class InteractionGroupResult implements Serializable {
 
     InteractionGroupResultId() {}
 
-    public InteractionGroupResultId(Integer interactionsResultId, int geneAId, int geneBId) {
-      super();
+    public InteractionGroupResultId(String interactionsResultId, int geneAId, int geneBId) {
       this.interactionsResultId = interactionsResultId;
       this.geneAId = geneAId;
       this.geneBId = geneBId;
     }
 
-    public Integer getInteractionsResultId() {
+    public String getInteractionsResultId() {
       return interactionsResultId;
     }
 
-    public void setInteractionsResultId(Integer interactionsResultId) {
+    public void setInteractionsResultId(String interactionsResultId) {
       this.interactionsResultId = interactionsResultId;
     }
 

@@ -21,13 +21,12 @@
  */
 package org.sing_group.evoppi.domain.entities.execution;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Stream;
 
@@ -36,7 +35,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -49,8 +47,7 @@ public class Work implements HasExecutionStatus, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = IDENTITY)
-  private Integer id;
+  private String id;
 
   @Column(name = "name", length = 255, nullable = false)
   private String name;
@@ -72,6 +69,7 @@ public class Work implements HasExecutionStatus, Serializable {
   private final ReentrantReadWriteLock stepsLock;
 
   Work() {
+    this.id = UUID.randomUUID().toString();
     this.stepsLock = new ReentrantReadWriteLock();
     this.status = new ExecutionStatusAndTime();
   }
@@ -90,8 +88,33 @@ public class Work implements HasExecutionStatus, Serializable {
     this.resultReference = resultReference;
   }
 
-  public Integer getId() {
+  public String getId() {
     return id;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Work other = (Work) obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+    return true;
   }
 
   public String getName() {

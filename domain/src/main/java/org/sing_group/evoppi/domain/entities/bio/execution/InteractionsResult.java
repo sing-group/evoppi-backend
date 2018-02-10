@@ -21,13 +21,12 @@
  */
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
@@ -37,7 +36,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -56,8 +54,7 @@ import org.sing_group.evoppi.domain.entities.execution.HasExecutionStatus;
 public abstract class InteractionsResult implements HasExecutionStatus {
 
   @Id
-  @GeneratedValue(strategy = IDENTITY)
-  private Integer id;
+  private String id;
   
   @Column(name = "queryGeneId", nullable = false)
   private int queryGeneId;
@@ -77,9 +74,9 @@ public abstract class InteractionsResult implements HasExecutionStatus {
   private ExecutionStatusAndTime status;
 
   InteractionsResult() {
+    this.id = UUID.randomUUID().toString();
     this.interactions = new HashSet<>();
     this.status = new ExecutionStatusAndTime();
-    
   }
   
   public InteractionsResult(int queryGeneId, int queryMaxDegree) {
@@ -89,7 +86,7 @@ public abstract class InteractionsResult implements HasExecutionStatus {
     this.queryMaxDegree = queryMaxDegree;
   }
 
-  public Integer getId() {
+  public String getId() {
     return id;
   }
 

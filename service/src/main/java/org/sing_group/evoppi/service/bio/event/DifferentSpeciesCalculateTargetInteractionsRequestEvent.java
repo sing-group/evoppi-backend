@@ -47,7 +47,7 @@ public class DifferentSpeciesCalculateTargetInteractionsRequestEvent extends Dif
 
   public DifferentSpeciesCalculateTargetInteractionsRequestEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId, Collection<GeneInteraction> referenceInteractions, Collection<BlastResult> blastResults
+    String workId, String resultId, Collection<GeneInteraction> referenceInteractions, Collection<BlastResult> blastResults
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
 

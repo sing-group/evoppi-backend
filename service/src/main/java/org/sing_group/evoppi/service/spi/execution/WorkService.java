@@ -27,5 +27,5 @@ import org.sing_group.evoppi.domain.entities.execution.Work;
 
 @Local
 public interface WorkService {
-  public Work get(int id);
+  public Work get(String id);
 }

@@ -38,7 +38,7 @@ public class DefaultWorkDAO implements WorkDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<Integer, Work> dh;
+  protected DAOHelper<String, Work> dh;
 
   public DefaultWorkDAO() {
     super();
@@ -51,11 +51,11 @@ public class DefaultWorkDAO implements WorkDAO {
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(Integer.class, Work.class, this.em);
+    this.dh = DAOHelper.of(String.class, Work.class, this.em);
   }
 
   @Override
-  public Work get(int workId) {
+  public Work get(String workId) {
     return this.dh.get(workId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown work id: " + workId));
   }

@@ -39,7 +39,7 @@ implements Serializable, WorkStepEvent {
     this.cause = cause;
   }
 
-  public SameSpeciesCalculusFailedEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId, String cause) {
+  public SameSpeciesCalculusFailedEvent(int geneId, int[] interactomes, int maxDegree, String workId, String resultId, String cause) {
     super(geneId, interactomes, maxDegree, workId, resultId);
     
     this.cause = cause;

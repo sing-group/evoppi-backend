@@ -36,7 +36,7 @@ public class DefaultWorkService implements WorkService {
   private WorkDAO dao;
   
   @Override
-  public Work get(int id) {
+  public Work get(String id) {
     return this.dao.get(id);
   }
 }

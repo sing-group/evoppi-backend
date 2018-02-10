@@ -29,9 +29,9 @@ public interface InteractionResource {
     double evalue, int maxTargetSeqs, double minimumIdentity, int minimumAlignmentLength
   );
 
-  public Response getInterationResult(int id);
+  public Response getInterationResult(String resultId);
 
-  public Response getInterationResultInteractomeSingleFasta(int resultId, boolean includeVersionSuffix);
+  public Response getInterationResultInteractomeSingleFasta(String resultId, boolean includeVersionSuffix);
   
-  public Response getInterationResultInteractomeFasta(int id, int interactomeId, boolean includeVersionSuffix);
+  public Response getInterationResultInteractomeFasta(String resultId, int interactomeId, boolean includeVersionSuffix);
 }

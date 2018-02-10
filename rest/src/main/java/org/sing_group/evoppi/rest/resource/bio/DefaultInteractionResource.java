@@ -113,7 +113,7 @@ public class DefaultInteractionResource implements InteractionResource {
     final UriBuilder uriBuilder = this.uriInfo.getBaseUriBuilder();
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(uriBuilder);
     
-    final Function<Integer, String> resultUriBuilder =
+    final Function<String, String> resultUriBuilder =
       id -> pathBuilder.interaction().result(id).build().toString();
       
     final Work work;
@@ -148,7 +148,7 @@ public class DefaultInteractionResource implements InteractionResource {
   }
 
   @GET
-  @Path("result/{id: \\d+}")
+  @Path("result/{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}")
   @ApiOperation(
     value = "Returns the result of a interaction calculus.",
     response = InteractionsResultData.class,
@@ -159,7 +159,7 @@ public class DefaultInteractionResource implements InteractionResource {
   )
   @Override
   public Response getInterationResult(
-    @PathParam("id") int id
+    @PathParam("id") String id
   ) {
     if (this.service.isSameSpeciesResult(id)) {
       final SameSpeciesInteractionsResult result = this.service.getSameSpeciesResult(id);
@@ -179,7 +179,7 @@ public class DefaultInteractionResource implements InteractionResource {
   }
 
   @GET
-  @Path("result/{id: \\d+}/interactome/fasta")
+  @Path("result/{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/interactome/fasta")
   @Produces("text/x-fasta")
   @ApiOperation(
     value = "Returns a FASTA file with the genes in the result that belong to both query interactomes.",
@@ -191,7 +191,7 @@ public class DefaultInteractionResource implements InteractionResource {
   )
   @Override
   public Response getInterationResultInteractomeSingleFasta(
-    @PathParam("id") int resultId,
+    @PathParam("id") String resultId,
     @QueryParam("addVersionSuffix") @DefaultValue("false") boolean includeVersionSuffix
   ) {
     if (this.service.isSameSpeciesResult(resultId)) {
@@ -212,7 +212,7 @@ public class DefaultInteractionResource implements InteractionResource {
   }
 
   @GET
-  @Path("result/{id: \\d+}/interactome/{interactomeId: \\d+}/fasta")
+  @Path("result/{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/interactome/{interactomeId: \\d+}/fasta")
   @Produces("text/x-fasta")
   @ApiOperation(
     value = "Returns a FASTA file with the genes in the result that belong to one of the query interactomes.",
@@ -224,7 +224,7 @@ public class DefaultInteractionResource implements InteractionResource {
   )
   @Override
   public Response getInterationResultInteractomeFasta(
-    @PathParam("id") int resultId,
+    @PathParam("id") String resultId,
     @PathParam("interactomeId") int interactomeId,
     @QueryParam("addVersionSuffix") @DefaultValue("false") boolean includeVersionSuffix
   ) {

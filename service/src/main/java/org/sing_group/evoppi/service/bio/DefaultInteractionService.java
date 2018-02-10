@@ -82,28 +82,28 @@ public class DefaultInteractionService implements InteractionService {
   private Event<DifferentSpeciesInteractionsRequestEvent> taskDifferentEvents;
   
   @Override
-  public boolean isSameSpeciesResult(int id) {
+  public boolean isSameSpeciesResult(String id) {
     return this.sameInteractionsResultDao.exists(id);
   }
   
   @Override
-  public boolean isDifferentSpeciesResult(int id) {
+  public boolean isDifferentSpeciesResult(String id) {
     return this.differentInteractionsResultDao.exists(id);
   }
   
   @Override
-  public SameSpeciesInteractionsResult getSameSpeciesResult(int id) {
+  public SameSpeciesInteractionsResult getSameSpeciesResult(String id) {
     return this.sameInteractionsResultDao.get(id);
   }
   
   @Override
-  public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(int id) {
+  public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(String id) {
     return this.differentInteractionsResultDao.get(id);
   }
   
   @Override
   public Work findSameSpeciesInteractions(
-    int geneId, int[] interactomes, int maxDegree, Function<Integer, String> resultReferenceBuilder
+    int geneId, int[] interactomes, int maxDegree, Function<String, String> resultReferenceBuilder
   ) {
     if (maxDegree < 1 || maxDegree > 3)
       throw new IllegalArgumentException("maxDegree must be between 1 and 3");
@@ -133,7 +133,7 @@ public class DefaultInteractionService implements InteractionService {
   @Override
   public Work findDifferentSpeciesInteractions(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions,
-    int maxDegree, Function<Integer, String> resultReferenceBuilder
+    int maxDegree, Function<String, String> resultReferenceBuilder
   ) {
     if (maxDegree < 1 || maxDegree > 3)
       throw new IllegalArgumentException("maxDegree must be between 1 and 3");
@@ -168,14 +168,14 @@ public class DefaultInteractionService implements InteractionService {
   }
   
   @Override
-  public String getSameSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix) {
+  public String getSameSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix) {
     final SameSpeciesInteractionsResult result = this.getSameSpeciesResult(resultId);
 
     return createFastaFromInteractions(result.getInteractions(), includeVersionSuffix);
   }
   
   @Override
-  public String getDifferentSpeciesResultSingleFasta(int resultId, boolean includeVersionSuffix) {
+  public String getDifferentSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix) {
     final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
     
     final IntStream orthologIds = result.getBlastResults()
@@ -186,7 +186,7 @@ public class DefaultInteractionService implements InteractionService {
   }
   
   @Override
-  public String getSameSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix) {
+  public String getSameSpeciesResultFasta(String resultId, int interactomeId, boolean includeVersionSuffix) {
     final SameSpeciesInteractionsResult result = this.getSameSpeciesResult(resultId);
     
     if (result.getQueryInteractomeIds().noneMatch(id -> id == interactomeId))
@@ -199,7 +199,7 @@ public class DefaultInteractionService implements InteractionService {
   }
   
   @Override
-  public String getDifferentSpeciesResultFasta(int resultId, int interactomeId, boolean includeVersionSuffix) {
+  public String getDifferentSpeciesResultFasta(String resultId, int interactomeId, boolean includeVersionSuffix) {
     final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
     
     if (result.getReferenceInteractomeId() == interactomeId) {

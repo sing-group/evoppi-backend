@@ -37,7 +37,7 @@ implements Serializable, WorkStepEvent {
     super(event);
   }
   
-  public SameSpeciesCalculusStartedEvent(int geneId, int[] interactomes, int maxDegree, int workId, int resultId) {
+  public SameSpeciesCalculusStartedEvent(int geneId, int[] interactomes, int maxDegree, String workId, String resultId) {
     super(geneId, interactomes, maxDegree, workId, resultId);
   }
 

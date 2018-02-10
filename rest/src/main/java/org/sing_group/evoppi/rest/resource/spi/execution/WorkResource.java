@@ -26,5 +26,5 @@ import javax.ws.rs.core.Response;
 
 @Local
 public interface WorkResource {
-  public Response get(int id);
+  public Response get(String workId);
 }

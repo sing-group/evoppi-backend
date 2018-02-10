@@ -21,7 +21,7 @@
  */
 
 
-package org.sing_group.evoppi.rest.entity.user;
+package org.sing_group.evoppi.rest.entity;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -33,30 +33,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "id-and-uri", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
+@XmlRootElement(name = "uuid-and-uri", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "id-and-uri", description = "URI and id of an entity.")
-public class IdAndUri implements Serializable {
+@ApiModel(value = "id-and-uri", description = "URI and uuid of an entity.")
+public class UuidAndUri implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @XmlElement(name = "id", required = true)
-  private long id;
+  private String id;
 
   @XmlElement(name = "uri", required = true)
   private URI uri;
   
-  IdAndUri() {}
+  UuidAndUri() {}
 
-  public IdAndUri(long id, URI uri) {
+  public UuidAndUri(String id, URI uri) {
     this.id = id;
     this.uri = uri;
   }
 
-  public long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -72,7 +72,7 @@ public class IdAndUri implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + (int) (id ^ (id >>> 32));
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((uri == null) ? 0 : uri.hashCode());
     return result;
   }
@@ -85,8 +85,11 @@ public class IdAndUri implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    IdAndUri other = (IdAndUri) obj;
-    if (id != other.id)
+    UuidAndUri other = (UuidAndUri) obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
       return false;
     if (uri == null) {
       if (other.uri != null)

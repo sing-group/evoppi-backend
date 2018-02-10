@@ -47,17 +47,17 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-ear-plugin</artifactId>
         <configuration>
-          <applicationId>evoppi</applicationId>
-          <applicationName>EvoPPI</applicationName>
-          <displayName>EvoPPI</displayName>
-          <earName>${project.parent.artifactId}-${project.version}</earName>
+          <applicationId>evoppi-backend</applicationId>
+          <applicationName>EvoPPI Backend</applicationName>
+          <displayName>EvoPPI Backend</displayName>
+          <earName>${project.parent.artifactId}-backend-${project.version}</earName>
           <defaultLibBundleDir>lib/</defaultLibBundleDir>
           <skinnyWars>true</skinnyWars>
           <modules>
             <webModule>
               <groupId>${project.groupId}</groupId>
               <artifactId>evoppi-rest</artifactId>
-              <contextRoot>/evoppi/rest</contextRoot>
+              <contextRoot>/evoppi-backend/rest</contextRoot>
             </webModule>
           </modules>
         </configuration>
@@ -67,7 +67,7 @@
         <artifactId>wildfly-maven-plugin</artifactId>
         <configuration>
           <skip>false</skip>
-          <filename>${project.parent.artifactId}-${project.version}.${project.packaging}</filename>
+          <filename>${project.parent.artifactId}-backend-${project.version}.${project.packaging}</filename>
         </configuration>
       </plugin>
     </plugins>

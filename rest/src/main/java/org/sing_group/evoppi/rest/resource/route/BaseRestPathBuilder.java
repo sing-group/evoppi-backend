@@ -108,7 +108,7 @@ public final class BaseRestPathBuilder implements RestPathBuilder {
     return new GeneRestPathBuilder(this.builder, id);
   }
   
-  public WorkRestPathBuilder work(int id) {
+  public WorkRestPathBuilder work(String id) {
     return new WorkRestPathBuilder(this.builder, id);
   }
   

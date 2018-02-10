@@ -19,71 +19,61 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.rest.entity.bio;
+
+
+package org.sing_group.evoppi.rest.entity;
 
 import java.io.Serializable;
+import java.net.URI;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.sing_group.evoppi.rest.entity.IdAndUri;
-
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "interactome-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
+@XmlRootElement(name = "id-and-uri", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "interactome-data", description = "Data of an interactome entity.")
-public class InteractomeData implements Serializable {
+@ApiModel(value = "id-and-uri", description = "URI and id of an entity.")
+public class IdAndUri implements Serializable {
   private static final long serialVersionUID = 1L;
-  
-  private int id;
-  
-  private String name;
 
-  @XmlElement(name = "species", required = true)
-  private IdAndUri species;
-  
-  InteractomeData() {}
+  @XmlElement(name = "id", required = true)
+  private long id;
 
-  public InteractomeData(int id, String name, IdAndUri species) {
+  @XmlElement(name = "uri", required = true)
+  private URI uri;
+  
+  IdAndUri() {}
+
+  public IdAndUri(long id, URI uri) {
     this.id = id;
-    this.name = name;
-    this.species = species;
+    this.uri = uri;
   }
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(long id) {
     this.id = id;
   }
-  
-  public String getName() {
-    return name;
+
+  public URI getUri() {
+    return uri;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public IdAndUri getSpecies() {
-    return species;
-  }
-
-  public void setSpecies(IdAndUri species) {
-    this.species = species;
+  public void setUri(URI uri) {
+    this.uri = uri;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + id;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((species == null) ? 0 : species.hashCode());
+    result = prime * result + (int) (id ^ (id >>> 32));
+    result = prime * result + ((uri == null) ? 0 : uri.hashCode());
     return result;
   }
 
@@ -95,20 +85,14 @@ public class InteractomeData implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractomeData other = (InteractomeData) obj;
+    IdAndUri other = (IdAndUri) obj;
     if (id != other.id)
       return false;
-    if (name == null) {
-      if (other.name != null)
+    if (uri == null) {
+      if (other.uri != null)
         return false;
-    } else if (!name.equals(other.name))
-      return false;
-    if (species == null) {
-      if (other.species != null)
-        return false;
-    } else if (!species.equals(other.species))
+    } else if (!uri.equals(other.uri))
       return false;
     return true;
   }
-
 }

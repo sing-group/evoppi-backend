@@ -30,8 +30,8 @@ import javax.ws.rs.core.UriBuilder;
 public class ResultRestPathBuilder implements RestPathBuilder {
   private UriBuilder builder;
   
-  public ResultRestPathBuilder(UriBuilder builder, int id) {
-    this.builder = builder.clone().path("result").path(Integer.toString(id));
+  public ResultRestPathBuilder(UriBuilder builder, String id) {
+    this.builder = builder.clone().path("result").path(id);
   }
   
   @Override

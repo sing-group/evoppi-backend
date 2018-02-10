@@ -34,7 +34,7 @@ public class DifferentSpeciesInteractionsRequestEvent extends DifferentSpeciesCa
 
   public DifferentSpeciesInteractionsRequestEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId
+    String workId, String resultId
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
   }

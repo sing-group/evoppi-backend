@@ -48,7 +48,7 @@ implements Serializable, WorkStepEvent {
   
   public DifferentSpeciesBlastAlignmentFinishedEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId, Collection<BlastResult> blastResults
+    String workId, String resultId, Collection<BlastResult> blastResults
   ) {
     super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
     

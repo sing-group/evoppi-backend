@@ -38,7 +38,7 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<Integer, SameSpeciesInteractionsResult> dh;
+  protected DAOHelper<String, SameSpeciesInteractionsResult> dh;
 
   public DefaultSameSpeciesInteractionsResultDAO() {
     super();
@@ -51,11 +51,11 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(Integer.class, SameSpeciesInteractionsResult.class, this.em);
+    this.dh = DAOHelper.of(String.class, SameSpeciesInteractionsResult.class, this.em);
   }
   
   @Override
-  public boolean exists(int interactionResultId) {
+  public boolean exists(String interactionResultId) {
     try {
       this.get(interactionResultId);
       
@@ -66,7 +66,7 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
   }
 
   @Override
-  public SameSpeciesInteractionsResult get(int interactionResultId) {
+  public SameSpeciesInteractionsResult get(String interactionResultId) {
     return this.dh.get(interactionResultId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown interaction result: " + interactionResultId));
   }

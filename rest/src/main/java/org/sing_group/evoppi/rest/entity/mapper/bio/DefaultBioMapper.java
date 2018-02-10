@@ -35,6 +35,7 @@ import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.rest.entity.IdAndUri;
 import org.sing_group.evoppi.rest.entity.bio.BlastResultData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.GeneData;
@@ -47,7 +48,6 @@ import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData.Int
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
-import org.sing_group.evoppi.rest.entity.user.IdAndUri;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 
 @Default

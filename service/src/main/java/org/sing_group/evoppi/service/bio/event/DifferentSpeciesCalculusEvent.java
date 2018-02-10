@@ -33,8 +33,8 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
   private final int targetInteractome;
   private final BlastQueryOptions blastQueryOptions;
   private final int maxDegree;
-  private final int workId;
-  private final int resultId;
+  private final String workId;
+  private final String resultId;
 
   public DifferentSpeciesCalculusEvent(DifferentSpeciesCalculusEvent event) {
     this(
@@ -50,7 +50,7 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
 
   public DifferentSpeciesCalculusEvent(
     int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    int workId, int resultId
+    String workId, String resultId
   ) {
     this.geneId = geneId;
     this.referenceInteractome = referenceInteractome;
@@ -81,11 +81,11 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     return blastQueryOptions;
   }
 
-  public int getWorkId() {
+  public String getWorkId() {
     return workId;
   }
 
-  public int getResultId() {
+  public String getResultId() {
     return resultId;
   }
 
@@ -97,9 +97,9 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     result = prime * result + geneId;
     result = prime * result + maxDegree;
     result = prime * result + referenceInteractome;
-    result = prime * result + resultId;
+    result = prime * result + ((resultId == null) ? 0 : resultId.hashCode());
     result = prime * result + targetInteractome;
-    result = prime * result + workId;
+    result = prime * result + ((workId == null) ? 0 : workId.hashCode());
     return result;
   }
 
@@ -123,11 +123,17 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
       return false;
     if (referenceInteractome != other.referenceInteractome)
       return false;
-    if (resultId != other.resultId)
+    if (resultId == null) {
+      if (other.resultId != null)
+        return false;
+    } else if (!resultId.equals(other.resultId))
       return false;
     if (targetInteractome != other.targetInteractome)
       return false;
-    if (workId != other.workId)
+    if (workId == null) {
+      if (other.workId != null)
+        return false;
+    } else if (!workId.equals(other.workId))
       return false;
     return true;
   }

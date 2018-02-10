@@ -95,22 +95,22 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
   public static class WorkStepId implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private int work;
+    private String work;
     
     private int order;
     
     WorkStepId() {}
     
-    public WorkStepId(int work, int order) {
+    public WorkStepId(String work, int order) {
       this.work = work;
       this.order = order;
     }
 
-    public int getWork() {
+    public String getWork() {
       return work;
     }
 
-    public void setWork(int workId) {
+    public void setWork(String workId) {
       this.work = workId;
     }
 
@@ -127,7 +127,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
       final int prime = 31;
       int result = 1;
       result = prime * result + order;
-      result = prime * result + work;
+      result = prime * result + ((work == null) ? 0 : work.hashCode());
       return result;
     }
 
@@ -142,7 +142,10 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
       WorkStepId other = (WorkStepId) obj;
       if (order != other.order)
         return false;
-      if (work != other.work)
+      if (work == null) {
+        if (other.work != null)
+          return false;
+      } else if (!work.equals(other.work))
         return false;
       return true;
     }

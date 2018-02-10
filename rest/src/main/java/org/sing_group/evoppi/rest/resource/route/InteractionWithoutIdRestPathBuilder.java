@@ -32,7 +32,7 @@ public class InteractionWithoutIdRestPathBuilder implements RestPathBuilder {
     this.builder = builder.clone().path("interaction");
   }
   
-  public ResultRestPathBuilder result(int id) {
+  public ResultRestPathBuilder result(String id) {
     return new ResultRestPathBuilder(this.builder, id);
   }
 

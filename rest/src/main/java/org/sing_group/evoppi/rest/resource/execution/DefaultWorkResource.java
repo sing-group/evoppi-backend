@@ -71,7 +71,7 @@ public class DefaultWorkResource implements WorkResource {
     this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
   }
   
-  @Path("{id: \\d+}")
+  @Path("{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}")
   @GET
   @ApiOperation(
     value = "Finds and returns a work by its identifier.",
@@ -83,7 +83,7 @@ public class DefaultWorkResource implements WorkResource {
   )
   @Override
   public Response get(
-    @PathParam("id") int id
+    @PathParam("id") String id
   ) {
     final Work work = this.service.get(id);
     

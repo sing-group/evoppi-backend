@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.sing_group.evoppi.rest.entity.LocalDateTimeToIsoStringAdapter;
-import org.sing_group.evoppi.rest.entity.user.IdAndUri;
+import org.sing_group.evoppi.rest.entity.UuidAndUri;
 
 import io.swagger.annotations.ApiModel;
 
@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiModel;
 public class WorkData implements Serializable {
   private static final long serialVersionUID = 1L;
   
-  private IdAndUri id;
+  private UuidAndUri id;
 
   private String name;
 
@@ -65,7 +65,7 @@ public class WorkData implements Serializable {
   WorkData() {}
 
   public WorkData(
-    IdAndUri id, String name, String description, LocalDateTime creationDateTime, LocalDateTime startDateTime,
+    UuidAndUri id, String name, String description, LocalDateTime creationDateTime, LocalDateTime startDateTime,
     LocalDateTime endDateTime, String resultReference, String status, WorkStepData[] steps
   ) {
     this.id = id;
@@ -79,11 +79,11 @@ public class WorkData implements Serializable {
     this.steps = steps;
   }
 
-  public IdAndUri getId() {
+  public UuidAndUri getId() {
     return id;
   }
 
-  public void setId(IdAndUri id) {
+  public void setId(UuidAndUri id) {
     this.id = id;
   }
 

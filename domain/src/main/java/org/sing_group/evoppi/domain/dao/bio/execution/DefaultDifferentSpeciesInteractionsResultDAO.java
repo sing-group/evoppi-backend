@@ -39,7 +39,7 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<Integer, DifferentSpeciesInteractionsResult> dh;
+  protected DAOHelper<String, DifferentSpeciesInteractionsResult> dh;
 
   public DefaultDifferentSpeciesInteractionsResultDAO() {
     super();
@@ -52,11 +52,11 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(Integer.class, DifferentSpeciesInteractionsResult.class, this.em);
+    this.dh = DAOHelper.of(String.class, DifferentSpeciesInteractionsResult.class, this.em);
   }
   
   @Override
-  public boolean exists(int interactionResultId) {
+  public boolean exists(String interactionResultId) {
     try {
       this.get(interactionResultId);
       
@@ -67,7 +67,7 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
   }
 
   @Override
-  public DifferentSpeciesInteractionsResult get(int interactionResultId) {
+  public DifferentSpeciesInteractionsResult get(String interactionResultId) {
     return this.dh.get(interactionResultId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown interaction result: " + interactionResultId));
   }
