@@ -39,8 +39,6 @@ import io.swagger.annotations.ApiModel;
 public class SameSpeciesInteractionsResultData extends InteractionsResultData implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  private int[] queryInteractomes;
-  
   private IdAndUri[] interactomes;
 
   private IdAndUri[] genes;
@@ -48,7 +46,6 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
   public SameSpeciesInteractionsResultData(
     String id,
     int queryGene,
-    int[] queryInteractomes,
     int queryMaxDegree,
     IdAndUri[] interactomes,
     IdAndUri[] genes,
@@ -57,17 +54,8 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
   ) {
     super(id, queryGene, queryMaxDegree, interactions, status);
     
-    this.queryInteractomes = queryInteractomes;
     this.interactomes = interactomes;
     this.genes = genes;
-  }
-
-  public int[] getQueryInteractomes() {
-    return queryInteractomes;
-  }
-
-  public void setQueryInteractomes(int[] queryInteractomes) {
-    this.queryInteractomes = queryInteractomes;
   }
 
   public IdAndUri[] getInteractomes() {
@@ -92,7 +80,6 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
     int result = super.hashCode();
     result = prime * result + Arrays.hashCode(genes);
     result = prime * result + Arrays.hashCode(interactomes);
-    result = prime * result + Arrays.hashCode(queryInteractomes);
     return result;
   }
 
@@ -108,8 +95,6 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
     if (!Arrays.equals(genes, other.genes))
       return false;
     if (!Arrays.equals(interactomes, other.interactomes))
-      return false;
-    if (!Arrays.equals(queryInteractomes, other.queryInteractomes))
       return false;
     return true;
   }

@@ -134,9 +134,7 @@ public class DefaultBioMapper implements BioMapper {
   public SameSpeciesInteractionsResultData toInteractionQueryResult(SameSpeciesInteractionsResult result) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
-    final IdAndUri[] interactomeIds = result.getInteractions()
-      .flatMapToInt(InteractionGroupResult::getInteractomeIds)
-      .distinct()
+    final IdAndUri[] interactomeIds = result.getQueryInteractomeIds()
       .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
     .toArray(IdAndUri[]::new);
     
@@ -153,7 +151,6 @@ public class DefaultBioMapper implements BioMapper {
     return new SameSpeciesInteractionsResultData(
       result.getId(),
       result.getQueryGeneId(),
-      result.getQueryInteractomeIds().toArray(),
       result.getQueryMaxDegree(),
       interactomeIds,
       geneIds,
