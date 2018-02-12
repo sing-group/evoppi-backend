@@ -45,7 +45,7 @@ implements Serializable, WorkStepEvent {
 
   @Override
   public String getDescription() {
-    return "Crearting FASTA file for reference genes and target genome.";
+    return "Creating FASTA file for reference genes and target genome.";
   }
 
   @Override
