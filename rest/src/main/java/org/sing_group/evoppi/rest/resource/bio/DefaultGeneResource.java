@@ -21,6 +21,7 @@
  */
 package org.sing_group.evoppi.rest.resource.bio;
 
+import static java.util.Arrays.stream;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
@@ -38,6 +39,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -119,26 +121,46 @@ public class DefaultGeneResource implements GeneResource {
 
   @GET
   @ApiOperation(
-    value = "Returns a list of genes. This list can be filtered with a prefix and, optionally a list of interactomes to"
-      + " which the gene belongs. The maximum number of returned genes can also be set.",
+    value = "Returns a list of genes. Query can be done by providing the gene identifiers or by providing a gene prefix"
+      + " together with the interactome to which the gene should belong and the max results to return.",
     response = GeneData.class,
     responseContainer = "List",
     code = 200
   )
   @Override
   public Response listGenes(
+    @QueryParam("ids") String ids,
     @QueryParam("prefix") String prefix,
     @QueryParam("interactome") int[] interactomes,
     @QueryParam("maxResults") @DefaultValue("10") int maxResults
   ) {
-    final GeneQueryOptions queryOptions = new GeneQueryOptions(prefix, interactomes, maxResults);
-    final Stream<Gene> genes = this.service.find(queryOptions);
+    final MultivaluedMap<String, String> queryParameters = this.uriInfo.getQueryParameters();
     
-    final GeneData[] genesData = genes
-      .map(this.bioMapper::toGeneData)
-    .toArray(GeneData[]::new);
+    final boolean isIdsQuery = queryParameters.containsKey("ids");
+    final boolean isPrefixQuery = queryParameters.containsKey("prefix");
     
-    return Response.ok(genesData).build();
+    if (isIdsQuery && isPrefixQuery) {
+      throw new IllegalArgumentException("Query parameter 'ids' can't be used together with 'prefix'");
+    } else if (isIdsQuery) {
+      final GeneData[] genesData = stream(ids.split(","))
+        .mapToInt(Integer::valueOf)
+        .mapToObj(this.service::get)
+        .map(this.bioMapper::toGeneData)
+      .toArray(GeneData[]::new);
+      
+      return Response.ok(genesData).build();
+    } else if (isPrefixQuery) {
+      final GeneQueryOptions queryOptions = new GeneQueryOptions(prefix, interactomes, maxResults);
+      final Stream<Gene> genes = this.service.find(queryOptions);
+      
+      final GeneData[] genesData = genes
+        .map(this.bioMapper::toGeneData)
+      .toArray(GeneData[]::new);
+      
+      return Response.ok(genesData).build();
+    } else {
+      throw new IllegalArgumentException("Missing query parameters in invocation");
+    }
   }
 
   @Path("name")

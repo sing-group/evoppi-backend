@@ -30,7 +30,7 @@ public interface GeneResource {
   
   public Response getGeneNames(int id);
   
-  public Response listGenes(String prefix, int[] interactomes, int maxValues);
+  public Response listGenes(String ids, String prefix, int[] interactomes, int maxValues);
   
   public Response listGeneNames(String prefix, int[] interactomes, int maxValues);
 }
