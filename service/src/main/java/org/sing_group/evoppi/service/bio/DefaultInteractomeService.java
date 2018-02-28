@@ -29,12 +29,19 @@ import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 
+import java.util.stream.Stream;
+
 @Stateless
 @PermitAll
 public class DefaultInteractomeService implements InteractomeService {
   @Inject
   private InteractomeDAO dao;
-  
+
+  @Override
+  public Stream<Interactome> listInteractomes() {
+    return this.dao.listInteractomes();
+  }
+
   @Override
   public Interactome getInteractome(int id) {
     return this.dao.getInteractome(id);

@@ -26,5 +26,6 @@ import javax.ws.rs.core.Response;
 
 @Local
 public interface InteractomeResource {
+  public Response listInteractomes();
   public Response getInteractome(int id, boolean includeInteractions);
 }

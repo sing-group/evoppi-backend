@@ -40,6 +40,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -101,5 +102,21 @@ public class DefaultInteractomeResource implements InteractomeResource {
         .ok(this.mapper.toInteractomeData(interactome))
       .build();
     }
+  }
+
+  @GET
+  @ApiOperation(
+    value = "Returns a list with all the interactome information.",
+    response = InteractomeData.class,
+    responseContainer = "List",
+    code = 200
+  )
+  @Override
+  public Response listInteractomes() {
+    final InteractomeData[] interactomeData = this.service.listInteractomes()
+            .map(this.mapper::toInteractomeData)
+            .toArray(InteractomeData[]::new);
+
+    return Response.ok(interactomeData).build();
   }
 }

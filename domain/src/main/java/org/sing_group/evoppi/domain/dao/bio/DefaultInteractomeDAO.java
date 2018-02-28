@@ -32,6 +32,8 @@ import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
+import java.util.stream.Stream;
+
 @Default
 @Transactional(value = TxType.MANDATORY)
 public class DefaultInteractomeDAO implements InteractomeDAO {
@@ -52,6 +54,11 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   @PostConstruct
   protected void createDAOHelper() {
     this.dh = DAOHelper.of(Integer.class, Interactome.class, this.em);
+  }
+
+  @Override
+  public Stream<Interactome> listInteractomes() {
+    return this.dh.list().stream();
   }
 
   @Override
