@@ -23,6 +23,7 @@ package org.sing_group.evoppi.domain.dao.bio;
 
 import static org.sing_group.fluent.checker.Checks.requireNonNegative;
 
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -42,7 +44,7 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
 import org.sing_group.evoppi.domain.entities.bio.query.GeneQueryOptions;
 
 @Default
@@ -95,32 +97,37 @@ public class DefaultGeneDAO implements GeneDAO {
     final CriteriaBuilder cb = this.dh.cb();
 
     final CriteriaQuery<Gene> query = this.dh.createCBQuery();
-    final Root<Gene> root = query.from(Gene.class);
-    final Path<Object> fieldId = root.get("id");
-    final Expression<String> fieldIdString = fieldId.as(String.class);
     
-    final Join<Gene, String> joinNames = root.join("names").join("names");
-    
-    Predicate predicate = cb.or(
-      cb.like(fieldIdString, queryOptions.getPrefix() + "%"),
-      cb.like(joinNames, queryOptions.getPrefix() + "%")
-    );
+    final From<?, Gene> from;
+    Function<Predicate, Predicate> predicateBuilder = Function.identity();
     
     if (queryOptions.hasInteractomeIds()) {
-      final Join<Gene, Interactome> joinInteractsA = root.join("interactsA").join("interactome");
-      final Join<Gene, Interactome> joinInteractsB = root.join("interactsB").join("interactome");
+      final Root<GeneInInteractome> root = query.from(GeneInInteractome.class);
       
-      predicate = cb.and(
-        predicate,
-        cb.or(
-          joinInteractsA.get("id").in(queryOptions.getInteractomeIds()),
-          joinInteractsB.get("id").in(queryOptions.getInteractomeIds())
-        )
+      from = root.join("gene");
+      
+      predicateBuilder = predicate -> cb.and(
+        root.get("interactome").in(queryOptions.getInteractomeIds()),
+        predicate
       );
+    } else {
+      from = query.from(Gene.class);
     }
     
+    final Join<Gene, String> joinNames = from.join("names").join("names");
+  
+    final Path<Object> fieldId = from.get("id");
+    final Expression<String> fieldIdString = fieldId.as(String.class);
+    
+    final Predicate predicate = predicateBuilder.apply(
+      cb.or(
+        cb.like(fieldIdString, queryOptions.getPrefix() + "%"),
+        cb.like(joinNames, queryOptions.getPrefix() + "%")
+      )
+    );
+    
     return em.createQuery(
-      query.select(root)
+      query.select(from)
         .distinct(true)
         .where(predicate)
         .orderBy(cb.asc(fieldId))
