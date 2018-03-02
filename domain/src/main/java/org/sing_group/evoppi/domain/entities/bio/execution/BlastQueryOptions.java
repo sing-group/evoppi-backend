@@ -47,8 +47,8 @@ public class BlastQueryOptions implements Serializable {
   BlastQueryOptions() {}
 
   public BlastQueryOptions(double evalue, int maxTargetSeqs, double minimumIdentity, int minimumAlignmentLength) {
-    if (evalue < 0d || evalue > 1d)
-      throw new IllegalArgumentException("evalue must be a double in range [0, 1]");
+    if (evalue < 0d)
+      throw new IllegalArgumentException("evalue must be a double with a non negative value");
     if (maxTargetSeqs < 0 || maxTargetSeqs > 100)
       throw new IllegalArgumentException("maxTargetSeqs must be an integer in range [0, 100]");
     if (minimumIdentity < 0d || minimumIdentity > 1d)
