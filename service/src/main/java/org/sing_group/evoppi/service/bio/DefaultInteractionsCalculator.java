@@ -45,9 +45,9 @@ import javax.transaction.Transactional;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.service.entity.bio.GeneInteraction;
-import org.sing_group.evoppi.service.entity.bio.InteractingGenes;
-import org.sing_group.evoppi.service.entity.bio.InteractionGroup;
+import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.entity.InteractingGenes;
+import org.sing_group.evoppi.service.bio.entity.InteractionGroup;
 import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 

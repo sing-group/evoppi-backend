@@ -19,25 +19,23 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.bio.event;
+package org.sing_group.evoppi.service.bio.differentspecies.event;
 
-import java.util.stream.Stream;
+import java.io.Serializable;
 
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 
-public interface InteractionsCalculusCallback {
-  public void calculusStarted();
-  public void interactionsCalculated(Stream<GeneInteraction> interactions);
-  public void calculusFinished();
-  
-  public static class SimpleInteractionsCalculusCallback implements InteractionsCalculusCallback {
-    @Override
-    public void calculusStarted() {}
-    
-    @Override
-    public void interactionsCalculated(Stream<GeneInteraction> interactions) {}
+public class DifferentSpeciesInteractionsRequestEvent extends DifferentSpeciesCalculusEvent implements Serializable {
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    public void calculusFinished() {}
+  public DifferentSpeciesInteractionsRequestEvent(DifferentSpeciesCalculusEvent event) {
+    super(event);
+  }
+
+  public DifferentSpeciesInteractionsRequestEvent(
+    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
+    String workId, String resultId
+  ) {
+    super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
   }
 }

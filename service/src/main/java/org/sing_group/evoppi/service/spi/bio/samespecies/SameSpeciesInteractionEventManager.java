@@ -19,25 +19,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.bio.event;
+package org.sing_group.evoppi.service.spi.bio.samespecies;
 
-import java.util.stream.Stream;
+import javax.ejb.Local;
 
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesCalculusFailedEvent;
+import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesCalculusFinishedEvent;
+import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesCalculusStartedEvent;
+import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesGeneInteractionsEvent;
 
-public interface InteractionsCalculusCallback {
-  public void calculusStarted();
-  public void interactionsCalculated(Stream<GeneInteraction> interactions);
-  public void calculusFinished();
+@Local
+public interface SameSpeciesInteractionEventManager {
+
+  public void manageStart(SameSpeciesCalculusStartedEvent event);
+
+  public void manageInteractions(SameSpeciesGeneInteractionsEvent event);
+
+  public void manageFinish(SameSpeciesCalculusFinishedEvent event);
   
-  public static class SimpleInteractionsCalculusCallback implements InteractionsCalculusCallback {
-    @Override
-    public void calculusStarted() {}
-    
-    @Override
-    public void interactionsCalculated(Stream<GeneInteraction> interactions) {}
+  public void manageFailure(SameSpeciesCalculusFailedEvent event);
 
-    @Override
-    public void calculusFinished() {}
-  }
 }

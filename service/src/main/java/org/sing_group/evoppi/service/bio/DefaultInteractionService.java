@@ -49,8 +49,8 @@ import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInter
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.Work;
-import org.sing_group.evoppi.service.bio.event.DifferentSpeciesInteractionsRequestEvent;
-import org.sing_group.evoppi.service.bio.event.SameSpeciesInteractionsRequestEvent;
+import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesInteractionsRequestEvent;
+import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.storage.FastaOutputConfiguration;
 import org.sing_group.evoppi.service.spi.storage.FastaWriter;
