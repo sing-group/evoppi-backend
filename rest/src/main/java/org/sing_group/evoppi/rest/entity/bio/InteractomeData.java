@@ -42,15 +42,49 @@ public class InteractomeData implements Serializable {
   
   private String name;
 
+  private String dbSourceIdType;
+
+  private Integer numOriginalInteractions;
+
+  private Integer numUniqueOriginalInteractions;
+
+  private Integer numUniqueOriginalGenes;
+
+  private Integer numInteractionsNotToUniProtKB;
+
+  private Integer numGenesNotToUniProtKB;
+
+  private Integer numInteractionsNotToGeneId;
+
+  private Integer numGenesNotToGeneId;
+
+  private Integer numFinalInteractions;
+
+  private Double probFinalInteractions;
+
   @XmlElement(name = "species", required = true)
   private IdAndUri species;
   
   InteractomeData() {}
 
-  public InteractomeData(int id, String name, IdAndUri species) {
+  public InteractomeData(int id, String name, IdAndUri species, String dbSourceIdType, Integer numOriginalInteractions,
+                         Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
+                         Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
+                         Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
+                         Double probFinalInteractions) {
     this.id = id;
     this.name = name;
     this.species = species;
+    this.dbSourceIdType = dbSourceIdType;
+    this.numOriginalInteractions = numOriginalInteractions;
+    this.numUniqueOriginalInteractions = numUniqueOriginalInteractions;
+    this.numUniqueOriginalGenes = numUniqueOriginalGenes;
+    this.numInteractionsNotToUniProtKB = numInteractionsNotToUniProtKB;
+    this.numGenesNotToUniProtKB = numGenesNotToUniProtKB;
+    this.numInteractionsNotToGeneId = numInteractionsNotToGeneId;
+    this.numGenesNotToGeneId = numGenesNotToGeneId;
+    this.numFinalInteractions = numFinalInteractions;
+    this.probFinalInteractions = probFinalInteractions;
   }
 
   public int getId() {
@@ -67,6 +101,62 @@ public class InteractomeData implements Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getDbSourceIdType() { return dbSourceIdType; }
+
+  public void setDbSourceIdType(String dbSourceIdType) { this.dbSourceIdType = dbSourceIdType; }
+
+  public Integer getNumOriginalInteractions() { return numOriginalInteractions; }
+
+  public void setNumOriginalInteractions(Integer numOriginalInteractions) {
+    this.numOriginalInteractions = numOriginalInteractions;
+  }
+
+  public Integer getNumUniqueOriginalInteractions() { return numUniqueOriginalInteractions; }
+
+  public void setNumUniqueOriginalInteractions(Integer numUniqueOriginalInteractions) {
+    this.numUniqueOriginalInteractions = numUniqueOriginalInteractions;
+  }
+
+  public Integer getNumUniqueOriginalGenes() { return numUniqueOriginalGenes; }
+
+  public void setNumUniqueOriginalGenes(Integer numUniqueOriginalGenes) {
+    this.numUniqueOriginalGenes = numUniqueOriginalGenes;
+  }
+
+  public Integer getNumInteractionsNotToUniProtKB() { return numInteractionsNotToUniProtKB; }
+
+  public void setNumInteractionsNotToUniProtKB(Integer numInteractionsNotToUniProtKB) {
+    this.numInteractionsNotToUniProtKB = numInteractionsNotToUniProtKB;
+  }
+
+  public Integer getNumGenesNotToUniProtKB() { return numGenesNotToUniProtKB; }
+
+  public void setNumGenesNotToUniProtKB(Integer numGenesNotToUniProtKB) {
+    this.numGenesNotToUniProtKB = numGenesNotToUniProtKB;
+  }
+
+  public Integer getNumInteractionsNotToGeneId() { return numInteractionsNotToGeneId; }
+
+  public void setNumInteractionsNotToGeneId(Integer numInteractionsNotToGeneId) {
+    this.numInteractionsNotToGeneId = numInteractionsNotToGeneId;
+  }
+
+  public Integer getNumGenesNotToGeneId() { return numGenesNotToGeneId; }
+
+  public void setNumGenesNotToGeneId(Integer numGenesNotToGeneId) { this.numGenesNotToGeneId = numGenesNotToGeneId; }
+
+  public Integer getNumFinalInteractions() { return numFinalInteractions; }
+
+  public void setNumFinalInteractions(Integer numFinalInteractions) {
+    this.numFinalInteractions = numFinalInteractions;
+  }
+
+  public Double getProbFinalInteractions() { return probFinalInteractions; }
+
+  public void setProbFinalInteractions(Double probFinalInteractions) {
+    this.probFinalInteractions = probFinalInteractions;
   }
 
   public IdAndUri getSpecies() {

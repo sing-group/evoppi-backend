@@ -84,7 +84,17 @@ public class DefaultBioMapper implements BioMapper {
       new IdAndUri(
         interactome.getSpecies().getId(),
         pathBuilder.species(interactome.getSpecies()).build()
-      )
+      ),
+      interactome.getDbSourceIdType(),
+      interactome.getNumOriginalInteractions(),
+      interactome.getNumUniqueOriginalInteractions(),
+      interactome.getNumUniqueOriginalGenes(),
+      interactome.getNumInteractionsNotToUniProtKB(),
+      interactome.getNumGenesNotToUniProtKB(),
+      interactome.getNumInteractionsNotToGeneId(),
+      interactome.getNumGenesNotToGeneId(),
+      interactome.getNumFinalInteractions(),
+      interactome.getProbFinalInteractions()
     );
   }
   
@@ -109,6 +119,16 @@ public class DefaultBioMapper implements BioMapper {
         interactome.getSpecies().getId(),
         pathBuilder.species(interactome.getSpecies()).build()
       ),
+      interactome.getDbSourceIdType(),
+      interactome.getNumOriginalInteractions(),
+      interactome.getNumUniqueOriginalInteractions(),
+      interactome.getNumUniqueOriginalGenes(),
+      interactome.getNumInteractionsNotToUniProtKB(),
+      interactome.getNumGenesNotToUniProtKB(),
+      interactome.getNumInteractionsNotToGeneId(),
+      interactome.getNumGenesNotToGeneId(),
+      interactome.getNumFinalInteractions(),
+      interactome.getProbFinalInteractions(),
       genes,
       interactions
     );

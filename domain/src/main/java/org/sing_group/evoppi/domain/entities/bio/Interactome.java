@@ -55,7 +55,37 @@ public class Interactome implements Serializable {
 
   @Column(name = "name", length = 100, nullable = false)
   private String name;
-  
+
+  @Column(name = "dbSourceIdType", length = 100, nullable = true)
+  private String dbSourceIdType;
+
+  @Column(name = "numOriginalInteractions", nullable = true)
+  private Integer numOriginalInteractions;
+
+  @Column(name = "numUniqueOriginalInteractions", nullable = true)
+  private Integer numUniqueOriginalInteractions;
+
+  @Column(name = "numUniqueOriginalGenes", nullable = true)
+  private Integer numUniqueOriginalGenes;
+
+  @Column(name = "numInteractionsNotToUniProtKB", nullable = true)
+  private Integer numInteractionsNotToUniProtKB;
+
+  @Column(name = "numGenesNotToUniProtKB", nullable = true)
+  private Integer numGenesNotToUniProtKB;
+
+  @Column(name = "numInteractionsNotToGeneId", nullable = true)
+  private Integer numInteractionsNotToGeneId;
+
+  @Column(name = "numGenesNotToGeneId", nullable = true)
+  private Integer numGenesNotToGeneId;
+
+  @Column(name = "numFinalInteractions", nullable = true)
+  private Integer numFinalInteractions;
+
+  @Column(name = "probFinalInteractions", scale = 1, precision = 2, nullable = true)
+  private Double probFinalInteractions;
+
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
   @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
   private Species species;
@@ -74,6 +104,26 @@ public class Interactome implements Serializable {
   public Species getSpecies() {
     return species;
   }
+
+  public String getDbSourceIdType() { return dbSourceIdType; }
+
+  public Integer getNumOriginalInteractions() { return numOriginalInteractions; }
+
+  public Integer getNumUniqueOriginalInteractions() { return numUniqueOriginalInteractions; }
+
+  public Integer getNumUniqueOriginalGenes() { return numUniqueOriginalGenes; }
+
+  public Integer getNumInteractionsNotToUniProtKB() { return numInteractionsNotToUniProtKB; }
+
+  public Integer getNumGenesNotToUniProtKB() { return numGenesNotToUniProtKB; }
+
+  public Integer getNumInteractionsNotToGeneId() { return numInteractionsNotToGeneId; }
+
+  public Integer getNumGenesNotToGeneId() { return numGenesNotToGeneId; }
+
+  public Integer getNumFinalInteractions() { return numFinalInteractions; }
+
+  public Double getProbFinalInteractions() { return probFinalInteractions; }
   
   public Stream<Interaction> getInteractions() {
     return this.interactions.stream();
