@@ -23,20 +23,11 @@ package org.sing_group.evoppi.service.spi.bio.samespecies;
 
 import javax.ejb.Local;
 
-import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesCalculusFailedEvent;
-import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesCalculusFinishedEvent;
-import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesCalculusStartedEvent;
-import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesGeneInteractionsEvent;
+import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
 
 @Local
-public interface SameSpeciesInteractionEventManager {
+public interface SameSpeciesGeneInteractionsPersistenceManager {
 
-  public void manageStart(SameSpeciesCalculusStartedEvent event);
-
-  public void manageInteractions(SameSpeciesGeneInteractionsEvent event);
-
-  public void manageFinish(SameSpeciesCalculusFinishedEvent event);
-  
-  public void manageFailure(SameSpeciesCalculusFailedEvent event);
+  public void manageEvent(SameSpeciesGeneInteractionsEvent event);
 
 }

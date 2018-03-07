@@ -25,42 +25,55 @@ import java.io.Serializable;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
+import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
+import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
 
-public class SameSpeciesCalculusFailedEvent
-extends SameSpeciesCalculusEvent
-implements Serializable, WorkStepEvent {
+public class DefaultSameSpeciesGeneInteractionsEvent
+implements SameSpeciesGeneInteractionsEvent, WorkStepEvent, Serializable {
   private static final long serialVersionUID = 1L;
   
-  private final String cause;
-
-  public SameSpeciesCalculusFailedEvent(SameSpeciesCalculusEvent event, String cause) {
-    super(event);
-    
-    this.cause = cause;
-  }
-
-  public SameSpeciesCalculusFailedEvent(int geneId, int[] interactomes, int maxDegree, String workId, String resultId, String cause) {
-    super(geneId, interactomes, maxDegree, workId, resultId);
-    
-    this.cause = cause;
-  }
+  private final SameSpeciesGeneInteractionsContext context;
+  private final String description;
+  private final double progress;
+  private final ExecutionStatus status;
   
-  public String getCause() {
-    return cause;
+  public DefaultSameSpeciesGeneInteractionsEvent(
+    SameSpeciesGeneInteractionsContext context, String description, double progress, ExecutionStatus status
+  ) {
+    this.context = context;
+    this.description = description;
+    this.progress = progress;
+    this.status = status;
+  }
+
+  @Override
+  public SameSpeciesGeneInteractionsContext getContext() {
+    return this.context;
   }
 
   @Override
   public String getDescription() {
-    return "Execution failed. Cause: " + this.cause;
+    return this.description;
   }
 
   @Override
   public double getProgress() {
-    return Double.NaN;
+    return this.progress;
+  }
+
+  @Override
+  public ExecutionStatus getStatus() {
+    return this.status;
+  }
+
+  @Override
+  public String getWorkId() {
+    return this.context.getConfiguration().getWorkId();
   }
 
   @Override
   public ExecutionStatus getWorkStatus() {
-    return ExecutionStatus.FAILED;
+    return this.status;
   }
+
 }

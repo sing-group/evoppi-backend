@@ -21,11 +21,6 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies;
 
-import static java.util.stream.Collectors.toSet;
-
-import java.util.Collection;
-import java.util.stream.Stream;
-
 import javax.annotation.security.PermitAll;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -33,67 +28,28 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
-import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
-import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
 import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
-import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
-import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesInteractionService;
-import org.sing_group.evoppi.service.spi.bio.samespecies.event.SameSpeciesInteractionEventNotifier;
+import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
+import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineExecutor;
 
 @Stateless
 @PermitAll
 public class DefaultSameSpeciesInteractionService implements SameSpeciesInteractionService {
   @Inject
-  private GeneDAO geneDao;
-  
+  private PipelineExecutor executor;
+
   @Inject
-  private InteractomeDAO interactomeDao;
-  
-  @Inject
-  private SameSpeciesInteractionEventNotifier eventManager;
-  
-  @Inject
-  private InteractionsCalculator interactionsCalculator;
+  private SameSpeciesGeneInteractionsPipeline pipeline;
   
   @Override
   @Asynchronous
   public void calculateSameSpeciesInteractions(
     @Observes(during = TransactionPhase.AFTER_SUCCESS) SameSpeciesInteractionsRequestEvent event
   ) {
-    final InteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(event);
-    
-    final Gene gene = this.geneDao.getGene(event.getGeneId());
-    final Collection<Interactome> interactomes = event.getInteractomes()
-      .mapToObj(this.interactomeDao::getInteractome)
-    .collect(toSet());
-    
-    this.interactionsCalculator.calculateInteractions(gene, interactomes, event.getMaxDegree(), callback);
-  }
-  
-  private class BridgeInteractionsCalculusCallback implements InteractionsCalculusCallback {
-    private final SameSpeciesInteractionsRequestEvent baseEvent;
-    
-    private BridgeInteractionsCalculusCallback(SameSpeciesInteractionsRequestEvent baseEvent) {
-      this.baseEvent = baseEvent;
-    }
-    
-    @Override
-    public void calculusStarted() {
-      eventManager.notifyCalculusStarted(this.baseEvent);
-    }
-    
-    @Override
-    public void interactionsCalculated(Stream<GeneInteraction> interactions) {
-      eventManager.notifyInteractionsCalculusFinished(this.baseEvent, interactions.collect(toSet()));
-    }
-    
-    @Override
-    public void calculusFinished() {
-      eventManager.notifyCalculusFinished(this.baseEvent);
-    }
+    this.executor.execute(
+      pipeline,
+      new DefaultSameSpeciesGeneInteractionsConfiguration(event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getResultId())
+    );
   }
 }

@@ -19,16 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.bio.event;
+package org.sing_group.evoppi.service.spi.execution.pipeline;
 
-import java.util.stream.Stream;
+public interface PipelineConfiguration {
 
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
-
-public interface InteractionsCalculusCallback {
-  public default void calculusStarted() {}
-  public default void interactionsCalculated(Stream<GeneInteraction> interactions) {}
-  public default void calculusFinished() {}
-  
-  public static class SimpleInteractionsCalculusCallback implements InteractionsCalculusCallback {}
 }

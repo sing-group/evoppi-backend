@@ -113,19 +113,6 @@ public class DefaultInteractionsCalculator implements InteractionsCalculator {
         .forEach(this.groups::add);
     }
     
-//    public Stream<GeneInteraction> getInteractionsByDegree(int degree) {
-//      return this.groups.stream()
-//        .filter(group -> group.hasDegree(degree))
-//        .map(group -> new GeneInteraction(
-//          group.getGeneA().getId(),
-//          group.getGeneB().getId(),
-//          group.getInteractomes()
-//            .mapToInt(Interactome::getId)
-//          .toArray(),
-//          degree
-//        ));
-//    }
-    
     public Stream<GeneInteraction> getGeneInteractions() {
       return this.groups.stream()
       .map(group -> new GeneInteraction(

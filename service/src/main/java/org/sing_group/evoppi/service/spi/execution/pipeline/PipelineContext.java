@@ -19,22 +19,17 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.bio.samespecies.event;
+package org.sing_group.evoppi.service.spi.execution.pipeline;
 
-import java.util.Collection;
-
-import javax.ejb.Local;
-
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
-import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesCalculusEvent;
-
-@Local
-public interface SameSpeciesInteractionEventNotifier {
-  public void notifyCalculusStarted(SameSpeciesCalculusEvent event);
-  
-  public void notifyInteractionsCalculusFinished(SameSpeciesCalculusEvent event, Collection<GeneInteraction> interactions);
-  
-  public void notifyCalculusFinished(SameSpeciesCalculusEvent event);
-  
-  public void notifyCalculusFailed(SameSpeciesCalculusEvent event, String cause);
+public interface PipelineContext<
+  C extends PipelineConfiguration,
+  PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
+  PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
+  P extends Pipeline<C, PC, PS, P, PE, PEM>,
+  PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
+  PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
+> {
+  public C getConfiguration();
+  public PEM getEventManager();
+  public P getPipeline();
 }
