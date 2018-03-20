@@ -24,9 +24,9 @@ package org.sing_group.evoppi.service.bio.samespecies.event;
 import java.io.Serializable;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
-import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
+import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
 public class DefaultSameSpeciesGeneInteractionsEvent
 implements SameSpeciesGeneInteractionsEvent, WorkStepEvent, Serializable {

@@ -21,8 +21,14 @@
  */
 package org.sing_group.evoppi.service.execution.pipeline;
 
+import static java.util.stream.Collectors.toList;
+import static javax.ejb.TransactionAttributeType.NEVER;
+import static javax.ejb.TransactionManagementType.BEAN;
+
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionManagement;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.pipeline.Pipeline;
@@ -35,8 +41,9 @@ import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineStep;
 
 @Stateless
 @PermitAll
+@TransactionManagement(BEAN)
+@TransactionAttribute(NEVER)
 public class TransactionalPipelineExecutor implements PipelineExecutor {
-  @PermitAll
   @Override
   public <
     C extends PipelineConfiguration,
@@ -56,7 +63,8 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
       
       final double stepProgress = 1d / (double) pipeline.countTotalSteps();
       double progress = 0d;
-      for (PS step : pipeline.getSteps()) {
+      
+      for (PS step : pipeline.getSteps().collect(toList())) {
         final String name = formatStepName(step.getName());
         
         eventManager.fireEvent(context, "Starting " + name, progress, ExecutionStatus.RUNNING);
@@ -72,12 +80,7 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
       eventManager.fireEvent(context, re.getMessage(), Double.NaN, ExecutionStatus.FAILED);
     }
   }
-
-  private String formatStepName(String name) {
-    return Character.toLowerCase(name.charAt(0)) + name.substring(1);
-  }
-
-  @PermitAll
+  
   @Override
   public <
     C extends PipelineConfiguration,
@@ -90,5 +93,9 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
     P pipeline, C configuration
   ) {
     PipelineExecutor.super.execute(pipeline, configuration);
+  }
+
+  private String formatStepName(String name) {
+    return Character.toLowerCase(name.charAt(0)) + name.substring(1);
   }
 }

@@ -19,35 +19,31 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.bio.samespecies.event;
+package org.sing_group.evoppi.service.bio.differentspecies.event;
 
-import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
-import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEventManager;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEvent;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsStep;
 
-@Stateless
-@PermitAll
-public class DefaultSameSpeciesGeneInteractionsEventManager
-implements SameSpeciesGeneInteractionsEventManager {
+public class DefaultDifferentSpeciesGeneInteractionsEventManager
+implements DifferentSpeciesGeneInteractionsEventManager {
   @Inject
-  private Event<SameSpeciesGeneInteractionsEvent> events;
+  private Event<DifferentSpeciesGeneInteractionsEvent> events;
 
   @Override
-  public void fireEvent(SameSpeciesGeneInteractionsContext context, String description, double progress, ExecutionStatus status) {
-    this.events.fire(new DefaultSameSpeciesGeneInteractionsEvent(context, description, progress, status));
+  public void fireEvent(DifferentSpeciesGeneInteractionsContext context, String description, double progress, ExecutionStatus status) {
+    this.events.fire(new DefaultDifferentSpeciesGeneInteractionsEvent(context, description, progress, status));
   }
 
   @Override
   public  void fireStepEvent(
-    SameSpeciesGeneInteractionsStep step, SameSpeciesGeneInteractionsContext context, String description, double progress
+    DifferentSpeciesGeneInteractionsStep step, DifferentSpeciesGeneInteractionsContext context, String description, double progress
   ) {
     final double currentProgress = calculateStepEventProgress(step, context, progress);
     
@@ -55,9 +51,9 @@ implements SameSpeciesGeneInteractionsEventManager {
   }
 
   private static double calculateStepEventProgress(
-    SameSpeciesGeneInteractionsStep step, SameSpeciesGeneInteractionsContext context, double progress
+    DifferentSpeciesGeneInteractionsStep step, DifferentSpeciesGeneInteractionsContext context, double progress
   ) {
-    final SameSpeciesGeneInteractionsPipeline pipeline = context.getPipeline();
+    final DifferentSpeciesGeneInteractionsPipeline pipeline = context.getPipeline();
     final double stepIndex = step.getOrder();
     final double stepTotal = pipeline.countTotalSteps();
     

@@ -57,8 +57,6 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
     
     final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(resultId);
     
-    System.out.println("Persinsting: " + event.getStatus());
-    
     switch (event.getStatus()) {
     case RUNNING:
       result.setRunning();

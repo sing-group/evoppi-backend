@@ -40,6 +40,8 @@ import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
+import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
+import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilderFactory;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
 
 @Stateless
@@ -50,15 +52,19 @@ implements SameSpeciesGeneInteractionsStep {
   private InteractomeDAO interactomeDao;
   private GeneDAO geneDao;
   private InteractionsCalculator interactionsCalculator;
+  private SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
   
   DefaultSameSpeciesGeneInteractionsStep() {}
   
   public DefaultSameSpeciesGeneInteractionsStep(
-    InteractomeDAO interactomeDao, GeneDAO geneDao, InteractionsCalculator interactionsCalculator
+    InteractomeDAO interactomeDao, GeneDAO geneDao,
+    InteractionsCalculator interactionsCalculator,
+    SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory
   ) {
     this.setInteractomeDao(interactomeDao);
     this.setGeneDao(geneDao);
-    this.setInteractomeDao(interactomeDao);
+    this.setInteractionsCalculator(interactionsCalculator);
+    this.setContextBuilderFactory(contextBuilderFactory);
   }
 
   @Inject
@@ -76,9 +82,19 @@ implements SameSpeciesGeneInteractionsStep {
     this.interactionsCalculator = requireNonNull(interactionsCalculator);
   }
   
+  @Inject
+  public void setContextBuilderFactory(SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory) {
+    this.contextBuilderFactory = requireNonNull(contextBuilderFactory);
+  }
+  
   @Override
   public String getName() {
     return "Interactome comparison";
+  }
+  
+  @Override
+  public int getOrder() {
+    return 0;
   }
 
   @Override
@@ -95,7 +111,8 @@ implements SameSpeciesGeneInteractionsStep {
       .mapToObj(interactomeDao::getInteractome)
     .collect(toSet());
 
-    final BridgeInteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(context);
+    final SameSpeciesGeneInteractionsContextBuilder createBuilder = this.contextBuilderFactory.createBuilderFor(context);
+    final BridgeInteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(createBuilder);
     
     this.interactionsCalculator.calculateInteractions(gene, interactomes, configuration.getMaxDegree(), callback);
     
@@ -103,14 +120,14 @@ implements SameSpeciesGeneInteractionsStep {
   }
   
   private class BridgeInteractionsCalculusCallback implements InteractionsCalculusCallback {
-    private SameSpeciesGeneInteractionsContext context;
+    private SameSpeciesGeneInteractionsContextBuilder contextBuilder;
     
-    public SameSpeciesGeneInteractionsContext getContext() {
-      return context;
+    public BridgeInteractionsCalculusCallback(SameSpeciesGeneInteractionsContextBuilder contextBuilder) {
+      this.contextBuilder = contextBuilder;
     }
     
-    public BridgeInteractionsCalculusCallback(SameSpeciesGeneInteractionsContext context) {
-      this.context = context;
+    public SameSpeciesGeneInteractionsContext getContext() {
+      return contextBuilder.build();
     }
 
     @Override
@@ -118,7 +135,7 @@ implements SameSpeciesGeneInteractionsStep {
     
     @Override
     public void interactionsCalculated(Stream<GeneInteraction> interactions) {
-      this.context = this.context.setInteractions(interactions);
+      this.contextBuilder.setInteractions(interactions);
     }
     
     @Override

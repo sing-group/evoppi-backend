@@ -23,17 +23,11 @@ package org.sing_group.evoppi.service.spi.bio.differentspecies;
 
 import javax.ejb.Local;
 
-import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesBlastRequestEvent;
-import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesCalculateTargetInteractionsRequestEvent;
 import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesInteractionsRequestEvent;
 
 @Local
 public interface DifferentSpeciesInteractionService {
 
-  public void calculateReferenceInteractions(DifferentSpeciesInteractionsRequestEvent event);
-
-  public void calculateBlast(DifferentSpeciesBlastRequestEvent event);
-
-  public void calculateTargetInteractions(DifferentSpeciesCalculateTargetInteractionsRequestEvent event);
+  public void calculateDifferentSpeciesInteractions(DifferentSpeciesInteractionsRequestEvent event);
 
 }

@@ -19,21 +19,19 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.execution.pipeline;
+package org.sing_group.evoppi.service.spi.bio.differentspecies;
 
-public interface PipelineStep<
-  C extends PipelineConfiguration,
-  PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
-  PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
-  P extends Pipeline<C, PC, PS, P, PE, PEM>,
-  PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
-  PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
-> {
-  public String getName();
+import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline;
+
+public interface DifferentSpeciesGeneInteractionsContextBuilderFactory {
   
-  public int getOrder();
-  
-  public boolean isComplete(PC context);
-  
-  public PC execute(PC context);
+  public DifferentSpeciesGeneInteractionsContextBuilder createBuilderFor(
+    DifferentSpeciesGeneInteractionsPipeline pipeline,
+    DifferentSpeciesGeneInteractionsConfiguration configuration,
+    DifferentSpeciesGeneInteractionsEventManager eventManager
+  );
+
+  public DifferentSpeciesGeneInteractionsContextBuilder createBuilderFor(DifferentSpeciesGeneInteractionsContext context);
+
 }

@@ -21,24 +21,17 @@
  */
 package org.sing_group.evoppi.service.spi.bio.samespecies;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEventManager;
-import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineContext;
 
-public interface SameSpeciesGeneInteractionsContext
-extends PipelineContext<
-  SameSpeciesGeneInteractionsConfiguration,
-  SameSpeciesGeneInteractionsContext,
-  SameSpeciesGeneInteractionsStep,
-  SameSpeciesGeneInteractionsPipeline,
-  SameSpeciesGeneInteractionsEvent,
-  SameSpeciesGeneInteractionsEventManager
-> {
-  public Optional<Stream<GeneInteraction>> getInteractions();
+public interface SameSpeciesGeneInteractionsContextBuilderFactory {
+  
+  public SameSpeciesGeneInteractionsContextBuilder createBuilderFor(
+    SameSpeciesGeneInteractionsPipeline pipeline,
+    SameSpeciesGeneInteractionsConfiguration configuration,
+    SameSpeciesGeneInteractionsEventManager eventManager
+  );
+  
+  public SameSpeciesGeneInteractionsContextBuilder createBuilderFor(SameSpeciesGeneInteractionsContext context);
+
 }

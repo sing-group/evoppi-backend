@@ -2,7 +2,7 @@
  * #%L
  * Service
  * %%
- * Copyright (C) 2017 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,16 +19,25 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.bio;
+package org.sing_group.evoppi.service.spi.bio.differentspecies;
 
-import java.util.stream.Stream;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineConfiguration;
 
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
+public interface DifferentSpeciesGeneInteractionsConfiguration extends PipelineConfiguration {
 
-public interface InteractomeService {
+  public int getGeneId();
+  
+  public int getReferenceInteractome();
+  
+  public int getTargetInteractome();
+  
+  public BlastQueryOptions getBlastQueryOptions();
 
-  public Stream<Interactome> listInteractomes();
+  public int getMaxDegree();
 
-  public Interactome getInteractome(int id);
+  public String getWorkId();
 
+  public String getResultId();
+  
 }

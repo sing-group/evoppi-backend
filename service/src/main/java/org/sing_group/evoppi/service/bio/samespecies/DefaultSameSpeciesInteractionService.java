@@ -21,9 +21,14 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies;
 
+import static javax.ejb.TransactionAttributeType.NEVER;
+import static javax.ejb.TransactionManagementType.BEAN;
+
 import javax.annotation.security.PermitAll;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionManagement;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
@@ -35,6 +40,8 @@ import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineExecutor;
 
 @Stateless
 @PermitAll
+@TransactionManagement(BEAN)
+@TransactionAttribute(NEVER)
 public class DefaultSameSpeciesInteractionService implements SameSpeciesInteractionService {
   @Inject
   private PipelineExecutor executor;

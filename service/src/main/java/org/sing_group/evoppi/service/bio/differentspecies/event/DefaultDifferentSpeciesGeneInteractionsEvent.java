@@ -22,55 +22,58 @@
 package org.sing_group.evoppi.service.bio.differentspecies.event;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.stream.Stream;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
-import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
 
-public class DifferentSpeciesBlastAlignmentFinishedEvent
-extends DifferentSpeciesCalculusEvent
-implements Serializable, WorkStepEvent {
+public class DefaultDifferentSpeciesGeneInteractionsEvent
+implements DifferentSpeciesGeneInteractionsEvent, WorkStepEvent, Serializable {
   private static final long serialVersionUID = 1L;
-
-  private final Collection<BlastResult> blastResults;
-
-  public DifferentSpeciesBlastAlignmentFinishedEvent(
-    DifferentSpeciesCalculusEvent event, Collection<BlastResult> blastResults
-  ) {
-    super(event);
-
-    this.blastResults = new HashSet<>(blastResults);
-  }
   
-  public DifferentSpeciesBlastAlignmentFinishedEvent(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    String workId, String resultId, Collection<BlastResult> blastResults
-  ) {
-    super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
-    
-    this.blastResults = blastResults;
-  }
+  private final DifferentSpeciesGeneInteractionsContext context;
+  private final String description;
+  private final double progress;
+  private final ExecutionStatus status;
   
-  public Stream<BlastResult> getBlastResults() {
-    return blastResults.stream();
+  public DefaultDifferentSpeciesGeneInteractionsEvent(
+    DifferentSpeciesGeneInteractionsContext context, String description, double progress, ExecutionStatus status
+  ) {
+    this.context = context;
+    this.description = description;
+    this.progress = progress;
+    this.status = status;
+  }
+
+  @Override
+  public DifferentSpeciesGeneInteractionsContext getContext() {
+    return this.context;
   }
 
   @Override
   public String getDescription() {
-    return "BLAST alignment finished";
+    return this.description;
   }
 
   @Override
   public double getProgress() {
-    return 0.6d;
+    return this.progress;
+  }
+
+  @Override
+  public ExecutionStatus getStatus() {
+    return this.status;
+  }
+
+  @Override
+  public String getWorkId() {
+    return this.context.getConfiguration().getWorkId();
   }
 
   @Override
   public ExecutionStatus getWorkStatus() {
-    return ExecutionStatus.RUNNING;
+    return this.status;
   }
+
 }

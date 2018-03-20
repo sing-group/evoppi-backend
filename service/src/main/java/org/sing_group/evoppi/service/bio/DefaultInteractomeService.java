@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.service.bio;
 
+import java.util.stream.Stream;
+
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,8 +30,6 @@ import javax.inject.Inject;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
-
-import java.util.stream.Stream;
 
 @Stateless
 @PermitAll

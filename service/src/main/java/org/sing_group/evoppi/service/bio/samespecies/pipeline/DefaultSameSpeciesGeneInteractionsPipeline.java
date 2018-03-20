@@ -21,67 +21,102 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies.pipeline;
 
-import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.sing_group.evoppi.service.bio.samespecies.DefaultSameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
+import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
+import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilderFactory;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
+import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEventManager;
+import org.sing_group.evoppi.service.spi.execution.pipeline.AbstractPipeline;
 
 @Stateless
 @PermitAll
 public class DefaultSameSpeciesGeneInteractionsPipeline
+extends AbstractPipeline<
+  SameSpeciesGeneInteractionsConfiguration,
+  SameSpeciesGeneInteractionsContext,
+  SameSpeciesGeneInteractionsStep,
+  SameSpeciesGeneInteractionsPipeline,
+  SameSpeciesGeneInteractionsEvent,
+  SameSpeciesGeneInteractionsEventManager
+>
 implements SameSpeciesGeneInteractionsPipeline {
-  @Inject
-  private SameSpeciesGeneInteractionsStep step;
+  private SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
+  
+  DefaultSameSpeciesGeneInteractionsPipeline() {}
+  
+  public DefaultSameSpeciesGeneInteractionsPipeline(
+    SameSpeciesGeneInteractionsEventManager eventManager,
+    Collection<SameSpeciesGeneInteractionsStep> step
+  ) {
+    this.setEventManager(eventManager);
+    this.setSteps(step);
+  }
   
   @Inject
-  private SameSpeciesGeneInteractionsEventManager eventManager;
-  
+  @Override
+  public void setEventManager(SameSpeciesGeneInteractionsEventManager eventManager) {
+    super.setEventManager(eventManager);
+  }
+
+  @Inject
+  public void setSteps(Instance<SameSpeciesGeneInteractionsStep> step) {
+    requireNonNull(step);
+    
+    super.setSteps(StreamSupport.stream(step.spliterator(), false).collect(toSet()));
+  }
+
+  @Inject
+  public void setContextBuilderFactory(SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory) {
+    this.contextBuilderFactory = requireNonNull(contextBuilderFactory);
+  }
+
   @Override
   public String getName() {
-    return "Gene interactions calculus";
+    return "Same species gene interactions calculus";
   }
 
   @Override
-  public List<SameSpeciesGeneInteractionsStep> getSteps() {
-    return asList(this.step);
+  public SameSpeciesGeneInteractionsContext createContext(SameSpeciesGeneInteractionsConfiguration configuration) {
+    final SameSpeciesGeneInteractionsContextBuilder contextBuilder = this.contextBuilderFactory.createBuilderFor(
+      this, configuration, this.eventManager
+    );
+    
+    return contextBuilder.build();
+  }
+  
+  // Methods explicitly override to force @PermitAll on them
+  @Override
+  public Stream<SameSpeciesGeneInteractionsStep> getSteps() {
+    return super.getSteps();
   }
   
   @Override
-  public SameSpeciesGeneInteractionsContext createContext(SameSpeciesGeneInteractionsConfiguration configuration) {
-    return new DefaultSameSpeciesGeneInteractionsContext(this, configuration, this.eventManager);
-  }
-
-  @PermitAll
-  @Override
-  public int getStepIndex(SameSpeciesGeneInteractionsStep step) {
-    return SameSpeciesGeneInteractionsPipeline.super.getStepIndex(step);
-  }
-
-  @PermitAll
-  @Override
-  public List<SameSpeciesGeneInteractionsStep> getUnexecutedSteps(SameSpeciesGeneInteractionsContext context) {
-    return SameSpeciesGeneInteractionsPipeline.super.getUnexecutedSteps(context);
-  }
-
-  @PermitAll
-  @Override
-  public List<SameSpeciesGeneInteractionsStep> getExecutedSteps(SameSpeciesGeneInteractionsContext context) {
-    return SameSpeciesGeneInteractionsPipeline.super.getExecutedSteps(context);
-  }
-
-  @PermitAll
-  @Override
   public int countTotalSteps() {
-    return SameSpeciesGeneInteractionsPipeline.super.countTotalSteps();
+    return super.countTotalSteps();
+  }
+  
+  @Override
+  public Stream<SameSpeciesGeneInteractionsStep> getExecutedSteps(SameSpeciesGeneInteractionsContext context) {
+    return super.getExecutedSteps(context);
+  }
+  
+  @Override
+  public Stream<SameSpeciesGeneInteractionsStep> getUnexecutedSteps(SameSpeciesGeneInteractionsContext context) {
+    return super.getUnexecutedSteps(context);
   }
 }

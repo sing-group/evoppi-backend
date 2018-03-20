@@ -23,6 +23,7 @@ package org.sing_group.evoppi.service.bio;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
+import static javax.transaction.Transactional.TxType.NEVER;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -41,6 +42,7 @@ import java.util.stream.Stream;
 import javax.annotation.Resource;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
@@ -48,6 +50,7 @@ import org.sing_group.evoppi.service.spi.bio.BlastService;
 import org.sing_group.evoppi.service.spi.execution.DockerExecutor;
 
 @Default
+@Transactional(NEVER)
 public class DockerBlastService implements BlastService {
   @Resource(name = "java:global/evoppi/docker/path/shared/host")
   private String sharedPathHost;

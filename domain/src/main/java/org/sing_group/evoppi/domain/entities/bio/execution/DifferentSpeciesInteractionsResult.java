@@ -24,17 +24,14 @@ package org.sing_group.evoppi.domain.entities.bio.execution;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -65,24 +62,6 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     )
   )
   private Set<BlastResult> blastResults;
-
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(
-    name = "different_species_interactions_result_reference_genes",
-    joinColumns = @JoinColumn(name = "interactionsResultId", referencedColumnName = "id"),
-    foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_reference_genes")
-  )
-  @Column(name = "geneId", nullable = false)
-  private Set<Integer> referenceGeneIds;
-  
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(
-    name = "different_species_interactions_result_target_genes",
-    joinColumns = @JoinColumn(name = "interactionsResultId", referencedColumnName = "id"),
-    foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_target_genes")
-  )
-  @Column(name = "geneId", nullable = false)
-  private Set<Integer> targetGeneIds;
 
   DifferentSpeciesInteractionsResult() {}
 
@@ -119,22 +98,38 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     
     return this.blastResults.add(blastResult);
   }
+
+  public boolean hasBlastResults() {
+    return !this.blastResults.isEmpty();
+  }
   
-  public void setReferenceGeneIds(Collection<Integer> geneIds) {
-    this.referenceGeneIds = new HashSet<>(geneIds);
+  public boolean hasReferenceInteractions() {
+    return this.getReferenceInteractions().count() > 0;
+  }
+  
+  public boolean hasTargetInteractions() {
+    return this.getTargetInteractions().count() > 0;
+  }
+  
+  public Stream<InteractionGroupResult> getReferenceInteractions() {
+    return this.getInteractions()
+      .filter(interaction -> interaction.belongsToInteractome(this.referenceInteractomeId));
+  }
+  
+  public Stream<InteractionGroupResult> getTargetInteractions() {
+    return this.getInteractions()
+      .filter(interaction -> interaction.belongsToInteractome(this.targetInteractomeId));
   }
   
   public IntStream getReferenceGeneIds() {
-    return referenceGeneIds.stream()
-      .mapToInt(Integer::intValue);
-  }
-  
-  public void setTargetGeneIds(Collection<Integer> geneIds) {
-    this.targetGeneIds = new HashSet<>(geneIds);
+    return this.getReferenceInteractions()
+      .flatMapToInt(InteractionGroupResult::getGeneIds)
+      .distinct();
   }
   
   public IntStream getTargetGeneIds() {
-    return targetGeneIds.stream()
-      .mapToInt(Integer::intValue);
+    return this.getTargetInteractions()
+      .flatMapToInt(InteractionGroupResult::getGeneIds)
+      .distinct();
   }
 }

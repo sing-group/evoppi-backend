@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.service.execution;
 
 import static java.util.stream.Collectors.toList;
+import static javax.ejb.TransactionAttributeType.NEVER;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,6 +33,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.TransactionAttribute;
 import javax.inject.Singleton;
 
 import org.sing_group.evoppi.service.spi.execution.DockerExecutor;
@@ -97,6 +99,7 @@ public class DefaultDockerExecutor implements DockerExecutor {
     return sb.toString();
   }
 
+  @TransactionAttribute(NEVER)
   @Override
   public void exec(Map<Path, Path> mounts, String... command) {
     System.out.println("BUILDING");

@@ -142,9 +142,14 @@ public abstract class InteractionsResult implements HasExecutionStatus {
   public InteractionGroupResult addInteraction(int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees) {
     final InteractionGroupResult group = new InteractionGroupResult(this.getId(), geneAId, geneBId, interactomeDegrees);
     
-    this.interactions.add(group);
-    
-    return group;
+    if (this.interactions.contains(group)) {
+      return this.interactions.stream()
+        .filter(group::equals)
+        .findAny().get();
+    } else {
+      this.interactions.add(group);
+      return group;
+    }
   }
 
   @Override

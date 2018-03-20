@@ -106,6 +106,10 @@ public class InteractionGroupResult implements Serializable {
   public Map<Integer, Integer> getInteractomeDegrees() {
     return unmodifiableMap(interactomeDegrees);
   }
+  
+  public boolean belongsToInteractome(int interactomeId) {
+    return this.interactomeDegrees.containsKey(interactomeId);
+  }
 
   public static class InteractionGroupResultId implements Serializable {
     private static final long serialVersionUID = 1L;

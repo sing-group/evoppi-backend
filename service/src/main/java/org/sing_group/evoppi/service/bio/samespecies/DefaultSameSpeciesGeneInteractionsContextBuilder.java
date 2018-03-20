@@ -21,61 +21,64 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toSet;
+import static java.util.Optional.empty;
 
-import java.io.Serializable;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
+import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEventManager;
 
-public class DefaultSameSpeciesGeneInteractionsContext
-implements SameSpeciesGeneInteractionsContext, Serializable {
-  private static final long serialVersionUID = 1L;
-  
-  private transient final SameSpeciesGeneInteractionsPipeline pipeline;
-  
+public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpeciesGeneInteractionsContextBuilder {
+  private final SameSpeciesGeneInteractionsPipeline pipeline;
   private final SameSpeciesGeneInteractionsConfiguration configuration;
-  
-  private transient final SameSpeciesGeneInteractionsEventManager eventManager;
-  
-  private final Optional<Set<GeneInteraction>> interactions;
+  private final SameSpeciesGeneInteractionsEventManager eventManager;
 
-  DefaultSameSpeciesGeneInteractionsContext(
+  private Optional<Stream<GeneInteraction>> interactions;
+
+  DefaultSameSpeciesGeneInteractionsContextBuilder(
+    SameSpeciesGeneInteractionsContext context
+  ) {
+    this(context.getPipeline(), context.getConfiguration(), context.getEventManager(), context.getInteractions());
+  }
+
+  DefaultSameSpeciesGeneInteractionsContextBuilder(
+    SameSpeciesGeneInteractionsPipeline pipeline,
+    SameSpeciesGeneInteractionsConfiguration configuration,
+    SameSpeciesGeneInteractionsEventManager eventManager
+  ) {
+    this(pipeline, configuration, eventManager, empty());
+  }
+
+  DefaultSameSpeciesGeneInteractionsContextBuilder(
     SameSpeciesGeneInteractionsPipeline pipeline,
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager,
     Optional<Stream<GeneInteraction>> interactions
   ) {
-    this.configuration = requireNonNull(configuration);
-    this.eventManager = requireNonNull(eventManager);
-    this.pipeline = requireNonNull(pipeline);
-    this.interactions = requireNonNull(interactions.map(gis -> gis.collect(toSet())));
+    this.pipeline = pipeline;
+    this.configuration = configuration;
+    this.eventManager = eventManager;
+    this.interactions = interactions;
   }
 
   @Override
-  public SameSpeciesGeneInteractionsEventManager getEventManager() {
-    return this.eventManager;
-  }
-  
-  @Override
-  public SameSpeciesGeneInteractionsConfiguration getConfiguration() {
-    return this.configuration;
+  public SameSpeciesGeneInteractionsContextBuilder setInteractions(Stream<GeneInteraction> interactions) {
+    this.interactions = Optional.of(interactions);
+    return this;
   }
 
   @Override
-  public SameSpeciesGeneInteractionsPipeline getPipeline() {
-    return this.pipeline;
-  }
-  
-  @Override
-  public Optional<Stream<GeneInteraction>> getInteractions() {
-    return interactions.map(Set::stream);
+  public SameSpeciesGeneInteractionsContext build() {
+    return new DefaultSameSpeciesGeneInteractionsContext(
+      this.pipeline,
+      this.configuration,
+      this.eventManager,
+      this.interactions
+    );
   }
 }

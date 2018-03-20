@@ -21,9 +21,7 @@
  */
 package org.sing_group.evoppi.service.spi.execution.pipeline;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface Pipeline<
   C extends PipelineConfiguration,
@@ -35,27 +33,21 @@ public interface Pipeline<
 > {
   public String getName();
   
-  public List<PS> getSteps();
+  public Stream<PS> getSteps();
   
   public PC createContext(C configuration);
   
-  public default int getStepIndex(PS step) {
-    return this.getSteps().indexOf(step);
+  public default Stream<PS> getUnexecutedSteps(PC context) {
+    return this.getSteps()
+      .filter(step -> !step.isComplete(context));
   }
   
-  public default List<PS> getUnexecutedSteps(PC context) {
-    return this.getSteps().stream()
-      .filter(step -> !step.isComplete(context))
-    .collect(toList());
-  }
-  
-  public default List<PS> getExecutedSteps(PC context) {
-    return this.getSteps().stream()
-      .filter(step -> step.isComplete(context))
-    .collect(toList());
+  public default Stream<PS> getExecutedSteps(PC context) {
+    return this.getSteps()
+      .filter(step -> step.isComplete(context));
   }
   
   public default int countTotalSteps() {
-    return this.getSteps().size();
+    return (int) this.getSteps().count();
   }
 }
