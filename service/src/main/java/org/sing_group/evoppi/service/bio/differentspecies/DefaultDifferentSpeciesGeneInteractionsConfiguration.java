@@ -21,26 +21,31 @@
  */
 package org.sing_group.evoppi.service.bio.differentspecies;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.IntStream;
+
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 
 public class DefaultDifferentSpeciesGeneInteractionsConfiguration
 implements DifferentSpeciesGeneInteractionsConfiguration {
   private final int geneId;
-  private final int referenceInteractome;
-  private final int targetInteractome;
+  private final Set<Integer> referenceInteractomes;
+  private final Set<Integer> targetInteractomes;
   private final BlastQueryOptions blastQueryOptions;
   private final int maxDegree;
   private final String workId;
   private final String resultId;
 
   public DefaultDifferentSpeciesGeneInteractionsConfiguration(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
+    int geneId, Set<Integer> referenceInteractomes, Set<Integer> targetInteractomes,
+    BlastQueryOptions blastQueryOptions, int maxDegree,
     String workId, String resultId
   ) {
     this.geneId = geneId;
-    this.referenceInteractome = referenceInteractome;
-    this.targetInteractome = targetInteractome;
+    this.referenceInteractomes = new HashSet<>(referenceInteractomes);
+    this.targetInteractomes = new HashSet<>(targetInteractomes);
     this.blastQueryOptions = blastQueryOptions;
     this.maxDegree = maxDegree;
     this.workId = workId;
@@ -53,13 +58,13 @@ implements DifferentSpeciesGeneInteractionsConfiguration {
   }
 
   @Override
-  public int getReferenceInteractome() {
-    return referenceInteractome;
+  public IntStream getReferenceInteractomes() {
+    return referenceInteractomes.stream().mapToInt(Integer::intValue);
   }
 
   @Override
-  public int getTargetInteractome() {
-    return targetInteractome;
+  public IntStream getTargetInteractomes() {
+    return targetInteractomes.stream().mapToInt(Integer::intValue);
   }
 
   @Override

@@ -37,7 +37,7 @@ public interface InteractionService {
   );
   
   public Work findDifferentSpeciesInteractions(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions, int maxDegree, Function<String, String> resultReferenceBuilder
+    int geneId, int[] referenceInteractomes, int[] targetInteractomes, BlastQueryOptions blastOptions, int maxDegree, Function<String, String> resultReferenceBuilder
   );
   
   public SameSpeciesInteractionsResult getSameSpeciesResult(String id);

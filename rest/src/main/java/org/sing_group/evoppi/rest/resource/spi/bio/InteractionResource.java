@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
 
 public interface InteractionResource {
   public Response getInteractions(
-    int geneId, int[] interactomes, Integer referenceInteractome, Integer targetInteractome, int maxDegree,
+    int geneId, int[] interactomes, int[] referenceInteractomes, int[] targetInteractomes, int maxDegree,
     double evalue, int maxTargetSeqs, double minimumIdentity, int minimumAlignmentLength
   );
 

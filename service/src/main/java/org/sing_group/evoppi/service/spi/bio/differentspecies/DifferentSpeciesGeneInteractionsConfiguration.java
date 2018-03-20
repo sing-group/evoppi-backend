@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.service.spi.bio.differentspecies;
 
+import java.util.stream.IntStream;
+
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineConfiguration;
 
@@ -28,9 +30,9 @@ public interface DifferentSpeciesGeneInteractionsConfiguration extends PipelineC
 
   public int getGeneId();
   
-  public int getReferenceInteractome();
+  public IntStream getReferenceInteractomes();
   
-  public int getTargetInteractome();
+  public IntStream getTargetInteractomes();
   
   public BlastQueryOptions getBlastQueryOptions();
 

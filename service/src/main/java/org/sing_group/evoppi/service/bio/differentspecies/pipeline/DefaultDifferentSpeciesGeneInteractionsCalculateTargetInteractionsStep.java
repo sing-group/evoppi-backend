@@ -23,10 +23,15 @@ package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -81,30 +86,48 @@ implements DifferentSpeciesGeneInteractionsStep {
     .collect(toSet());
     
     final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
-    final Interactome targetInteractome = this.interactomeDao.getInteractome(configuration.getTargetInteractome());
+    final Set<Interactome> targetInteractomes = configuration.getTargetInteractomes()
+      .mapToObj(interactomeDao::getInteractome)
+      .collect(toSet());
     
     final Gene[] targetGenes = targtGeneIds.stream()
       .map(this.geneDao::getGene)
     .toArray(Gene[]::new);
     
-    final Stream<GeneInteraction> targetInteractions = getDirectGeneInteractons(targetInteractome, targetGenes);
+    final Stream<GeneInteraction> targetInteractions = getDirectGeneInteractons(targetInteractomes, targetGenes);
     
     return this.contextBuilderFactory.createBuilderFor(context)
       .setTargetInteractions(targetInteractions)
     .build();
   }
   
-  private Stream<GeneInteraction> getDirectGeneInteractons(Interactome interactome, Gene ... genes) {
+  private Stream<GeneInteraction> getDirectGeneInteractons(Set<Interactome> interactomes, Gene ... genes) {
     final Set<Gene> genesSet = stream(genes).collect(toSet());
     final Predicate<Interaction> hasValidGenes = interaction -> 
       genesSet.contains(interaction.getGeneA()) && genesSet.contains(interaction.getGeneB());
-    
-    return interactome.getInteractions()
-      .filter(hasValidGenes)
+      
+    final Function<Interactome, Stream<GeneInteraction>> geneInteractions =
+      interactome -> interactome.getInteractions()
+        .filter(hasValidGenes)
       .map(interaction -> new GeneInteraction(
         interaction.getGeneA().getId(),
         interaction.getGeneB().getId(),
         singletonMap(interactome.getId(), 1)
       ));
+      
+    final Function<Collection<GeneInteraction>, GeneInteraction> giMerger =
+      gis -> gis.stream().reduce((gi1, gi2) -> {
+        final Map<Integer, Integer> interactomeDegrees = new HashMap<>();
+        interactomeDegrees.putAll(gi1.getInteractomeDegrees());
+        interactomeDegrees.putAll(gi2.getInteractomeDegrees());
+        
+        return new GeneInteraction(gi1.getGeneAId(), gi1.getGeneBId(), interactomeDegrees);
+      }).get();
+      
+    return interactomes.stream()
+      .flatMap(geneInteractions)
+      .collect(groupingBy(gi -> gi.getGeneAId() + "#" + gi.getGeneAId()))
+      .values().stream()
+      .map(giMerger);
   }
 }

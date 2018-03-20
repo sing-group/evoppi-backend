@@ -21,17 +21,23 @@
  */
 package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
+import java.util.Set;
+
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 
 public interface DifferentSpeciesInteractionsResultDAO {
-  
+
   public boolean exists(String id);
 
   public DifferentSpeciesInteractionsResult get(String interactionResultId);
-  
+
   public DifferentSpeciesInteractionsResult create(
-    int queryGeneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions, int queryMaxDegree
+    int queryGeneId,
+    Set<Integer> referenceInteractome,
+    Set<Integer> targetInteractome,
+    BlastQueryOptions blastOptions,
+    int queryMaxDegree
   );
-  
+
 }

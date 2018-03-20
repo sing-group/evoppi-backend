@@ -99,8 +99,8 @@ public class DefaultInteractionResource implements InteractionResource {
   public Response getInteractions(
     @QueryParam("gene") int geneId,
     @QueryParam("interactome") int[] interactomes,
-    @QueryParam("referenceInteractome") Integer referenceInteractome,
-    @QueryParam("targetInteractome") Integer targetInteractome,
+    @QueryParam("referenceInteractome") int[] referenceInteractome,
+    @QueryParam("targetInteractome") int[] targetInteractome,
     @QueryParam("maxDegree") @DefaultValue("1") int maxDegree,
     @QueryParam("evalue") @DefaultValue("0.05") double evalue,
     @QueryParam("maxTargetSeqs") @DefaultValue("1") int maxTargetSeqs,
@@ -130,15 +130,15 @@ public class DefaultInteractionResource implements InteractionResource {
     return Response.ok(this.executionMapper.toWorkData(work)).build();
   }
   
-  private static boolean isSameSpeciesQuery(int[] interactomes, Integer referenceInteractome, Integer targetInteractome) {
-    if (interactomes.length > 0 && (referenceInteractome != null || targetInteractome != null)) {
+  private static boolean isSameSpeciesQuery(int[] interactomes, int[] referenceInteractomes, int[] targetInteractomes) {
+    if (interactomes.length > 0 && (referenceInteractomes != null || targetInteractomes != null)) {
       throw new IllegalArgumentException("interactome can't be set at the same time as referenceInteractome and targetInterctome");
     } else if (interactomes.length > 0) {
       return true;
-    } else if (referenceInteractome != null || targetInteractome != null) {
-      if (referenceInteractome == null)
+    } else if (referenceInteractomes.length > 0 || targetInteractomes.length > 0) {
+      if (referenceInteractomes.length == 0)
         throw new IllegalArgumentException("Missing referenceInteractome parameter");
-      if (targetInteractome == null)
+      if (targetInteractomes.length == 0)
         throw new IllegalArgumentException("Missing targetInteractome parameter");
 
       return false;

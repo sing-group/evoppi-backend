@@ -73,7 +73,10 @@ implements DifferentSpeciesGeneInteractionsStep {
     try {
       final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
       
-      final Interactome targetInteractome = this.interactomeDao.getInteractome(configuration.getTargetInteractome());
+      final Interactome targetInteractome = configuration.getTargetInteractomes()
+        .mapToObj(this.interactomeDao::getInteractome)
+        .findAny()
+        .orElseThrow(IllegalStateException::new);
       
       final Path targetFastaPath = this.genomeStorageService.getGenomePath(targetInteractome.getSpecies());
       

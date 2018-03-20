@@ -21,10 +21,10 @@
  */
 package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
-import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -78,10 +78,12 @@ implements DifferentSpeciesGeneInteractionsStep {
   public DifferentSpeciesGeneInteractionsContext execute(DifferentSpeciesGeneInteractionsContext context) {
     final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
     
-    final Interactome referenceInteractome = this.interactomeDao.getInteractome(configuration.getReferenceInteractome());
     final Gene referenceGene = this.geneDao.getGene(configuration.getGeneId());
+    final Collection<Interactome> interactomes = configuration.getReferenceInteractomes()
+      .mapToObj(interactomeDao::getInteractome)
+    .collect(toSet());
     
-    final Set<GeneInteraction> referenceInteractions = this.getGeneInteractions(referenceGene, referenceInteractome, configuration.getMaxDegree())
+    final Set<GeneInteraction> referenceInteractions = this.getGeneInteractions(referenceGene, interactomes, configuration.getMaxDegree())
       .collect(toSet());
     
     return this.contextBuilderFactory.createBuilderFor(context)
@@ -89,10 +91,10 @@ implements DifferentSpeciesGeneInteractionsStep {
     .build();
   }
   
-  private Stream<GeneInteraction> getGeneInteractions(Gene gene, Interactome interactome, int maxDegree) {
+  private Stream<GeneInteraction> getGeneInteractions(Gene gene, Collection<Interactome> interactomes, int maxDegree) {
     final InteractionsCallback callback = new InteractionsCallback();
     
-    this.interactionsCalculator.calculateInteractions(gene, singleton(interactome), maxDegree, callback);
+    this.interactionsCalculator.calculateInteractions(gene, interactomes, maxDegree, callback);
     
     return callback.getInteractions();
   }

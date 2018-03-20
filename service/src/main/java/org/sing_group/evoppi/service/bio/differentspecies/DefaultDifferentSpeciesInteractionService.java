@@ -21,6 +21,7 @@
  */
 package org.sing_group.evoppi.service.bio.differentspecies;
 
+import static java.util.stream.Collectors.toSet;
 import static javax.ejb.TransactionAttributeType.NEVER;
 import static javax.ejb.TransactionManagementType.BEAN;
 
@@ -57,9 +58,13 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
     this.executor.execute(
       pipeline,
       new DefaultDifferentSpeciesGeneInteractionsConfiguration(
-        event.getGeneId(), event.getReferenceInteractome(), event.getTargetInteractome(),
-        event.getBlastQueryOptions(), event.getMaxDegree(),
-        event.getWorkId(), event.getResultId())
+        event.getGeneId(),
+        event.getReferenceInteractomes().boxed().collect(toSet()),
+        event.getTargetInteractomes().boxed().collect(toSet()),
+        event.getBlastQueryOptions(),
+        event.getMaxDegree(),
+        event.getWorkId(),
+        event.getResultId())
     );
   }
 }

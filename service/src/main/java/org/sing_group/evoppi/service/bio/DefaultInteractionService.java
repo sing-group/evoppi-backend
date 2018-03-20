@@ -43,6 +43,7 @@ import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteraction
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
@@ -110,9 +111,7 @@ public class DefaultInteractionService implements InteractionService {
     
     requireNonEmpty(interactomes, "At least one interactome id should be provided");
     
-    if (!this.haveSameSpecies(interactomes)) {
-      throw new IllegalArgumentException("All the interactomes must belong to the same species");
-    }
+    this.checkSameSpecies(interactomes);
     
     final SameSpeciesInteractionsResult result = this.sameInteractionsResultDao.create(geneId, maxDegree, interactomes);
     
@@ -132,7 +131,7 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public Work findDifferentSpeciesInteractions(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions,
+    int geneId, int[] referenceInteractomes, int[] targetInteractomes, BlastQueryOptions blastOptions,
     int maxDegree, Function<String, String> resultReferenceBuilder
   ) {
     if (maxDegree < 1 || maxDegree > 3)
@@ -140,15 +139,17 @@ public class DefaultInteractionService implements InteractionService {
     
     final Gene gene = this.geneDao.getGene(geneId);
     
-    if (!gene.belongsToInteractome(referenceInteractome))
-      throw new IllegalArgumentException("gene must belong to referenceInteractome");
-    
-    if (this.haveSameSpecies(referenceInteractome, targetInteractome)) {
-      throw new IllegalArgumentException("All the interactomes must belong to the different species");
+    if (!IntStream.of(referenceInteractomes).allMatch(interactome -> gene.belongsToInteractome(interactome))) {
+      throw new IllegalArgumentException("gene must belong to reference interactomes");
     }
     
+    checkDifferentSpecies(referenceInteractomes, targetInteractomes);
+    
+    final Set<Integer> referenceInteractomeIds = IntStream.of(referenceInteractomes).boxed().collect(toSet());
+    final Set<Integer> targetInteractomeIds = IntStream.of(targetInteractomes).boxed().collect(toSet());
+    
     final DifferentSpeciesInteractionsResult result = this.differentInteractionsResultDao.create(
-      geneId, referenceInteractome, targetInteractome, blastOptions, maxDegree
+      geneId, referenceInteractomeIds, targetInteractomeIds, blastOptions, maxDegree
     );
     
     final Work work = this.workDao.createNew(
@@ -158,7 +159,7 @@ public class DefaultInteractionService implements InteractionService {
     );
     
     this.taskDifferentEvents.fire(new DifferentSpeciesInteractionsRequestEvent(
-      geneId, referenceInteractome, targetInteractome, blastOptions, maxDegree, work.getId(), result.getId())
+      geneId, referenceInteractomeIds, targetInteractomeIds, blastOptions, maxDegree, work.getId(), result.getId())
     );
     
     result.setScheduled();
@@ -202,9 +203,9 @@ public class DefaultInteractionService implements InteractionService {
   public String getDifferentSpeciesResultFasta(String resultId, int interactomeId, boolean includeVersionSuffix) {
     final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
     
-    if (result.getReferenceInteractomeId() == interactomeId) {
+    if (result.getReferenceInteractomeIds().anyMatch(id -> id == interactomeId)) {
       return createFastaFromGeneIds(result.getReferenceGeneIds(), includeVersionSuffix);
-    } else if (result.getTargetInteractomeId() == interactomeId) {
+    } else if (result.getTargetInteractomeIds().anyMatch(id -> id == interactomeId)) {
       final IntStream orthologIds = result.getBlastResults()
         .mapToInt(BlastResult::getSseqid)
         .distinct();
@@ -251,5 +252,32 @@ public class DefaultInteractionService implements InteractionService {
       .distinct()
     .count() == 1;
   }
+  
+  private void checkSameSpecies(int ... interactomes) {
+    requireNonEmpty(interactomes, "At least one interactome should be provided");
+    
+    if (!this.haveSameSpecies(interactomes)) {
+      throw new IllegalArgumentException("Interactomes should belong to the same species");
+    }
+  }
 
+  private void checkDifferentSpecies(int[] referenceInteractomes, int[] targetInteractomes) {
+    requireNonEmpty(referenceInteractomes, "At least one reference interactome should be provided");
+    requireNonEmpty(targetInteractomes, "At least one target interactome should be provided");
+    
+    if (!this.haveSameSpecies(referenceInteractomes)) {
+      throw new IllegalArgumentException("Reference interactomes should belong to the same species");
+    }
+    
+    if (!this.haveSameSpecies(targetInteractomes)) {
+      throw new IllegalArgumentException("Target interactomes should belong to the same species");
+    }
+    
+    final Species referenceSpecies = this.interactomeDao.getInteractome(referenceInteractomes[0]).getSpecies();
+    final Species targetSpecies = this.interactomeDao.getInteractome(targetInteractomes[0]).getSpecies();
+    
+    if (referenceSpecies.equals(targetSpecies)) {
+      throw new IllegalArgumentException("Reference and target interactomes should belong to differentSpecies");
+    }
+  }
 }

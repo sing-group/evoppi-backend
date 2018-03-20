@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.domain.dao.bio.execution;
 
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -74,7 +76,11 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
 
   @Override
   public DifferentSpeciesInteractionsResult create(
-    int queryGeneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastOptions, int queryMaxDegree
+    int queryGeneId,
+    Set<Integer> referenceInteractome,
+    Set<Integer> targetInteractome,
+    BlastQueryOptions blastOptions,
+    int queryMaxDegree
   ) {
     return this.dh.persist(
       new DifferentSpeciesInteractionsResult(

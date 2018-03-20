@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.service.bio.differentspecies.event;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 
@@ -33,9 +34,10 @@ public class DifferentSpeciesInteractionsRequestEvent extends DifferentSpeciesCa
   }
 
   public DifferentSpeciesInteractionsRequestEvent(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
+    int geneId, Set<Integer> referenceInteractomes, Set<Integer> targetInteractomes,
+    BlastQueryOptions blastQueryOptions, int maxDegree,
     String workId, String resultId
   ) {
-    super(geneId, referenceInteractome, targetInteractome, blastQueryOptions, maxDegree, workId, resultId);
+    super(geneId, referenceInteractomes, targetInteractomes, blastQueryOptions, maxDegree, workId, resultId);
   }
 }

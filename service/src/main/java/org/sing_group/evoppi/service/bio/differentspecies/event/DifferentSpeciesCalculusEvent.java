@@ -21,7 +21,11 @@
  */
 package org.sing_group.evoppi.service.bio.differentspecies.event;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.io.Serializable;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 
@@ -29,8 +33,8 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
   private static final long serialVersionUID = 1L;
   
   private final int geneId;
-  private final int referenceInteractome;
-  private final int targetInteractome;
+  private final Set<Integer> referenceInteractomes;
+  private final Set<Integer> targetInteractomes;
   private final BlastQueryOptions blastQueryOptions;
   private final int maxDegree;
   private final String workId;
@@ -39,8 +43,8 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
   public DifferentSpeciesCalculusEvent(DifferentSpeciesCalculusEvent event) {
     this(
       event.getGeneId(),
-      event.getReferenceInteractome(),
-      event.getTargetInteractome(),
+      event.getReferenceInteractomes().boxed().collect(toSet()),
+      event.getTargetInteractomes().boxed().collect(toSet()),
       event.getBlastQueryOptions(),
       event.getMaxDegree(),
       event.getWorkId(),
@@ -49,12 +53,15 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
   }
 
   public DifferentSpeciesCalculusEvent(
-    int geneId, int referenceInteractome, int targetInteractome, BlastQueryOptions blastQueryOptions, int maxDegree,
-    String workId, String resultId
+    int geneId,
+    Set<Integer> referenceInteractomes,
+    Set<Integer> targetInteractomes,
+    BlastQueryOptions blastQueryOptions,
+    int maxDegree, String workId, String resultId
   ) {
     this.geneId = geneId;
-    this.referenceInteractome = referenceInteractome;
-    this.targetInteractome = targetInteractome;
+    this.referenceInteractomes = referenceInteractomes;
+    this.targetInteractomes = targetInteractomes;
     this.blastQueryOptions = blastQueryOptions;
     this.maxDegree = maxDegree;
     this.workId = workId;
@@ -65,12 +72,12 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     return geneId;
   }
 
-  public int getReferenceInteractome() {
-    return referenceInteractome;
+  public IntStream getReferenceInteractomes() {
+    return referenceInteractomes.stream().mapToInt(Integer::intValue);
   }
 
-  public int getTargetInteractome() {
-    return targetInteractome;
+  public IntStream getTargetInteractomes() {
+    return targetInteractomes.stream().mapToInt(Integer::intValue);
   }
 
   public int getMaxDegree() {
@@ -96,9 +103,9 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     result = prime * result + ((blastQueryOptions == null) ? 0 : blastQueryOptions.hashCode());
     result = prime * result + geneId;
     result = prime * result + maxDegree;
-    result = prime * result + referenceInteractome;
+    result = prime * result + ((referenceInteractomes == null) ? 0 : referenceInteractomes.hashCode());
     result = prime * result + ((resultId == null) ? 0 : resultId.hashCode());
-    result = prime * result + targetInteractome;
+    result = prime * result + ((targetInteractomes == null) ? 0 : targetInteractomes.hashCode());
     result = prime * result + ((workId == null) ? 0 : workId.hashCode());
     return result;
   }
@@ -121,14 +128,20 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
       return false;
     if (maxDegree != other.maxDegree)
       return false;
-    if (referenceInteractome != other.referenceInteractome)
+    if (referenceInteractomes == null) {
+      if (other.referenceInteractomes != null)
+        return false;
+    } else if (!referenceInteractomes.equals(other.referenceInteractomes))
       return false;
     if (resultId == null) {
       if (other.resultId != null)
         return false;
     } else if (!resultId.equals(other.resultId))
       return false;
-    if (targetInteractome != other.targetInteractome)
+    if (targetInteractomes == null) {
+      if (other.targetInteractomes != null)
+        return false;
+    } else if (!targetInteractomes.equals(other.targetInteractomes))
       return false;
     if (workId == null) {
       if (other.workId != null)

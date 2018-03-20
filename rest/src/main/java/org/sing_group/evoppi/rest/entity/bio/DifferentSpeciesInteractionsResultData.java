@@ -39,9 +39,9 @@ import io.swagger.annotations.ApiModel;
 public class DifferentSpeciesInteractionsResultData extends InteractionsResultData implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  private IdAndUri referenceInteractome;
+  private IdAndUri[] referenceInteractomes;
   
-  private IdAndUri targetInteractome;
+  private IdAndUri[] targetInteractomes;
   
   private IdAndUri[] referenceGenes;
   
@@ -52,32 +52,32 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
   DifferentSpeciesInteractionsResultData() {}
   
   public DifferentSpeciesInteractionsResultData(
-    String id, int queryGene, IdAndUri referenceInteractome, IdAndUri targetInteractome, int queryMaxDegree,
+    String id, int queryGene, IdAndUri[] referenceInteractomes, IdAndUri[] targetInteractomes, int queryMaxDegree,
     IdAndUri[] referenceGenes, IdAndUri[] targetGenes, InteractionResultData[] interactions,
     BlastResultData[] blastResults, ExecutionStatus status
   ) {
     super(id, queryGene, queryMaxDegree, interactions, status);
-    this.referenceInteractome = referenceInteractome;
-    this.targetInteractome = targetInteractome;
+    this.referenceInteractomes = referenceInteractomes;
+    this.targetInteractomes = targetInteractomes;
     this.referenceGenes = referenceGenes;
     this.targetGenes = targetGenes;
     this.blastResults = blastResults;
   }
 
-  public IdAndUri getReferenceInteractome() {
-    return referenceInteractome;
+  public IdAndUri[] getReferenceInteractomes() {
+    return referenceInteractomes;
   }
 
-  public void setReferenceInteractome(IdAndUri referenceInteractome) {
-    this.referenceInteractome = referenceInteractome;
+  public void setReferenceInteractomes(IdAndUri[] referenceInteractome) {
+    this.referenceInteractomes = referenceInteractome;
   }
 
-  public IdAndUri getTargetInteractome() {
-    return targetInteractome;
+  public IdAndUri[] getTargetInteractomes() {
+    return targetInteractomes;
   }
 
-  public void setTargetInteractome(IdAndUri targetInteractome) {
-    this.targetInteractome = targetInteractome;
+  public void setTargetInteractomes(IdAndUri[] targetInteractome) {
+    this.targetInteractomes = targetInteractome;
   }
 
   public IdAndUri[] getReferenceGenes() {
@@ -110,9 +110,9 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
     int result = super.hashCode();
     result = prime * result + Arrays.hashCode(blastResults);
     result = prime * result + Arrays.hashCode(referenceGenes);
-    result = prime * result + ((referenceInteractome == null) ? 0 : referenceInteractome.hashCode());
+    result = prime * result + Arrays.hashCode(referenceInteractomes);
     result = prime * result + Arrays.hashCode(targetGenes);
-    result = prime * result + ((targetInteractome == null) ? 0 : targetInteractome.hashCode());
+    result = prime * result + Arrays.hashCode(targetInteractomes);
     return result;
   }
 
@@ -129,17 +129,11 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
       return false;
     if (!Arrays.equals(referenceGenes, other.referenceGenes))
       return false;
-    if (referenceInteractome == null) {
-      if (other.referenceInteractome != null)
-        return false;
-    } else if (!referenceInteractome.equals(other.referenceInteractome))
+    if (!Arrays.equals(referenceInteractomes, other.referenceInteractomes))
       return false;
     if (!Arrays.equals(targetGenes, other.targetGenes))
       return false;
-    if (targetInteractome == null) {
-      if (other.targetInteractome != null)
-        return false;
-    } else if (!targetInteractome.equals(other.targetInteractome))
+    if (!Arrays.equals(targetInteractomes, other.targetInteractomes))
       return false;
     return true;
   }

@@ -26,12 +26,15 @@ import static java.util.Objects.requireNonNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,18 +49,36 @@ import javax.persistence.Table;
 public class DifferentSpeciesInteractionsResult extends InteractionsResult implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @Column(name = "referenceInteractomeId", nullable = false)
-  private int referenceInteractomeId;
+  @ElementCollection
+  @CollectionTable(
+    name = "different_species_interactions_result_reference_interactomes",
+    joinColumns = {
+      @JoinColumn(name = "resultId", referencedColumnName = "id")
+    },
+    foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_reference_interactomes")
+  )
+  @Column(name = "interactomeId", nullable = false)
+  private Set<Integer> referenceInteractomeIds;
 
-  @Column(name = "targetInteractomeId", nullable = false)
-  private int targetInteractomeId;
+  @ElementCollection
+  @CollectionTable(
+    name = "different_species_interactions_result_target_interactomes",
+    joinColumns = {
+      @JoinColumn(name = "resultId", referencedColumnName = "id")
+    },
+    foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_target_interactomes")
+  )
+  @Column(name = "interactomeId", nullable = false)
+  private Set<Integer> targetInteractomeIds;
 
   @Embedded
   private BlastQueryOptions blastQueryOptions;
   
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(
-    name = "interactionsResultId", referencedColumnName = "id", foreignKey = @ForeignKey(
+    name = "interactionsResultId",
+    referencedColumnName = "id",
+    foreignKey = @ForeignKey(
       name = "FK_different_species_interactions_result_blast_result"
     )
   )
@@ -66,23 +87,27 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   DifferentSpeciesInteractionsResult() {}
 
   public DifferentSpeciesInteractionsResult(
-    int queryGeneId, int referenceInteractomeId, int targetInteractomeId, BlastQueryOptions blastQueryOptions,
+    int queryGeneId,
+    Set<Integer> referenceInteractomeIds,
+    Set<Integer> targetInteractomeIds,
+    BlastQueryOptions blastQueryOptions,
     int queryMaxDegree
   ) {
     super(queryGeneId, queryMaxDegree);
-    this.referenceInteractomeId = referenceInteractomeId;
-    this.targetInteractomeId = targetInteractomeId;
+    
+    this.referenceInteractomeIds = new HashSet<>(referenceInteractomeIds);
+    this.targetInteractomeIds = new HashSet<>(targetInteractomeIds);
 
     this.blastQueryOptions = blastQueryOptions;
     this.blastResults = new HashSet<>();
   }
 
-  public int getReferenceInteractomeId() {
-    return referenceInteractomeId;
+  public IntStream getReferenceInteractomeIds() {
+    return referenceInteractomeIds.stream().mapToInt(Integer::intValue);
   }
 
-  public int getTargetInteractomeId() {
-    return targetInteractomeId;
+  public IntStream getTargetInteractomeIds() {
+    return targetInteractomeIds.stream().mapToInt(Integer::intValue);
   }
   
   public BlastQueryOptions getBlastQueryOptions() {
@@ -112,13 +137,19 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   }
   
   public Stream<InteractionGroupResult> getReferenceInteractions() {
-    return this.getInteractions()
-      .filter(interaction -> interaction.belongsToInteractome(this.referenceInteractomeId));
+    final Predicate<InteractionGroupResult> belongsToReference =
+      interaction -> this.getReferenceInteractomeIds()
+        .anyMatch(interactomeId -> interaction.belongsToInteractome(interactomeId));
+    
+    return this.getInteractions().filter(belongsToReference);
   }
   
   public Stream<InteractionGroupResult> getTargetInteractions() {
-    return this.getInteractions()
-      .filter(interaction -> interaction.belongsToInteractome(this.targetInteractomeId));
+    final Predicate<InteractionGroupResult> belongsToTarget =
+      interaction -> this.getTargetInteractomeIds()
+        .anyMatch(interactomeId -> interaction.belongsToInteractome(interactomeId));
+      
+    return this.getInteractions().filter(belongsToTarget);
   }
   
   public IntStream getReferenceGeneIds() {

@@ -199,14 +199,18 @@ public class DefaultBioMapper implements BioMapper {
       .mapToObj(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
     .toArray(IdAndUri[]::new);
     
-    final int referenceInteractomeId = result.getReferenceInteractomeId();
-    final int targetInteractomeId = result.getTargetInteractomeId();
+    final IdAndUri[] referenceInteractomeIds = result.getReferenceInteractomeIds()
+      .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
+    .toArray(IdAndUri[]::new);
+    final IdAndUri[] targetInteractomeIds = result.getTargetInteractomeIds()
+      .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
+    .toArray(IdAndUri[]::new);
     
     return new DifferentSpeciesInteractionsResultData(
       result.getId(),
       result.getQueryGeneId(),
-      new IdAndUri(referenceInteractomeId, pathBuilder.interactome(referenceInteractomeId).build()),
-      new IdAndUri(targetInteractomeId, pathBuilder.interactome(targetInteractomeId).build()),
+      referenceInteractomeIds,
+      targetInteractomeIds,
       result.getQueryMaxDegree(),
       referenceGenes,
       targetGenes,
