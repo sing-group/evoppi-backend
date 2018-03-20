@@ -91,7 +91,6 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
     
     <wildfly.home>${project.build.directory}/wildfly-${wildfly.version}</wildfly.home>
-    <wildfly10.home>${project.build.directory}/wildfly-${wildfly10.version}</wildfly10.home>
     <wildfly.standalone>${project.basedir}/additional-material/wildfly10</wildfly.standalone>
 
     <!-- license-maven-plugin configuration -->
@@ -109,8 +108,7 @@
     <fluent-commons.version>0.1.0-SNAPSHOT</fluent-commons.version>
     <swagger.version>1.5.16</swagger.version>
     <wildfly.arquillian.container.version>2.1.0.Final</wildfly.arquillian.container.version>
-    <wildfly.version>8.2.1.Final</wildfly.version>
-    <wildfly10.version>10.1.0.Final</wildfly10.version>
+    <wildfly.version>10.1.0.Final</wildfly.version>
     
     <!-- Resteasy specific version required, as it fixes ResourceInfo injection bug -->
     <resteasy.version>3.0.24.Final</resteasy.version>
@@ -282,16 +280,6 @@
       <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-dist</artifactId>
-        <version>${wildfly.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-embedded</artifactId>
-        <version>${wildfly.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-arquillian-container-embedded</artifactId>
         <version>${wildfly.version}</version>
       </dependency>
       <dependency>
@@ -474,13 +462,8 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>org.wildfly</groupId>
+          <groupId>org.wildfly.arquillian</groupId>
           <artifactId>wildfly-arquillian-container-embedded</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.wildfly</groupId>
-          <artifactId>wildfly-embedded</artifactId>
           <scope>test</scope>
         </dependency>
         <dependency>
@@ -577,138 +560,9 @@
         </plugins>
       </build>
     </profile>
-
-    <profile>
-      <id>wildfly10-embedded-h2</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.wildfly.arquillian</groupId>
-          <artifactId>wildfly-arquillian-container-embedded</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-        <testResources>
-          <testResource>
-            <directory>src/test/resources</directory>
-          </testResource>
-          <testResource>
-            <directory>src/test/resources-wildfly-embedded-h2</directory>
-            <excludes>
-              <exclude>standalone.xml</exclude>
-            </excludes>
-          </testResource>
-        </testResources>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <forkCount>1</forkCount>
-              <systemPropertyVariables>
-                <arquillian.launch>wildfly-embedded</arquillian.launch>
-                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                <jboss.socket.binding.port-offset>10000</jboss.socket.binding.port-offset>
-                <wildfly.version>${wildfly10.version}</wildfly.version>
-                <wildfly.http.port>18080</wildfly.http.port>
-                <wildfly.management.port>19990</wildfly.management.port>
-                <wildfly.jbossHome>target/wildfly-${wildfly10.version}</wildfly.jbossHome>
-                <wildfly.modulePath>target/wildfly-${wildfly10.version}/modules</wildfly.modulePath>
-              </systemPropertyVariables>
-              <redirectTestOutputToFile>false</redirectTestOutputToFile>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>generate-test-resources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.wildfly</groupId>
-                      <artifactId>wildfly-dist</artifactId>
-                      <version>${wildfly10.version}</version>
-                      <type>zip</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>target</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-wildfly-resources</id>
-                <phase>process-test-resources</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>target/wildfly-${wildfly10.version}/standalone/configuration</outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>src/test/resources-wildfly-embedded-h2</directory>
-                      <include>standalone.xml</include>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     
     <profile>
       <id>wildfly-mysql-run</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <skipTests>true</skipTests>
-            </configuration>
-          </plugin>
-  
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <configuration>
-              <skipTests>true</skipTests>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
-    <profile>
-      <id>wildfly10-mysql-run</id>
       <build>
         <plugins>
           <plugin>
