@@ -139,100 +139,6 @@
                   <resources>
                     <resource>
                       <include>standalone.xml</include>
-                      <directory>${project.parent.basedir}/additional-material/wildfly8</directory>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.wildfly.plugins</groupId>
-            <artifactId>wildfly-maven-plugin</artifactId>
-            <configuration>
-              <jboss-home>${wildfly.home}</jboss-home>
-              <server-config>standalone.xml</server-config>
-              <add-user>
-                <users>
-                  <user>
-                    <username>wildfly-admin</username>
-                    <password>evoppiadmin</password>
-                    <applicationUser>false</applicationUser>
-                  </user>
-                </users>
-              </add-user>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  
-    <profile>
-      <id>wildfly10-mysql-run</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-wildfly</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.wildfly</groupId>
-                      <artifactId>wildfly-dist</artifactId>
-                      <version>${wildfly10.version}</version>
-                      <type>zip</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>target</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-              
-              <execution>
-                <id>copy-mysql-for-execution</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>copy</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>mysql</groupId>
-                      <artifactId>mysql-connector-java</artifactId>
-                      <type>jar</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${wildfly10.home}/standalone/deployments</outputDirectory>
-                      <destFileName>mysql-connector-java-${mysql.connector.java.version}.jar</destFileName>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-standalone</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${wildfly10.home}/standalone/configuration</outputDirectory>
-                  <resources>
-                    <resource>
-                      <include>standalone.xml</include>
                       <directory>${project.parent.basedir}/additional-material/wildfly10</directory>
                     </resource>
                   </resources>
@@ -245,7 +151,7 @@
             <groupId>org.wildfly.plugins</groupId>
             <artifactId>wildfly-maven-plugin</artifactId>
             <configuration>
-              <jboss-home>${wildfly10.home}</jboss-home>
+              <jboss-home>${wildfly.home}</jboss-home>
               <server-config>standalone.xml</server-config>
               <add-user>
                 <users>

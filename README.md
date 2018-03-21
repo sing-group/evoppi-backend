@@ -34,12 +34,8 @@ The application can be built with the following Maven command:
 mvn clean install
 ```
 
-This will build the application launching the tests on a **Wildfly 8.2.1**
-server. If you want to use a **WildFly 10.1.0** server, you can use the command:
-
-```
-mvn clean install -P wildfly10-embedded-h2,metadata-build
-```
+This will build the application launching the tests on a **Wildfly 10.1.0**
+server.
 
 ### Starting the application
 The application can be started with the following Maven command:
@@ -48,12 +44,7 @@ The application can be started with the following Maven command:
 mvn package wildfly:start wildfly:deploy-only -P wildfly-mysql-run
 ```
 
-This will start a **WildFly 8.2.1**. If you want to use a **WildFly 10.1.0**
-server, you can use the command:
-
-```
-mvn package wildfly:start wildfly:deploy-only -P wildfly10-mysql-run
-```
+This will start a **WildFly 10.1.0**.
 
 ### Redeploying the application
 Once it is running, the application can be re-deployed with the following Maven
@@ -61,13 +52,6 @@ command:
 
 ```
 mvn package wildfly:deploy-only -P wildfly-mysql-run
-```
-
-In case you are using the **WildFly 10.1.0** version, you should use the
-following command instead:
-
-```
-mvn package wildfly:deploy-only -P wildfly10-mysql-run
 ```
 
 ### Stopping the application
