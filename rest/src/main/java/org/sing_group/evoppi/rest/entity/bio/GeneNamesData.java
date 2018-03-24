@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.sing_group.evoppi.rest.entity.IdAndUri;
+
 import io.swagger.annotations.ApiModel;
 
 @XmlRootElement(name = "gene-names-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
@@ -39,12 +41,15 @@ public class GeneNamesData implements Serializable {
   private int geneId;
   
   private GeneNameData[] names;
+  
+  private IdAndUri[] interactomes;
 
   GeneNamesData() {}
 
-  public GeneNamesData(int id, GeneNameData[] names) {
+  public GeneNamesData(int id, GeneNameData[] names, IdAndUri[] interactomes) {
     this.geneId = id;
     this.names = names;
+    this.interactomes = interactomes;
   }
 
   public int getGeneId() {
@@ -62,12 +67,21 @@ public class GeneNamesData implements Serializable {
   public void setNames(GeneNameData[] names) {
     this.names = names;
   }
+
+  public IdAndUri[] getInteractomes() {
+    return interactomes;
+  }
+
+  public void setInteractomes(IdAndUri[] interactomes) {
+    this.interactomes = interactomes;
+  }
   
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + geneId;
+    result = prime * result + Arrays.hashCode(interactomes);
     result = prime * result + Arrays.hashCode(names);
     return result;
   }
@@ -82,6 +96,8 @@ public class GeneNamesData implements Serializable {
       return false;
     GeneNamesData other = (GeneNamesData) obj;
     if (geneId != other.geneId)
+      return false;
+    if (!Arrays.equals(interactomes, other.interactomes))
       return false;
     if (!Arrays.equals(names, other.names))
       return false;

@@ -255,9 +255,20 @@ public class DefaultBioMapper implements BioMapper {
 
   @Override
   public GeneNamesData toGeneNamesData(Gene gene) {
-    return new GeneNamesData(gene.getId(), gene.getNames()
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
+    
+    final GeneNameData[] geneNames = gene.getNames()
       .map(this::toGeneNameData)
-    .toArray(GeneNameData[]::new));
+    .toArray(GeneNameData[]::new);
+    
+    final IdAndUri[] interactomes = gene.getInteractions()
+      .map(Interaction::getInteractome)
+      .mapToInt(Interactome::getId)
+      .distinct()
+      .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
+    .toArray(IdAndUri[]::new);
+    
+    return new GeneNamesData(gene.getId(), geneNames, interactomes);
   }
 
   @Override
