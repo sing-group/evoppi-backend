@@ -131,14 +131,18 @@ public class DefaultInteractionResource implements InteractionResource {
   }
   
   private static boolean isSameSpeciesQuery(int[] interactomes, int[] referenceInteractomes, int[] targetInteractomes) {
-    if (interactomes.length > 0 && (referenceInteractomes != null || targetInteractomes != null)) {
+    final boolean hasInteractomes = interactomes.length > 0;
+    final boolean hasReferenceInteractomes = referenceInteractomes.length > 0;
+    final boolean hasTargetInteractomes = targetInteractomes.length > 0;
+    
+    if (hasInteractomes && (hasReferenceInteractomes || hasTargetInteractomes)) {
       throw new IllegalArgumentException("interactome can't be set at the same time as referenceInteractome and targetInterctome");
-    } else if (interactomes.length > 0) {
+    } else if (hasInteractomes) {
       return true;
-    } else if (referenceInteractomes.length > 0 || targetInteractomes.length > 0) {
-      if (referenceInteractomes.length == 0)
+    } else if (hasReferenceInteractomes || hasTargetInteractomes) {
+      if (!hasReferenceInteractomes)
         throw new IllegalArgumentException("Missing referenceInteractome parameter");
-      if (targetInteractomes.length == 0)
+      if (!hasTargetInteractomes)
         throw new IllegalArgumentException("Missing targetInteractome parameter");
 
       return false;
