@@ -93,6 +93,16 @@ public class Interaction implements Serializable {
   public Stream<Gene> getGenes() {
     return Stream.of(this.getGeneA(), this.getGeneB());
   }
+  
+  public boolean hasGenes(Gene geneA, Gene geneB) {
+    return (this.geneA.equals(geneA) && this.geneB.equals(geneB))
+      || (this.geneB.equals(geneA) && this.geneA.equals(geneB));
+  }
+  
+  public boolean hasGenes(int geneA, int geneB) {
+    return (this.geneA.getId() == geneA && this.geneB.getId() == geneB)
+      || (this.geneB.getId() == geneA && this.geneA.getId() == geneB);
+  }
 
   @Override
   public int hashCode() {
@@ -201,9 +211,4 @@ public class Interaction implements Serializable {
       return true;
     }
   }
-//
-//  @Override
-//  public String toString() {
-//    return "Interaction [interactome=" + interactome.getId() + ", geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + "]";
-//  }
 }

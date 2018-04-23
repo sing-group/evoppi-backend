@@ -139,8 +139,8 @@ public class DefaultInteractionService implements InteractionService {
     
     final Gene gene = this.geneDao.getGene(geneId);
     
-    if (!IntStream.of(referenceInteractomes).allMatch(interactome -> gene.belongsToInteractome(interactome))) {
-      throw new IllegalArgumentException("gene must belong to reference interactomes");
+    if (!IntStream.of(referenceInteractomes).anyMatch(interactome -> gene.belongsToInteractome(interactome))) {
+      throw new IllegalArgumentException("gene must belong to, at least, one reference interactomes");
     }
     
     checkDifferentSpecies(referenceInteractomes, targetInteractomes);

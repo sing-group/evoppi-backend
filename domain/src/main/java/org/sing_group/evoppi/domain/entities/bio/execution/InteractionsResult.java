@@ -22,11 +22,13 @@
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
@@ -41,7 +43,9 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatusAndTime;
@@ -70,6 +74,9 @@ public abstract class InteractionsResult implements HasExecutionStatus {
   )
   private Set<InteractionGroupResult> interactions;
   
+  @Transient
+  private Map<Integer, Map<Integer, InteractionGroupResult>> interactionsIndex;
+  
   @Embedded
   private ExecutionStatusAndTime status;
 
@@ -77,6 +84,7 @@ public abstract class InteractionsResult implements HasExecutionStatus {
     this.id = UUID.randomUUID().toString();
     this.interactions = new HashSet<>();
     this.status = new ExecutionStatusAndTime();
+    this.interactionsIndex = new HashMap<>();
   }
   
   public InteractionsResult(int queryGeneId, int queryMaxDegree) {
@@ -85,7 +93,7 @@ public abstract class InteractionsResult implements HasExecutionStatus {
     this.queryGeneId = queryGeneId;
     this.queryMaxDegree = queryMaxDegree;
   }
-
+  
   public String getId() {
     return id;
   }
@@ -138,18 +146,77 @@ public abstract class InteractionsResult implements HasExecutionStatus {
   public Stream<InteractionGroupResult> getInteractions() {
     return interactions.stream();
   }
-
-  public InteractionGroupResult addInteraction(int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees) {
-    final InteractionGroupResult group = new InteractionGroupResult(this.getId(), geneAId, geneBId, interactomeDegrees);
-    
-    if (this.interactions.contains(group)) {
-      return this.interactions.stream()
-        .filter(group::equals)
-        .findAny().get();
-    } else {
-      this.interactions.add(group);
-      return group;
+  
+  @PostLoad
+  private void createGroupIndex() {
+    for (InteractionGroupResult result : this.interactions) {
+      this.interactionsIndex.compute(result.getGeneAId(), createRemappingFunction(result));
     }
+  }
+  
+  private static BiFunction<Integer, Map<Integer, InteractionGroupResult>, Map<Integer, InteractionGroupResult>> createRemappingFunction(
+    InteractionGroupResult result
+  ) {
+    return (geneA, geneBMap) -> {
+      if (geneBMap == null) geneBMap = new HashMap<>();
+      
+      geneBMap.put(result.getGeneBId(), result);
+      
+      return geneBMap;
+    };
+  }
+  
+  private Optional<InteractionGroupResult> getInteraction(int geneAId, int geneBId) {
+    final Map<Integer, InteractionGroupResult> geneBMap = this.interactionsIndex.get(geneAId);
+    
+    return geneBMap == null ? Optional.empty() : Optional.ofNullable(geneBMap.get(geneBId));
+  }
+  
+  public InteractionGroupResult addInteraction(int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees) {
+    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(geneAId, geneBId);
+    
+    if (maybeAGroup.isPresent()) {
+      final InteractionGroupResult group = maybeAGroup.get();
+
+      group.addInteractomes(interactomeDegrees);
+      
+      return group;
+    } else {
+      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), geneAId, geneBId, interactomeDegrees);
+      
+      this.interactions.add(newResult);
+      this.interactionsIndex.compute(geneAId, createRemappingFunction(newResult));
+      
+      return newResult;
+    }
+  }
+
+  public InteractionGroupResult addInteraction(int geneA, int geneB, int interactomeId) {
+    return this.addInteraction(geneA, geneB, interactomeId, -1);
+  }
+
+  public InteractionGroupResult addInteraction(int geneAId, int geneBId, int interactomeId, int degree) {
+    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(geneAId, geneBId);
+    
+    if (maybeAGroup.isPresent()) {
+      final InteractionGroupResult group = maybeAGroup.get();
+
+      group.addInteractome(interactomeId, degree);
+      
+      return group;
+    } else {
+      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), geneAId, geneBId, interactomeId, degree);
+      
+      this.interactions.add(newResult);
+      this.interactionsIndex.compute(geneAId, createRemappingFunction(newResult));
+      
+      return newResult;
+    }
+  }
+  
+  public boolean hasInteractionsForInteractome(int interactomeId) {
+    return this.interactions.stream()
+      .anyMatch(interaction -> interaction.belongsToInteractome(interactomeId));
   }
 
   @Override

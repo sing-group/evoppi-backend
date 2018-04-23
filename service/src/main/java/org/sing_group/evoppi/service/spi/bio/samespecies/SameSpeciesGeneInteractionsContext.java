@@ -21,10 +21,16 @@
  */
 package org.sing_group.evoppi.service.spi.bio.samespecies;
 
-import java.util.Optional;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
@@ -40,5 +46,33 @@ extends PipelineContext<
   SameSpeciesGeneInteractionsEvent,
   SameSpeciesGeneInteractionsEventManager
 > {
-  public Optional<Stream<GeneInteraction>> getInteractions();
+  public IntStream getInteractionsDegrees();
+  
+  public Stream<InteractionIds> getInteractionsWithDegree(int degree);
+  
+  public Stream<InteractionIds> getCompletedInteractions();
+  
+  public default Map<Integer, Set<InteractionIds>> getInteractionsByDegree() {
+    return this.getInteractionsDegrees()
+      .boxed()
+      .collect(toMap(
+        identity(),
+        degree -> this.getInteractionsWithDegree(degree).collect(toSet())
+      ));
+  }
+  
+  public default boolean hasInteractions() {
+    return this.getInteractionsDegrees().count() > 0;
+  }
+  
+  public boolean hasCompletedInteractions();
+  
+  public default boolean hasInteractionsWithDegree(int degree) {
+    return this.getInteractionsDegrees().anyMatch(d -> d == degree);
+  }
+  
+  public default Stream<InteractionIds> getInteractions() {
+    return this.getInteractionsByDegree().values().stream()
+      .flatMap(Set::stream);
+  }
 }

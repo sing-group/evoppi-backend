@@ -58,12 +58,28 @@ public class GeneInteraction implements Serializable {
       .mapToInt(Integer::intValue);
   }
   
+  public boolean hasInteractome(int interactomeId) {
+    return this.interactomeDegrees.containsKey(interactomeId);
+  }
+  
   public int getDegree(int interactomeId) {
     return this.interactomeDegrees.get(interactomeId);
   }
   
   public Map<Integer, Integer> getInteractomeDegrees() {
     return unmodifiableMap(interactomeDegrees);
+  }
+  
+  public void addInteraction(int interactomeId) {
+    this.addInteraction(interactomeId, -1);
+  }
+  
+  public void addInteraction(int interactomeId, int degree) {
+    if (this.hasInteractome(interactomeId)) {
+      throw new IllegalArgumentException("Interactome id already present");
+    }
+    
+    this.interactomeDegrees.put(interactomeId, degree);
   }
 
   @Override
@@ -72,7 +88,6 @@ public class GeneInteraction implements Serializable {
     int result = 1;
     result = prime * result + geneAId;
     result = prime * result + geneBId;
-    result = prime * result + ((interactomeDegrees == null) ? 0 : interactomeDegrees.hashCode());
     return result;
   }
 
@@ -88,11 +103,6 @@ public class GeneInteraction implements Serializable {
     if (geneAId != other.geneAId)
       return false;
     if (geneBId != other.geneBId)
-      return false;
-    if (interactomeDegrees == null) {
-      if (other.interactomeDegrees != null)
-        return false;
-    } else if (!interactomeDegrees.equals(other.interactomeDegrees))
       return false;
     return true;
   }

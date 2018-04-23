@@ -3,8 +3,8 @@ DROP TABLE `work`;
 
 DROP TABLE `blast_result`;
 
-DROP TABLE `different_species_interactions_result_reference_genes`;
-DROP TABLE `different_species_interactions_result_target_genes`;
+DROP TABLE `different_species_interactions_result_reference_interactomes`;
+DROP TABLE `different_species_interactions_result_target_interactomes`;
 DROP TABLE `different_species_interactions_result`;
 DROP TABLE `same_species_interactions_result_query_interactome`;
 DROP TABLE `same_species_interactions_result`;

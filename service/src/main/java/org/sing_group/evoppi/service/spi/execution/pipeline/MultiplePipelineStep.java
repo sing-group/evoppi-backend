@@ -21,17 +21,20 @@
  */
 package org.sing_group.evoppi.service.spi.execution.pipeline;
 
-public interface PipelineStep<
+import java.util.OptionalInt;
+import java.util.stream.Stream;
+
+public interface MultiplePipelineStep<
   C extends PipelineConfiguration,
   PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
   PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
   P extends Pipeline<C, PC, PS, P, PE, PEM>,
   PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
   PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
-> {
-  public String getName();
-
-  public int getOrder();
-
-  public boolean isComplete(PC context);
+> extends PipelineStep<C, PC, PS, P, PE, PEM> {
+  
+  public Stream<PS> getSteps(PC context);
+  
+  public OptionalInt countSteps(PC context);
+  
 }

@@ -22,54 +22,61 @@
 package org.sing_group.evoppi.service.bio.samespecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toSet;
+import static javax.transaction.Transactional.TxType.REQUIRED;
 
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
-import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
-import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
+import org.sing_group.evoppi.service.bio.entity.InteractingGenesWithDegree;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.service.spi.bio.SingleInteractionsCalculator;
+import org.sing_group.evoppi.service.spi.bio.event.SingleInteractionsCalculusCallback;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilderFactory;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
+import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SingleSameSpeciesGeneInteractionsStep;
 
-@Stateless
-@PermitAll
-public class DefaultSameSpeciesGeneInteractionsStep
-implements SameSpeciesGeneInteractionsStep {
+@Default
+public class DefaultSameSpeciesCalculateInteractionsGeneInteractionsStep
+implements SingleSameSpeciesGeneInteractionsStep {
   
-  private InteractomeDAO interactomeDao;
   private GeneDAO geneDao;
-  private InteractionsCalculator interactionsCalculator;
+  private SingleInteractionsCalculator interactionsCalculator;
   private SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
+  private EntityManager entityManager;
   
-  DefaultSameSpeciesGeneInteractionsStep() {}
+  private Integer interactomeId;
   
-  public DefaultSameSpeciesGeneInteractionsStep(
-    InteractomeDAO interactomeDao, GeneDAO geneDao,
-    InteractionsCalculator interactionsCalculator,
-    SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory
+  DefaultSameSpeciesCalculateInteractionsGeneInteractionsStep() {}
+  
+  public DefaultSameSpeciesCalculateInteractionsGeneInteractionsStep(
+    GeneDAO geneDao,
+    SingleInteractionsCalculator interactionsCalculator,
+    SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory,
+    EntityManager entityManager
   ) {
-    this.setInteractomeDao(interactomeDao);
     this.setGeneDao(geneDao);
     this.setInteractionsCalculator(interactionsCalculator);
     this.setContextBuilderFactory(contextBuilderFactory);
+    this.setEntityManager(entityManager);
   }
-
-  @Inject
-  public void setInteractomeDao(InteractomeDAO interactomeDao) {
-    this.interactomeDao = requireNonNull(interactomeDao);
+  
+  public void setInteractomeId(int interactomeId) {
+    this.interactomeId = interactomeId;
+  }
+  
+  @PersistenceContext
+  public void setEntityManager(EntityManager entityManager) {
+    this.entityManager = requireNonNull(entityManager);
   }
   
   @Inject
@@ -78,7 +85,7 @@ implements SameSpeciesGeneInteractionsStep {
   }
   
   @Inject
-  public void setInteractionsCalculator(InteractionsCalculator interactionsCalculator) {
+  public void setInteractionsCalculator(SingleInteractionsCalculator interactionsCalculator) {
     this.interactionsCalculator = requireNonNull(interactionsCalculator);
   }
   
@@ -89,40 +96,45 @@ implements SameSpeciesGeneInteractionsStep {
   
   @Override
   public String getName() {
-    return "Interactome comparison";
+    return "Interactome retrieval: " + this.interactomeId;
   }
   
   @Override
   public int getOrder() {
-    return 0;
+    return -1;
   }
 
   @Override
   public boolean isComplete(SameSpeciesGeneInteractionsContext context) {
-    return context.getInteractions().isPresent();
+    return context.hasInteractions();
   }
 
+  @Transactional(REQUIRED)
   @Override
   public SameSpeciesGeneInteractionsContext execute(SameSpeciesGeneInteractionsContext context) {
+    if (this.interactomeId == null)
+      throw new IllegalStateException("Interactome id should be set before executing the step");
+    
     final SameSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
     
     final Gene gene = this.geneDao.getGene(configuration.getGeneId());
-    final Collection<Interactome> interactomes = configuration.getInteractomes()
-      .mapToObj(interactomeDao::getInteractome)
-    .collect(toSet());
 
     final SameSpeciesGeneInteractionsContextBuilder createBuilder = this.contextBuilderFactory.createBuilderFor(context);
-    final BridgeInteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(createBuilder);
+    final BridgeInteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(this.interactomeId, createBuilder);
     
-    this.interactionsCalculator.calculateInteractions(gene, interactomes, configuration.getMaxDegree(), callback);
+    this.interactionsCalculator.calculateInteractions(gene, this.interactomeId, configuration.getMaxDegree(), callback);
+    
+    this.entityManager.clear(); // Avoids unnecessary persistence check
     
     return callback.getContext();
   }
   
-  private class BridgeInteractionsCalculusCallback implements InteractionsCalculusCallback {
-    private SameSpeciesGeneInteractionsContextBuilder contextBuilder;
+  private class BridgeInteractionsCalculusCallback implements SingleInteractionsCalculusCallback {
+    private final int interactomeId;
+    private final SameSpeciesGeneInteractionsContextBuilder contextBuilder;
     
-    public BridgeInteractionsCalculusCallback(SameSpeciesGeneInteractionsContextBuilder contextBuilder) {
+    public BridgeInteractionsCalculusCallback(int interactomeId, SameSpeciesGeneInteractionsContextBuilder contextBuilder) {
+      this.interactomeId = interactomeId;
       this.contextBuilder = contextBuilder;
     }
     
@@ -134,8 +146,15 @@ implements SameSpeciesGeneInteractionsStep {
     public void calculusStarted() {}
     
     @Override
-    public void interactionsCalculated(Stream<GeneInteraction> interactions) {
-      this.contextBuilder.setInteractions(interactions);
+    public void interactionsCalculated(int degree, Collection<InteractingGenesWithDegree> interactions) {
+      final Stream<InteractionIds> mappedInteractions = interactions.stream()
+        .map(interaction -> new InteractionIds(
+          this.interactomeId,
+          interaction.getGeneA().getId(),
+          interaction.getGeneB().getId()
+        ));
+      
+      contextBuilder.setInteractions(degree, mappedInteractions);
     }
     
     @Override

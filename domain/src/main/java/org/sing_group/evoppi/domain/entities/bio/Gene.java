@@ -70,6 +70,15 @@ public class Gene implements Serializable {
     return Stream.concat(this.interactsA.stream(), this.interactsB.stream())
       .distinct();
   }
+  
+  public Stream<Interaction> getInteractionsOfInteractome(Interactome interactome) {
+    return this.getInteractionsOfInteractome(interactome.getId());
+  }
+  
+  public Stream<Interaction> getInteractionsOfInteractome(int interactomeId) {
+    return this.getInteractions()
+      .filter(interaction -> interaction.getInteractome().getId() == interactomeId);
+  }
 
   public boolean hasInteraction(Interaction interaction) {
     return this.interactsA.contains(interaction) || this.interactsB.contains(interaction);

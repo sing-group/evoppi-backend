@@ -19,19 +19,19 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.execution.pipeline;
+package org.sing_group.evoppi.service;
 
-public interface PipelineStep<
-  C extends PipelineConfiguration,
-  PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
-  PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
-  P extends Pipeline<C, PC, PS, P, PE, PEM>,
-  PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
-  PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
-> {
-  public String getName();
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
 
-  public int getOrder();
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-  public boolean isComplete(PC context);
+public class LoggerProducer {
+  
+  @Produces
+  public Logger produceLogger(InjectionPoint ip) {
+    return LoggerFactory.getLogger(ip.getMember().getDeclaringClass());
+  }
+  
 }

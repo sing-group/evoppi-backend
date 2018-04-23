@@ -21,16 +21,20 @@
  */
 package org.sing_group.evoppi.service.execution.pipeline;
 
-import static java.util.stream.Collectors.toList;
 import static javax.ejb.TransactionAttributeType.NEVER;
 import static javax.ejb.TransactionManagementType.BEAN;
+
+import java.util.OptionalInt;
+import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionManagement;
+import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.service.spi.execution.pipeline.MultiplePipelineStep;
 import org.sing_group.evoppi.service.spi.execution.pipeline.Pipeline;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineConfiguration;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineContext;
@@ -38,12 +42,17 @@ import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineEvent;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineEventManager;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineExecutor;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineStep;
+import org.sing_group.evoppi.service.spi.execution.pipeline.SinglePipelineStep;
+import org.slf4j.Logger;
 
 @Stateless
 @PermitAll
 @TransactionManagement(BEAN)
 @TransactionAttribute(NEVER)
 public class TransactionalPipelineExecutor implements PipelineExecutor {
+  @Inject
+  private Logger logger;
+  
   @Override
   public <
     C extends PipelineConfiguration,
@@ -57,27 +66,93 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
   ) {
     final PipelineEventManager<C, PC, PS, P, PE, PEM> eventManager = context.getEventManager();
     
+    final String pipelineName = formatStepName(pipeline.getName());
     try {
-      final String pipelineName = formatStepName(pipeline.getName());
       eventManager.fireEvent(context, "Starting " + pipelineName + " analysis", 0d, ExecutionStatus.RUNNING);
       
-      final double stepProgress = 1d / (double) pipeline.countTotalSteps();
-      double progress = 0d;
-      
-      for (PS step : pipeline.getSteps().collect(toList())) {
-        final String name = formatStepName(step.getName());
-        
-        eventManager.fireEvent(context, "Starting " + name, progress, ExecutionStatus.RUNNING);
-        
-        context = step.execute(context);
-        
-        progress += stepProgress;
-        eventManager.fireEvent(context, "Completed " + name, progress, ExecutionStatus.RUNNING);
-      }
+      final double stepProgressSize = 1d / (double) pipeline.countTotalSteps();
+
+      context = this.execute(pipeline.getSteps(), context, 0d, stepProgressSize);
       
       eventManager.fireEvent(context, "Completed " + pipelineName + " analysis", 1d, ExecutionStatus.COMPLETED);
     } catch (RuntimeException re) {
+      logger.error("Error in pipeline " + pipelineName, re);
       eventManager.fireEvent(context, re.getMessage(), Double.NaN, ExecutionStatus.FAILED);
+    }
+  }
+  
+  private <
+    C extends PipelineConfiguration,
+    PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
+    PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
+    P extends Pipeline<C, PC, PS, P, PE, PEM>,
+    PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
+    PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
+  > PC execute(Stream<PS> steps, PC context, double currentProgress, double stepProgressSize) {
+    final PipelineEventManager<C, PC, PS, P, PE, PEM> eventManager = context.getEventManager();
+    
+    final ProgressAndContext<C, PC, PS, P, PE, PEM> pac = new ProgressAndContext<>(context, currentProgress);
+    
+    steps.forEach(step -> {
+      final String name = formatStepName(step.getName());
+
+      eventManager.fireEvent(pac.getContext(), "Starting " + name, pac.getProgress(), ExecutionStatus.RUNNING);
+      
+      final PC newContext;
+      if (step instanceof SinglePipelineStep) {
+        newContext = ((SinglePipelineStep<C, PC, PS, P, PE, PEM>) step).execute(pac.getContext());
+      } else if (step instanceof MultiplePipelineStep) {
+        final MultiplePipelineStep<C, PC, PS, P, PE, PEM> multistep = (MultiplePipelineStep<C, PC, PS, P, PE, PEM>) step;
+        final OptionalInt countSteps = multistep.countSteps(pac.getContext());
+        
+        final double substepProgressSize = countSteps.isPresent() ? stepProgressSize / (double) countSteps.getAsInt() : 0d;
+        
+        final Stream<PS> substeps = multistep.getSteps(pac.getContext());
+        
+        newContext = this.execute(substeps, pac.getContext(), pac.getProgress(), substepProgressSize);
+      } else {
+        throw new IllegalArgumentException("Unknown pipeline step type: " + step.getClass());
+      }
+
+      pac.setContext(newContext);
+      pac.increaseProgress(stepProgressSize);
+      
+      eventManager.fireEvent(pac.getContext(), "Completed " + name, pac.getProgress(), ExecutionStatus.RUNNING);
+    });
+    
+    return pac.getContext();
+  }
+  
+  private final static class ProgressAndContext<
+    C extends PipelineConfiguration,
+    PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
+    PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
+    P extends Pipeline<C, PC, PS, P, PE, PEM>,
+    PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
+    PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
+  > {
+    private PC context;
+    private double progress;
+    
+    public ProgressAndContext(PC context, double progress) {
+      this.context = context;
+      this.progress = progress;
+    }
+
+    public void increaseProgress(double stepProgressSize) {
+      this.progress += stepProgressSize;
+    }
+
+    public double getProgress() {
+      return progress;
+    }
+
+    public PC getContext() {
+      return context;
+    }
+    
+    public void setContext(PC context) {
+      this.context = context;
     }
   }
   

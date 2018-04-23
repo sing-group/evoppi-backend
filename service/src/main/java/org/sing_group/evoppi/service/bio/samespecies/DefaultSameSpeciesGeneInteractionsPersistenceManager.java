@@ -21,10 +21,10 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies;
 
-import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
+import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 
-import java.util.stream.Stream;
+import java.util.Set;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsPersistenceManager;
@@ -41,14 +40,13 @@ import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpec
 
 @Stateless
 @PermitAll
-@Transactional(NOT_SUPPORTED)
+@Transactional(REQUIRES_NEW)
 public class DefaultSameSpeciesGeneInteractionsPersistenceManager
 implements SameSpeciesGeneInteractionsPersistenceManager {
   @Inject
-  public InteractionService interactionsService;
+  private InteractionService interactionsService;
   
   @Override
-  @Transactional(REQUIRES_NEW)
   public void manageEvent(
     @Observes SameSpeciesGeneInteractionsEvent event
   ) {
@@ -60,17 +58,37 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
     switch (event.getStatus()) {
     case RUNNING:
       result.setRunning();
+      
+      if (context.hasCompletedInteractions()) {
+        context.getCompletedInteractions()
+          .forEach(interaction -> result.addInteraction(
+              interaction.getGeneA(),
+              interaction.getGeneB(),
+              interaction.getInteractomeId()
+          ));
+      } else if (context.hasInteractions()) {
+        final Set<Integer> interactomesWithInterations = result.getQueryInteractomeIds()
+          .filter(result::hasInteractionsForInteractome)
+          .boxed()
+        .collect(toSet());
+        
+        context.getInteractionsDegrees()
+          .forEach(degree -> 
+            context.getInteractionsWithDegree(degree)
+              .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
+              .forEach(interaction -> 
+                result.addInteraction(
+                  interaction.getGeneA(),
+                  interaction.getGeneB(),
+                  interaction.getInteractomeId(),
+                  degree
+                )
+              )
+          );
+      }
+      
       break;
     case COMPLETED:
-      final Stream<GeneInteraction> interactions = context.getInteractions()
-        .orElseThrow(IllegalStateException::new);
-      
-      interactions.forEach(interaction -> result.addInteraction(
-        interaction.getGeneAId(),
-        interaction.getGeneBId(),
-        interaction.getInteractomeDegrees()
-      ));
-      
       result.setFinished();
       
       break;

@@ -21,14 +21,17 @@
  */
 package org.sing_group.evoppi.service.spi.bio.samespecies.pipeline;
 
+import javax.ejb.Local;
+
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEventManager;
-import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineStep;
+import org.sing_group.evoppi.service.spi.execution.pipeline.MultiplePipelineStep;
 
-public interface SameSpeciesGeneInteractionsStep
-extends PipelineStep<
+@Local
+public interface MultipleSameSpeciesGeneInteractionsStep
+extends SameSpeciesGeneInteractionsStep, MultiplePipelineStep<
   SameSpeciesGeneInteractionsConfiguration,
   SameSpeciesGeneInteractionsContext,
   SameSpeciesGeneInteractionsStep,
@@ -36,5 +39,4 @@ extends PipelineStep<
   SameSpeciesGeneInteractionsEvent,
   SameSpeciesGeneInteractionsEventManager
 > {
-
 }

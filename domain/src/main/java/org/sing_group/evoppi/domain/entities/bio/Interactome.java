@@ -24,6 +24,7 @@ package org.sing_group.evoppi.domain.entities.bio;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -105,28 +106,70 @@ public class Interactome implements Serializable {
     return species;
   }
 
-  public String getDbSourceIdType() { return dbSourceIdType; }
+  public String getDbSourceIdType() {
+    return dbSourceIdType;
+  }
 
-  public Integer getNumOriginalInteractions() { return numOriginalInteractions; }
+  public Integer getNumOriginalInteractions() {
+    return numOriginalInteractions;
+  }
 
-  public Integer getNumUniqueOriginalInteractions() { return numUniqueOriginalInteractions; }
+  public Integer getNumUniqueOriginalInteractions() {
+    return numUniqueOriginalInteractions;
+  }
 
-  public Integer getNumUniqueOriginalGenes() { return numUniqueOriginalGenes; }
+  public Integer getNumUniqueOriginalGenes() {
+    return numUniqueOriginalGenes;
+  }
 
-  public Integer getNumInteractionsNotToUniProtKB() { return numInteractionsNotToUniProtKB; }
+  public Integer getNumInteractionsNotToUniProtKB() {
+    return numInteractionsNotToUniProtKB;
+  }
 
-  public Integer getNumGenesNotToUniProtKB() { return numGenesNotToUniProtKB; }
+  public Integer getNumGenesNotToUniProtKB() {
+    return numGenesNotToUniProtKB;
+  }
 
-  public Integer getNumInteractionsNotToGeneId() { return numInteractionsNotToGeneId; }
+  public Integer getNumInteractionsNotToGeneId() {
+    return numInteractionsNotToGeneId;
+  }
 
-  public Integer getNumGenesNotToGeneId() { return numGenesNotToGeneId; }
+  public Integer getNumGenesNotToGeneId() {
+    return numGenesNotToGeneId;
+  }
 
-  public Integer getNumFinalInteractions() { return numFinalInteractions; }
+  public Integer getNumFinalInteractions() {
+    return numFinalInteractions;
+  }
 
-  public Double getProbFinalInteractions() { return probFinalInteractions; }
+  public Double getProbFinalInteractions() {
+    return probFinalInteractions;
+  }
   
   public Stream<Interaction> getInteractions() {
     return this.interactions.stream();
+  }
+  
+  public Optional<Interaction> findInteraction(Gene geneA, Gene geneB) {
+    return this.getInteractions()
+      .filter(interaction -> interaction.hasGenes(geneA, geneB))
+      .findAny();
+  }
+  
+  public Optional<Interaction> findInteraction(int geneA, int geneB) {
+    return this.getInteractions()
+      .filter(interaction -> interaction.hasGenes(geneA, geneB))
+      .findAny();
+  }
+  
+  public boolean hasInteraction(Gene geneA, Gene geneB) {
+    return this.getInteractions()
+      .anyMatch(interaction -> interaction.hasGenes(geneA, geneB));
+  }
+  
+  public boolean hasInteraction(int geneA, int geneB) {
+    return this.getInteractions()
+      .anyMatch(interaction -> interaction.hasGenes(geneA, geneB));
   }
   
   @Override

@@ -23,10 +23,12 @@ package org.sing_group.evoppi.service.bio.entity;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
@@ -38,6 +40,9 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 public class InteractionGroup {
   private final InteractingGenes interactingGenes;
   private final Map<Interaction, Integer> interactions;
+  
+  // Added for performance
+  private final Set<Interactome> interactomes;
 
   public InteractionGroup(Map<Interaction, Integer> interactions) {
     if (!doInteractionsHaveSameGenes(interactions.keySet())) {
@@ -47,6 +52,10 @@ public class InteractionGroup {
     final Interaction firstInteraction = interactions.keySet().iterator().next();
     this.interactingGenes = new InteractingGenes(firstInteraction);
     this.interactions = new HashMap<>(interactions);
+    
+    this.interactomes = this.getInteractions()
+      .map(Interaction::getInteractome)
+    .collect(toSet());
   }
 
   private static boolean doInteractionsHaveSameGenes(Collection<Interaction> interactions) {
@@ -77,9 +86,15 @@ public class InteractionGroup {
   }
   
   public Stream<Interactome> getInteractomes() {
-    return this.getInteractions()
-      .map(Interaction::getInteractome)
-    .distinct();
+    return this.interactomes.stream();
+  }
+  
+  public boolean hasInteraction(Interaction interaction) {
+    return this.interactions.containsKey(interaction);
+  }
+  
+  public boolean hasInteractome(Interactome interactome) {
+    return this.interactomes.contains(interactome);
   }
   
   public Map<Interaction, Integer> getInteractionDegrees() {
@@ -90,12 +105,31 @@ public class InteractionGroup {
     return this.interactions.get(interaction);
   }
   
+  public void addInteraction(Interaction interaction) {
+    this.addInteraction(interaction, -1);
+  }
+  
+  private boolean isValidInteraction(Interaction interaction) {
+    return this.interactingGenes.getGeneA().equals(interaction.getGeneA())
+      && this.interactingGenes.getGeneB().equals(interaction.getGeneB());
+  }
+  
+  public void addInteraction(Interaction interaction, int degree) {
+    if (this.hasInteractome(interaction.getInteractome())) {
+      throw new IllegalArgumentException("Interactome already present");
+    } else if (!this.isValidInteraction(interaction)) {
+      throw new IllegalArgumentException("Invalid interaction. Genes do not match with this group");
+    } else {
+      this.interactions.put(interaction, degree);
+      this.interactomes.add(interaction.getInteractome());
+    }
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((interactingGenes == null) ? 0 : interactingGenes.hashCode());
-    result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
     return result;
   }
 
@@ -112,11 +146,6 @@ public class InteractionGroup {
       if (other.interactingGenes != null)
         return false;
     } else if (!interactingGenes.equals(other.interactingGenes))
-      return false;
-    if (interactions == null) {
-      if (other.interactions != null)
-        return false;
-    } else if (!interactions.equals(other.interactions))
       return false;
     return true;
   }

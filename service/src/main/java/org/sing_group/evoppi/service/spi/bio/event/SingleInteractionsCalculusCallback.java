@@ -19,19 +19,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.execution.pipeline;
+package org.sing_group.evoppi.service.spi.bio.event;
 
-public interface PipelineStep<
-  C extends PipelineConfiguration,
-  PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
-  PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
-  P extends Pipeline<C, PC, PS, P, PE, PEM>,
-  PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
-  PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
-> {
-  public String getName();
+import java.util.Collection;
 
-  public int getOrder();
+import org.sing_group.evoppi.service.bio.entity.InteractingGenesWithDegree;
 
-  public boolean isComplete(PC context);
+public interface SingleInteractionsCalculusCallback {
+  public default void calculusStarted() {}
+  public default void interactionsCalculated(int degree, Collection<InteractingGenesWithDegree> interactions) {}
+  public default void calculusFinished() {}
+  
+  public static class SimpleSingleInteractionsCalculusCallback implements SingleInteractionsCalculusCallback {}
 }

@@ -36,5 +36,4 @@ extends Pipeline<
   SameSpeciesGeneInteractionsEvent,
   SameSpeciesGeneInteractionsEventManager
 > {
-
 }

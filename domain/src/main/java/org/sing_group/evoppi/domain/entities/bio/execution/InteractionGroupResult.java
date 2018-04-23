@@ -21,6 +21,7 @@
  */
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
+import static java.util.Collections.singletonMap;
 import static java.util.Collections.unmodifiableMap;
 
 import java.io.Serializable;
@@ -82,6 +83,12 @@ public class InteractionGroupResult implements Serializable {
     this.geneBId = geneBId;
     this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
+  
+  public InteractionGroupResult(
+    String interactionsResultId, int geneAId, int geneBId, int interactome, int degree
+  ) {
+    this(interactionsResultId, geneAId, geneBId, singletonMap(interactome, degree));
+  }
 
   public String getInteractionsResultId() {
     return interactionsResultId;
@@ -109,6 +116,28 @@ public class InteractionGroupResult implements Serializable {
   
   public boolean belongsToInteractome(int interactomeId) {
     return this.interactomeDegrees.containsKey(interactomeId);
+  }
+
+  public void addInteractome(int interactomeId, int degree) {
+    this.interactomeDegrees.put(interactomeId, degree);
+  }
+
+  public void addInteractomes(Map<Integer, Integer> interactomeDegrees) {
+    for (Map.Entry<Integer, Integer> entry : interactomeDegrees.entrySet()) {
+      this.interactomeDegrees.putIfAbsent(entry.getKey(), entry.getValue());
+//      if (this.interactomeDegrees.containsKey(entry.getKey())) {
+//        final Integer currentDegree = this.interactomeDegrees.get(entry.getKey());
+//        
+//        if (currentDegree != entry.getValue()) {
+//          throw new IllegalArgumentException(String.format(
+//            "Interactome %d already present with degree %d instead of %d",
+//            entry.getKey(), currentDegree, entry.getValue()
+//          ));
+//        }
+//      } else {
+//        this.interactomeDegrees.put(entry.getKey(), entry.getValue());
+//      }
+    }
   }
 
   public static class InteractionGroupResultId implements Serializable {

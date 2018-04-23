@@ -19,19 +19,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.execution.pipeline;
+package org.sing_group.evoppi.service.spi.bio;
 
-public interface PipelineStep<
-  C extends PipelineConfiguration,
-  PC extends PipelineContext<C, PC, PS, P, PE, PEM>,
-  PS extends PipelineStep<C, PC, PS, P, PE, PEM>,
-  P extends Pipeline<C, PC, PS, P, PE, PEM>,
-  PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
-  PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
-> {
-  public String getName();
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.service.spi.bio.event.SingleInteractionsCalculusCallback;
 
-  public int getOrder();
-
-  public boolean isComplete(PC context);
+public interface SingleInteractionsCalculator {
+  public void calculateInteractions(
+    Gene gene, int interactomeId, int maxDegree, SingleInteractionsCalculusCallback callback
+  );
 }

@@ -21,12 +21,16 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies;
 
-import static java.util.Optional.empty;
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toSet;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
@@ -38,12 +42,19 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
   private final SameSpeciesGeneInteractionsConfiguration configuration;
   private final SameSpeciesGeneInteractionsEventManager eventManager;
 
-  private Optional<Stream<GeneInteraction>> interactions;
+  private final Map<Integer, Set<InteractionIds>> interactions;
+  private Set<InteractionIds> completedInteractions;
 
   DefaultSameSpeciesGeneInteractionsContextBuilder(
     SameSpeciesGeneInteractionsContext context
   ) {
-    this(context.getPipeline(), context.getConfiguration(), context.getEventManager(), context.getInteractions());
+    this(
+      context.getPipeline(),
+      context.getConfiguration(),
+      context.getEventManager(),
+      context.getInteractionsByDegree(),
+      context.hasCompletedInteractions() ? context.getCompletedInteractions().collect(toSet()) : null
+    );
   }
 
   DefaultSameSpeciesGeneInteractionsContextBuilder(
@@ -51,24 +62,34 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager
   ) {
-    this(pipeline, configuration, eventManager, empty());
+    this(pipeline, configuration, eventManager, emptyMap(), null);
   }
 
   DefaultSameSpeciesGeneInteractionsContextBuilder(
     SameSpeciesGeneInteractionsPipeline pipeline,
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager,
-    Optional<Stream<GeneInteraction>> interactions
+    Map<Integer, Set<InteractionIds>> interactions,
+    Set<InteractionIds> completedInteractions
   ) {
     this.pipeline = pipeline;
     this.configuration = configuration;
     this.eventManager = eventManager;
-    this.interactions = interactions;
+    this.interactions = new HashMap<>(interactions);
+    this.completedInteractions = completedInteractions == null ? null : new HashSet<>(completedInteractions);
   }
-
+  
   @Override
-  public SameSpeciesGeneInteractionsContextBuilder setInteractions(Stream<GeneInteraction> interactions) {
-    this.interactions = Optional.of(interactions);
+  public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<InteractionIds> interactions) {
+    this.interactions.put(degree, interactions.collect(toSet()));
+    
+    return this;
+  }
+  
+  @Override
+  public SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Stream<InteractionIds> interactions) {
+    this.completedInteractions = interactions.collect(toSet());
+    
     return this;
   }
 
@@ -78,7 +99,8 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
       this.pipeline,
       this.configuration,
       this.eventManager,
-      this.interactions
+      this.interactions,
+      this.completedInteractions
     );
   }
 }

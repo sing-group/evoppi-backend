@@ -34,6 +34,7 @@ import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
+import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesInteractionService;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineExecutor;
@@ -54,9 +55,10 @@ public class DefaultSameSpeciesInteractionService implements SameSpeciesInteract
   public void calculateSameSpeciesInteractions(
     @Observes(during = TransactionPhase.AFTER_SUCCESS) SameSpeciesInteractionsRequestEvent event
   ) {
-    this.executor.execute(
-      pipeline,
-      new DefaultSameSpeciesGeneInteractionsConfiguration(event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getResultId())
+    final SameSpeciesGeneInteractionsConfiguration configuration = new DefaultSameSpeciesGeneInteractionsConfiguration(
+      event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getResultId()
     );
+    
+    this.executor.execute(pipeline, configuration);
   }
 }

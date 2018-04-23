@@ -35,7 +35,6 @@ import javax.inject.Inject;
 
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
-import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilderFactory;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
@@ -74,10 +73,12 @@ implements SameSpeciesGeneInteractionsPipeline {
   }
 
   @Inject
-  public void setSteps(Instance<SameSpeciesGeneInteractionsStep> step) {
-    requireNonNull(step);
+  public void setSteps(Instance<SameSpeciesGeneInteractionsStep> steps) {
+    requireNonNull(steps);
     
-    super.setSteps(StreamSupport.stream(step.spliterator(), false).collect(toSet()));
+    super.setSteps(StreamSupport.stream(steps.spliterator(), false)
+      .filter(step -> step.getOrder() >= 0)
+    .collect(toSet()));
   }
 
   @Inject
@@ -92,13 +93,11 @@ implements SameSpeciesGeneInteractionsPipeline {
 
   @Override
   public SameSpeciesGeneInteractionsContext createContext(SameSpeciesGeneInteractionsConfiguration configuration) {
-    final SameSpeciesGeneInteractionsContextBuilder contextBuilder = this.contextBuilderFactory.createBuilderFor(
+    return this.contextBuilderFactory.createBuilderFor(
       this, configuration, this.eventManager
-    );
-    
-    return contextBuilder.build();
+    ).build();
   }
-  
+
   // Methods explicitly override to force @PermitAll on them
   @Override
   public Stream<SameSpeciesGeneInteractionsStep> getSteps() {
