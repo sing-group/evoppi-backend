@@ -23,9 +23,9 @@ package org.sing_group.evoppi.service.spi.execution;
 
 import javax.ejb.Local;
 
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 
 @Local
 public interface WorkService {
-  public Work get(String id);
+  public WorkEntity get(String id);
 }

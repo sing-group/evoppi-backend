@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toSet;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import javax.persistence.CollectionTable;
@@ -54,8 +55,20 @@ public class SameSpeciesInteractionsResult extends InteractionsResult implements
 
   SameSpeciesInteractionsResult() {}
   
-  public SameSpeciesInteractionsResult(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds) {
-    super(queryGeneId, queryMaxDegree);
+  public SameSpeciesInteractionsResult(
+    String name, String description, String resultReference,
+    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+  ) {
+    super(name, description, resultReference, queryGeneId, queryMaxDegree);
+    
+    this.queryInteractomeIds = IntStream.of(queryInteractomeIds).boxed().collect(toSet());
+  }
+  
+  public SameSpeciesInteractionsResult(
+    String name, String description, Function<String, String> resultReferenceBuilder,
+    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+  ) {
+    super(name, description, resultReferenceBuilder, queryGeneId, queryMaxDegree);
     
     this.queryInteractomeIds = IntStream.of(queryInteractomeIds).boxed().collect(toSet());
   }

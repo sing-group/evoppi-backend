@@ -39,7 +39,5 @@ public interface DifferentSpeciesGeneInteractionsConfiguration extends PipelineC
   public int getMaxDegree();
 
   public String getWorkId();
-
-  public String getResultId();
   
 }

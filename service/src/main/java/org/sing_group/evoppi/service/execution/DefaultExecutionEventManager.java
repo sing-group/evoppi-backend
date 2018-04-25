@@ -29,7 +29,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.service.spi.execution.ExecutionEventManager;
 import org.sing_group.evoppi.service.spi.execution.WorkService;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
@@ -43,7 +43,7 @@ public class DefaultExecutionEventManager implements ExecutionEventManager {
 
   @Override
   public void manageWorkStep(@Observes WorkStepEvent event) {
-    final Work work = this.workService.get(event.getWorkId());
+    final WorkEntity work = this.workService.get(event.getWorkId());
     
     work.addStep(event.getDescription(), event.getProgress());
     

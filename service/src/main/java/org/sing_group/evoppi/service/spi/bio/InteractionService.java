@@ -28,15 +28,14 @@ import javax.ejb.Local;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
-import org.sing_group.evoppi.domain.entities.execution.Work;
 
 @Local
 public interface InteractionService {
-  public Work findSameSpeciesInteractions(
+  public SameSpeciesInteractionsResult findSameSpeciesInteractions(
     int geneId, int[] interactomes, int maxDegree, Function<String, String> resultReferenceBuilder
   );
   
-  public Work findDifferentSpeciesInteractions(
+  public DifferentSpeciesInteractionsResult findDifferentSpeciesInteractions(
     int geneId, int[] referenceInteractomes, int[] targetInteractomes, BlastQueryOptions blastOptions, int maxDegree, Function<String, String> resultReferenceBuilder
   );
   

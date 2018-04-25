@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.domain.dao.bio.execution;
 
+import java.util.function.Function;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -72,7 +74,22 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
   }
   
   @Override
-  public SameSpeciesInteractionsResult create(int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds) {
-    return this.dh.persist(new SameSpeciesInteractionsResult(queryGeneId, queryMaxDegree, queryInteractomeIds));
+  public SameSpeciesInteractionsResult create(
+    String name, String description, String resultReference,
+    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+  ) {
+    return this.dh.persist(new SameSpeciesInteractionsResult(
+      name, description, resultReference, queryGeneId, queryMaxDegree, queryInteractomeIds
+    ));
+  }
+  
+  @Override
+  public SameSpeciesInteractionsResult create(
+    String name, String description, Function<String, String> resultReferenceBuilder,
+    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+  ) {
+    return this.dh.persist(new SameSpeciesInteractionsResult(
+      name, description, resultReferenceBuilder, queryGeneId, queryMaxDegree, queryInteractomeIds
+    ));
   }
 }

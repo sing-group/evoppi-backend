@@ -56,14 +56,12 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
   @Transactional(REQUIRES_NEW)
   public void manageEvent(@Observes DifferentSpeciesGeneInteractionsEvent event) {
     final DifferentSpeciesGeneInteractionsContext context = event.getContext();
-    final String resultId = context.getConfiguration().getResultId();
+    final String resultId = context.getConfiguration().getWorkId();
     
     final DifferentSpeciesInteractionsResult result = this.interactionsService.getDifferentSpeciesResult(resultId);
     
     switch (event.getStatus()) {
     case RUNNING:
-      result.setRunning();
-
       if (context.getTargetCompletedInteractions().isPresent()) {
         persistInteractions(result, context.getTargetCompletedInteractions().get());
       } else if (context.getTargetInteractions().isPresent()) {
@@ -96,14 +94,6 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
         );
       }
 
-      break;
-    case COMPLETED:
-      result.setFinished();
-      
-      break;
-    case FAILED:
-      result.setFailed(event.getDescription());
-      
       break;
     default:
     }
@@ -140,7 +130,7 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
   }
   
   private void persistBlastResults(DifferentSpeciesGeneInteractionsEvent event) {
-    final String resultId = event.getContext().getConfiguration().getResultId();
+    final String resultId = event.getContext().getConfiguration().getWorkId();
     
     final DifferentSpeciesInteractionsResult result = this.interactionsService.getDifferentSpeciesResult(resultId);
     

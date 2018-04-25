@@ -37,7 +37,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -85,7 +85,7 @@ public class DefaultWorkResource implements WorkResource {
   public Response get(
     @PathParam("id") String id
   ) {
-    final Work work = this.service.get(id);
+    final WorkEntity work = this.service.get(id);
     
     return Response
       .ok(this.mapper.toWorkData(work))

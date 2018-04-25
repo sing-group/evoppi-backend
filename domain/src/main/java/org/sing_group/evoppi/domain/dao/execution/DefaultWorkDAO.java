@@ -30,7 +30,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -38,7 +38,7 @@ public class DefaultWorkDAO implements WorkDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<String, Work> dh;
+  protected DAOHelper<String, WorkEntity> dh;
 
   public DefaultWorkDAO() {
     super();
@@ -51,17 +51,12 @@ public class DefaultWorkDAO implements WorkDAO {
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(String.class, Work.class, this.em);
+    this.dh = DAOHelper.of(String.class, WorkEntity.class, this.em);
   }
 
   @Override
-  public Work get(String workId) {
+  public WorkEntity get(String workId) {
     return this.dh.get(workId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown work id: " + workId));
-  }
-
-  @Override
-  public Work createNew(String name, String description, String resultReference) {
-    return this.dh.persist(new Work(name, description, resultReference));
   }
 }

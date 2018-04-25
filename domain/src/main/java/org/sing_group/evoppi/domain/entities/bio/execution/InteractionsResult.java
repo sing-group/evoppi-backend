@@ -21,24 +21,21 @@
  */
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -47,18 +44,14 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
-import org.sing_group.evoppi.domain.entities.execution.ExecutionStatusAndTime;
-import org.sing_group.evoppi.domain.entities.execution.HasExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", length = 4)
 @Table(name = "interactions_result")
-public abstract class InteractionsResult implements HasExecutionStatus {
-
-  @Id
-  private String id;
+public abstract class InteractionsResult extends WorkEntity {
+  private static final long serialVersionUID = 1L;
   
   @Column(name = "queryGeneId", nullable = false)
   private int queryGeneId;
@@ -76,26 +69,29 @@ public abstract class InteractionsResult implements HasExecutionStatus {
   
   @Transient
   private Map<Integer, Map<Integer, InteractionGroupResult>> interactionsIndex;
-  
-  @Embedded
-  private ExecutionStatusAndTime status;
 
-  InteractionsResult() {
-    this.id = UUID.randomUUID().toString();
+  protected InteractionsResult() {
+    super();
     this.interactions = new HashSet<>();
-    this.status = new ExecutionStatusAndTime();
     this.interactionsIndex = new HashMap<>();
   }
   
-  public InteractionsResult(int queryGeneId, int queryMaxDegree) {
-    this();
+  protected InteractionsResult(String name, int queryGeneId, int queryMaxDegree) {
+    this(name, null, (String) null, queryGeneId, queryMaxDegree);
+  }
+  
+  protected InteractionsResult(String name, String description, String resultReference, int queryGeneId, int queryMaxDegree) {
+    super(name, description, resultReference);
     
     this.queryGeneId = queryGeneId;
     this.queryMaxDegree = queryMaxDegree;
   }
   
-  public String getId() {
-    return id;
+  protected InteractionsResult(String name, String description, Function<String, String> resultReferenceBuilder, int queryGeneId, int queryMaxDegree) {
+    super(name, description, resultReferenceBuilder);
+    
+    this.queryGeneId = queryGeneId;
+    this.queryMaxDegree = queryMaxDegree;
   }
 
   public int getQueryGeneId() {
@@ -104,43 +100,6 @@ public abstract class InteractionsResult implements HasExecutionStatus {
 
   public int getQueryMaxDegree() {
     return queryMaxDegree;
-  }
-
-  public LocalDateTime getCreationDateTime() {
-    return this.status.getCreationDateTime();
-  }
-
-  public Optional<LocalDateTime> getStartDateTime() {
-    return this.status.getStartDateTime();
-  }
-
-  public Optional<LocalDateTime> getEndDateTime() {
-    return this.status.getEndDateTime();
-  }
-
-  @Override
-  public ExecutionStatus getStatus() {
-    return this.status.getStatus();
-  }
-
-  @Override
-  public void setScheduled() throws IllegalStateException {
-    this.status.setScheduled();
-  }
-  
-  @Override
-  public void setRunning() throws IllegalStateException {
-    this.status.setRunning();
-  }
-
-  @Override
-  public void setFinished() throws IllegalStateException {
-    this.status.setFinished();
-  }
-
-  @Override
-  public void setFailed(String cause) throws IllegalStateException {
-    this.status.setFailed(cause);
   }
 
   public Stream<InteractionGroupResult> getInteractions() {
@@ -217,30 +176,5 @@ public abstract class InteractionsResult implements HasExecutionStatus {
   public boolean hasInteractionsForInteractome(int interactomeId) {
     return this.interactions.stream()
       .anyMatch(interaction -> interaction.belongsToInteractome(interactomeId));
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    InteractionsResult other = (InteractionsResult) obj;
-    if (id == null) {
-      if (other.id != null)
-        return false;
-    } else if (!id.equals(other.id))
-      return false;
-    return true;
   }
 }

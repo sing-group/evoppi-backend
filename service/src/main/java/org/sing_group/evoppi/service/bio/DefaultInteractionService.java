@@ -40,7 +40,6 @@ import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
-import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
@@ -49,7 +48,6 @@ import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
-import org.sing_group.evoppi.domain.entities.execution.Work;
 import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
@@ -66,9 +64,6 @@ public class DefaultInteractionService implements InteractionService {
   
   @Inject
   private FastaWriter fastaWriter;
-  
-  @Inject
-  private WorkDAO workDao;
   
   @Inject
   private SameSpeciesInteractionsResultDAO sameInteractionsResultDao;
@@ -103,7 +98,7 @@ public class DefaultInteractionService implements InteractionService {
   }
   
   @Override
-  public Work findSameSpeciesInteractions(
+  public SameSpeciesInteractionsResult findSameSpeciesInteractions(
     int geneId, int[] interactomes, int maxDegree, Function<String, String> resultReferenceBuilder
   ) {
     if (maxDegree < 1 || maxDegree > 3)
@@ -113,24 +108,22 @@ public class DefaultInteractionService implements InteractionService {
     
     this.checkSameSpecies(interactomes);
     
-    final SameSpeciesInteractionsResult result = this.sameInteractionsResultDao.create(geneId, maxDegree, interactomes);
-    
-    final Work work = this.workDao.createNew(
+    final SameSpeciesInteractionsResult result = this.sameInteractionsResultDao.create(
       "Same species interactions",
       "Find same species interactions",
-      resultReferenceBuilder.apply(result.getId())
+      resultReferenceBuilder,
+      geneId, maxDegree, interactomes
     );
     
-    this.taskSameEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomes, maxDegree, work.getId(), result.getId()));
+    this.taskSameEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomes, maxDegree, result.getId()));
     
     result.setScheduled();
-    work.setScheduled();
     
-    return work;
+    return result;
   }
   
   @Override
-  public Work findDifferentSpeciesInteractions(
+  public DifferentSpeciesInteractionsResult findDifferentSpeciesInteractions(
     int geneId, int[] referenceInteractomes, int[] targetInteractomes, BlastQueryOptions blastOptions,
     int maxDegree, Function<String, String> resultReferenceBuilder
   ) {
@@ -149,23 +142,19 @@ public class DefaultInteractionService implements InteractionService {
     final Set<Integer> targetInteractomeIds = IntStream.of(targetInteractomes).boxed().collect(toSet());
     
     final DifferentSpeciesInteractionsResult result = this.differentInteractionsResultDao.create(
+      "Different species interactions",
+      "Find different species interactions",
+      resultReferenceBuilder,
       geneId, referenceInteractomeIds, targetInteractomeIds, blastOptions, maxDegree
     );
     
-    final Work work = this.workDao.createNew(
-      "Different species interactions",
-      "Find different species interactions",
-      resultReferenceBuilder.apply(result.getId())
-    );
-    
     this.taskDifferentEvents.fire(new DifferentSpeciesInteractionsRequestEvent(
-      geneId, referenceInteractomeIds, targetInteractomeIds, blastOptions, maxDegree, work.getId(), result.getId())
+      geneId, referenceInteractomeIds, targetInteractomeIds, blastOptions, maxDegree, result.getId())
     );
     
     result.setScheduled();
-    work.setScheduled();
     
-    return work;
+    return result;
   }
   
   @Override

@@ -26,7 +26,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.service.spi.execution.WorkService;
 
 @Stateless
@@ -36,7 +36,7 @@ public class DefaultWorkService implements WorkService {
   private WorkDAO dao;
   
   @Override
-  public Work get(String id) {
+  public WorkEntity get(String id) {
     return this.dao.get(id);
   }
 }

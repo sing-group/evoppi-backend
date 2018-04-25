@@ -52,7 +52,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
     nullable = false,
     foreignKey = @ForeignKey(name = "FK_work_work_step")
   )
-  private Work work;
+  private WorkEntity work;
   
   @Id
   @Column(name = "stepOrder")
@@ -66,7 +66,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
 
   WorkStep() {}
 
-  public WorkStep(Work work, int order, String description, Double progress) {
+  public WorkStep(WorkEntity work, int order, String description, Double progress) {
     this.work = work;
     this.order = order;
     this.description = description;

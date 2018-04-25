@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 import javax.enterprise.inject.Default;
 import javax.ws.rs.core.UriBuilder;
 
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.execution.WorkStep;
 import org.sing_group.evoppi.rest.entity.UuidAndUri;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
@@ -44,7 +44,7 @@ public class DefaultExecutionMapper implements ExecutionMapper {
   }
   
   @Override
-  public WorkData toWorkData(Work work) {
+  public WorkData toWorkData(WorkEntity work) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     return new WorkData(
@@ -52,8 +52,8 @@ public class DefaultExecutionMapper implements ExecutionMapper {
       work.getName(),
       work.getDescription().orElse(null),
       work.getCreationDateTime(),
-      work.getStartDateTime().orElse(null),
-      work.getEndDateTime().orElse(null),
+      work.getStartingDateTime().orElse(null),
+      work.getFinishingDateTime().orElse(null),
       work.getResultReference().orElse(null),
       work.getStatus().name(),
       work.getSteps()

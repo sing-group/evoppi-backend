@@ -38,7 +38,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
 @Embeddable
-public class ExecutionStatusAndTime implements HasExecutionStatus, Serializable {
+public class ExecutionStatusAndTime implements HasExecutionStatus, HasExecutionTime, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Enumerated(STRING)
@@ -47,12 +47,15 @@ public class ExecutionStatusAndTime implements HasExecutionStatus, Serializable 
   
   @Column(name = "creationDateTime", nullable = false)
   private LocalDateTime creationDateTime;
+  
+  @Column(name = "schedulingDateTime", nullable = true)
+  private LocalDateTime schedulingDateTime;
 
   @Column(name = "startDateTime", nullable = true)
-  private LocalDateTime startDateTime;
+  private LocalDateTime startingDateTime;
 
-  @Column(name = "endDateTime", nullable = true)
-  private LocalDateTime endDateTime;
+  @Column(name = "finishingDateTime", nullable = true)
+  private LocalDateTime finishingDateTime;
 
   @Column(name = "failureCause", length = 255, nullable = true)
   private String failureCause;
@@ -66,16 +69,24 @@ public class ExecutionStatusAndTime implements HasExecutionStatus, Serializable 
     this.statusLock = new ReentrantReadWriteLock();
   }
 
+  @Override
   public LocalDateTime getCreationDateTime() {
     return creationDateTime;
   }
 
-  public Optional<LocalDateTime> getStartDateTime() {
-    return Optional.ofNullable(startDateTime);
+  @Override
+  public Optional<LocalDateTime> getSchedulingDateTime() {
+    return Optional.ofNullable(schedulingDateTime);
   }
 
-  public Optional<LocalDateTime> getEndDateTime() {
-    return Optional.ofNullable(endDateTime);
+  @Override
+  public Optional<LocalDateTime> getStartingDateTime() {
+    return Optional.ofNullable(startingDateTime);
+  }
+
+  @Override
+  public Optional<LocalDateTime> getFinishingDateTime() {
+    return Optional.ofNullable(finishingDateTime);
   }
 
   @Override
@@ -100,7 +111,7 @@ public class ExecutionStatusAndTime implements HasExecutionStatus, Serializable 
         this.status = this.status.changeTo(RUNNING);
 
         if (previousStatus != this.status)
-          this.startDateTime = LocalDateTime.now();
+          this.startingDateTime = LocalDateTime.now();
       } catch (IllegalArgumentException iae) {
         throw new IllegalStateException(iae.getMessage());
       }
@@ -116,7 +127,7 @@ public class ExecutionStatusAndTime implements HasExecutionStatus, Serializable 
     try {
       try {
         this.status = this.status.changeTo(COMPLETED);
-        this.endDateTime = LocalDateTime.now();
+        this.finishingDateTime = LocalDateTime.now();
       } catch (IllegalArgumentException iae) {
         throw new IllegalStateException(iae.getMessage());
       }
@@ -134,7 +145,7 @@ public class ExecutionStatusAndTime implements HasExecutionStatus, Serializable 
         this.status = this.status.changeTo(FAILED);
         
         this.failureCause = cause;
-        this.endDateTime = LocalDateTime.now();
+        this.finishingDateTime = LocalDateTime.now();
       } catch (IllegalArgumentException iae) {
         throw new IllegalStateException(iae.getMessage());
       }
@@ -150,6 +161,7 @@ public class ExecutionStatusAndTime implements HasExecutionStatus, Serializable 
     try {
       try {
         this.status = this.status.changeTo(SCHEDULED);
+        this.schedulingDateTime = LocalDateTime.now();
       } catch (IllegalArgumentException iae) {
         throw new IllegalStateException(iae.getMessage());
       }

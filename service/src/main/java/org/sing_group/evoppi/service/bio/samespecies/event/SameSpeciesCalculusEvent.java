@@ -32,18 +32,16 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
   private final int[] interactomes;
   private final int maxDegree;
   private final String workId;
-  private final String resultId;
   
   public SameSpeciesCalculusEvent(SameSpeciesCalculusEvent event) {
-    this(event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getResultId());
+    this(event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId());
   }
   
-  public SameSpeciesCalculusEvent(int geneId, int[] interactomes, int maxDegree, String workId, String resultId) {
+  public SameSpeciesCalculusEvent(int geneId, int[] interactomes, int maxDegree, String workId) {
     this.geneId = geneId;
     this.interactomes = interactomes;
     this.maxDegree = maxDegree;
     this.workId = workId;
-    this.resultId = resultId;
   }
 
   public int getGeneId() {
@@ -62,10 +60,6 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
     return workId;
   }
 
-  public String getResultId() {
-    return resultId;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -73,7 +67,6 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
     result = prime * result + geneId;
     result = prime * result + Arrays.hashCode(interactomes);
     result = prime * result + maxDegree;
-    result = prime * result + ((resultId == null) ? 0 : resultId.hashCode());
     result = prime * result + ((workId == null) ? 0 : workId.hashCode());
     return result;
   }
@@ -92,11 +85,6 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
     if (!Arrays.equals(interactomes, other.interactomes))
       return false;
     if (maxDegree != other.maxDegree)
-      return false;
-    if (resultId == null) {
-      if (other.resultId != null)
-        return false;
-    } else if (!resultId.equals(other.resultId))
       return false;
     if (workId == null) {
       if (other.workId != null)

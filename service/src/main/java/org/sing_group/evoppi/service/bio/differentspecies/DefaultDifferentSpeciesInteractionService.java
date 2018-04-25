@@ -63,8 +63,8 @@ public class DefaultDifferentSpeciesInteractionService implements DifferentSpeci
         event.getTargetInteractomes().boxed().collect(toSet()),
         event.getBlastQueryOptions(),
         event.getMaxDegree(),
-        event.getWorkId(),
-        event.getResultId())
+        event.getWorkId()
+      )
     );
   }
 }

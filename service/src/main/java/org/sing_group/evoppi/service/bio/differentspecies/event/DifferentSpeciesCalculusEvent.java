@@ -38,7 +38,6 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
   private final BlastQueryOptions blastQueryOptions;
   private final int maxDegree;
   private final String workId;
-  private final String resultId;
 
   public DifferentSpeciesCalculusEvent(DifferentSpeciesCalculusEvent event) {
     this(
@@ -47,8 +46,7 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
       event.getTargetInteractomes().boxed().collect(toSet()),
       event.getBlastQueryOptions(),
       event.getMaxDegree(),
-      event.getWorkId(),
-      event.getResultId()
+      event.getWorkId()
     );
   }
 
@@ -57,7 +55,7 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     Set<Integer> referenceInteractomes,
     Set<Integer> targetInteractomes,
     BlastQueryOptions blastQueryOptions,
-    int maxDegree, String workId, String resultId
+    int maxDegree, String workId
   ) {
     this.geneId = geneId;
     this.referenceInteractomes = referenceInteractomes;
@@ -65,7 +63,6 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     this.blastQueryOptions = blastQueryOptions;
     this.maxDegree = maxDegree;
     this.workId = workId;
-    this.resultId = resultId;
   }
 
   public int getGeneId() {
@@ -92,10 +89,6 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     return workId;
   }
 
-  public String getResultId() {
-    return resultId;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -104,7 +97,6 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
     result = prime * result + geneId;
     result = prime * result + maxDegree;
     result = prime * result + ((referenceInteractomes == null) ? 0 : referenceInteractomes.hashCode());
-    result = prime * result + ((resultId == null) ? 0 : resultId.hashCode());
     result = prime * result + ((targetInteractomes == null) ? 0 : targetInteractomes.hashCode());
     result = prime * result + ((workId == null) ? 0 : workId.hashCode());
     return result;
@@ -132,11 +124,6 @@ public abstract class DifferentSpeciesCalculusEvent implements Serializable {
       if (other.referenceInteractomes != null)
         return false;
     } else if (!referenceInteractomes.equals(other.referenceInteractomes))
-      return false;
-    if (resultId == null) {
-      if (other.resultId != null)
-        return false;
-    } else if (!resultId.equals(other.resultId))
       return false;
     if (targetInteractomes == null) {
       if (other.targetInteractomes != null)

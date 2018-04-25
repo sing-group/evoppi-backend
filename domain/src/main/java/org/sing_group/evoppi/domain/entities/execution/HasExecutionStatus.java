@@ -24,11 +24,11 @@ package org.sing_group.evoppi.domain.entities.execution;
 public interface HasExecutionStatus {
   public ExecutionStatus getStatus();
   
-  public void setRunning() throws IllegalStateException;
-
-  public void setFinished() throws IllegalStateException;
-
-  public void setFailed(String cause) throws IllegalStateException;
-
   public void setScheduled() throws IllegalStateException;
+  
+  public void setRunning() throws IllegalStateException;
+  
+  public void setFinished() throws IllegalStateException;
+  
+  public void setFailed(String cause) throws IllegalStateException;
 }

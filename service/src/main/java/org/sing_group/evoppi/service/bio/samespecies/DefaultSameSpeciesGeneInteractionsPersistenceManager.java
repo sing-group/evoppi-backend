@@ -57,8 +57,6 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
     
     switch (event.getStatus()) {
     case RUNNING:
-      result.setRunning();
-      
       if (context.getCompletedInteractions().isPresent()) {
         context.getCompletedInteractions().get()
           .forEach(interaction -> result.addInteraction(
@@ -86,14 +84,6 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
               )
           );
       }
-      
-      break;
-    case COMPLETED:
-      result.setFinished();
-      
-      break;
-    case FAILED:
-      result.setFailed(event.getDescription());
       
       break;
     default:

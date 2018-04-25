@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -87,17 +88,39 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   DifferentSpeciesInteractionsResult() {}
 
   public DifferentSpeciesInteractionsResult(
+    String name,
+    String description,
+    String resultReference,
     int queryGeneId,
     Set<Integer> referenceInteractomeIds,
     Set<Integer> targetInteractomeIds,
     BlastQueryOptions blastQueryOptions,
     int queryMaxDegree
   ) {
-    super(queryGeneId, queryMaxDegree);
+    super(name, description, resultReference, queryGeneId, queryMaxDegree);
     
     this.referenceInteractomeIds = new HashSet<>(referenceInteractomeIds);
     this.targetInteractomeIds = new HashSet<>(targetInteractomeIds);
 
+    this.blastQueryOptions = blastQueryOptions;
+    this.blastResults = new HashSet<>();
+  }
+  
+  public DifferentSpeciesInteractionsResult(
+    String name,
+    String description,
+    Function<String, String> resultReferenceBuilder,
+    int queryGeneId,
+    Set<Integer> referenceInteractomeIds,
+    Set<Integer> targetInteractomeIds,
+    BlastQueryOptions blastQueryOptions,
+    int queryMaxDegree
+  ) {
+    super(name, description, resultReferenceBuilder, queryGeneId, queryMaxDegree);
+    
+    this.referenceInteractomeIds = new HashSet<>(referenceInteractomeIds);
+    this.targetInteractomeIds = new HashSet<>(targetInteractomeIds);
+    
     this.blastQueryOptions = blastQueryOptions;
     this.blastResults = new HashSet<>();
   }

@@ -23,11 +23,11 @@ package org.sing_group.evoppi.rest.entity.mapper.spi.execution;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 
 public interface ExecutionMapper {
   public void setUriBuilder(UriBuilder uriBuilder);
   
-  public WorkData toWorkData(Work work);
+  public WorkData toWorkData(WorkEntity work);
 }

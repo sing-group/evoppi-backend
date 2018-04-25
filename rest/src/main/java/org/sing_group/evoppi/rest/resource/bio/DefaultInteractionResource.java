@@ -45,7 +45,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
-import org.sing_group.evoppi.domain.entities.execution.Work;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultData;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
@@ -116,7 +116,7 @@ public class DefaultInteractionResource implements InteractionResource {
     final Function<String, String> resultUriBuilder =
       id -> pathBuilder.interaction().result(id).build().toString();
       
-    final Work work;
+    final WorkEntity work;
     if (isSameSpeciesQuery(interactomes, referenceInteractome, targetInteractome)) {
       work = this.service.findSameSpeciesInteractions(geneId, interactomes, maxDegree, resultUriBuilder);
     } else {

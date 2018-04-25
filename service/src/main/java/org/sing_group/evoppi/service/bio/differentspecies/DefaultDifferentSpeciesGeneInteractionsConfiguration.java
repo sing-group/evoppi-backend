@@ -36,12 +36,11 @@ implements DifferentSpeciesGeneInteractionsConfiguration {
   private final BlastQueryOptions blastQueryOptions;
   private final int maxDegree;
   private final String workId;
-  private final String resultId;
 
   public DefaultDifferentSpeciesGeneInteractionsConfiguration(
     int geneId, Set<Integer> referenceInteractomes, Set<Integer> targetInteractomes,
     BlastQueryOptions blastQueryOptions, int maxDegree,
-    String workId, String resultId
+    String workId
   ) {
     this.geneId = geneId;
     this.referenceInteractomes = new HashSet<>(referenceInteractomes);
@@ -49,7 +48,6 @@ implements DifferentSpeciesGeneInteractionsConfiguration {
     this.blastQueryOptions = blastQueryOptions;
     this.maxDegree = maxDegree;
     this.workId = workId;
-    this.resultId = resultId;
   }
 
   @Override
@@ -80,10 +78,5 @@ implements DifferentSpeciesGeneInteractionsConfiguration {
   @Override
   public String getWorkId() {
     return workId;
-  }
-
-  @Override
-  public String getResultId() {
-    return resultId;
   }
 }

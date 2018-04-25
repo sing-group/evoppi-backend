@@ -19,26 +19,17 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.dao.spi.bio.execution;
+package org.sing_group.evoppi.domain.entities.execution;
 
-import java.util.function.Function;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
-import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+public interface HasExecutionTime {
+  public LocalDateTime getCreationDateTime();
 
-public interface SameSpeciesInteractionsResultDAO {
-
-  public boolean exists(String interactionResultId);
+  public Optional<LocalDateTime> getSchedulingDateTime();
   
-  public SameSpeciesInteractionsResult get(String interactionResultId);
+  public Optional<LocalDateTime> getStartingDateTime();
 
-  public SameSpeciesInteractionsResult create(
-    String name, String description, String resultReference,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
-  );
-
-  public SameSpeciesInteractionsResult create(
-    String name, String description, Function<String, String> resultReferenceBuilder,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
-  );
-
+  public Optional<LocalDateTime> getFinishingDateTime();
 }

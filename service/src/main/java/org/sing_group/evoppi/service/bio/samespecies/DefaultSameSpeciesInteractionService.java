@@ -56,7 +56,7 @@ public class DefaultSameSpeciesInteractionService implements SameSpeciesInteract
     @Observes(during = TransactionPhase.AFTER_SUCCESS) SameSpeciesInteractionsRequestEvent event
   ) {
     final SameSpeciesGeneInteractionsConfiguration configuration = new DefaultSameSpeciesGeneInteractionsConfiguration(
-      event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getResultId()
+      event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getWorkId()
     );
     
     this.executor.execute(pipeline, configuration);
