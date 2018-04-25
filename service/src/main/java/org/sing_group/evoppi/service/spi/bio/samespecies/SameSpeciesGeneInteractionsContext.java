@@ -21,11 +21,8 @@
  */
 package org.sing_group.evoppi.service.spi.bio.samespecies;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -46,33 +43,33 @@ extends PipelineContext<
   SameSpeciesGeneInteractionsEvent,
   SameSpeciesGeneInteractionsEventManager
 > {
-  public IntStream getInteractionsDegrees();
+  public Optional<Map<Integer, Set<InteractionIds>>> getInteractionsByDegree();
   
-  public Stream<InteractionIds> getInteractionsWithDegree(int degree);
-  
-  public Stream<InteractionIds> getCompletedInteractions();
-  
-  public default Map<Integer, Set<InteractionIds>> getInteractionsByDegree() {
-    return this.getInteractionsDegrees()
-      .boxed()
-      .collect(toMap(
-        identity(),
-        degree -> this.getInteractionsWithDegree(degree).collect(toSet())
-      ));
+  public default Optional<IntStream> getInteractionsDegrees() {
+    return this.getInteractionsByDegree().map(
+      interactions -> interactions.keySet().stream()
+        .mapToInt(Integer::intValue)
+    );
   }
   
-  public default boolean hasInteractions() {
-    return this.getInteractionsDegrees().count() > 0;
+  public default Optional<Stream<InteractionIds>> getInteractionsWithDegree(int degree) {
+    return this.getInteractionsByDegree()
+      .map(interactions -> interactions.get(degree))
+      .map(Set::stream);
   }
   
-  public boolean hasCompletedInteractions();
-  
-  public default boolean hasInteractionsWithDegree(int degree) {
-    return this.getInteractionsDegrees().anyMatch(d -> d == degree);
+  public default Optional<Boolean> hasInteractionsWithDegree(int degree) {
+    return this.getInteractionsDegrees().map(
+      interactions -> interactions.anyMatch(interactionDegree -> interactionDegree == degree)
+    );
   }
   
-  public default Stream<InteractionIds> getInteractions() {
-    return this.getInteractionsByDegree().values().stream()
-      .flatMap(Set::stream);
+  public default Optional<Stream<InteractionIds>> getInteractions() {
+    return this.getInteractionsByDegree().map(
+      interactions -> interactions.values().stream()
+        .flatMap(Set::stream)
+    );
   }
+  
+  public Optional<Stream<InteractionIds>> getCompletedInteractions();
 }

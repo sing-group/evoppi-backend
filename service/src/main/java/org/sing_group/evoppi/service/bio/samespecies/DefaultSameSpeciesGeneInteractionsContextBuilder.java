@@ -21,11 +21,9 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies;
 
-import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -42,7 +40,7 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
   private final SameSpeciesGeneInteractionsConfiguration configuration;
   private final SameSpeciesGeneInteractionsEventManager eventManager;
 
-  private final Map<Integer, Set<InteractionIds>> interactions;
+  private Map<Integer, Set<InteractionIds>> interactions;
   private Set<InteractionIds> completedInteractions;
 
   DefaultSameSpeciesGeneInteractionsContextBuilder(
@@ -52,8 +50,8 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
       context.getPipeline(),
       context.getConfiguration(),
       context.getEventManager(),
-      context.getInteractionsByDegree(),
-      context.hasCompletedInteractions() ? context.getCompletedInteractions().collect(toSet()) : null
+      context.getInteractionsByDegree().map(HashMap::new).orElse(null),
+      context.getCompletedInteractions().map(interactions -> interactions.collect(toSet())).orElse(null)
     );
   }
 
@@ -62,10 +60,10 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager
   ) {
-    this(pipeline, configuration, eventManager, emptyMap(), null);
+    this(pipeline, configuration, eventManager, null, null);
   }
 
-  DefaultSameSpeciesGeneInteractionsContextBuilder(
+  private DefaultSameSpeciesGeneInteractionsContextBuilder(
     SameSpeciesGeneInteractionsPipeline pipeline,
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager,
@@ -75,12 +73,15 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
     this.pipeline = pipeline;
     this.configuration = configuration;
     this.eventManager = eventManager;
-    this.interactions = new HashMap<>(interactions);
-    this.completedInteractions = completedInteractions == null ? null : new HashSet<>(completedInteractions);
+    this.interactions = interactions;
+    this.completedInteractions = completedInteractions;
   }
   
   @Override
   public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<InteractionIds> interactions) {
+    if (this.interactions == null)
+      this.interactions = new HashMap<>();
+    
     this.interactions.put(degree, interactions.collect(toSet()));
     
     return this;

@@ -26,12 +26,12 @@ import static java.util.Objects.requireNonNull;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
@@ -110,18 +110,10 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
   public DifferentSpeciesGeneInteractionsPipeline getPipeline() {
     return this.pipeline;
   }
-
+  
   @Override
-  public Optional<IntStream> getReferenceInteractionsDegrees() {
-    return Optional.ofNullable(this.referenceInteractions)
-      .map(ri -> ri.keySet().stream().mapToInt(Integer::intValue));
-  }
-
-  @Override
-  public Optional<Stream<InteractionIds>> getReferenceInteractionsWithDegree(int degree) {
-    return Optional.ofNullable(this.referenceInteractions)
-      .map(ri -> ri.get(degree))
-      .map(Set::stream);
+  public Optional<Map<Integer, Set<InteractionIds>>> getReferenceInteractionsByDegree() {
+    return Optional.ofNullable(this.referenceInteractions).map(Collections::unmodifiableMap);
   }
 
   @Override
@@ -146,16 +138,8 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
   }
 
   @Override
-  public Optional<IntStream> getTargetInteractionsDegrees() {
-    return Optional.ofNullable(this.targetInteractions)
-      .map(ri -> ri.keySet().stream().mapToInt(Integer::intValue));
-  }
-
-  @Override
-  public Optional<Stream<InteractionIds>> getTargetInteractionsWithDegree(int degree) {
-    return Optional.ofNullable(this.targetInteractions)
-      .map(ri -> ri.get(degree))
-      .map(Set::stream);
+  public Optional<Map<Integer, Set<InteractionIds>>> getTargetInteractionsByDegree() {
+    return Optional.ofNullable(this.targetInteractions).map(Collections::unmodifiableMap);
   }
 
   @Override

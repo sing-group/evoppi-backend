@@ -59,22 +59,22 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
     case RUNNING:
       result.setRunning();
       
-      if (context.hasCompletedInteractions()) {
-        context.getCompletedInteractions()
+      if (context.getCompletedInteractions().isPresent()) {
+        context.getCompletedInteractions().get()
           .forEach(interaction -> result.addInteraction(
               interaction.getGeneA(),
               interaction.getGeneB(),
               interaction.getInteractomeId()
           ));
-      } else if (context.hasInteractions()) {
+      } else if (context.getInteractions().isPresent()) {
         final Set<Integer> interactomesWithInterations = result.getQueryInteractomeIds()
           .filter(result::hasInteractionsForInteractome)
           .boxed()
         .collect(toSet());
         
-        context.getInteractionsDegrees()
+        context.getInteractionsDegrees().get()
           .forEach(degree -> 
-            context.getInteractionsWithDegree(degree)
+            context.getInteractionsWithDegree(degree).get()
               .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
               .forEach(interaction -> 
                 result.addInteraction(

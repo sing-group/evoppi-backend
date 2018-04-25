@@ -84,7 +84,7 @@ implements SingleSameSpeciesGeneInteractionsStep {
 
   @Override
   public boolean isComplete(SameSpeciesGeneInteractionsContext context) {
-    return context.hasInteractions();
+    return context.getCompletedInteractions().isPresent();
   }
 
   @Override
@@ -96,7 +96,7 @@ implements SingleSameSpeciesGeneInteractionsStep {
 
     final SameSpeciesGeneInteractionsContextBuilder contextBuilder = this.contextBuilderFactory.createBuilderFor(context);
     
-    final Stream<InteractionIds> completedInteractions = context.getInteractions()
+    final Stream<InteractionIds> completedInteractions = context.getInteractions().get()
       .filter(interaction -> interaction.getInteractomeId() != this.interactomeId)
       .filter(interaction -> !interactomeIndex.has(interaction.getGeneA(), interaction.getGeneB()))
       .map(interaction -> new InteractionIds(this.interactomeId, interaction.getGeneA(), interaction.getGeneB()))

@@ -59,12 +59,12 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
       context.getPipeline(),
       context.getConfiguration(),
       context.getEventManager(),
-      context.getReferenceInteractionsByDegree().orElse(null),
-      context.getReferenceInteractions().map(ri -> ri.collect(toSet())).orElse(null),
+      context.getReferenceInteractionsByDegree().map(HashMap::new).orElse(null),
+      context.getReferenceCompletedInteractions().map(ri -> ri.collect(toSet())).orElse(null),
       context.getReferenceFastaPath().orElse(null),
       context.getTargetFastaPath().orElse(null),
       context.getBlastResults().map(br -> br.collect(toSet())).orElse(null),
-      context.getTargetInteractionsByDegree().orElse(null),
+      context.getTargetInteractionsByDegree().map(HashMap::new).orElse(null),
       context.getTargetCompletedInteractions().map(tci -> tci.collect(toSet())).orElse(null)
     );
   }

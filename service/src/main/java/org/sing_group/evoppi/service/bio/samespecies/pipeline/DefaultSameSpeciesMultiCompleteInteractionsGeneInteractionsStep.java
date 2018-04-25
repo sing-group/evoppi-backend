@@ -68,7 +68,7 @@ implements MultipleSameSpeciesGeneInteractionsStep {
 
   @Override
   public boolean isComplete(SameSpeciesGeneInteractionsContext context) {
-    return context.hasInteractions();
+    return context.getCompletedInteractions().isPresent();
   }
 
   @Transactional(SUPPORTS)

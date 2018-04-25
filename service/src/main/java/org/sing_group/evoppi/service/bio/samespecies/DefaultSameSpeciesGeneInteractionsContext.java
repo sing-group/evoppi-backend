@@ -21,17 +21,16 @@
  */
 package org.sing_group.evoppi.service.bio.samespecies;
 
-import static java.util.Collections.emptySet;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.service.bio.entity.InteractionIds;
@@ -45,26 +44,24 @@ implements SameSpeciesGeneInteractionsContext, Serializable {
   private static final long serialVersionUID = 1L;
   
   private transient final SameSpeciesGeneInteractionsPipeline pipeline;
-  
   private final SameSpeciesGeneInteractionsConfiguration configuration;
-  
   private transient final SameSpeciesGeneInteractionsEventManager eventManager;
   
   private final Map<Integer, Set<InteractionIds>> interactions;
-  private final Optional<Set<InteractionIds>> completedInteractions;
+  private final Set<InteractionIds> completedInteractions;
 
   DefaultSameSpeciesGeneInteractionsContext(
     SameSpeciesGeneInteractionsPipeline pipeline,
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager,
     Map<Integer, Set<InteractionIds>> interactions,
-    Set<InteractionIds> completedInteractions
+    Collection<InteractionIds> completedInteractions
   ) {
     this.configuration = requireNonNull(configuration);
     this.eventManager = requireNonNull(eventManager);
     this.pipeline = requireNonNull(pipeline);
-    this.interactions = new HashMap<>(interactions);
-    this.completedInteractions = Optional.ofNullable(completedInteractions).map(HashSet::new);
+    this.interactions = interactions == null ? null : new HashMap<>(interactions);
+    this.completedInteractions = completedInteractions == null ? null : new HashSet<>(completedInteractions);
   }
 
   @Override
@@ -81,33 +78,15 @@ implements SameSpeciesGeneInteractionsContext, Serializable {
   public SameSpeciesGeneInteractionsPipeline getPipeline() {
     return this.pipeline;
   }
-
-  @Override
-  public IntStream getInteractionsDegrees() {
-    return this.interactions.keySet().stream()
-      .mapToInt(Integer::intValue);
-  }
-
-  @Override
-  public Stream<InteractionIds> getInteractionsWithDegree(int degree) {
-    if (!this.interactions.containsKey(degree))
-      throw new IllegalArgumentException("Invalid degree: " + degree);
-    
-    return this.interactions.get(degree).stream();
-  }
   
   @Override
-  public Map<Integer, Set<InteractionIds>> getInteractionsByDegree() {
-    return unmodifiableMap(this.interactions);
+  public Optional<Map<Integer, Set<InteractionIds>>> getInteractionsByDegree() {
+    return Optional.ofNullable(this.interactions).map(Collections::unmodifiableMap);
   }
 
   @Override
-  public Stream<InteractionIds> getCompletedInteractions() {
-    return this.completedInteractions.orElse(emptySet()).stream();
-  }
-
-  @Override
-  public boolean hasCompletedInteractions() {
-    return this.completedInteractions.isPresent();
+  public Optional<Stream<InteractionIds>> getCompletedInteractions() {
+    return Optional.ofNullable(this.completedInteractions)
+      .map(Set::stream);
   }
 }
