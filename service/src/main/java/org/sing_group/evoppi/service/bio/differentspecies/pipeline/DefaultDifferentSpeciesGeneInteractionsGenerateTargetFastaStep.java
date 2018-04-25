@@ -36,12 +36,12 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilderFactory;
-import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsStep;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.SingleDifferentSpeciesGeneInteractionsStep;
 import org.sing_group.evoppi.service.spi.storage.GenomeStorageService;
 
 @Transactional(REQUIRES_NEW)
 public class DefaultDifferentSpeciesGeneInteractionsGenerateTargetFastaStep
-implements DifferentSpeciesGeneInteractionsStep {
+implements SingleDifferentSpeciesGeneInteractionsStep {
   @Inject
   private InteractomeDAO interactomeDao;
   
@@ -58,7 +58,7 @@ implements DifferentSpeciesGeneInteractionsStep {
   
   @Override
   public int getOrder() {
-    return 2;
+    return 3;
   }
 
   @Override

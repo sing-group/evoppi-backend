@@ -27,11 +27,11 @@ import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGe
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
-import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineStep;
+import org.sing_group.evoppi.service.spi.execution.pipeline.MultiplePipelineStep;
 
 @Local
-public interface DifferentSpeciesGeneInteractionsStep
-extends PipelineStep<
+public interface MultipleDifferentSpeciesGeneInteractionsStep
+extends DifferentSpeciesGeneInteractionsStep, MultiplePipelineStep<
   DifferentSpeciesGeneInteractionsConfiguration,
   DifferentSpeciesGeneInteractionsContext,
   DifferentSpeciesGeneInteractionsStep,

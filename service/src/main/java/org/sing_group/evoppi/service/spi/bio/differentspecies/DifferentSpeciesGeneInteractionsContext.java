@@ -21,13 +21,19 @@
  */
 package org.sing_group.evoppi.service.spi.bio.differentspecies;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline;
@@ -43,30 +49,103 @@ extends PipelineContext<
   DifferentSpeciesGeneInteractionsEvent,
   DifferentSpeciesGeneInteractionsEventManager
 > {
+  public Optional<IntStream> getReferenceInteractionsDegrees();
   
-  public Optional<Path> getReferenceFastaPath();
-
-  public Optional<Path> getTargetFastaPath();
-
-  public Optional<Stream<GeneInteraction>> getReferenceInteractions();
+  public Optional<Stream<InteractionIds>> getReferenceInteractionsWithDegree(int degree);
+  
+  public default Optional<Map<Integer, Set<InteractionIds>>> getReferenceInteractionsByDegree() {
+    return this.getReferenceInteractionsDegrees().map(referenceInteractionsDegrees ->
+      referenceInteractionsDegrees
+        .boxed()
+      .collect(toMap(
+        identity(),
+        degree -> this.getReferenceInteractionsWithDegree(degree).get().collect(toSet())
+      ))
+    );
+  }
+  
+  public default Optional<Boolean> hasReferenceInteractionsWithDegree(int degree) {
+    return this.getReferenceInteractionsDegrees().map(
+      referenceInteractionsDegrees -> referenceInteractionsDegrees
+        .anyMatch(d -> d == degree)
+    );
+  }
+  
+  public default Optional<Stream<InteractionIds>> getReferenceInteractions() {
+    return this.getReferenceInteractionsByDegree().map(
+      referenceInteractionsByDegree -> referenceInteractionsByDegree.values().stream()
+        .flatMap(Set::stream)
+    );
+  }
   
   public default Optional<IntStream> getReferenceGeneIds() {
-    return extractGeneIds(this.getReferenceInteractions());
+    return this.getReferenceInteractions().map(
+      referenceInteractions -> referenceInteractions
+        .flatMapToInt(InteractionIds::getGenes)
+        .distinct()
+    );
   }
-
-  public Optional<Stream<GeneInteraction>> getTargetInteractions();
   
-  public default Optional<IntStream> getTargetGeneIds() {
-    return extractGeneIds(this.getTargetInteractions());
+  public Optional<Stream<InteractionIds>> getReferenceCompletedInteractions();
+  
+  public default Optional<IntStream> getReferenceCompletedGeneIds() {
+    return this.getReferenceCompletedInteractions().map(
+      interactions -> interactions
+        .flatMapToInt(InteractionIds::getGenes)
+        .distinct()
+    );
   }
+  
+  public Optional<Path> getReferenceFastaPath();
+  
+  public Optional<Path> getTargetFastaPath();
 
   public Optional<Stream<BlastResult>> getBlastResults();
+
+  public Optional<IntStream> getTargetInteractionsDegrees();
   
-  static Optional<IntStream> extractGeneIds(Optional<Stream<GeneInteraction>> interactions) {
-    return interactions.map(
-      interaction -> interaction
-        .flatMapToInt(GeneInteraction::getGeneIds)
-      .distinct()
+  public Optional<Stream<InteractionIds>> getTargetInteractionsWithDegree(int degree);
+  
+  public default Optional<Map<Integer, Set<InteractionIds>>> getTargetInteractionsByDegree() {
+    return this.getTargetInteractionsDegrees().map(targetInteractionsDegrees ->
+      targetInteractionsDegrees
+        .boxed()
+      .collect(toMap(
+        identity(),
+        degree -> this.getTargetInteractionsWithDegree(degree).get().collect(toSet())
+      ))
+    );
+  }
+  
+  public default Optional<Boolean> hasTargetInteractionsWithDegree(int degree) {
+    return this.getTargetInteractionsDegrees().map(
+      targetInteractionsDegrees -> targetInteractionsDegrees
+        .anyMatch(d -> d == degree)
+    );
+  }
+  
+  public default Optional<Stream<InteractionIds>> getTargetInteractions() {
+    return this.getTargetInteractionsByDegree().map(
+      TargetInteractionsByDegree -> TargetInteractionsByDegree.values().stream()
+        .flatMap(Set::stream)
+    );
+  }
+  
+  public default Optional<IntStream> getTargetGeneIds() {
+    return this.getTargetInteractions().map(
+      targetInteractions -> targetInteractions
+        .flatMapToInt(InteractionIds::getGenes)
+        .distinct()
+    );
+  }
+  
+  public Optional<Stream<InteractionIds>> getTargetCompletedInteractions();
+  
+  public default Optional<IntStream> getTargetCompletedGeneIds() {
+    return this.getTargetCompletedInteractions().map(
+      interactions -> interactions
+        .flatMapToInt(InteractionIds::getGenes)
+        .distinct()
     );
   }
 }

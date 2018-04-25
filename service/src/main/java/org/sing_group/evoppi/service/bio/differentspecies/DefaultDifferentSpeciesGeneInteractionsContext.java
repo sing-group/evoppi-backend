@@ -22,16 +22,20 @@
 package org.sing_group.evoppi.service.bio.differentspecies;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toSet;
 
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
@@ -45,41 +49,51 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
   private final DifferentSpeciesGeneInteractionsConfiguration configuration;
   private transient final DifferentSpeciesGeneInteractionsEventManager eventManager;
   
-  private final Optional<Path> referenceFastaPath;
-  private final Optional<Path> targetFastaPath;
-  private final Optional<Collection<GeneInteraction>> referenceInteractions;
-  private final Optional<Collection<GeneInteraction>> targetInteractions;
-  private final Optional<Collection<BlastResult>> blastResults;
+  private final Map<Integer, Set<InteractionIds>> referenceInteractions;
+  private final Set<InteractionIds> referenceCompletedInteractions;
+  
+  private final Path referenceFastaPath;
+  private final Path targetFastaPath;
+  
+  private final Set<BlastResult> blastResults;
+  
+  private final Map<Integer, Set<InteractionIds>> targetInteractions;
+  private final Set<InteractionIds> targetCompletedInteractions;
 
   DefaultDifferentSpeciesGeneInteractionsContext(
     DifferentSpeciesGeneInteractionsPipeline pipeline,
     DifferentSpeciesGeneInteractionsConfiguration configuration,
     DifferentSpeciesGeneInteractionsEventManager eventManager
   ) {
-    this(pipeline, configuration, eventManager,
-      Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()
-    );
+    this(pipeline, configuration, eventManager, null, null, null, null, null, null, null);
   }
   
   DefaultDifferentSpeciesGeneInteractionsContext(
     DifferentSpeciesGeneInteractionsPipeline pipeline,
     DifferentSpeciesGeneInteractionsConfiguration configuration,
     DifferentSpeciesGeneInteractionsEventManager eventManager,
-    Optional<Path> referenceFastaPath,
-    Optional<Path> targetFastaPath,
-    Optional<Stream<GeneInteraction>> referenceInteractions,
-    Optional<Stream<GeneInteraction>> targetInteractions,
-    Optional<Stream<BlastResult>> blastResults
+    Map<Integer, Set<InteractionIds>> referenceInteractions,
+    Collection<InteractionIds> referenceCompletedInteractions,
+    Path referenceFastaPath,
+    Path targetFastaPath,
+    Collection<BlastResult> blastResults,
+    Map<Integer, Set<InteractionIds>> targetInteractions,
+    Collection<InteractionIds> targetCompletedInteractions
   ) {
     this.configuration = requireNonNull(configuration);
     this.eventManager = requireNonNull(eventManager);
     this.pipeline = requireNonNull(pipeline);
+
+    this.referenceInteractions = referenceInteractions == null ? null : new HashMap<>(referenceInteractions);
+    this.referenceCompletedInteractions = referenceCompletedInteractions == null ? null : new HashSet<>(referenceCompletedInteractions);
     
     this.referenceFastaPath = referenceFastaPath;
     this.targetFastaPath = targetFastaPath;
-    this.referenceInteractions = referenceInteractions.map(result -> result.collect(toSet()));
-    this.targetInteractions = targetInteractions.map(result -> result.collect(toSet()));
-    this.blastResults = blastResults.map(result -> result.collect(toSet()));
+    
+    this.blastResults = blastResults == null ? null : new HashSet<>(blastResults);
+
+    this.targetInteractions = targetInteractions == null ? null : new HashMap<>(targetInteractions);
+    this.targetCompletedInteractions = targetCompletedInteractions == null ? null : new HashSet<>(targetCompletedInteractions);
   }
 
   @Override
@@ -98,27 +112,55 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
   }
 
   @Override
+  public Optional<IntStream> getReferenceInteractionsDegrees() {
+    return Optional.ofNullable(this.referenceInteractions)
+      .map(ri -> ri.keySet().stream().mapToInt(Integer::intValue));
+  }
+
+  @Override
+  public Optional<Stream<InteractionIds>> getReferenceInteractionsWithDegree(int degree) {
+    return Optional.ofNullable(this.referenceInteractions)
+      .map(ri -> ri.get(degree))
+      .map(Set::stream);
+  }
+
+  @Override
+  public Optional<Stream<InteractionIds>> getReferenceCompletedInteractions() {
+    return Optional.ofNullable(this.referenceCompletedInteractions)
+      .map(Set::stream);
+  }
+
+  @Override
   public Optional<Path> getReferenceFastaPath() {
-    return this.referenceFastaPath;
+    return Optional.ofNullable(this.referenceFastaPath);
   }
 
   @Override
   public Optional<Path> getTargetFastaPath() {
-    return this.targetFastaPath;
-  }
-
-  @Override
-  public Optional<Stream<GeneInteraction>> getReferenceInteractions() {
-    return this.referenceInteractions.map(Collection::stream);
-  }
-
-  @Override
-  public Optional<Stream<GeneInteraction>> getTargetInteractions() {
-    return this.targetInteractions.map(Collection::stream);
+    return Optional.ofNullable(this.targetFastaPath);
   }
 
   @Override
   public Optional<Stream<BlastResult>> getBlastResults() {
-    return this.blastResults.map(Collection::stream);
+    return Optional.ofNullable(this.blastResults).map(Set::stream);
+  }
+
+  @Override
+  public Optional<IntStream> getTargetInteractionsDegrees() {
+    return Optional.ofNullable(this.targetInteractions)
+      .map(ri -> ri.keySet().stream().mapToInt(Integer::intValue));
+  }
+
+  @Override
+  public Optional<Stream<InteractionIds>> getTargetInteractionsWithDegree(int degree) {
+    return Optional.ofNullable(this.targetInteractions)
+      .map(ri -> ri.get(degree))
+      .map(Set::stream);
+  }
+
+  @Override
+  public Optional<Stream<InteractionIds>> getTargetCompletedInteractions() {
+    return Optional.ofNullable(this.targetCompletedInteractions)
+      .map(Set::stream);
   }
 }

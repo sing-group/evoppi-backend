@@ -34,11 +34,11 @@ import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.service.spi.bio.BlastService;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilderFactory;
-import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsStep;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.SingleDifferentSpeciesGeneInteractionsStep;
 
 @Transactional(NOT_SUPPORTED)
 public class DefaultDifferentSpeciesGeneInteractionsBlastAlignmentStep
-implements DifferentSpeciesGeneInteractionsStep {
+implements SingleDifferentSpeciesGeneInteractionsStep {
   @Inject
   private BlastService blastService;
 
@@ -52,7 +52,7 @@ implements DifferentSpeciesGeneInteractionsStep {
   
   @Override
   public int getOrder() {
-    return 3;
+    return 4;
   }
 
   @Override

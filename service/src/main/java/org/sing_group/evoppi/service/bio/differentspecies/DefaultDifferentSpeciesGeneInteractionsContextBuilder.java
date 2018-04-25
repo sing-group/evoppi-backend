@@ -21,36 +21,51 @@
  */
 package org.sing_group.evoppi.service.bio.differentspecies;
 
-import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toSet;
 
 import java.nio.file.Path;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilder;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline;
 
-public class DefaultDifferentSpeciesGeneInteractionsContextBuilder implements DifferentSpeciesGeneInteractionsContextBuilder {
+public class DefaultDifferentSpeciesGeneInteractionsContextBuilder
+implements DifferentSpeciesGeneInteractionsContextBuilder {
   private final DifferentSpeciesGeneInteractionsPipeline pipeline;
   private final DifferentSpeciesGeneInteractionsConfiguration configuration;
   private final DifferentSpeciesGeneInteractionsEventManager eventManager;
   
-  private Optional<Path> referenceFastaPath;
-  private Optional<Path> targetFastaPath;
-  private Optional<Stream<GeneInteraction>> referenceInteractions;
-  private Optional<Stream<GeneInteraction>> targetInteractions;
-  private Optional<Stream<BlastResult>> blastResults;
+  private Map<Integer, Set<InteractionIds>> referenceInteractions;
+  private Set<InteractionIds> referenceCompletedInteractions;
+  
+  private Path referenceFastaPath;
+  private Path targetFastaPath;
+  
+  private Set<BlastResult> blastResults;
+  
+  private Map<Integer, Set<InteractionIds>> targetInteractions;
+  private Set<InteractionIds> targetCompletedInteractions;
 
   DefaultDifferentSpeciesGeneInteractionsContextBuilder(DifferentSpeciesGeneInteractionsContext context) {
-    this(context.getPipeline(), context.getConfiguration(), context.getEventManager(),
-      context.getReferenceFastaPath(), context.getTargetFastaPath(),
-      context.getReferenceInteractions(), context.getTargetInteractions(),
-      context.getBlastResults()
+    this(
+      context.getPipeline(),
+      context.getConfiguration(),
+      context.getEventManager(),
+      context.getReferenceInteractionsByDegree().orElse(null),
+      context.getReferenceInteractions().map(ri -> ri.collect(toSet())).orElse(null),
+      context.getReferenceFastaPath().orElse(null),
+      context.getTargetFastaPath().orElse(null),
+      context.getBlastResults().map(br -> br.collect(toSet())).orElse(null),
+      context.getTargetInteractionsByDegree().orElse(null),
+      context.getTargetCompletedInteractions().map(tci -> tci.collect(toSet())).orElse(null)
     );
   }
   
@@ -59,18 +74,20 @@ public class DefaultDifferentSpeciesGeneInteractionsContextBuilder implements Di
     DifferentSpeciesGeneInteractionsConfiguration configuration,
     DifferentSpeciesGeneInteractionsEventManager eventManager
   ) {
-    this(pipeline, configuration, eventManager, empty(), empty(), empty(), empty(), empty());
+    this(pipeline, configuration, eventManager, null, null, null, null, null, null, null);
   }
   
-  DefaultDifferentSpeciesGeneInteractionsContextBuilder(
+  private DefaultDifferentSpeciesGeneInteractionsContextBuilder(
     DifferentSpeciesGeneInteractionsPipeline pipeline,
     DifferentSpeciesGeneInteractionsConfiguration configuration,
     DifferentSpeciesGeneInteractionsEventManager eventManager,
-    Optional<Path> referenceFastaPath,
-    Optional<Path> targetFastaPath,
-    Optional<Stream<GeneInteraction>> referenceInteractions,
-    Optional<Stream<GeneInteraction>> targetInteractions,
-    Optional<Stream<BlastResult>> blastResults
+    Map<Integer, Set<InteractionIds>> referenceInteractions,
+    Set<InteractionIds> referenceCompletedInteractions,
+    Path referenceFastaPath,
+    Path targetFastaPath,
+    Set<BlastResult> blastResults,
+    Map<Integer, Set<InteractionIds>> targetInteractions,
+    Set<InteractionIds> targetCompletedInteractions
   ) {
     this.pipeline = pipeline;
     this.configuration = configuration;
@@ -78,39 +95,89 @@ public class DefaultDifferentSpeciesGeneInteractionsContextBuilder implements Di
     this.referenceFastaPath = referenceFastaPath;
     this.targetFastaPath = targetFastaPath;
     this.referenceInteractions = referenceInteractions;
-    this.targetInteractions = targetInteractions;
     this.blastResults = blastResults;
+    this.targetInteractions = targetInteractions;
+    this.targetCompletedInteractions = targetCompletedInteractions;
+  }
+
+  @Override
+  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
+    int degree, Stream<InteractionIds> interactions
+  ) {
+    if (this.referenceInteractions == null)
+      this.referenceInteractions = new HashMap<>();
+    
+    this.referenceInteractions.put(degree, interactions.collect(toSet()));
+    
+    return this;
+  }
+  
+  @Override
+  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
+    Map<Integer, Set<InteractionIds>> referenceInteractions
+  ) {
+    this.referenceInteractions = referenceInteractions;
+    
+    return this;
+  }
+  
+  @Override
+  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceCompletedInteractions(
+    Stream<InteractionIds> interactions
+  ) {
+    this.referenceCompletedInteractions = interactions.collect(toSet());
+    
+    return this;
   }
   
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceFastaPath(Path referenceFastaPath) {
-    this.referenceFastaPath = Optional.of(referenceFastaPath);
+    this.referenceFastaPath = referenceFastaPath;
+    
     return this;
   }
 
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetFastaPath(Path targetFastaPath) {
-    this.targetFastaPath = Optional.of(targetFastaPath);
-    return this;
-  }
-
-  @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    Stream<GeneInteraction> referenceInteractions
-  ) {
-    this.referenceInteractions = Optional.of(referenceInteractions);
-    return this;
-  }
-
-  @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(Stream<GeneInteraction> targetInteractions) {
-    this.targetInteractions = Optional.of(targetInteractions);
+    this.targetFastaPath = targetFastaPath;
+    
     return this;
   }
 
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setBlastResults(Stream<BlastResult> blastResult) {
-    this.blastResults = Optional.of(blastResult);
+    this.blastResults = blastResult.collect(toSet());
+    
+    return this;
+  }
+
+  @Override
+  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
+    int degree, Stream<InteractionIds> interactions
+  ) {
+    if (this.targetInteractions == null)
+      this.targetInteractions = new HashMap<>();
+    
+    this.targetInteractions.put(degree, interactions.collect(toSet()));
+    
+    return this;
+  }
+
+  @Override
+  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
+    Map<Integer, Set<InteractionIds>> targetInteractions
+  ) {
+    this.targetInteractions = new HashMap<>(targetInteractions);
+    
+    return this;
+  }
+
+  @Override
+  public DifferentSpeciesGeneInteractionsContextBuilder setTargetCompletedInteractions(
+    Stream<InteractionIds> interactions
+  ) {
+    this.targetCompletedInteractions = interactions.collect(toSet());
+    
     return this;
   }
   
@@ -120,11 +187,13 @@ public class DefaultDifferentSpeciesGeneInteractionsContextBuilder implements Di
       this.pipeline,
       this.configuration,
       this.eventManager,
+      this.referenceInteractions,
+      this.referenceCompletedInteractions,
       this.referenceFastaPath,
       this.targetFastaPath,
-      this.referenceInteractions,
+      this.blastResults,
       this.targetInteractions,
-      this.blastResults
+      this.targetCompletedInteractions
     );
   }
 }

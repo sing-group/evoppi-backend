@@ -37,12 +37,12 @@ import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilderFactory;
-import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsStep;
+import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.SingleDifferentSpeciesGeneInteractionsStep;
 import org.sing_group.evoppi.service.spi.storage.GeneStorageService;
 
 @Transactional(REQUIRES_NEW)
 public class DefaultDifferentSpeciesGeneInteractionsGenerateReferenceFastaStep
-implements DifferentSpeciesGeneInteractionsStep {
+implements SingleDifferentSpeciesGeneInteractionsStep {
   @Inject
   private GeneDAO geneDao;
   
@@ -59,7 +59,7 @@ implements DifferentSpeciesGeneInteractionsStep {
   
   @Override
   public int getOrder() {
-    return 1;
+    return 2;
   }
 
   @Override

@@ -23,43 +23,73 @@ package org.sing_group.evoppi.service.spi.bio.differentspecies;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 
 public interface DifferentSpeciesGeneInteractionsContextBuilder {
 
-  public DifferentSpeciesGeneInteractionsContext build();
+  public default DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
+    int degree, Collection<InteractionIds> interactions
+  ) {
+    return this.setReferenceInteractions(degree, interactions.stream());
+  }
+  
+  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
+    int degree, Stream<InteractionIds> interactions
+  );
+  
+  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
+    Map<Integer, Set<InteractionIds>> referenceInteractions
+  );
+  
+  public default DifferentSpeciesGeneInteractionsContextBuilder setReferenceCompletedInteractions(
+    Collection<InteractionIds> interactions
+  ) {
+    return this.setReferenceCompletedInteractions(interactions.stream());
+  }
+  
+  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceCompletedInteractions(
+    Stream<InteractionIds> interactions
+  );
 
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceFastaPath(Path referenceFastaPath);
-
+  
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetFastaPath(Path targetFastaPath);
-  
-  public default DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    Collection<GeneInteraction> referenceInteractions
-  ) {
-    return this.setReferenceInteractions(referenceInteractions.stream());
-  }
-
-  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    Stream<GeneInteraction> referenceInteractions
-  );
-  
-  public default DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    Collection<GeneInteraction> targetInteractions
-  ) {
-    return this.setTargetInteractions(targetInteractions.stream());
-  }
-
-  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    Stream<GeneInteraction> targetInteractions
-  );
 
   public default DifferentSpeciesGeneInteractionsContextBuilder setBlastResults(Collection<BlastResult> blastResults) {
     return this.setBlastResults(blastResults.stream());
   }
   
   public DifferentSpeciesGeneInteractionsContextBuilder setBlastResults(Stream<BlastResult> blastResults);
+
+  public default DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
+    int degree, Collection<InteractionIds> interactions
+  ) {
+    return this.setTargetInteractions(degree, interactions.stream());
+  }
+  
+  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
+    int degree, Stream<InteractionIds> interactions
+  );
+  
+  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
+    Map<Integer, Set<InteractionIds>> targetInteractions
+  );
+  
+  public default DifferentSpeciesGeneInteractionsContextBuilder setTargetCompletedInteractions(
+    Collection<InteractionIds> interactions
+  ) {
+    return this.setTargetCompletedInteractions(interactions.stream());
+  }
+  
+  public DifferentSpeciesGeneInteractionsContextBuilder setTargetCompletedInteractions(
+    Stream<InteractionIds> interactions
+  );
+  
+  public DifferentSpeciesGeneInteractionsContext build();
 
 }

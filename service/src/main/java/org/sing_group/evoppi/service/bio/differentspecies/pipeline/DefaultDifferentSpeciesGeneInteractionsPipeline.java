@@ -72,10 +72,12 @@ implements DifferentSpeciesGeneInteractionsPipeline {
   }
 
   @Inject
-  public void setSteps(Instance<DifferentSpeciesGeneInteractionsStep> step) {
-    requireNonNull(step);
+  public void setSteps(Instance<DifferentSpeciesGeneInteractionsStep> steps) {
+    requireNonNull(steps);
     
-    super.setSteps(StreamSupport.stream(step.spliterator(), false).collect(toSet()));
+    super.setSteps(StreamSupport.stream(steps.spliterator(), false)
+      .filter(step -> step.getOrder() >= 0)
+    .collect(toSet()));
   }
 
   @Inject

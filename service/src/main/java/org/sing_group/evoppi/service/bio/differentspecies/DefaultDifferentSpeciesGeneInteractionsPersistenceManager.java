@@ -21,9 +21,13 @@
  */
 package org.sing_group.evoppi.service.bio.differentspecies;
 
+import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 
+import java.util.Set;
+import java.util.function.IntFunction;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
@@ -34,6 +38,7 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsPersistenceManager;
@@ -59,10 +64,38 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
     case RUNNING:
       result.setRunning();
 
-      event.getContext().getReferenceInteractions().ifPresent(__ -> this.persistReferenceInteractions(event));
-      event.getContext().getTargetInteractions().ifPresent(__ -> this.persistTargetInteractions(event));
-      event.getContext().getBlastResults().ifPresent(__ -> this.persistBlastResults(event));
-      
+      if (context.getTargetCompletedInteractions().isPresent()) {
+        persistInteractions(result, context.getTargetCompletedInteractions().get());
+      } else if (context.getTargetInteractions().isPresent()) {
+        final Set<Integer> interactomesWithInterations = result.getTargetInteractomeIds()
+          .filter(result::hasInteractionsForInteractome)
+          .boxed()
+        .collect(toSet());
+        
+        persistInteractions(
+          result,
+          interactomesWithInterations,
+          context.getTargetInteractionsDegrees().get(),
+          degree -> context.getTargetInteractionsWithDegree(degree).get()
+        );
+      } else if (context.getBlastResults().isPresent()) {
+        this.persistBlastResults(event);
+      } else if (context.getReferenceCompletedInteractions().isPresent()) {
+        persistInteractions(result, context.getReferenceCompletedInteractions().get());
+      } else if (context.getReferenceInteractions().isPresent()) {
+        final Set<Integer> interactomesWithInterations = result.getReferenceInteractomeIds()
+          .filter(result::hasInteractionsForInteractome)
+          .boxed()
+        .collect(toSet());
+        
+        persistInteractions(
+          result,
+          interactomesWithInterations,
+          context.getReferenceInteractionsDegrees().get(),
+          degree -> context.getReferenceInteractionsWithDegree(degree).get()
+        );
+      }
+
       break;
     case COMPLETED:
       result.setFinished();
@@ -75,35 +108,41 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
     default:
     }
   }
+
+  private void persistInteractions(
+    final DifferentSpeciesInteractionsResult result,
+    final Set<Integer> interactomesWithInterations,
+    final IntStream interactionDegrees,
+    final IntFunction<Stream<InteractionIds>> getInteractionsWithDegree
+  ) {
+    interactionDegrees.forEach(degree -> 
+      getInteractionsWithDegree.apply(degree)
+        .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
+        .forEach(interaction -> 
+          result.addInteraction(
+            interaction.getGeneA(),
+            interaction.getGeneB(),
+            interaction.getInteractomeId(),
+            degree
+          )
+        )
+    );
+  }
+
+  private void persistInteractions(
+    final DifferentSpeciesInteractionsResult result, final Stream<InteractionIds> interactions
+  ) {
+    interactions.forEach(interaction -> result.addInteraction(
+        interaction.getGeneA(),
+        interaction.getGeneB(),
+        interaction.getInteractomeId()
+    ));
+  }
   
-  private DifferentSpeciesInteractionsResult getResultForEvent(DifferentSpeciesGeneInteractionsEvent event) {
+  private void persistBlastResults(DifferentSpeciesGeneInteractionsEvent event) {
     final String resultId = event.getContext().getConfiguration().getResultId();
     
-    return this.interactionsService.getDifferentSpeciesResult(resultId);
-  }
-
-  private void persistReferenceInteractions(DifferentSpeciesGeneInteractionsEvent event) {
-    final DifferentSpeciesInteractionsResult result = this.getResultForEvent(event);
-    
-    if (!result.hasReferenceInteractions()) {
-      final DifferentSpeciesGeneInteractionsContext context = event.getContext();
-      
-      context.getReferenceInteractions()
-        .orElseThrow(IllegalStateException::new)
-      .forEach(
-        interaction -> {
-          result.addInteraction(
-            interaction.getGeneAId(),
-            interaction.getGeneBId(),
-            interaction.getInteractomeDegrees()
-          );
-        }
-      );
-    }
-  }
-
-  private void persistBlastResults(DifferentSpeciesGeneInteractionsEvent event) {
-    final DifferentSpeciesInteractionsResult result = this.getResultForEvent(event);
+    final DifferentSpeciesInteractionsResult result = this.interactionsService.getDifferentSpeciesResult(resultId);
     
     if (!result.hasBlastResults()) {
       final DifferentSpeciesGeneInteractionsContext context = event.getContext();
@@ -111,26 +150,6 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
       final Stream<BlastResult> blastResults = context.getBlastResults().orElseThrow(IllegalStateException::new);
       
       blastResults.forEach(result::addBlastResult);
-    }
-  }
-
-  private void persistTargetInteractions(DifferentSpeciesGeneInteractionsEvent event) {
-    final DifferentSpeciesInteractionsResult result = this.getResultForEvent(event);
-    
-    if (!result.hasTargetInteractions()) {
-      final DifferentSpeciesGeneInteractionsContext context = event.getContext();
-      
-      context.getTargetInteractions()
-        .orElseThrow(IllegalStateException::new)
-      .forEach(
-        interaction -> {
-          result.addInteraction(
-            interaction.getGeneAId(),
-            interaction.getGeneBId(),
-            interaction.getInteractomeDegrees()
-          );
-        }
-      );
     }
   }
 }
