@@ -46,15 +46,18 @@ public class WorkData implements Serializable {
   private String name;
 
   private String description;
-
+  
   @XmlJavaTypeAdapter(LocalDateTimeToIsoStringAdapter.class)
   private LocalDateTime creationDateTime;
 
   @XmlJavaTypeAdapter(LocalDateTimeToIsoStringAdapter.class)
-  private LocalDateTime startDateTime;
+  private LocalDateTime schedulingDateTime;
 
   @XmlJavaTypeAdapter(LocalDateTimeToIsoStringAdapter.class)
-  private LocalDateTime endDateTime;
+  private LocalDateTime startingDateTime;
+
+  @XmlJavaTypeAdapter(LocalDateTimeToIsoStringAdapter.class)
+  private LocalDateTime finishingDateTime;
 
   private String resultReference;
 
@@ -65,15 +68,24 @@ public class WorkData implements Serializable {
   WorkData() {}
 
   public WorkData(
-    UuidAndUri id, String name, String description, LocalDateTime creationDateTime, LocalDateTime startDateTime,
-    LocalDateTime endDateTime, String resultReference, String status, WorkStepData[] steps
+    UuidAndUri id,
+    String name,
+    String description,
+    LocalDateTime creationDateTime,
+    LocalDateTime schedulingDateTime,
+    LocalDateTime startingDateTime,
+    LocalDateTime finishingDateTime,
+    String resultReference,
+    String status,
+    WorkStepData[] steps
   ) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.creationDateTime = creationDateTime;
-    this.startDateTime = startDateTime;
-    this.endDateTime = endDateTime;
+    this.schedulingDateTime = schedulingDateTime;
+    this.startingDateTime = startingDateTime;
+    this.finishingDateTime = finishingDateTime;
     this.resultReference = resultReference;
     this.status = status;
     this.steps = steps;
@@ -111,20 +123,28 @@ public class WorkData implements Serializable {
     this.creationDateTime = creationDateTime;
   }
 
-  public LocalDateTime getStartDateTime() {
-    return startDateTime;
+  public LocalDateTime getStartingDateTime() {
+    return startingDateTime;
   }
 
-  public void setStartDateTime(LocalDateTime startDateTime) {
-    this.startDateTime = startDateTime;
+  public void setStartingDateTime(LocalDateTime startDateTime) {
+    this.startingDateTime = startDateTime;
   }
 
-  public LocalDateTime getEndDateTime() {
-    return endDateTime;
+  public LocalDateTime getSchedulingDateTime() {
+    return schedulingDateTime;
   }
 
-  public void setEndDateTime(LocalDateTime endDateTime) {
-    this.endDateTime = endDateTime;
+  public void setSchedulingDateTime(LocalDateTime schedulingDateTime) {
+    this.schedulingDateTime = schedulingDateTime;
+  }
+
+  public LocalDateTime getFinishingDateTime() {
+    return finishingDateTime;
+  }
+
+  public void setFinishingDateTime(LocalDateTime endDateTime) {
+    this.finishingDateTime = endDateTime;
   }
 
   public String getResultReference() {
@@ -157,11 +177,12 @@ public class WorkData implements Serializable {
     int result = 1;
     result = prime * result + ((creationDateTime == null) ? 0 : creationDateTime.hashCode());
     result = prime * result + ((description == null) ? 0 : description.hashCode());
-    result = prime * result + ((endDateTime == null) ? 0 : endDateTime.hashCode());
+    result = prime * result + ((finishingDateTime == null) ? 0 : finishingDateTime.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((resultReference == null) ? 0 : resultReference.hashCode());
-    result = prime * result + ((startDateTime == null) ? 0 : startDateTime.hashCode());
+    result = prime * result + ((schedulingDateTime == null) ? 0 : schedulingDateTime.hashCode());
+    result = prime * result + ((startingDateTime == null) ? 0 : startingDateTime.hashCode());
     result = prime * result + ((status == null) ? 0 : status.hashCode());
     result = prime * result + Arrays.hashCode(steps);
     return result;
@@ -186,10 +207,10 @@ public class WorkData implements Serializable {
         return false;
     } else if (!description.equals(other.description))
       return false;
-    if (endDateTime == null) {
-      if (other.endDateTime != null)
+    if (finishingDateTime == null) {
+      if (other.finishingDateTime != null)
         return false;
-    } else if (!endDateTime.equals(other.endDateTime))
+    } else if (!finishingDateTime.equals(other.finishingDateTime))
       return false;
     if (id == null) {
       if (other.id != null)
@@ -206,10 +227,15 @@ public class WorkData implements Serializable {
         return false;
     } else if (!resultReference.equals(other.resultReference))
       return false;
-    if (startDateTime == null) {
-      if (other.startDateTime != null)
+    if (schedulingDateTime == null) {
+      if (other.schedulingDateTime != null)
         return false;
-    } else if (!startDateTime.equals(other.startDateTime))
+    } else if (!schedulingDateTime.equals(other.schedulingDateTime))
+      return false;
+    if (startingDateTime == null) {
+      if (other.startingDateTime != null)
+        return false;
+    } else if (!startingDateTime.equals(other.startingDateTime))
       return false;
     if (status == null) {
       if (other.status != null)

@@ -52,6 +52,7 @@ public class DefaultExecutionMapper implements ExecutionMapper {
       work.getName(),
       work.getDescription().orElse(null),
       work.getCreationDateTime(),
+      work.getSchedulingDateTime().orElse(null),
       work.getStartingDateTime().orElse(null),
       work.getFinishingDateTime().orElse(null),
       work.getResultReference().orElse(null),
