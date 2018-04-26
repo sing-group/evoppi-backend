@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
@@ -49,16 +49,16 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
   private final DifferentSpeciesGeneInteractionsConfiguration configuration;
   private transient final DifferentSpeciesGeneInteractionsEventManager eventManager;
   
-  private final Map<Integer, Set<InteractionIds>> referenceInteractions;
-  private final Set<InteractionIds> referenceCompletedInteractions;
+  private final Map<Integer, Set<HasGeneInteractionIds>> referenceInteractions;
+  private final Set<HasGeneInteractionIds> referenceCompletedInteractions;
   
   private final Path referenceFastaPath;
   private final Path targetFastaPath;
   
   private final Set<BlastResult> blastResults;
   
-  private final Map<Integer, Set<InteractionIds>> targetInteractions;
-  private final Set<InteractionIds> targetCompletedInteractions;
+  private final Map<Integer, Set<HasGeneInteractionIds>> targetInteractions;
+  private final Set<HasGeneInteractionIds> targetCompletedInteractions;
 
   DefaultDifferentSpeciesGeneInteractionsContext(
     DifferentSpeciesGeneInteractionsPipeline pipeline,
@@ -72,13 +72,13 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
     DifferentSpeciesGeneInteractionsPipeline pipeline,
     DifferentSpeciesGeneInteractionsConfiguration configuration,
     DifferentSpeciesGeneInteractionsEventManager eventManager,
-    Map<Integer, Set<InteractionIds>> referenceInteractions,
-    Collection<InteractionIds> referenceCompletedInteractions,
+    Map<Integer, Set<HasGeneInteractionIds>> referenceInteractions,
+    Collection<HasGeneInteractionIds> referenceCompletedInteractions,
     Path referenceFastaPath,
     Path targetFastaPath,
     Collection<BlastResult> blastResults,
-    Map<Integer, Set<InteractionIds>> targetInteractions,
-    Collection<InteractionIds> targetCompletedInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> targetInteractions,
+    Collection<HasGeneInteractionIds> targetCompletedInteractions
   ) {
     this.configuration = requireNonNull(configuration);
     this.eventManager = requireNonNull(eventManager);
@@ -112,12 +112,12 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
   }
   
   @Override
-  public Optional<Map<Integer, Set<InteractionIds>>> getReferenceInteractionsByDegree() {
+  public Optional<Map<Integer, Set<HasGeneInteractionIds>>> getReferenceInteractionsByDegree() {
     return Optional.ofNullable(this.referenceInteractions).map(Collections::unmodifiableMap);
   }
 
   @Override
-  public Optional<Stream<InteractionIds>> getReferenceCompletedInteractions() {
+  public Optional<Stream<HasGeneInteractionIds>> getReferenceCompletedInteractions() {
     return Optional.ofNullable(this.referenceCompletedInteractions)
       .map(Set::stream);
   }
@@ -138,12 +138,12 @@ implements DifferentSpeciesGeneInteractionsContext, Serializable {
   }
 
   @Override
-  public Optional<Map<Integer, Set<InteractionIds>>> getTargetInteractionsByDegree() {
+  public Optional<Map<Integer, Set<HasGeneInteractionIds>>> getTargetInteractionsByDegree() {
     return Optional.ofNullable(this.targetInteractions).map(Collections::unmodifiableMap);
   }
 
   @Override
-  public Optional<Stream<InteractionIds>> getTargetCompletedInteractions() {
+  public Optional<Stream<HasGeneInteractionIds>> getTargetCompletedInteractions() {
     return Optional.ofNullable(this.targetCompletedInteractions)
       .map(Set::stream);
   }

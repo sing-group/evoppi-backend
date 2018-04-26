@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,16 +19,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.bio.event;
+package org.sing_group.evoppi.domain.entities.spi.bio;
 
-import java.util.Collection;
-
-import org.sing_group.evoppi.service.bio.entity.InteractingGenesWithDegree;
-
-public interface SingleInteractionsCalculusCallback {
-  public default void calculusStarted() {}
-  public default void interactionsCalculated(int degree, Collection<InteractingGenesWithDegree> interactions) {}
-  public default void calculusFinished() {}
+public interface HasInteractomeId {
+  public int getInteractomeId();
   
-  public static class SimpleSingleInteractionsCalculusCallback implements SingleInteractionsCalculusCallback {}
+  public default boolean hasInteractome(HasInteractomeId interactomeId) {
+    return this.hasInteractome(interactomeId.getInteractomeId());
+  }
+  
+  public default boolean hasInteractome(int interactomeId) {
+    return this.getInteractomeId() == getInteractomeId();
+  }
+  
+  public static HasInteractomeId of(int interactomeId) {
+    return new DefaultHasInteractomeIds(interactomeId);
+  }
+  
+  public static HasInteractomeId of(HasInteractomeId interactomeId) {
+    return new DefaultHasInteractomeIds(interactomeId);
+  }
 }

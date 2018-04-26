@@ -109,7 +109,7 @@ public class DefaultBioMapper implements BioMapper {
     .toArray(IdAndUri[]::new);
     
     final InteractingGenes[] interactions = interactome.getInteractions()
-      .map(interaction -> new InteractingGenes(interaction.getGeneA().getId(), interaction.getGeneB().getId()))
+      .map(interaction -> new InteractingGenes(interaction.getGeneAId(), interaction.getGeneBId()))
     .toArray(InteractingGenes[]::new);
     
     return new InteractomeWithInteractionsData(
@@ -136,8 +136,8 @@ public class DefaultBioMapper implements BioMapper {
 
   public InteractingGenes toInteractingGenes(Interaction interaction) {
     return new InteractingGenes(
-      interaction.getGeneA().getId(),
-      interaction.getGeneB().getId()
+      interaction.getGeneAId(),
+      interaction.getGeneBId()
     );
   }
   

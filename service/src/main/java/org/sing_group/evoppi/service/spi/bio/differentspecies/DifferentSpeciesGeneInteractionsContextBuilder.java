@@ -28,32 +28,32 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 
 public interface DifferentSpeciesGeneInteractionsContextBuilder {
 
   public default DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    int degree, Collection<InteractionIds> interactions
+    int degree, Collection<HasGeneInteractionIds> interactions
   ) {
     return this.setReferenceInteractions(degree, interactions.stream());
   }
   
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    int degree, Stream<InteractionIds> interactions
+    int degree, Stream<HasGeneInteractionIds> interactions
   );
   
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    Map<Integer, Set<InteractionIds>> referenceInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> referenceInteractions
   );
   
   public default DifferentSpeciesGeneInteractionsContextBuilder setReferenceCompletedInteractions(
-    Collection<InteractionIds> interactions
+    Collection<HasGeneInteractionIds> interactions
   ) {
     return this.setReferenceCompletedInteractions(interactions.stream());
   }
   
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceCompletedInteractions(
-    Stream<InteractionIds> interactions
+    Stream<HasGeneInteractionIds> interactions
   );
 
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceFastaPath(Path referenceFastaPath);
@@ -67,27 +67,27 @@ public interface DifferentSpeciesGeneInteractionsContextBuilder {
   public DifferentSpeciesGeneInteractionsContextBuilder setBlastResults(Stream<BlastResult> blastResults);
 
   public default DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    int degree, Collection<InteractionIds> interactions
+    int degree, Collection<HasGeneInteractionIds> interactions
   ) {
     return this.setTargetInteractions(degree, interactions.stream());
   }
   
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    int degree, Stream<InteractionIds> interactions
+    int degree, Stream<HasGeneInteractionIds> interactions
   );
   
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    Map<Integer, Set<InteractionIds>> targetInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> targetInteractions
   );
   
   public default DifferentSpeciesGeneInteractionsContextBuilder setTargetCompletedInteractions(
-    Collection<InteractionIds> interactions
+    Collection<HasGeneInteractionIds> interactions
   ) {
     return this.setTargetCompletedInteractions(interactions.stream());
   }
   
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetCompletedInteractions(
-    Stream<InteractionIds> interactions
+    Stream<HasGeneInteractionIds> interactions
   );
   
   public DifferentSpeciesGeneInteractionsContext build();

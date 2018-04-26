@@ -42,6 +42,7 @@ import javax.transaction.Transactional;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 
 @Stateless
 @PermitAll
@@ -68,8 +69,9 @@ public class GenePairIndexer {
   
   public GenePairIndex createForInteractome(Interactome interactome) {
     final GenePairIndex index = new GenePairIndex();
+    
     interactome.getInteractions()
-    .forEach(interaction -> index.add(interaction.getGeneA().getId(), interaction.getGeneB().getId()));
+    .forEach(interaction -> index.add(interaction));
     
     return index;
   }
@@ -79,8 +81,7 @@ public class GenePairIndexer {
     
     result.getInteractions()
       .forEach(interaction -> index.add(
-        interaction.getGeneAId(),
-        interaction.getGeneBId(),
+        interaction,
         interaction.getInteractomeIds().boxed().collect(toSet()))
       );
     
@@ -94,12 +95,12 @@ public class GenePairIndexer {
       this.index = new HashMap<>();
     }
     
-    public void add(int geneA, int geneB) {
-      this.index.compute(geneA, createRemappingFunction(geneB));
+    void add(HasGenePairIds genePairIds) {
+      this.index.compute(genePairIds.getGeneAId(), createRemappingFunction(genePairIds.getGeneBId()));
     }
     
-    public boolean has(int geneA, int geneB) {
-      return this.index.getOrDefault(geneA, emptySet()).contains(geneB);
+    public boolean has(HasGenePairIds genePairIds) {
+      return this.index.getOrDefault(genePairIds.getGeneAId(), emptySet()).contains(genePairIds.getGeneBId());
     }
     
     private final static BiFunction<Integer, Set<Integer>, Set<Integer>> createRemappingFunction(int geneB) {
@@ -120,19 +121,19 @@ public class GenePairIndexer {
       this.index = new HashMap<>();
     }
     
-    public void add(int geneA, int geneB, Collection<T> values) {
-      this.index.compute(geneA, createRemappingFunction(geneB, values));
+    void add(HasGenePairIds genePairIds, Collection<T> values) {
+      this.index.compute(genePairIds.getGeneAId(), createRemappingFunction(genePairIds.getGeneBId(), values));
     }
     
-    public boolean has(int geneA, int geneB, T value) {
-      return this.index.getOrDefault(geneA, emptyMap())
-        .getOrDefault(geneB, emptySet())
+    public boolean has(HasGenePairIds genePairIds, T value) {
+      return this.index.getOrDefault(genePairIds.getGeneAId(), emptyMap())
+        .getOrDefault(genePairIds.getGeneBId(), emptySet())
       .contains(value);
     }
     
-    public boolean hasAll(int geneA, int geneB, Collection<T> value) {
-      return this.index.getOrDefault(geneA, emptyMap())
-        .getOrDefault(geneB, emptySet())
+    public boolean hasAll(HasGenePairIds genePairIds, Collection<T> value) {
+      return this.index.getOrDefault(genePairIds.getGeneAId(), emptyMap())
+        .getOrDefault(genePairIds.getGeneBId(), emptySet())
       .containsAll(value);
     }
     

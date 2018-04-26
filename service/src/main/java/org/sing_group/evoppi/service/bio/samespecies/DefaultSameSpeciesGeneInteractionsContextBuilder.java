@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
@@ -40,8 +40,8 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
   private final SameSpeciesGeneInteractionsConfiguration configuration;
   private final SameSpeciesGeneInteractionsEventManager eventManager;
 
-  private Map<Integer, Set<InteractionIds>> interactions;
-  private Set<InteractionIds> completedInteractions;
+  private Map<Integer, Set<HasGeneInteractionIds>> interactions;
+  private Set<HasGeneInteractionIds> completedInteractions;
 
   DefaultSameSpeciesGeneInteractionsContextBuilder(
     SameSpeciesGeneInteractionsContext context
@@ -67,8 +67,8 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
     SameSpeciesGeneInteractionsPipeline pipeline,
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager,
-    Map<Integer, Set<InteractionIds>> interactions,
-    Set<InteractionIds> completedInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> interactions,
+    Set<HasGeneInteractionIds> completedInteractions
   ) {
     this.pipeline = pipeline;
     this.configuration = configuration;
@@ -78,7 +78,7 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
   }
   
   @Override
-  public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<InteractionIds> interactions) {
+  public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<HasGeneInteractionIds> interactions) {
     if (this.interactions == null)
       this.interactions = new HashMap<>();
     
@@ -88,7 +88,7 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
   }
   
   @Override
-  public SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Stream<InteractionIds> interactions) {
+  public SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Stream<HasGeneInteractionIds> interactions) {
     this.completedInteractions = interactions.collect(toSet());
     
     return this;

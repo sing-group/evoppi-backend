@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
@@ -47,15 +47,15 @@ implements SameSpeciesGeneInteractionsContext, Serializable {
   private final SameSpeciesGeneInteractionsConfiguration configuration;
   private transient final SameSpeciesGeneInteractionsEventManager eventManager;
   
-  private final Map<Integer, Set<InteractionIds>> interactions;
-  private final Set<InteractionIds> completedInteractions;
+  private final Map<Integer, Set<HasGeneInteractionIds>> interactions;
+  private final Set<HasGeneInteractionIds> completedInteractions;
 
   DefaultSameSpeciesGeneInteractionsContext(
     SameSpeciesGeneInteractionsPipeline pipeline,
     SameSpeciesGeneInteractionsConfiguration configuration,
     SameSpeciesGeneInteractionsEventManager eventManager,
-    Map<Integer, Set<InteractionIds>> interactions,
-    Collection<InteractionIds> completedInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> interactions,
+    Collection<HasGeneInteractionIds> completedInteractions
   ) {
     this.configuration = requireNonNull(configuration);
     this.eventManager = requireNonNull(eventManager);
@@ -80,12 +80,12 @@ implements SameSpeciesGeneInteractionsContext, Serializable {
   }
   
   @Override
-  public Optional<Map<Integer, Set<InteractionIds>>> getInteractionsByDegree() {
+  public Optional<Map<Integer, Set<HasGeneInteractionIds>>> getInteractionsByDegree() {
     return Optional.ofNullable(this.interactions).map(Collections::unmodifiableMap);
   }
 
   @Override
-  public Optional<Stream<InteractionIds>> getCompletedInteractions() {
+  public Optional<Stream<HasGeneInteractionIds>> getCompletedInteractions() {
     return Optional.ofNullable(this.completedInteractions)
       .map(Set::stream);
   }

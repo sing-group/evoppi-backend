@@ -24,41 +24,43 @@ package org.sing_group.evoppi.service.spi.bio;
 import static java.util.function.Function.identity;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 
 public interface OrthologsManager {
   public IntStream getOrthologsForReferenceGene(int geneId);
 
   public IntStream getOrthologsForTargetGene(int geneId);
   
-  public default void forEachReferencePairOrthologs(int geneA, int geneB, BiConsumer<Integer, Integer> action) {
-    getOrthologsForReferenceGene(geneA)
-      .forEach(orthologA -> getOrthologsForReferenceGene(geneB)
+  public default void forEachReferencePairOrthologs(HasGenePairIds genePairIds, BiConsumer<Integer, Integer> action) {
+    getOrthologsForReferenceGene(genePairIds.getGeneAId())
+      .forEach(orthologA -> getOrthologsForReferenceGene(genePairIds.getGeneBId())
         .forEach(orthologB -> action.accept(orthologA, orthologB))
       );
   }
   
-  public default void forEachTargetPairOrthologs(int geneA, int geneB, BiConsumer<Integer, Integer> action) {
-    getOrthologsForTargetGene(geneA)
-      .forEach(orthologA -> getOrthologsForTargetGene(geneB)
+  public default void forEachTargetPairOrthologs(HasGenePairIds genePairIds, BiConsumer<Integer, Integer> action) {
+    getOrthologsForTargetGene(genePairIds.getGeneAId())
+      .forEach(orthologA -> getOrthologsForTargetGene(genePairIds.getGeneBId())
         .forEach(orthologB -> action.accept(orthologA, orthologB))
       );
   }
   
-  public default <T> Stream<T> mapReferencePairOrthologs(int geneA, int geneB, BiFunction<Integer, Integer, T> action) {
-    return getOrthologsForReferenceGene(geneA)
-      .mapToObj(orthologA -> getOrthologsForReferenceGene(geneB)
-        .mapToObj(orthologB -> action.apply(orthologA, orthologB))
+  public default <T> Stream<T> mapReferencePairOrthologs(HasGenePairIds genePairIds, Function<HasGenePairIds, T> action) {
+    return getOrthologsForReferenceGene(genePairIds.getGeneAId())
+      .mapToObj(orthologA -> getOrthologsForReferenceGene(genePairIds.getGeneBId())
+        .mapToObj(orthologB -> action.apply(HasGenePairIds.of(orthologA, orthologB)))
         )
       .flatMap(identity());
   }
   
-  public default <T> Stream<T> mapTargetPairOrthologs(int geneA, int geneB, BiFunction<Integer, Integer, T> action) {
-    return getOrthologsForTargetGene(geneA)
-      .mapToObj(orthologA -> getOrthologsForTargetGene(geneB)
-        .mapToObj(orthologB -> action.apply(orthologA, orthologB))
+  public default <T> Stream<T> mapTargetPairOrthologs(HasGenePairIds genePairIds, Function<HasGenePairIds, T> action) {
+    return getOrthologsForTargetGene(genePairIds.getGeneAId())
+      .mapToObj(orthologA -> getOrthologsForTargetGene(genePairIds.getGeneBId())
+        .mapToObj(orthologB -> action.apply(HasGenePairIds.of(orthologA, orthologB)))
         )
       .flatMap(identity());
   }

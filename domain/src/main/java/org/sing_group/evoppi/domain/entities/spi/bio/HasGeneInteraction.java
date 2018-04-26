@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,13 +19,17 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.spi.bio;
+package org.sing_group.evoppi.domain.entities.spi.bio;
 
-import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
-public interface InteractionsCalculator {
-  public void calculateInteractions(
-    Gene gene, int interactomeId, int maxDegree, InteractionsCalculusCallback callback
-  );
+public interface HasGeneInteraction extends HasInteractome, HasGenePair {
+  public static HasGeneInteraction of(Interactome interactome, HasGenePair genePair) {
+    return new DefaultHasGeneInteraction(interactome, genePair);
+  }
+
+  public static HasGeneInteraction of(HasGeneInteraction interaction) {
+    return new DefaultHasGeneInteraction(interaction);
+  }
+
 }

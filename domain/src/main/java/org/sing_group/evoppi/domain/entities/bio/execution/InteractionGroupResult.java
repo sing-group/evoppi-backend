@@ -41,11 +41,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult.InteractionGroupResultId;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 
 @Entity
 @Table(name = "interaction_group_result")
 @IdClass(InteractionGroupResultId.class)
-public class InteractionGroupResult implements Serializable {
+public class InteractionGroupResult implements HasGenePairIds, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -76,36 +77,34 @@ public class InteractionGroupResult implements Serializable {
   InteractionGroupResult() {}
   
   public InteractionGroupResult(
-    String interactionsResultId, int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees
+    String interactionsResultId, HasGenePairIds genePairIds, Map<Integer, Integer> interactomeDegrees
   ) {
     this.interactionsResultId = interactionsResultId;
-    this.geneAId = geneAId;
-    this.geneBId = geneBId;
+    this.geneAId = genePairIds.getGeneAId();
+    this.geneBId = genePairIds.getGeneBId();
     this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
   
   public InteractionGroupResult(
-    String interactionsResultId, int geneAId, int geneBId, int interactome, int degree
+    String interactionsResultId, HasGenePairIds genePairIds, int interactome, int degree
   ) {
-    this(interactionsResultId, geneAId, geneBId, singletonMap(interactome, degree));
+    this(interactionsResultId, genePairIds, singletonMap(interactome, degree));
   }
 
   public String getInteractionsResultId() {
     return interactionsResultId;
   }
 
+  @Override
   public int getGeneAId() {
     return geneAId;
   }
 
+  @Override
   public int getGeneBId() {
     return geneBId;
   }
   
-  public IntStream getGeneIds() {
-    return IntStream.of(this.getGeneAId(), this.getGeneBId());
-  }
-
   public IntStream getInteractomeIds() {
     return interactomeDegrees.keySet().stream().mapToInt(Integer::intValue);
   }
@@ -140,7 +139,7 @@ public class InteractionGroupResult implements Serializable {
     }
   }
 
-  public static class InteractionGroupResultId implements Serializable {
+  public static class InteractionGroupResultId implements HasGenePairIds, Serializable {
     private static final long serialVersionUID = 1L;
 
     private String interactionsResultId;
@@ -165,6 +164,7 @@ public class InteractionGroupResult implements Serializable {
       this.interactionsResultId = interactionsResultId;
     }
 
+    @Override
     public int getGeneAId() {
       return geneAId;
     }
@@ -173,6 +173,7 @@ public class InteractionGroupResult implements Serializable {
       this.geneAId = geneAId;
     }
 
+    @Override
     public int getGeneBId() {
       return geneBId;
     }

@@ -38,7 +38,7 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsPersistenceManager;
@@ -103,15 +103,14 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
     final DifferentSpeciesInteractionsResult result,
     final Set<Integer> interactomesWithInterations,
     final IntStream interactionDegrees,
-    final IntFunction<Stream<InteractionIds>> getInteractionsWithDegree
+    final IntFunction<Stream<HasGeneInteractionIds>> getInteractionsWithDegree
   ) {
     interactionDegrees.forEach(degree -> 
       getInteractionsWithDegree.apply(degree)
         .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
         .forEach(interaction -> 
           result.addInteraction(
-            interaction.getGeneA(),
-            interaction.getGeneB(),
+            interaction,
             interaction.getInteractomeId(),
             degree
           )
@@ -120,11 +119,10 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
   }
 
   private void persistInteractions(
-    final DifferentSpeciesInteractionsResult result, final Stream<InteractionIds> interactions
+    final DifferentSpeciesInteractionsResult result, final Stream<HasGeneInteractionIds> interactions
   ) {
     interactions.forEach(interaction -> result.addInteraction(
-        interaction.getGeneA(),
-        interaction.getGeneB(),
+        interaction,
         interaction.getInteractomeId()
     ));
   }

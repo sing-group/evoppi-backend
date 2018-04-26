@@ -45,6 +45,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -125,14 +126,14 @@ public abstract class InteractionsResult extends WorkEntity {
     };
   }
   
-  private Optional<InteractionGroupResult> getInteraction(int geneAId, int geneBId) {
-    final Map<Integer, InteractionGroupResult> geneBMap = this.interactionsIndex.get(geneAId);
+  private Optional<InteractionGroupResult> getInteraction(HasGenePairIds genePairIds) {
+    final Map<Integer, InteractionGroupResult> geneBMap = this.interactionsIndex.get(genePairIds.getGeneAId());
     
-    return geneBMap == null ? Optional.empty() : Optional.ofNullable(geneBMap.get(geneBId));
+    return geneBMap == null ? Optional.empty() : Optional.ofNullable(geneBMap.get(genePairIds.getGeneBId()));
   }
   
-  public InteractionGroupResult addInteraction(int geneAId, int geneBId, Map<Integer, Integer> interactomeDegrees) {
-    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(geneAId, geneBId);
+  public InteractionGroupResult addInteraction(HasGenePairIds genePairIds, Map<Integer, Integer> interactomeDegrees) {
+    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(genePairIds);
     
     if (maybeAGroup.isPresent()) {
       final InteractionGroupResult group = maybeAGroup.get();
@@ -141,21 +142,21 @@ public abstract class InteractionsResult extends WorkEntity {
       
       return group;
     } else {
-      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), geneAId, geneBId, interactomeDegrees);
+      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), genePairIds, interactomeDegrees);
       
       this.interactions.add(newResult);
-      this.interactionsIndex.compute(geneAId, createRemappingFunction(newResult));
+      this.interactionsIndex.compute(genePairIds.getGeneAId(), createRemappingFunction(newResult));
       
       return newResult;
     }
   }
 
-  public InteractionGroupResult addInteraction(int geneA, int geneB, int interactomeId) {
-    return this.addInteraction(geneA, geneB, interactomeId, -1);
+  public InteractionGroupResult addInteraction(HasGenePairIds genePairIds, int interactomeId) {
+    return this.addInteraction(genePairIds, interactomeId, -1);
   }
 
-  public InteractionGroupResult addInteraction(int geneAId, int geneBId, int interactomeId, int degree) {
-    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(geneAId, geneBId);
+  public InteractionGroupResult addInteraction(HasGenePairIds genePairIds, int interactomeId, int degree) {
+    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(genePairIds);
     
     if (maybeAGroup.isPresent()) {
       final InteractionGroupResult group = maybeAGroup.get();
@@ -164,10 +165,10 @@ public abstract class InteractionsResult extends WorkEntity {
       
       return group;
     } else {
-      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), geneAId, geneBId, interactomeId, degree);
+      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), genePairIds, interactomeId, degree);
       
       this.interactions.add(newResult);
-      this.interactionsIndex.compute(geneAId, createRemappingFunction(newResult));
+      this.interactionsIndex.compute(genePairIds.getGeneAId(), createRemappingFunction(newResult));
       
       return newResult;
     }

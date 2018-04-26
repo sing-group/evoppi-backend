@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,47 +19,37 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.bio.entity;
+package org.sing_group.evoppi.domain.entities.spi.bio;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.stream.Stream;
+import java.io.Serializable;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
 
-public class InteractingGenesWithDegree {
+class DefaultHasGenePair implements HasGenePair, Serializable {
+  private static final long serialVersionUID = 1L;
+  
   private final Gene geneA;
   private final Gene geneB;
-  private final Integer degree;
   
-  public InteractingGenesWithDegree(Interaction interaction, Integer degree) {
-    this(interaction.getGeneA(), interaction.getGeneB(), degree);
+  public DefaultHasGenePair(Gene geneA, Gene geneB) {
+    this.geneA = requireNonNull(geneA, "geneA can't be null");
+    this.geneB = requireNonNull(geneB, "geneB can't be null");
   }
   
-  public InteractingGenesWithDegree(Gene geneA, Gene geneB, Integer degree) {
-    requireNonNull(geneA, "geneA can't be null");
-    requireNonNull(geneB, "geneB can't be null");
-    
-    this.geneA = geneA;
-    this.geneB = geneB;
-    this.degree = degree;
+  public DefaultHasGenePair(HasGenePair genePair) {
+    this(genePair.getGeneA(), genePair.getGeneB());
   }
 
+  @Override
   public Gene getGeneA() {
-    return geneA;
+    return this.geneA;
   }
   
+  @Override
   public Gene getGeneB() {
-    return geneB;
-  }
-  
-  public Stream<Gene> getGenes() {
-    return Stream.of(this.geneA, this.geneB);
-  }
-  
-  public Integer getDegree() {
-    return degree;
+    return this.geneB;
   }
 
   @Override
@@ -79,7 +69,7 @@ public class InteractingGenesWithDegree {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractingGenesWithDegree other = (InteractingGenesWithDegree) obj;
+    DefaultHasGenePair other = (DefaultHasGenePair) obj;
     if (geneA == null) {
       if (other.geneA != null)
         return false;
@@ -91,10 +81,5 @@ public class InteractingGenesWithDegree {
     } else if (!geneB.equals(other.geneB))
       return false;
     return true;
-  }
-
-  @Override
-  public String toString() {
-    return "InteractingGenes [geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + "]";
   }
 }

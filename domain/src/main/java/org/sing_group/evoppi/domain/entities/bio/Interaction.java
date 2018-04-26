@@ -22,7 +22,6 @@
 package org.sing_group.evoppi.domain.entities.bio;
 
 import java.io.Serializable;
-import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -35,11 +34,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.sing_group.evoppi.domain.entities.bio.Interaction.InteractionId;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteraction;
 
 @Entity
 @Table(name = "interaction")
 @IdClass(InteractionId.class)
-public class Interaction implements Serializable {
+public class Interaction implements HasGeneInteraction, Serializable {
   private static final long serialVersionUID = 1L;
   
   @Id
@@ -78,30 +78,19 @@ public class Interaction implements Serializable {
   })
   private GeneInInteractome geneInInteractomeB;
 
+  @Override
   public Interactome getInteractome() {
     return interactome;
   }
 
+  @Override
   public Gene getGeneA() {
     return geneA;
   }
-
+  
+  @Override
   public Gene getGeneB() {
     return geneB;
-  }
-  
-  public Stream<Gene> getGenes() {
-    return Stream.of(this.getGeneA(), this.getGeneB());
-  }
-  
-  public boolean hasGenes(Gene geneA, Gene geneB) {
-    return (this.geneA.equals(geneA) && this.geneB.equals(geneB))
-      || (this.geneB.equals(geneA) && this.geneA.equals(geneB));
-  }
-  
-  public boolean hasGenes(int geneA, int geneB) {
-    return (this.geneA.getId() == geneA && this.geneB.getId() == geneB)
-      || (this.geneB.getId() == geneA && this.geneA.getId() == geneB);
   }
 
   @Override

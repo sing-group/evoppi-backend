@@ -41,6 +41,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
+
 @Entity
 @Table(
   name = "interactome",
@@ -150,26 +153,26 @@ public class Interactome implements Serializable {
     return this.interactions.stream();
   }
   
-  public Optional<Interaction> findInteraction(Gene geneA, Gene geneB) {
+  public Optional<Interaction> findInteraction(HasGenePair genePair) {
     return this.getInteractions()
-      .filter(interaction -> interaction.hasGenes(geneA, geneB))
+      .filter(interaction -> interaction.hasGenes(genePair))
       .findAny();
   }
   
-  public Optional<Interaction> findInteraction(int geneA, int geneB) {
+  public Optional<Interaction> findInteraction(HasGenePairIds genePairIds) {
     return this.getInteractions()
-      .filter(interaction -> interaction.hasGenes(geneA, geneB))
+      .filter(interaction -> interaction.hasGenes(genePairIds))
       .findAny();
   }
   
-  public boolean hasInteraction(Gene geneA, Gene geneB) {
+  public boolean hasInteraction(HasGenePair genePair) {
     return this.getInteractions()
-      .anyMatch(interaction -> interaction.hasGenes(geneA, geneB));
+      .anyMatch(interaction -> interaction.hasGenes(genePair));
   }
   
-  public boolean hasInteraction(int geneA, int geneB) {
+  public boolean hasInteraction(HasGenePairIds genePairIds) {
     return this.getInteractions()
-      .anyMatch(interaction -> interaction.hasGenes(geneA, geneB));
+      .anyMatch(interaction -> interaction.hasGenes(genePairIds));
   }
   
   @Override

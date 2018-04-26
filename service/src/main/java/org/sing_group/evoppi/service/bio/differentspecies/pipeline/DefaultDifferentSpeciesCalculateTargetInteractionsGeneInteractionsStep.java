@@ -36,24 +36,24 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.bio.BlastResultOrthologsManager;
-import org.sing_group.evoppi.service.bio.entity.InteractingGenesWithDegree;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.OrthologsManager;
-import org.sing_group.evoppi.service.spi.bio.SingleInteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilder;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilderFactory;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.SingleDifferentSpeciesGeneInteractionsStep;
-import org.sing_group.evoppi.service.spi.bio.event.SingleInteractionsCalculusCallback;
+import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 
 @Default
 public class DefaultDifferentSpeciesCalculateTargetInteractionsGeneInteractionsStep
 implements SingleDifferentSpeciesGeneInteractionsStep {
   
   private GeneDAO geneDao;
-  private SingleInteractionsCalculator interactionsCalculator;
+  private InteractionsCalculator interactionsCalculator;
   private DifferentSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
   private EntityManager entityManager;
   
@@ -63,7 +63,7 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
   
   public DefaultDifferentSpeciesCalculateTargetInteractionsGeneInteractionsStep(
     GeneDAO geneDao,
-    SingleInteractionsCalculator interactionsCalculator,
+    InteractionsCalculator interactionsCalculator,
     DifferentSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory,
     EntityManager entityManager
   ) {
@@ -88,7 +88,7 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
   }
   
   @Inject
-  public void setInteractionsCalculator(SingleInteractionsCalculator interactionsCalculator) {
+  public void setInteractionsCalculator(InteractionsCalculator interactionsCalculator) {
     this.interactionsCalculator = requireNonNull(interactionsCalculator);
   }
   
@@ -135,10 +135,10 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     return callback.getContext();
   }
   
-  private class BridgeInteractionsCalculusCallback implements SingleInteractionsCalculusCallback {
+  private class BridgeInteractionsCalculusCallback implements InteractionsCalculusCallback {
     private final DifferentSpeciesGeneInteractionsContextBuilder contextBuilder;
     
-    private final Function<InteractingGenesWithDegree, Stream<InteractionIds>> interactionsMapper;
+    private final Function<HasGenePair, Stream<HasGeneInteractionIds>> interactionsMapper;
     
     public BridgeInteractionsCalculusCallback(
       int interactomeId,
@@ -149,25 +149,18 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
       
       this.interactionsMapper = interaction ->
         orthologsManager.mapTargetPairOrthologs(
-          interaction.getGeneA().getId(),
-          interaction.getGeneB().getId(),
-          (geneA, geneB) -> new InteractionIds(interactomeId, geneA, geneB)
+          interaction,
+          (genePairIds) -> HasGeneInteractionIds.of(interactomeId, genePairIds)
         );
     }
     
     public DifferentSpeciesGeneInteractionsContext getContext() {
       return contextBuilder.build();
     }
-
-    @Override
-    public void calculusStarted() {}
     
     @Override
-    public void interactionsCalculated(int degree, Collection<InteractingGenesWithDegree> interactions) {
+    public void interactionsCalculated(int degree, Collection<HasGenePair> interactions) {
       contextBuilder.setTargetInteractions(degree, interactions.stream().flatMap(interactionsMapper));
     }
-    
-    @Override
-    public void calculusFinished() {}
   }
 }

@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
@@ -43,7 +43,7 @@ extends PipelineContext<
   SameSpeciesGeneInteractionsEvent,
   SameSpeciesGeneInteractionsEventManager
 > {
-  public Optional<Map<Integer, Set<InteractionIds>>> getInteractionsByDegree();
+  public Optional<Map<Integer, Set<HasGeneInteractionIds>>> getInteractionsByDegree();
   
   public default Optional<IntStream> getInteractionsDegrees() {
     return this.getInteractionsByDegree().map(
@@ -52,7 +52,7 @@ extends PipelineContext<
     );
   }
   
-  public default Optional<Stream<InteractionIds>> getInteractionsWithDegree(int degree) {
+  public default Optional<Stream<HasGeneInteractionIds>> getInteractionsWithDegree(int degree) {
     return this.getInteractionsByDegree()
       .map(interactions -> interactions.get(degree))
       .map(Set::stream);
@@ -64,12 +64,12 @@ extends PipelineContext<
     );
   }
   
-  public default Optional<Stream<InteractionIds>> getInteractions() {
+  public default Optional<Stream<HasGeneInteractionIds>> getInteractions() {
     return this.getInteractionsByDegree().map(
       interactions -> interactions.values().stream()
         .flatMap(Set::stream)
     );
   }
   
-  public Optional<Stream<InteractionIds>> getCompletedInteractions();
+  public Optional<Stream<HasGeneInteractionIds>> getCompletedInteractions();
 }

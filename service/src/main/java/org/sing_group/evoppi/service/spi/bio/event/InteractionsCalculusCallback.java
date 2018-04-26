@@ -21,14 +21,14 @@
  */
 package org.sing_group.evoppi.service.spi.bio.event;
 
-import java.util.stream.Stream;
+import java.util.Collection;
 
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 
 public interface InteractionsCalculusCallback {
   public default void calculusStarted() {}
-  public default void interactionsCalculated(Stream<GeneInteraction> interactions) {}
+  public default void interactionsCalculated(int degree, Collection<HasGenePair> interactions) {}
   public default void calculusFinished() {}
   
-  public static class SimpleInteractionsCalculusCallback implements InteractionsCalculusCallback {}
+  public static class SimpleSingleInteractionsCalculusCallback implements InteractionsCalculusCallback {}
 }

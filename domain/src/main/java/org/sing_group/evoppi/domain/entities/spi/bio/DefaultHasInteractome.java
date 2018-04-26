@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,44 +19,37 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.bio.entity;
+package org.sing_group.evoppi.domain.entities.spi.bio;
 
-import java.util.stream.IntStream;
+import static java.util.Objects.requireNonNull;
 
-public class InteractionIds {
-  private final int interactomeId;
-  private final int geneA;
-  private final int geneB;
+import java.io.Serializable;
 
-  public InteractionIds(int interactomeId, int geneA, int geneB) {
-    this.interactomeId = interactomeId;
-    this.geneA = geneA;
-    this.geneB = geneB;
-  }
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
+
+class DefaultHasInteractome implements HasInteractome, Serializable {
+  private static final long serialVersionUID = 1L;
+
+  private final Interactome interactome;
   
-  public int getInteractomeId() {
-    return interactomeId;
+  public DefaultHasInteractome(Interactome interactome) {
+    this.interactome = requireNonNull(interactome, "interactome can't be null");
   }
 
-  public int getGeneA() {
-    return geneA;
+  public DefaultHasInteractome(HasInteractome interactome) {
+    this(interactome.getInteractome());
   }
 
-  public int getGeneB() {
-    return geneB;
-  }
-
-  public IntStream getGenes() {
-    return IntStream.of(this.geneA, this.geneB);
+  @Override
+  public Interactome getInteractome() {
+    return this.interactome;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + geneA;
-    result = prime * result + geneB;
-    result = prime * result + interactomeId;
+    result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
     return result;
   }
 
@@ -68,13 +61,13 @@ public class InteractionIds {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractionIds other = (InteractionIds) obj;
-    if (geneA != other.geneA)
-      return false;
-    if (geneB != other.geneB)
-      return false;
-    if (interactomeId != other.interactomeId)
+    DefaultHasInteractome other = (DefaultHasInteractome) obj;
+    if (interactome == null) {
+      if (other.interactome != null)
+        return false;
+    } else if (!interactome.equals(other.interactome))
       return false;
     return true;
   }
+  
 }

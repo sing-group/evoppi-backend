@@ -30,9 +30,9 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.bio.GenePairIndexer;
 import org.sing_group.evoppi.service.bio.GenePairIndexer.GenePairIndex;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilderFactory;
@@ -96,10 +96,10 @@ implements SingleSameSpeciesGeneInteractionsStep {
 
     final SameSpeciesGeneInteractionsContextBuilder contextBuilder = this.contextBuilderFactory.createBuilderFor(context);
     
-    final Stream<InteractionIds> completedInteractions = context.getInteractions().get()
+    final Stream<HasGeneInteractionIds> completedInteractions = context.getInteractions().get()
       .filter(interaction -> interaction.getInteractomeId() != this.interactomeId)
-      .filter(interaction -> !interactomeIndex.has(interaction.getGeneA(), interaction.getGeneB()))
-      .map(interaction -> new InteractionIds(this.interactomeId, interaction.getGeneA(), interaction.getGeneB()))
+      .filter(interaction -> !interactomeIndex.has(interaction))
+      .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction))
       .distinct();
     
     contextBuilder.setCompletedInteractions(completedInteractions);

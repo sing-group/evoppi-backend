@@ -23,12 +23,10 @@ package org.sing_group.evoppi.service.bio.entity;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
@@ -36,13 +34,11 @@ import java.util.stream.Stream;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 
-public class InteractionGroup {
-  private final InteractingGenes interactingGenes;
+public class InteractionGroup implements HasGenePair {
+  private final HasGenePair interactingGenes;
   private final Map<Interaction, Integer> interactions;
-  
-  // Added for performance
-  private final Set<Interactome> interactomes;
 
   public InteractionGroup(Map<Interaction, Integer> interactions) {
     if (!doInteractionsHaveSameGenes(interactions.keySet())) {
@@ -50,12 +46,8 @@ public class InteractionGroup {
     }
     
     final Interaction firstInteraction = interactions.keySet().iterator().next();
-    this.interactingGenes = new InteractingGenes(firstInteraction);
+    this.interactingGenes = firstInteraction;
     this.interactions = new HashMap<>(interactions);
-    
-    this.interactomes = this.getInteractions()
-      .map(Interaction::getInteractome)
-    .collect(toSet());
   }
 
   private static boolean doInteractionsHaveSameGenes(Collection<Interaction> interactions) {
@@ -69,14 +61,12 @@ public class InteractionGroup {
       && countGenes.applyAsLong(Interaction::getGeneB) == 1;
   }
   
-  public InteractingGenes getInteractingGenes() {
-    return interactingGenes;
-  }
-  
+  @Override
   public Gene getGeneA() {
     return this.interactingGenes.getGeneA();
   }
   
+  @Override
   public Gene getGeneB() {
     return this.interactingGenes.getGeneB();
   }
@@ -85,16 +75,8 @@ public class InteractionGroup {
     return interactions.keySet().stream();
   }
   
-  public Stream<Interactome> getInteractomes() {
-    return this.interactomes.stream();
-  }
-  
   public boolean hasInteraction(Interaction interaction) {
     return this.interactions.containsKey(interaction);
-  }
-  
-  public boolean hasInteractome(Interactome interactome) {
-    return this.interactomes.contains(interactome);
   }
   
   public Map<Interaction, Integer> getInteractionDegrees() {
@@ -121,8 +103,13 @@ public class InteractionGroup {
       throw new IllegalArgumentException("Invalid interaction. Genes do not match with this group");
     } else {
       this.interactions.put(interaction, degree);
-      this.interactomes.add(interaction.getInteractome());
     }
+  }
+  
+  private boolean hasInteractome(Interactome interactome) {
+    return this.interactions.keySet().stream()
+      .map(Interaction::getInteractome)
+      .anyMatch(interactome::equals);
   }
   
   @Override

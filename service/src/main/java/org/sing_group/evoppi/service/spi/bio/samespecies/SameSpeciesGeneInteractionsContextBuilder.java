@@ -24,18 +24,18 @@ package org.sing_group.evoppi.service.spi.bio.samespecies;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 
 public interface SameSpeciesGeneInteractionsContextBuilder {
-  public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<InteractionIds> interactions);
+  public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<HasGeneInteractionIds> interactions);
   
-  public default SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Collection<InteractionIds> interactions) {
+  public default SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Collection<HasGeneInteractionIds> interactions) {
     return this.setInteractions(degree, interactions.stream());
   }
   
-  public SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Stream<InteractionIds> interactions);
+  public SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Stream<HasGeneInteractionIds> interactions);
   
-  public default SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Collection<InteractionIds> interactions) {
+  public default SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Collection<HasGeneInteractionIds> interactions) {
     return this.setCompletedInteractions(interactions.stream());
   }
   

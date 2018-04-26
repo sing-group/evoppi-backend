@@ -21,33 +21,17 @@
  */
 package org.sing_group.evoppi.service.bio;
 
-import static java.util.Collections.singleton;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Stream.concat;
 import static javax.transaction.Transactional.TxType.MANDATORY;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import javax.enterprise.inject.Default;
 import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.service.bio.entity.GeneInteraction;
-import org.sing_group.evoppi.service.bio.entity.InteractingGenes;
-import org.sing_group.evoppi.service.bio.entity.InteractionGroup;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 
@@ -55,136 +39,41 @@ import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 public class DefaultInteractionsCalculator implements InteractionsCalculator {
   @Transactional(MANDATORY)
   @Override
-  public void calculateInteractions(Gene gene, Collection<Interactome> interactomes, int maxDegree) {
-    InteractionsCalculator.super.calculateInteractions(gene, interactomes, maxDegree);
-  }
-  
-  @Transactional(MANDATORY)
-  @Override
-  public void calculateInteractions(Gene gene, Collection<Interactome> interactomes, int maxDegree, InteractionsCalculusCallback callback) {
+  public void calculateInteractions(
+    Gene initialGene, int interactomeId, int maxDegree, InteractionsCalculusCallback callback
+  ) {
     callback.calculusStarted();
     
-    final Set<InteractionGroupsAccumulator> accumulators = new HashSet<>();
+    final Set<HasGenePair> interactions = new HashSet<>();
 
-    for (Interactome interactome : interactomes) {
-      final InteractionGroupsAccumulator accumulator = new InteractionGroupsAccumulator();
-      accumulators.add(accumulator);
+    final Set<Gene> closedGenes = new HashSet<>();
+    Set<Gene> openGenes = new HashSet<>();
+    openGenes.add(initialGene);
+    
+    for (int degree = 1; degree <= maxDegree; degree++) {
+      final int currentDegree = degree;
       
-      Set<Gene> genes = singleton(gene);
-      final Set<Interaction> interactions = new HashSet<>();
+      final Set<HasGenePair> newInteractions = openGenes.stream()
+        .flatMap(gene -> gene.getInteractionsOfInteractome(interactomeId))
+        .map(HasGenePair::of)
+      .collect(toSet());
       
-      for (int degree = 1; degree <= maxDegree; degree++) {
-        accumulator.addGroups(calculateInteractions(
-          degree,
-          genes,
-          interaction ->
-            !interactions.contains(interaction) &&
-            interactome.equals(interaction.getInteractome())
-        ));
-   
-        genes = accumulator.getGenes().collect(toSet());
-        accumulator.getInteractions().forEach(interactions::add);
+      newInteractions.removeAll(interactions);
+      
+      interactions.addAll(newInteractions);
+      
+      callback.interactionsCalculated(currentDegree, interactions);
+      
+      closedGenes.addAll(openGenes);
+      
+      if (degree < maxDegree) { // ignored in the last iteration as they will not be needed
+        openGenes = newInteractions.stream()
+          .flatMap(HasGenePair::getGenes)
+          .filter(gene -> !closedGenes.contains(gene))
+        .collect(toSet());
       }
     }
     
-    final Optional<InteractionGroupsAccumulator> accumulator = accumulators.stream()
-      .reduce(InteractionGroupsAccumulator::merge);
-
-    final Stream<GeneInteraction> geneInteractions = accumulator.get().getGeneInteractions();
-    callback.interactionsCalculated(geneInteractions);
-    
     callback.calculusFinished();
-  }
-  
-  private static class InteractionGroupsAccumulator {
-    private final Set<InteractionGroup> groups;
-    
-    public InteractionGroupsAccumulator() {
-      this.groups = new HashSet<>();
-    }
-    
-    protected InteractionGroupsAccumulator(Collection<InteractionGroup> groups) {
-      this.groups = new HashSet<>(groups);
-    }
-    
-    public void addGroups(Collection<InteractionGroup> groups) {
-      groups.stream()
-        .filter(group -> !this.hasGroup(group))
-        .forEach(this.groups::add);
-    }
-    
-    public Stream<GeneInteraction> getGeneInteractions() {
-      return this.groups.stream()
-      .map(group -> new GeneInteraction(
-        group.getGeneA().getId(),
-        group.getGeneB().getId(),
-        group.getInteractionDegrees().entrySet().stream()
-          .collect(toMap(
-            entry -> entry.getKey().getInteractome().getId(),
-            Map.Entry::getValue
-          ))
-      ));
-    }
-    
-    public Stream<Gene> getGenes() {
-      return this.groups.stream()
-        .map(InteractionGroup::getInteractingGenes)
-        .flatMap(InteractingGenes::getGenes)
-        .distinct();
-    }
-    
-    public Stream<Interaction> getInteractions() {
-      return this.groups.stream()
-        .flatMap(InteractionGroup::getInteractions)
-        .distinct();
-    }
-    
-    private boolean hasGroup(InteractionGroup group) {
-      return this.groups.stream()
-        .anyMatch(storedGroup -> storedGroup.getInteractingGenes().equals(group.getInteractingGenes()));
-    }
-    
-    public InteractionGroupsAccumulator merge(InteractionGroupsAccumulator accumulator) {
-      final Function<Collection<InteractionGroup>, Map<Interaction, Integer>> mergeInteractions =
-        interactions -> interactions.stream()
-          .reduce(
-            new HashMap<>(),
-            (acc, group) -> {
-              acc.putAll(group.getInteractionDegrees());
-              return acc;
-            },
-            (acc1, acc2) -> {
-              acc1.putAll(acc2);
-              return acc2;
-            }
-          );
-      
-      final Set<InteractionGroup> groups = concat(this.groups.stream(), accumulator.groups.stream())
-        .collect(groupingBy(InteractionGroup::getInteractingGenes))
-        .values().stream()
-        .map(mergeInteractions)
-        .map(InteractionGroup::new)
-      .collect(toSet());
-      
-      return new InteractionGroupsAccumulator(groups);
-    }
-  }
-  
-  private Set<InteractionGroup> calculateInteractions(
-    int degree, Collection<Gene> genes, Predicate<Interaction> interactionFilter
-  ) {
-    return genes.stream()
-      .flatMap(Gene::getInteractions)
-      .filter(interactionFilter)
-      .distinct()
-      .collect(groupingBy(InteractingGenes::new, toSet()))
-      .values().stream()
-      .map(interactions -> new InteractionGroup(interactions.stream()
-        .collect(toMap(
-          identity(),
-          __ -> degree
-        ))
-      ))
-    .collect(toSet());
   }
 }

@@ -29,7 +29,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline;
@@ -45,7 +45,7 @@ extends PipelineContext<
   DifferentSpeciesGeneInteractionsEvent,
   DifferentSpeciesGeneInteractionsEventManager
 > {
-  public Optional<Map<Integer, Set<InteractionIds>>> getReferenceInteractionsByDegree();
+  public Optional<Map<Integer, Set<HasGeneInteractionIds>>> getReferenceInteractionsByDegree();
   
   public default Optional<IntStream> getReferenceInteractionsDegrees() {
     return this.getReferenceInteractionsByDegree().map(
@@ -54,7 +54,7 @@ extends PipelineContext<
     );
   }
   
-  public default Optional<Stream<InteractionIds>> getReferenceInteractionsWithDegree(int degree) {
+  public default Optional<Stream<HasGeneInteractionIds>> getReferenceInteractionsWithDegree(int degree) {
     return this.getReferenceInteractionsByDegree()
       .map(interactions -> interactions.get(degree))
       .map(Set::stream);
@@ -66,7 +66,7 @@ extends PipelineContext<
     );
   }
   
-  public default Optional<Stream<InteractionIds>> getReferenceInteractions() {
+  public default Optional<Stream<HasGeneInteractionIds>> getReferenceInteractions() {
     return this.getReferenceInteractionsByDegree().map(
       interactions -> interactions.values().stream()
         .flatMap(Set::stream)
@@ -76,17 +76,17 @@ extends PipelineContext<
   public default Optional<IntStream> getReferenceGeneIds() {
     return this.getReferenceInteractions().map(
       interactions -> interactions
-        .flatMapToInt(InteractionIds::getGenes)
+        .flatMapToInt(HasGeneInteractionIds::getGeneIds)
         .distinct()
     );
   }
   
-  public Optional<Stream<InteractionIds>> getReferenceCompletedInteractions();
+  public Optional<Stream<HasGeneInteractionIds>> getReferenceCompletedInteractions();
   
   public default Optional<IntStream> getReferenceCompletedGeneIds() {
     return this.getReferenceCompletedInteractions().map(
       interactions -> interactions
-        .flatMapToInt(InteractionIds::getGenes)
+        .flatMapToInt(HasGeneInteractionIds::getGeneIds)
         .distinct()
     );
   }
@@ -97,7 +97,7 @@ extends PipelineContext<
 
   public Optional<Stream<BlastResult>> getBlastResults();
   
-  public Optional<Map<Integer, Set<InteractionIds>>> getTargetInteractionsByDegree();
+  public Optional<Map<Integer, Set<HasGeneInteractionIds>>> getTargetInteractionsByDegree();
 
   public default Optional<IntStream> getTargetInteractionsDegrees() {
     return this.getTargetInteractionsByDegree().map(
@@ -106,7 +106,7 @@ extends PipelineContext<
     );
   }
   
-  public default Optional<Stream<InteractionIds>> getTargetInteractionsWithDegree(int degree) {
+  public default Optional<Stream<HasGeneInteractionIds>> getTargetInteractionsWithDegree(int degree) {
     return this.getTargetInteractionsByDegree()
       .map(interactions -> interactions.get(degree))
       .map(Set::stream);
@@ -118,7 +118,7 @@ extends PipelineContext<
     );
   }
   
-  public default Optional<Stream<InteractionIds>> getTargetInteractions() {
+  public default Optional<Stream<HasGeneInteractionIds>> getTargetInteractions() {
     return this.getTargetInteractionsByDegree().map(
       interactions -> interactions.values().stream()
         .flatMap(Set::stream)
@@ -128,17 +128,17 @@ extends PipelineContext<
   public default Optional<IntStream> getTargetGeneIds() {
     return this.getTargetInteractions().map(
       interactions -> interactions
-        .flatMapToInt(InteractionIds::getGenes)
+        .flatMapToInt(HasGeneInteractionIds::getGeneIds)
         .distinct()
     );
   }
   
-  public Optional<Stream<InteractionIds>> getTargetCompletedInteractions();
+  public Optional<Stream<HasGeneInteractionIds>> getTargetCompletedInteractions();
   
   public default Optional<IntStream> getTargetCompletedGeneIds() {
     return this.getTargetCompletedInteractions().map(
       interactions -> interactions
-        .flatMapToInt(InteractionIds::getGenes)
+        .flatMapToInt(HasGeneInteractionIds::getGeneIds)
         .distinct()
     );
   }

@@ -35,10 +35,10 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.service.bio.entity.InteractingGenesWithDegree;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
-import org.sing_group.evoppi.service.spi.bio.SingleInteractionsCalculator;
-import org.sing_group.evoppi.service.spi.bio.event.SingleInteractionsCalculusCallback;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
+import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
+import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContextBuilder;
@@ -50,7 +50,7 @@ public class DefaultSameSpeciesCalculateInteractionsGeneInteractionsStep
 implements SingleSameSpeciesGeneInteractionsStep {
   
   private GeneDAO geneDao;
-  private SingleInteractionsCalculator interactionsCalculator;
+  private InteractionsCalculator interactionsCalculator;
   private SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
   private EntityManager entityManager;
   
@@ -60,7 +60,7 @@ implements SingleSameSpeciesGeneInteractionsStep {
   
   public DefaultSameSpeciesCalculateInteractionsGeneInteractionsStep(
     GeneDAO geneDao,
-    SingleInteractionsCalculator interactionsCalculator,
+    InteractionsCalculator interactionsCalculator,
     SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory,
     EntityManager entityManager
   ) {
@@ -85,7 +85,7 @@ implements SingleSameSpeciesGeneInteractionsStep {
   }
   
   @Inject
-  public void setInteractionsCalculator(SingleInteractionsCalculator interactionsCalculator) {
+  public void setInteractionsCalculator(InteractionsCalculator interactionsCalculator) {
     this.interactionsCalculator = requireNonNull(interactionsCalculator);
   }
   
@@ -129,7 +129,7 @@ implements SingleSameSpeciesGeneInteractionsStep {
     return callback.getContext();
   }
   
-  private class BridgeInteractionsCalculusCallback implements SingleInteractionsCalculusCallback {
+  private class BridgeInteractionsCalculusCallback implements InteractionsCalculusCallback {
     private final int interactomeId;
     private final SameSpeciesGeneInteractionsContextBuilder contextBuilder;
     
@@ -146,13 +146,9 @@ implements SingleSameSpeciesGeneInteractionsStep {
     public void calculusStarted() {}
     
     @Override
-    public void interactionsCalculated(int degree, Collection<InteractingGenesWithDegree> interactions) {
-      final Stream<InteractionIds> mappedInteractions = interactions.stream()
-        .map(interaction -> new InteractionIds(
-          this.interactomeId,
-          interaction.getGeneA().getId(),
-          interaction.getGeneB().getId()
-        ));
+    public void interactionsCalculated(int degree, Collection<HasGenePair> interactions) {
+      final Stream<HasGeneInteractionIds> mappedInteractions = interactions.stream()
+        .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction));
       
       contextBuilder.setInteractions(degree, mappedInteractions);
     }

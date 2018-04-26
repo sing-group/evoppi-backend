@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,41 +19,47 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.bio.entity;
+package org.sing_group.evoppi.domain.entities.spi.bio;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.stream.Stream;
+import java.io.Serializable;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
-public class InteractingGenes {
+class DefaultHasGeneInteraction implements HasGeneInteraction, Serializable {
+  private static final long serialVersionUID = 1L;
+  
+  private final Interactome interactome;
   private final Gene geneA;
   private final Gene geneB;
-  
-  public InteractingGenes(Interaction interaction) {
-    this(interaction.getGeneA(), interaction.getGeneB());
-  }
-  
-  public InteractingGenes(Gene geneA, Gene geneB) {
-    requireNonNull(geneA, "geneA can't be null");
-    requireNonNull(geneB, "geneB can't be null");
-    
-    this.geneA = geneA;
-    this.geneB = geneB;
+
+  public DefaultHasGeneInteraction(HasGeneInteraction interaction) {
+    this(interaction.getInteractome(), interaction);
   }
 
+  public DefaultHasGeneInteraction(Interactome interactome, HasGenePair genePair) {
+    this.interactome = requireNonNull(interactome, "interactome can't be null");
+    
+    requireNonNull(genePair, "genePair can't be null");
+    this.geneA = genePair.getGeneA();
+    this.geneB = genePair.getGeneB();
+  }
+
+  @Override
+  public Interactome getInteractome() {
+    return this.interactome;
+  }
+
+  @Override
   public Gene getGeneA() {
-    return geneA;
+    return this.geneA;
   }
-  
+
+  @Override
   public Gene getGeneB() {
-    return geneB;
-  }
-  
-  public Stream<Gene> getGenes() {
-    return Stream.of(this.geneA, this.geneB);
+    return this.geneB;
   }
 
   @Override
@@ -62,6 +68,7 @@ public class InteractingGenes {
     int result = 1;
     result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
     result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
+    result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
     return result;
   }
 
@@ -73,7 +80,7 @@ public class InteractingGenes {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractingGenes other = (InteractingGenes) obj;
+    DefaultHasGeneInteraction other = (DefaultHasGeneInteraction) obj;
     if (geneA == null) {
       if (other.geneA != null)
         return false;
@@ -84,11 +91,12 @@ public class InteractingGenes {
         return false;
     } else if (!geneB.equals(other.geneB))
       return false;
+    if (interactome == null) {
+      if (other.interactome != null)
+        return false;
+    } else if (!interactome.equals(other.interactome))
+      return false;
     return true;
   }
 
-  @Override
-  public String toString() {
-    return "InteractingGenes [geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + "]";
-  }
 }

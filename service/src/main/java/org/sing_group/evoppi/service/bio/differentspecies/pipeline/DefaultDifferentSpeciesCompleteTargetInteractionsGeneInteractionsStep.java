@@ -31,10 +31,10 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.bio.BlastResultOrthologsManager;
 import org.sing_group.evoppi.service.bio.GenePairIndexer;
 import org.sing_group.evoppi.service.bio.GenePairIndexer.GenePairIndex;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
 import org.sing_group.evoppi.service.spi.bio.OrthologsManager;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilder;
@@ -101,27 +101,24 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     
     final OrthologsManager orthologsManager = new BlastResultOrthologsManager(context.getBlastResults().get());
     
-    final Function<InteractionIds, Stream<InteractionIds>> interactionsToTarget = interactionIds ->
+    final Function<HasGeneInteractionIds, Stream<HasGeneInteractionIds>> interactionsToTarget = interactionIds ->
       orthologsManager.mapReferencePairOrthologs(
-        interactionIds.getGeneA(),
-        interactionIds.getGeneB(),
-        (orthologA, orthologB) -> new InteractionIds(this.interactomeId, orthologA, orthologB)
+        interactionIds,
+        (genePairIds) -> HasGeneInteractionIds.of(this.interactomeId, genePairIds)
       );
 
-    final Function<InteractionIds, Stream<InteractionIds>> interactionsToReference = interactionIds ->
+    final Function<HasGeneInteractionIds, Stream<HasGeneInteractionIds>> interactionsToReference = interactionIds ->
       orthologsManager.mapTargetPairOrthologs(
-        interactionIds.getGeneA(),
-        interactionIds.getGeneB(),
-        (orthologA, orthologB) -> new InteractionIds(this.interactomeId, orthologA, orthologB)
+        interactionIds,
+        (genePairIds) -> HasGeneInteractionIds.of(this.interactomeId, genePairIds)
       );
-        
     
-    final Stream<InteractionIds> completedInteractions = context.getReferenceInteractions()
+    final Stream<HasGeneInteractionIds> completedInteractions = context.getReferenceInteractions()
       .orElseThrow(() -> new IllegalStateException("Context should have reference interactions"))
       .filter(interaction -> interaction.getInteractomeId() != this.interactomeId)
       .flatMap(interactionsToTarget)
-      .filter(interaction -> !interactomeIndex.has(interaction.getGeneA(), interaction.getGeneB()))
-      .map(interaction -> new InteractionIds(this.interactomeId, interaction.getGeneA(), interaction.getGeneB()))
+      .filter(interaction -> !interactomeIndex.has(interaction))
+      .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction))
       .flatMap(interactionsToReference)
       .distinct();
     

@@ -59,11 +59,7 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
     case RUNNING:
       if (context.getCompletedInteractions().isPresent()) {
         context.getCompletedInteractions().get()
-          .forEach(interaction -> result.addInteraction(
-              interaction.getGeneA(),
-              interaction.getGeneB(),
-              interaction.getInteractomeId()
-          ));
+          .forEach(interaction -> result.addInteraction(interaction, interaction.getInteractomeId()));
       } else if (context.getInteractions().isPresent()) {
         final Set<Integer> interactomesWithInterations = result.getQueryInteractomeIds()
           .filter(result::hasInteractionsForInteractome)
@@ -75,12 +71,7 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
             context.getInteractionsWithDegree(degree).get()
               .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
               .forEach(interaction -> 
-                result.addInteraction(
-                  interaction.getGeneA(),
-                  interaction.getGeneB(),
-                  interaction.getInteractomeId(),
-                  degree
-                )
+                result.addInteraction(interaction, interaction.getInteractomeId(), degree)
               )
           );
       }

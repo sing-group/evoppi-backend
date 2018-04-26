@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
-import org.sing_group.evoppi.service.bio.entity.InteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilder;
@@ -43,16 +43,16 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
   private final DifferentSpeciesGeneInteractionsConfiguration configuration;
   private final DifferentSpeciesGeneInteractionsEventManager eventManager;
   
-  private Map<Integer, Set<InteractionIds>> referenceInteractions;
-  private Set<InteractionIds> referenceCompletedInteractions;
+  private Map<Integer, Set<HasGeneInteractionIds>> referenceInteractions;
+  private Set<HasGeneInteractionIds> referenceCompletedInteractions;
   
   private Path referenceFastaPath;
   private Path targetFastaPath;
   
   private Set<BlastResult> blastResults;
   
-  private Map<Integer, Set<InteractionIds>> targetInteractions;
-  private Set<InteractionIds> targetCompletedInteractions;
+  private Map<Integer, Set<HasGeneInteractionIds>> targetInteractions;
+  private Set<HasGeneInteractionIds> targetCompletedInteractions;
 
   DefaultDifferentSpeciesGeneInteractionsContextBuilder(DifferentSpeciesGeneInteractionsContext context) {
     this(
@@ -81,13 +81,13 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
     DifferentSpeciesGeneInteractionsPipeline pipeline,
     DifferentSpeciesGeneInteractionsConfiguration configuration,
     DifferentSpeciesGeneInteractionsEventManager eventManager,
-    Map<Integer, Set<InteractionIds>> referenceInteractions,
-    Set<InteractionIds> referenceCompletedInteractions,
+    Map<Integer, Set<HasGeneInteractionIds>> referenceInteractions,
+    Set<HasGeneInteractionIds> referenceCompletedInteractions,
     Path referenceFastaPath,
     Path targetFastaPath,
     Set<BlastResult> blastResults,
-    Map<Integer, Set<InteractionIds>> targetInteractions,
-    Set<InteractionIds> targetCompletedInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> targetInteractions,
+    Set<HasGeneInteractionIds> targetCompletedInteractions
   ) {
     this.pipeline = pipeline;
     this.configuration = configuration;
@@ -102,7 +102,7 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
 
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    int degree, Stream<InteractionIds> interactions
+    int degree, Stream<HasGeneInteractionIds> interactions
   ) {
     if (this.referenceInteractions == null)
       this.referenceInteractions = new HashMap<>();
@@ -114,7 +114,7 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
   
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    Map<Integer, Set<InteractionIds>> referenceInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> referenceInteractions
   ) {
     this.referenceInteractions = referenceInteractions;
     
@@ -123,7 +123,7 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
   
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setReferenceCompletedInteractions(
-    Stream<InteractionIds> interactions
+    Stream<HasGeneInteractionIds> interactions
   ) {
     this.referenceCompletedInteractions = interactions.collect(toSet());
     
@@ -153,7 +153,7 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
 
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    int degree, Stream<InteractionIds> interactions
+    int degree, Stream<HasGeneInteractionIds> interactions
   ) {
     if (this.targetInteractions == null)
       this.targetInteractions = new HashMap<>();
@@ -165,7 +165,7 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
 
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    Map<Integer, Set<InteractionIds>> targetInteractions
+    Map<Integer, Set<HasGeneInteractionIds>> targetInteractions
   ) {
     this.targetInteractions = new HashMap<>(targetInteractions);
     
@@ -174,7 +174,7 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
 
   @Override
   public DifferentSpeciesGeneInteractionsContextBuilder setTargetCompletedInteractions(
-    Stream<InteractionIds> interactions
+    Stream<HasGeneInteractionIds> interactions
   ) {
     this.targetCompletedInteractions = interactions.collect(toSet());
     
