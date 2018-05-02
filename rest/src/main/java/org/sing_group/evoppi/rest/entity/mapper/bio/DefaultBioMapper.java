@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.entity.mapper.bio;
 import static java.util.Objects.requireNonNull;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -42,6 +43,7 @@ import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
+import org.sing_group.evoppi.rest.entity.bio.InteractionResultFilteringOptions;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData.InteractingGenes;
@@ -49,10 +51,17 @@ import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
+import org.sing_group.evoppi.service.bio.entity.InteractionsResultFilter;
+import org.sing_group.evoppi.service.bio.entity.InteractionsResultFilter.InteractionsResultFilterBuilder;
+import org.sing_group.evoppi.service.bio.entity.InteractionsResultFilter.InteractionsResultFilterOrderBuilder;
+import org.sing_group.evoppi.service.spi.bio.GeneService;
 
 @Default
 public class DefaultBioMapper implements BioMapper {
   private UriBuilder uriBuilder;
+  
+  @Inject
+  private GeneService geneService;
 
   @Override
   public void setUriBuilder(UriBuilder uriBuilder) {
@@ -151,7 +160,10 @@ public class DefaultBioMapper implements BioMapper {
   }
   
   @Override
-  public SameSpeciesInteractionsResultData toInteractionQueryResult(SameSpeciesInteractionsResult result) {
+  public SameSpeciesInteractionsResultData toInteractionQueryResult(
+    SameSpeciesInteractionsResult result,
+    InteractionResultFilteringOptions filteringOptions
+  ) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
     
     final IdAndUri[] interactomeIds = result.getQueryInteractomeIds()
@@ -163,8 +175,9 @@ public class DefaultBioMapper implements BioMapper {
       .distinct()
       .mapToObj(id -> new IdAndUri(id, pathBuilder.gene(id).build()))
     .toArray(IdAndUri[]::new);
-    
-    final InteractionResultData[] data = result.getInteractions()
+
+    final InteractionsResultFilter resultFilter = createInteractionsResultFilter(filteringOptions);
+    final InteractionResultData[] interactionData = resultFilter.filter(result.getInteractions())
       .map(this::toInteractionResultData)
     .toArray(InteractionResultData[]::new);
     
@@ -174,18 +187,19 @@ public class DefaultBioMapper implements BioMapper {
       result.getQueryMaxDegree(),
       interactomeIds,
       geneIds,
-      data,
+      (int) result.getInteractions().count(),
+      filteringOptions,
+      interactionData,
       result.getStatus()
     );
   }
 
   @Override
-  public DifferentSpeciesInteractionsResultData toInteractionQueryResult(DifferentSpeciesInteractionsResult result) {
+  public DifferentSpeciesInteractionsResultData toInteractionQueryResult(
+    DifferentSpeciesInteractionsResult result,
+    InteractionResultFilteringOptions filteringOptions
+  ) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
-    
-    final InteractionResultData[] interactionData = result.getInteractions()
-      .map(this::toInteractionResultData)
-    .toArray(InteractionResultData[]::new);
     
     final BlastResultData[] blastResults = result.getBlastResults()
       .map(this::toBlastResultData)
@@ -205,6 +219,11 @@ public class DefaultBioMapper implements BioMapper {
     final IdAndUri[] targetInteractomeIds = result.getTargetInteractomeIds()
       .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
     .toArray(IdAndUri[]::new);
+
+    final InteractionsResultFilter resultFilter = createInteractionsResultFilter(filteringOptions);
+    final InteractionResultData[] interactionData = resultFilter.filter(result.getInteractions())
+      .map(this::toInteractionResultData)
+    .toArray(InteractionResultData[]::new);
     
     return new DifferentSpeciesInteractionsResultData(
       result.getId(),
@@ -214,6 +233,8 @@ public class DefaultBioMapper implements BioMapper {
       result.getQueryMaxDegree(),
       referenceGenes,
       targetGenes,
+      (int) result.getInteractions().count(),
+      filteringOptions,
       interactionData,
       blastResults,
       result.getStatus()
@@ -274,5 +295,39 @@ public class DefaultBioMapper implements BioMapper {
   @Override
   public GeneNameData toGeneNameData(GeneNames geneNames) {
     return new GeneNameData(geneNames.getSource(), geneNames.getNames().toArray(String[]::new));
+  }
+  
+  private InteractionsResultFilter createInteractionsResultFilter(
+    InteractionResultFilteringOptions filteringOptions
+  ) {
+    InteractionsResultFilterBuilder builder = InteractionsResultFilter.builder();
+    
+    if (filteringOptions.hasPagination()) {
+      builder = builder.paginated(filteringOptions.getPage(), filteringOptions.getPageSize());
+    }
+
+    if (filteringOptions.hasOrder()) {
+      final InteractionsResultFilterOrderBuilder orderBuilder = builder.sort(filteringOptions.getSortDirection());
+      
+      switch(filteringOptions.getOrderField()) {
+        case GENE_A_ID:
+          builder = orderBuilder.byGeneAId();
+          break;
+        case GENE_B_ID:
+          builder = orderBuilder.byGeneBId();
+          break;
+        case GENE_A_NAME:
+          builder = orderBuilder.byGeneAName(id -> this.geneService.get(id).getRepresentativeName());
+          break;
+        case GENE_B_NAME:
+          builder = orderBuilder.byGeneBName(id -> this.geneService.get(id).getRepresentativeName());
+          break;
+        case INTERACTOME:
+          builder = orderBuilder.byDegreeInInteractome(filteringOptions.getInteractomeId());
+          break;
+      }
+    }
+    
+    return builder.build();
   }
 }

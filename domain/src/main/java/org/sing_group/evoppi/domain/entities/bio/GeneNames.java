@@ -86,6 +86,13 @@ public class GeneNames implements Serializable {
     return names.stream();
   }
   
+  public String getRepresentativeName() {
+    return names.stream()
+      .sorted()
+      .findFirst()
+      .orElseThrow(() -> new IllegalStateException("No name found for gene: " + this.geneId));
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;

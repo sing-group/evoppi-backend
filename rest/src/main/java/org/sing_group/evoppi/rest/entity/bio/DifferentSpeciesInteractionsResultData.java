@@ -53,10 +53,13 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
   
   public DifferentSpeciesInteractionsResultData(
     String id, int queryGene, IdAndUri[] referenceInteractomes, IdAndUri[] targetInteractomes, int queryMaxDegree,
-    IdAndUri[] referenceGenes, IdAndUri[] targetGenes, InteractionResultData[] interactions,
+    IdAndUri[] referenceGenes, IdAndUri[] targetGenes,
+    int totalInteractions,
+    InteractionResultFilteringOptions filteringOptions,
+    InteractionResultData[] interactions,
     BlastResultData[] blastResults, ExecutionStatus status
   ) {
-    super(id, queryGene, queryMaxDegree, interactions, status);
+    super(id, queryGene, queryMaxDegree, totalInteractions, filteringOptions, interactions, status);
     this.referenceInteractomes = referenceInteractomes;
     this.targetInteractomes = targetInteractomes;
     this.referenceGenes = referenceGenes;

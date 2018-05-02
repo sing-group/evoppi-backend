@@ -23,13 +23,23 @@ package org.sing_group.evoppi.rest.resource.spi.bio;
 
 import javax.ws.rs.core.Response;
 
+import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.service.bio.entity.InteractionOrderField;
+
 public interface InteractionResource {
   public Response getInteractions(
     int geneId, int[] interactomes, int[] referenceInteractomes, int[] targetInteractomes, int maxDegree,
     double evalue, int maxTargetSeqs, double minimumIdentity, int minimumAlignmentLength
   );
 
-  public Response getInterationResult(String resultId);
+  public Response getInterationResult(
+    String resultId,
+    Integer page,
+    Integer pageSize,
+    InteractionOrderField orderField,
+    SortDirection sortDirection,
+    Integer interactomeId
+  );
 
   public Response getInterationResultInteractomeSingleFasta(String resultId, boolean includeVersionSuffix);
   

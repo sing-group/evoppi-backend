@@ -170,7 +170,7 @@ public class AdministratorResourceIntegrationTest {
     final int end = 2;
     final Function<Administrator, String> getter = Administrator::getLogin;
     final String order = "login";
-    final SortDirection sortDirection = SortDirection.DESC;
+    final SortDirection sortDirection = SortDirection.DESCENDING;
     
     final Stream<Administrator> admins = admins(
       start, end, getter, sortDirection

@@ -49,10 +49,12 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
     int queryMaxDegree,
     IdAndUri[] interactomes,
     IdAndUri[] genes,
+    int totalInteractions,
+    InteractionResultFilteringOptions filteringOptions,
     InteractionResultData[] interactions,
     ExecutionStatus status
   ) {
-    super(id, queryGene, queryMaxDegree, interactions, status);
+    super(id, queryGene, queryMaxDegree, totalInteractions, filteringOptions, interactions, status);
     
     this.interactomes = interactomes;
     this.genes = genes;

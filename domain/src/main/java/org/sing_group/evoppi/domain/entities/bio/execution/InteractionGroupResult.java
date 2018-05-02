@@ -112,6 +112,10 @@ public class InteractionGroupResult implements HasGenePairIds, Serializable {
   public Map<Integer, Integer> getInteractomeDegrees() {
     return unmodifiableMap(interactomeDegrees);
   }
+
+  public int getDegreeForInteractome(Integer interactomeId) {
+    return this.interactomeDegrees.get(interactomeId);
+  }
   
   public boolean belongsToInteractome(int interactomeId) {
     return this.interactomeDegrees.containsKey(interactomeId);

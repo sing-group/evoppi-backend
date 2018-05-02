@@ -185,7 +185,7 @@ public class UsersDataset {
   private static <U extends User, T extends Comparable<T>> Stream<U> filterUsers(
     Stream<U> users, int start, int end, Function<U, T> getter, SortDirection sort
   ) {
-    final Comparator<T> compare = sort == SortDirection.ASC
+    final Comparator<T> compare = sort == SortDirection.ASCENDING
       ? (c1, c2) -> c1.compareTo(c2)
       : (c1, c2) -> -c1.compareTo(c2);
     

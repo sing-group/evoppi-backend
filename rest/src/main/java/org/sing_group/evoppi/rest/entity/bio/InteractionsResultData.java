@@ -29,6 +29,8 @@ public abstract class InteractionsResultData {
   private String id;
   private int queryGene;
   private int queryMaxDegree;
+  private int totalInteractions;
+  private InteractionResultFilteringOptions filteringOptions;
   private InteractionResultData[] interactions;
   private ExecutionStatus status;
 
@@ -37,11 +39,19 @@ public abstract class InteractionsResultData {
   }
 
   public InteractionsResultData(
-    String id, int queryGene, int queryMaxDegree, InteractionResultData[] interactions, ExecutionStatus status
+    String id,
+    int queryGene,
+    int queryMaxDegree,
+    int totalInteractions,
+    InteractionResultFilteringOptions filteringOptions,
+    InteractionResultData[] interactions,
+    ExecutionStatus status
   ) {
     this.id = id;
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
+    this.totalInteractions = totalInteractions;
+    this.filteringOptions = filteringOptions;
     this.interactions = interactions;
     this.status = status;
   }
@@ -70,6 +80,22 @@ public abstract class InteractionsResultData {
     this.queryMaxDegree = queryMaxDegree;
   }
 
+  public int getTotalInteractions() {
+    return totalInteractions;
+  }
+
+  public void setTotalInteractions(int totalInteractions) {
+    this.totalInteractions = totalInteractions;
+  }
+
+  public InteractionResultFilteringOptions getFilteringOptions() {
+    return filteringOptions;
+  }
+
+  public void setFilteringOptions(InteractionResultFilteringOptions filterinsOptions) {
+    this.filteringOptions = filterinsOptions;
+  }
+
   public InteractionResultData[] getInteractions() {
     return interactions;
   }
@@ -90,11 +116,13 @@ public abstract class InteractionsResultData {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((filteringOptions == null) ? 0 : filteringOptions.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + Arrays.hashCode(interactions);
     result = prime * result + queryGene;
     result = prime * result + queryMaxDegree;
     result = prime * result + ((status == null) ? 0 : status.hashCode());
+    result = prime * result + totalInteractions;
     return result;
   }
 
@@ -107,6 +135,11 @@ public abstract class InteractionsResultData {
     if (getClass() != obj.getClass())
       return false;
     InteractionsResultData other = (InteractionsResultData) obj;
+    if (filteringOptions == null) {
+      if (other.filteringOptions != null)
+        return false;
+    } else if (!filteringOptions.equals(other.filteringOptions))
+      return false;
     if (id == null) {
       if (other.id != null)
         return false;
@@ -119,6 +152,8 @@ public abstract class InteractionsResultData {
     if (queryMaxDegree != other.queryMaxDegree)
       return false;
     if (status != other.status)
+      return false;
+    if (totalInteractions != other.totalInteractions)
       return false;
     return true;
   }

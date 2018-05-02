@@ -45,10 +45,10 @@ public class ListingOptionsQueryBuilder {
       final Order order;
       
       switch (options.getSort()) {
-        case ASC:
+        case ASCENDING:
           order = cb.asc(orderField);
           break;
-        case DESC:
+        case DESCENDING:
           order = cb.desc(orderField);
           break;
         default:

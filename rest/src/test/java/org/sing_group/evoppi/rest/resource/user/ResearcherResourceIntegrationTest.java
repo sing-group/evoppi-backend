@@ -170,7 +170,7 @@ public class ResearcherResourceIntegrationTest {
     final int end = 3;
     final Function<Researcher, String> getter = Researcher::getLogin;
     final String order = "login";
-    final SortDirection sortDirection = SortDirection.ASC;
+    final SortDirection sortDirection = SortDirection.ASCENDING;
     
     final Stream<Researcher> researchers = researchers(
       start, end, getter, sortDirection

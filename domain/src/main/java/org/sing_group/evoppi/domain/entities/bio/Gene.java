@@ -104,6 +104,13 @@ public class Gene implements Serializable {
   public Stream<GeneNames> getNames() {
     return this.names.stream();
   }
+  
+  public String getRepresentativeName() {
+    return this.names.stream()
+      .findFirst()
+      .map(GeneNames::getRepresentativeName)
+      .orElseThrow(() -> new IllegalStateException("No name found for gene: " + this.id));
+  }
 
   public Species getSpecies() {
     return species;
