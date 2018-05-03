@@ -38,10 +38,20 @@ public interface InteractionResource {
     Integer pageSize,
     InteractionOrderField orderField,
     SortDirection sortDirection,
-    Integer interactomeId
+    Integer interactomeId,
+    boolean summarize
   );
 
   public Response getInterationResultInteractomeSingleFasta(String resultId, boolean includeVersionSuffix);
   
   public Response getInterationResultInteractomeFasta(String resultId, int interactomeId, boolean includeVersionSuffix);
+
+  public Response getInterationResultInteractions(
+    String id,
+    Integer page,
+    Integer pageSize,
+    InteractionOrderField orderField,
+    SortDirection sortDirection,
+    Integer interactomeId
+  );
 }

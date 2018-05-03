@@ -47,8 +47,9 @@ import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
-import org.sing_group.evoppi.rest.entity.bio.InteractionResultFilteringOptions;
+import org.sing_group.evoppi.rest.entity.bio.InteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultData;
+import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptions;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
@@ -171,27 +172,84 @@ public class DefaultInteractionResource implements InteractionResource {
     @QueryParam("pageSize") Integer pageSize,
     @QueryParam("orderField") InteractionOrderField orderField,
     @QueryParam("sortDirection") SortDirection sortDirection,
+    @QueryParam("interactomeId") Integer interactomeId,
+    @QueryParam("summarize") @DefaultValue("false") boolean summarize
+  ) {
+    if (this.service.isSameSpeciesResult(id)) {
+      final SameSpeciesInteractionsResult result = this.service.getSameSpeciesResult(id);
+      
+      if (summarize) {
+        return Response
+          .ok(this.bioMapper.toInteractionQueryResultSummary(result))
+        .build();
+      } else {
+        final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
+          page, pageSize, orderField, sortDirection, interactomeId
+        );
+        
+        return Response
+          .ok(this.bioMapper.toInteractionQueryResult(result, filteringOptions))
+        .build();
+      }
+    } else if (this.service.isDifferentSpeciesResult(id)) {
+      final DifferentSpeciesInteractionsResult result = this.service.getDifferentSpeciesResult(id);
+
+      if (summarize) {
+        return Response
+          .ok(this.bioMapper.toInteractionQueryResultSummary(result))
+        .build();
+      } else {
+        final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
+          page, pageSize, orderField, sortDirection, interactomeId
+        );
+        
+        return Response
+          .ok(this.bioMapper.toInteractionQueryResult(result, filteringOptions))
+        .build();
+      }
+    } else {
+      throw new IllegalArgumentException("Unknown interactions results id: " + id);
+    }
+  }
+
+  @GET
+  @Path("result/{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/interaction")
+  @ApiOperation(
+    value = "Returns the interactions of a interaction calculus.",
+    response = InteractionsData.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown interaction result: {id}")
+  )
+  @Override
+  public Response getInterationResultInteractions(
+    @PathParam("id") String id,
+    @QueryParam("page") Integer page,
+    @QueryParam("pageSize") Integer pageSize,
+    @QueryParam("orderField") InteractionOrderField orderField,
+    @QueryParam("sortDirection") SortDirection sortDirection,
     @QueryParam("interactomeId") Integer interactomeId
   ) {
     if (this.service.isSameSpeciesResult(id)) {
       final SameSpeciesInteractionsResult result = this.service.getSameSpeciesResult(id);
       
-      final InteractionResultFilteringOptions filteringOptions = new InteractionResultFilteringOptions(
-        page, pageSize, orderField, sortDirection, interactomeId
-      );
-        
-      return Response
-        .ok(this.bioMapper.toInteractionQueryResult(result, filteringOptions))
-      .build();
-    } else if (this.service.isDifferentSpeciesResult(id)) {
-      final DifferentSpeciesInteractionsResult result = this.service.getDifferentSpeciesResult(id);
-
-      final InteractionResultFilteringOptions filteringOptions = new InteractionResultFilteringOptions(
+      final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
         page, pageSize, orderField, sortDirection, interactomeId
       );
       
       return Response
-        .ok(this.bioMapper.toInteractionQueryResult(result, filteringOptions))
+        .ok(this.bioMapper.toInteractionsResultData(result, filteringOptions))
+      .build();
+    } else if (this.service.isDifferentSpeciesResult(id)) {
+      final DifferentSpeciesInteractionsResult result = this.service.getDifferentSpeciesResult(id);
+
+      final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
+        page, pageSize, orderField, sortDirection, interactomeId
+      );
+      
+      return Response
+        .ok(this.bioMapper.toInteractionsResultData(result, filteringOptions))
       .build();
     } else {
       throw new IllegalArgumentException("Unknown interactions results id: " + id);

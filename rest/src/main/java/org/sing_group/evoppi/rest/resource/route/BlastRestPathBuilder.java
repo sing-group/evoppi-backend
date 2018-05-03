@@ -19,27 +19,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-
 package org.sing_group.evoppi.rest.resource.route;
 
 import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class ResultRestPathBuilder implements RestPathBuilder {
+public class BlastRestPathBuilder implements RestPathBuilder {
   private UriBuilder builder;
   
-  public ResultRestPathBuilder(UriBuilder builder, String id) {
-    this.builder = builder.clone().path("result").path(id);
+  public BlastRestPathBuilder(UriBuilder builder) {
+    this.builder = builder.clone().path("blast");
   }
   
   @Override
   public URI build() {
     return this.builder.clone().build();
-  }
-
-  public InteractionRestPathBuilder interaction() {
-    return new InteractionRestPathBuilder(this.builder);
   }
 }

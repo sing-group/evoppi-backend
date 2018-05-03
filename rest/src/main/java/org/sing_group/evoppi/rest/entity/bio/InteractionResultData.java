@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.entity.bio;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,36 +41,40 @@ public class InteractionResultData implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @XmlElement(name = "geneA", required = true)
-  private long geneA;
+  private int geneA;
 
   @XmlElement(name = "geneB", required = true)
-  private long geneB;
+  private int geneB;
 
   @XmlJavaTypeAdapter(InteractomeDegreeAdapter.class)
   private Map<Integer, Integer> interactomeDegrees;
   
   InteractionResultData() {}
 
-  public InteractionResultData(long geneA, long geneB, Map<Integer, Integer> interactomeDegrees) {
+  public InteractionResultData(int geneA, int geneB, Map<Integer, Integer> interactomeDegrees) {
     this.geneA = geneA;
     this.geneB = geneB;
     this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
 
-  public long getGeneA() {
+  public int getGeneA() {
     return geneA;
   }
 
-  public void setGeneA(long geneA) {
+  public void setGeneA(int geneA) {
     this.geneA = geneA;
   }
 
-  public long getGeneB() {
+  public int getGeneB() {
     return geneB;
   }
 
-  public void setGeneB(long geneB) {
+  public void setGeneB(int geneB) {
     this.geneB = geneB;
+  }
+  
+  public IntStream getGenes() {
+    return IntStream.of(this.geneA, this.geneB);
   }
   
   public Map<Integer, Integer> getInteractomeDegrees() {
@@ -84,8 +89,8 @@ public class InteractionResultData implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + (int) (geneA ^ (geneA >>> 32));
-    result = prime * result + (int) (geneB ^ (geneB >>> 32));
+    result = prime * result + geneA;
+    result = prime * result + geneB;
     result = prime * result + ((interactomeDegrees == null) ? 0 : interactomeDegrees.hashCode());
     return result;
   }

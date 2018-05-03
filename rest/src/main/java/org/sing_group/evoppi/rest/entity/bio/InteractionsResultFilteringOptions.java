@@ -32,19 +32,19 @@ import org.sing_group.evoppi.service.bio.entity.InteractionOrderField;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "interaction-result-filtering-options", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
+@XmlRootElement(name = "interactions-result-filtering-options", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "interaction-result-filtering-options", description = "Filtering options for the interactions.")
-public class InteractionResultFilteringOptions {
+@ApiModel(value = "interactions-result-filtering-options", description = "Filtering options for the interactions.")
+public class InteractionsResultFilteringOptions {
   private Integer page;
   private Integer pageSize;
   private InteractionOrderField orderField;
   private SortDirection sortDirection;
   private Integer interactomeId;
 
-  InteractionResultFilteringOptions() {}
+  InteractionsResultFilteringOptions() {}
   
-  public InteractionResultFilteringOptions(
+  public InteractionsResultFilteringOptions(
     Integer page, Integer pageSize,
     InteractionOrderField orderField, SortDirection sortDirection,
     Integer interactomeId
@@ -136,7 +136,7 @@ public class InteractionResultFilteringOptions {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractionResultFilteringOptions other = (InteractionResultFilteringOptions) obj;
+    InteractionsResultFilteringOptions other = (InteractionsResultFilteringOptions) obj;
     if (interactomeId == null) {
       if (other.interactomeId != null)
         return false;

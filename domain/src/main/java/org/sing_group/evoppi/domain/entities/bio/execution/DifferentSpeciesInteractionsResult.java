@@ -186,4 +186,23 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
       .flatMapToInt(InteractionGroupResult::getGeneIds)
       .distinct();
   }
+  
+  public boolean hasReferenceGene(int geneId) {
+    return this.getReferenceGeneIds()
+      .anyMatch(referenceGeneId -> referenceGeneId == geneId);
+  }
+  
+  public boolean hasTargetGene(int geneId) {
+    return this.getTargetGeneIds()
+      .anyMatch(targetGeneId -> targetGeneId == geneId);
+  }
+  
+  public IntStream getInteractomeIds() {
+    return IntStream.concat(this.getReferenceInteractomeIds(), this.getTargetInteractomeIds());
+  }
+
+  public boolean hasInteractome(int interactomeId) {
+    return this.getInteractomeIds()
+      .anyMatch(id -> interactomeId == id);
+  }
 }

@@ -30,15 +30,19 @@ import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultData;
+import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
-import org.sing_group.evoppi.rest.entity.bio.InteractionResultFilteringOptions;
+import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptions;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
+import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultData;
+import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 
 public interface BioMapper {
@@ -58,14 +62,31 @@ public interface BioMapper {
 
   public SameSpeciesInteractionsResultData toInteractionQueryResult(
     SameSpeciesInteractionsResult result,
-    InteractionResultFilteringOptions filteringOptions
+    InteractionsResultFilteringOptions filteringOptions
+  );
+  
+  public SameSpeciesInteractionsResultSummaryData toInteractionQueryResultSummary(
+    SameSpeciesInteractionsResult result
   );
 
   public DifferentSpeciesInteractionsResultData toInteractionQueryResult(
     DifferentSpeciesInteractionsResult result,
-    InteractionResultFilteringOptions filteringOptions
+    InteractionsResultFilteringOptions filteringOptions
+  );
+  
+  public DifferentSpeciesInteractionsResultSummaryData toInteractionQueryResultSummary(
+    DifferentSpeciesInteractionsResult result
   );
   
   public InteractionResultData toInteractionResultData(InteractionGroupResult interaction);
 
+  public SameSpeciesInteractionsData toInteractionsResultData(
+    SameSpeciesInteractionsResult result,
+    InteractionsResultFilteringOptions filteringOptions
+  );
+  
+  public DifferentSpeciesInteractionsData toInteractionsResultData(
+    DifferentSpeciesInteractionsResult result,
+    InteractionsResultFilteringOptions filteringOptions
+  );
 }

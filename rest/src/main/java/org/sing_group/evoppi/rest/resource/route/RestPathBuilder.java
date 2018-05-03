@@ -25,6 +25,7 @@ package org.sing_group.evoppi.rest.resource.route;
 
 import java.net.URI;
 
+@FunctionalInterface
 public interface RestPathBuilder {
   public URI build();
 }

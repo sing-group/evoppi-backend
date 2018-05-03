@@ -33,38 +33,41 @@ import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "different-species-interactions-result", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
+@XmlRootElement(
+  name = "different-species-interactions-result", namespace = "http://entity.resource.rest.evoppi.sing-group.org"
+)
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "different-species-interactions-result", description = "Result of an interaction different species query.")
+@ApiModel(
+  value = "different-species-interactions-result", description = "Result of an interaction different species query."
+)
 public class DifferentSpeciesInteractionsResultData extends InteractionsResultData implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private IdAndUri[] referenceInteractomes;
-  
-  private IdAndUri[] targetInteractomes;
-  
-  private IdAndUri[] referenceGenes;
-  
-  private IdAndUri[] targetGenes;
 
-  private BlastResultData[] blastResults;
+  private IdAndUri[] targetInteractomes;
+
+  private DifferentSpeciesInteractionsData interactions;
 
   DifferentSpeciesInteractionsResultData() {}
-  
+
   public DifferentSpeciesInteractionsResultData(
-    String id, int queryGene, IdAndUri[] referenceInteractomes, IdAndUri[] targetInteractomes, int queryMaxDegree,
-    IdAndUri[] referenceGenes, IdAndUri[] targetGenes,
+    String id,
+    int queryGene,
+    int queryMaxDegree,
+    InteractionsResultFilteringOptions filteringOptions,
+    IdAndUri[] referenceInteractomes,
+    IdAndUri[] targetInteractomes,
+    DifferentSpeciesInteractionsData interactions,
     int totalInteractions,
-    InteractionResultFilteringOptions filteringOptions,
-    InteractionResultData[] interactions,
-    BlastResultData[] blastResults, ExecutionStatus status
+    ExecutionStatus status
   ) {
-    super(id, queryGene, queryMaxDegree, totalInteractions, filteringOptions, interactions, status);
+    super(id, queryGene, queryMaxDegree, totalInteractions, status);
+    
     this.referenceInteractomes = referenceInteractomes;
     this.targetInteractomes = targetInteractomes;
-    this.referenceGenes = referenceGenes;
-    this.targetGenes = targetGenes;
-    this.blastResults = blastResults;
+
+    this.interactions = interactions;
   }
 
   public IdAndUri[] getReferenceInteractomes() {
@@ -83,38 +86,20 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
     this.targetInteractomes = targetInteractome;
   }
 
-  public IdAndUri[] getReferenceGenes() {
-    return referenceGenes;
+  public DifferentSpeciesInteractionsData getInteractions() {
+    return interactions;
   }
 
-  public void setReferenceGenes(IdAndUri[] referenceGenes) {
-    this.referenceGenes = referenceGenes;
-  }
-
-  public IdAndUri[] getTargetGenes() {
-    return targetGenes;
-  }
-
-  public void setTargetGenes(IdAndUri[] targetGenes) {
-    this.targetGenes = targetGenes;
-  }
-
-  public BlastResultData[] getBlastResults() {
-    return blastResults;
-  }
-
-  public void setBlastResults(BlastResultData[] blastResults) {
-    this.blastResults = blastResults;
+  public void setInteractions(DifferentSpeciesInteractionsData interactions) {
+    this.interactions = interactions;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + Arrays.hashCode(blastResults);
-    result = prime * result + Arrays.hashCode(referenceGenes);
+    result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
     result = prime * result + Arrays.hashCode(referenceInteractomes);
-    result = prime * result + Arrays.hashCode(targetGenes);
     result = prime * result + Arrays.hashCode(targetInteractomes);
     return result;
   }
@@ -128,13 +113,12 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
     if (getClass() != obj.getClass())
       return false;
     DifferentSpeciesInteractionsResultData other = (DifferentSpeciesInteractionsResultData) obj;
-    if (!Arrays.equals(blastResults, other.blastResults))
-      return false;
-    if (!Arrays.equals(referenceGenes, other.referenceGenes))
+    if (interactions == null) {
+      if (other.interactions != null)
+        return false;
+    } else if (!interactions.equals(other.interactions))
       return false;
     if (!Arrays.equals(referenceInteractomes, other.referenceInteractomes))
-      return false;
-    if (!Arrays.equals(targetGenes, other.targetGenes))
       return false;
     if (!Arrays.equals(targetInteractomes, other.targetInteractomes))
       return false;

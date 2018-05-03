@@ -76,4 +76,9 @@ public class SameSpeciesInteractionsResult extends InteractionsResult implements
   public IntStream getQueryInteractomeIds() {
     return queryInteractomeIds.stream().mapToInt(Integer::intValue);
   }
+
+  public boolean hasInteractome(int id) {
+    return this.getQueryInteractomeIds()
+      .anyMatch(interactomeId -> interactomeId == id);
+  }
 }

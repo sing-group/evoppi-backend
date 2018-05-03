@@ -21,8 +21,6 @@
  */
 package org.sing_group.evoppi.rest.entity.bio;
 
-import java.util.Arrays;
-
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 
 public abstract class InteractionsResultData {
@@ -30,31 +28,21 @@ public abstract class InteractionsResultData {
   private int queryGene;
   private int queryMaxDegree;
   private int totalInteractions;
-  private InteractionResultFilteringOptions filteringOptions;
-  private InteractionResultData[] interactions;
   private ExecutionStatus status;
 
-  public InteractionsResultData() {
-    super();
-  }
-
+  InteractionsResultData() {}
+  
   public InteractionsResultData(
-    String id,
-    int queryGene,
-    int queryMaxDegree,
-    int totalInteractions,
-    InteractionResultFilteringOptions filteringOptions,
-    InteractionResultData[] interactions,
-    ExecutionStatus status
+    String id, int queryGene, int queryMaxDegree, int totalInteractions, ExecutionStatus status
   ) {
     this.id = id;
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
     this.totalInteractions = totalInteractions;
-    this.filteringOptions = filteringOptions;
-    this.interactions = interactions;
     this.status = status;
   }
+
+
 
   public String getId() {
     return id;
@@ -88,22 +76,6 @@ public abstract class InteractionsResultData {
     this.totalInteractions = totalInteractions;
   }
 
-  public InteractionResultFilteringOptions getFilteringOptions() {
-    return filteringOptions;
-  }
-
-  public void setFilteringOptions(InteractionResultFilteringOptions filterinsOptions) {
-    this.filteringOptions = filterinsOptions;
-  }
-
-  public InteractionResultData[] getInteractions() {
-    return interactions;
-  }
-
-  public void setInteractions(InteractionResultData[] interactions) {
-    this.interactions = interactions;
-  }
-
   public ExecutionStatus getStatus() {
     return status;
   }
@@ -116,9 +88,7 @@ public abstract class InteractionsResultData {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((filteringOptions == null) ? 0 : filteringOptions.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + Arrays.hashCode(interactions);
     result = prime * result + queryGene;
     result = prime * result + queryMaxDegree;
     result = prime * result + ((status == null) ? 0 : status.hashCode());
@@ -135,17 +105,10 @@ public abstract class InteractionsResultData {
     if (getClass() != obj.getClass())
       return false;
     InteractionsResultData other = (InteractionsResultData) obj;
-    if (filteringOptions == null) {
-      if (other.filteringOptions != null)
-        return false;
-    } else if (!filteringOptions.equals(other.filteringOptions))
-      return false;
     if (id == null) {
       if (other.id != null)
         return false;
     } else if (!id.equals(other.id))
-      return false;
-    if (!Arrays.equals(interactions, other.interactions))
       return false;
     if (queryGene != other.queryGene)
       return false;
@@ -157,4 +120,5 @@ public abstract class InteractionsResultData {
       return false;
     return true;
   }
+  
 }

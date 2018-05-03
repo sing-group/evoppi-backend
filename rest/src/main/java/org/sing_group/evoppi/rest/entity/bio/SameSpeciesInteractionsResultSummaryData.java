@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,30 +34,27 @@ import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(
-  name = "same-species-interaction-result", namespace = "http://entity.resource.rest.evoppi.sing-group.org"
-)
+@XmlRootElement(name = "same-species-interaction-result-summary", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "same-species-interaction-result", description = "Result of an interaction query.")
-public class SameSpeciesInteractionsResultData extends InteractionsResultData implements Serializable {
+@ApiModel(value = "same-species-interaction-result-summary", description = "Summary of a result of an interaction query.")
+public class SameSpeciesInteractionsResultSummaryData extends InteractionsResultData implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private IdAndUri[] interactomes;
+  
+  private URI interactions;
 
-  private SameSpeciesInteractionsData interactions;
-
-  public SameSpeciesInteractionsResultData(
+  public SameSpeciesInteractionsResultSummaryData(
     String id,
     int queryGene,
     int queryMaxDegree,
-    InteractionsResultFilteringOptions filteringOptions,
     IdAndUri[] interactomes,
-    SameSpeciesInteractionsData interactions,
+    URI interactions,
     int totalInteractions,
     ExecutionStatus status
   ) {
     super(id, queryGene, queryMaxDegree, totalInteractions, status);
-
+    
     this.interactomes = interactomes;
     this.interactions = interactions;
   }
@@ -69,11 +67,11 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
     this.interactomes = interactomes;
   }
 
-  public SameSpeciesInteractionsData getInteractions() {
+  public URI getInteractions() {
     return interactions;
   }
 
-  public void setInteractions(SameSpeciesInteractionsData interactions) {
+  public void setInteractions(URI interactions) {
     this.interactions = interactions;
   }
 
@@ -94,7 +92,7 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
       return false;
     if (getClass() != obj.getClass())
       return false;
-    SameSpeciesInteractionsResultData other = (SameSpeciesInteractionsResultData) obj;
+    SameSpeciesInteractionsResultSummaryData other = (SameSpeciesInteractionsResultSummaryData) obj;
     if (interactions == null) {
       if (other.interactions != null)
         return false;
@@ -104,4 +102,5 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
       return false;
     return true;
   }
+  
 }

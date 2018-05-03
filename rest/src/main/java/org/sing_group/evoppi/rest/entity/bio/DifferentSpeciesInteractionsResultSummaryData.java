@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,47 +34,58 @@ import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(
-  name = "same-species-interaction-result", namespace = "http://entity.resource.rest.evoppi.sing-group.org"
-)
+@XmlRootElement(name = "different-species-interactions-result-summary", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "same-species-interaction-result", description = "Result of an interaction query.")
-public class SameSpeciesInteractionsResultData extends InteractionsResultData implements Serializable {
+@ApiModel(value = "different-species-interactions-result-summary", description = "Result of an interaction different species query.")
+public class DifferentSpeciesInteractionsResultSummaryData extends InteractionsResultData implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  private IdAndUri[] interactomes;
+  private IdAndUri[] referenceInteractomes;
+  
+  private IdAndUri[] targetInteractomes;
+  
+  private URI interactions;
 
-  private SameSpeciesInteractionsData interactions;
-
-  public SameSpeciesInteractionsResultData(
+  DifferentSpeciesInteractionsResultSummaryData() {}
+  
+  public DifferentSpeciesInteractionsResultSummaryData(
     String id,
     int queryGene,
     int queryMaxDegree,
-    InteractionsResultFilteringOptions filteringOptions,
-    IdAndUri[] interactomes,
-    SameSpeciesInteractionsData interactions,
+    IdAndUri[] referenceInteractomes,
+    IdAndUri[] targetInteractomes,
+    URI interactions,
     int totalInteractions,
     ExecutionStatus status
   ) {
     super(id, queryGene, queryMaxDegree, totalInteractions, status);
-
-    this.interactomes = interactomes;
+    
+    this.referenceInteractomes = referenceInteractomes;
+    this.targetInteractomes = targetInteractomes;
     this.interactions = interactions;
   }
 
-  public IdAndUri[] getInteractomes() {
-    return interactomes;
+  public IdAndUri[] getReferenceInteractomes() {
+    return referenceInteractomes;
   }
 
-  public void setInteractomes(IdAndUri[] interactomes) {
-    this.interactomes = interactomes;
+  public void setReferenceInteractomes(IdAndUri[] referenceInteractomes) {
+    this.referenceInteractomes = referenceInteractomes;
   }
 
-  public SameSpeciesInteractionsData getInteractions() {
+  public IdAndUri[] getTargetInteractomes() {
+    return targetInteractomes;
+  }
+
+  public void setTargetInteractomes(IdAndUri[] targetInteractomes) {
+    this.targetInteractomes = targetInteractomes;
+  }
+
+  public URI getInteractions() {
     return interactions;
   }
 
-  public void setInteractions(SameSpeciesInteractionsData interactions) {
+  public void setInteractions(URI interactions) {
     this.interactions = interactions;
   }
 
@@ -82,7 +94,8 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
     final int prime = 31;
     int result = super.hashCode();
     result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
-    result = prime * result + Arrays.hashCode(interactomes);
+    result = prime * result + Arrays.hashCode(referenceInteractomes);
+    result = prime * result + Arrays.hashCode(targetInteractomes);
     return result;
   }
 
@@ -94,13 +107,15 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
       return false;
     if (getClass() != obj.getClass())
       return false;
-    SameSpeciesInteractionsResultData other = (SameSpeciesInteractionsResultData) obj;
+    DifferentSpeciesInteractionsResultSummaryData other = (DifferentSpeciesInteractionsResultSummaryData) obj;
     if (interactions == null) {
       if (other.interactions != null)
         return false;
     } else if (!interactions.equals(other.interactions))
       return false;
-    if (!Arrays.equals(interactomes, other.interactomes))
+    if (!Arrays.equals(referenceInteractomes, other.referenceInteractomes))
+      return false;
+    if (!Arrays.equals(targetInteractomes, other.targetInteractomes))
       return false;
     return true;
   }
