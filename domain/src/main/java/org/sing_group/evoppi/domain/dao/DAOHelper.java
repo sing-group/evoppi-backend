@@ -23,15 +23,16 @@
 
 package org.sing_group.evoppi.domain.dao;
 
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static org.sing_group.fluent.checker.Checks.requireNonNullArray;
+import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
+import static org.sing_group.fluent.checker.Checks.requireNonNullCollection;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -105,12 +106,6 @@ public class DAOHelper<K, T> {
     if (predicates.length > 0)
       select = select.where(predicates);
     
-//    final Predicate[] predicates = filters.entrySet().stream()
-//      .map(entry -> cb().equal(root.get(entry.getKey()), entry.getValue()))
-//    .toArray(Predicate[]::new);
-    
-    select = select.where(predicates);
-    
     final TypedQuery<T> query = optionsBuilder.addLimits(em.createQuery(select));
     
     return query.getResultList();
@@ -125,27 +120,31 @@ public class DAOHelper<K, T> {
     this.em.remove(entity);
     this.em.flush();
   }
-
-  @SafeVarargs
-  public final <F> List<T> listBy(String fieldName, F ... value) {
-    return createFieldQuery(fieldName, empty(), empty(), value)
-      .getResultList();
-  }
-
-  @SafeVarargs
-  public final <F> List<T> listBy(String fieldName, int startPosition, int maxResults, F ... value) {
-    return createFieldQuery(fieldName, Optional.of(startPosition), Optional.of(maxResults), value)
-      .getResultList();
-  }
-
-  @SafeVarargs
-  public final <F> List<T> listBy(String fieldName, Optional<Integer> startPosition, Optional<Integer> maxResults, F ... value) {
-    return createFieldQuery(fieldName, startPosition, maxResults, value)
-      .getResultList();
+  
+  public final <F> List<T> listBy(String fieldName, F values) {
+    return this.listBy(fieldName, singleton(values), ListingOptions.noModification());
   }
   
+  public final <F> List<T> listBy(String fieldName, F values, ListingOptions listingOptions) {
+    return createFieldQuery(fieldName, singleton(values), listingOptions)
+      .getResultList();
+  }
+
+  public final <F> List<T> listBy(String fieldName, Set<F> values) {
+    return this.listBy(fieldName, values, ListingOptions.noModification());
+  }
+  
+  public final <F> List<T> listBy(String fieldName, Set<F> values, ListingOptions listingOptions) {
+    return createFieldQuery(fieldName, values, listingOptions)
+      .getResultList();
+  }
+
   public <F> T getBy(String fieldName, F value) {
-    return createFieldQuery(fieldName, empty(), empty(), value)
+    return getBy(fieldName, value, ListingOptions.noModification());
+  }
+  
+  public <F> T getBy(String fieldName, F value, ListingOptions listingOptions) {
+    return createFieldQuery(fieldName, singleton(value), listingOptions)
       .getSingleResult();
   }
 
@@ -157,33 +156,42 @@ public class DAOHelper<K, T> {
     return this.em.createQuery(query).getSingleResult();
   }
   
-  @SafeVarargs
   public final <F> TypedQuery<T> createFieldQuery(
     String fieldName,
-    Optional<Integer> startPosition,
-    Optional<Integer> maxResults,
-    F ... values
+    Set<F> values,
+    ListingOptions listingOptions
   ) {
     requireNonNull(fieldName, "Fieldname can't be null");
-    requireNonNullArray(values);
+    requireNonNullCollection(values);
+    requireNonEmpty(values, "At least one value must be provided for the field");
     
-    final CriteriaQuery<T> query = createCBQuery();
+    CriteriaQuery<T> query = createCBQuery();
     final Root<T> root = query.from(getEntityType());
     
     final Function<F, Predicate> fieldEqualsTo = value -> 
       cb().equal(root.get(fieldName), value);
+
+    final ListingOptionsQueryBuilder queryBuilder = new ListingOptionsQueryBuilder(listingOptions);
       
-    final Predicate predicate = values.length == 1 ?
-      fieldEqualsTo.apply(values[0]) :
-      cb().or(Stream.of(values)
+    final Predicate predicate = values.size() == 1 ?
+      fieldEqualsTo.apply(values.iterator().next()) :
+      cb().or(values.stream()
         .map(fieldEqualsTo)
       .toArray(Predicate[]::new));
     
-    return em.createQuery(
-      query.select(root).where(predicate)
-    )
-    .setFirstResult(startPosition.orElse(0))
-    .setMaxResults(maxResults.orElse(Integer.MAX_VALUE));
+    query = query.select(root).where(predicate);
+    
+    if (listingOptions == null) {
+      return em.createQuery(
+        query.select(root).where(predicate)
+      );
+    } else {
+      query = queryBuilder.addOrder(cb(), query, root);
+      
+      return queryBuilder.addLimits(em.createQuery(
+        query.select(root).where(predicate)
+      ));
+    }
   }
   
   public EntityManager em() {

@@ -23,21 +23,36 @@
 
 package org.sing_group.evoppi.domain.dao;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.util.Arrays.asList;
+import static org.sing_group.fluent.checker.Checks.requireNonNegative;
 
-public class ListingOptions {
-  private final int start;
-  private final int end;
-  private final String order;
-  private final SortDirection sort;
+import java.io.Serializable;
+import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.Stream;
+
+public class ListingOptions implements Serializable {
+  private static final long serialVersionUID = 1L;
   
-  public ListingOptions(int start, int end, String order, SortDirection sort) {
-    if (min(start, end) < 0) {
-      if (max(start, end) >= 0) {
-        throw new IllegalArgumentException("start and end parameters should be positive or negative at the same time");
-      }
-    } else {
+  private final Integer start;
+  private final Integer end;
+  private final List<SortField> sortFields;
+  
+  public static ListingOptions noModification() {
+    return new ListingOptions(null, null);
+  }
+  
+  public static ListingOptions between(int start, int end) {
+    return new ListingOptions(start, end);
+  }
+  
+  public ListingOptions(Integer start, Integer end, SortField ... sortFields) {
+    if (start == null ^ end == null) {
+      throw new IllegalArgumentException("start and end must be used together");
+    } else if (start != null) {
+      requireNonNegative(start, "start can't be negative");
+      requireNonNegative(end, "end can't be negative");
+
       if (start > end)
         throw new IllegalArgumentException("start should be lower or equal to end");
     }
@@ -45,44 +60,128 @@ public class ListingOptions {
     this.start = start;
     this.end = end;
     
-    if (order != null && (sort == null || sort == SortDirection.NONE)) {
-      throw new IllegalArgumentException("An sort direction should be provided when using an order field");
-    }
-    
-    this.order = order;
-    this.sort = sort;
+    this.sortFields = asList(sortFields);
   }
 
-  public int getStart() {
-    return start;
+  public OptionalInt getStart() {
+    return start == null ? OptionalInt.empty() : OptionalInt.of(start);
   }
 
-  public int getEnd() {
-    return this.end;
+  public OptionalInt getEnd() {
+    return end == null ? OptionalInt.empty() : OptionalInt.of(end);
   }
   
   public boolean hasResultLimits() {
-    return this.start >= 0;
+    return this.start != null;
   }
   
-  public int getMaxResults() {
+  public OptionalInt getMaxResults() {
     if (this.hasResultLimits()) {
-      return this.end - this.start + 1;
+      return OptionalInt.of(this.end - this.start + 1);
     } else {
-      return -1;
+      return OptionalInt.empty();
     }
   }
   
   public boolean hasOrder() {
-    return this.order != null;
+    return !this.sortFields.isEmpty();
   }
 
-  public String getOrder() {
-    return this.order;
-  }
-
-  public SortDirection getSort() {
-    return sort;
+  public Stream<SortField> getSortFields() {
+    return sortFields.stream();
   }
   
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((end == null) ? 0 : end.hashCode());
+    result = prime * result + ((sortFields == null) ? 0 : sortFields.hashCode());
+    result = prime * result + ((start == null) ? 0 : start.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    ListingOptions other = (ListingOptions) obj;
+    if (end == null) {
+      if (other.end != null)
+        return false;
+    } else if (!end.equals(other.end))
+      return false;
+    if (sortFields == null) {
+      if (other.sortFields != null)
+        return false;
+    } else if (!sortFields.equals(other.sortFields))
+      return false;
+    if (start == null) {
+      if (other.start != null)
+        return false;
+    } else if (!start.equals(other.start))
+      return false;
+    return true;
+  }
+
+  public static class SortField implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    private final String sortField;
+    private final SortDirection sortDirection;
+    
+    public static SortField ascending(String sortField) {
+      return new SortField(sortField, SortDirection.ASCENDING);
+    }
+    
+    public static SortField descending(String sortField) {
+      return new SortField(sortField, SortDirection.DESCENDING);
+    }
+    
+    public SortField(String sortField, SortDirection sortDirection) {
+      super();
+      this.sortField = sortField;
+      this.sortDirection = sortDirection;
+    }
+
+    public String getSortField() {
+      return sortField;
+    }
+
+    public SortDirection getSortDirection() {
+      return sortDirection;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((sortDirection == null) ? 0 : sortDirection.hashCode());
+      result = prime * result + ((sortField == null) ? 0 : sortField.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      SortField other = (SortField) obj;
+      if (sortDirection != other.sortDirection)
+        return false;
+      if (sortField == null) {
+        if (other.sortField != null)
+          return false;
+      } else if (!sortField.equals(other.sortField))
+        return false;
+      return true;
+    }
+  }
 }

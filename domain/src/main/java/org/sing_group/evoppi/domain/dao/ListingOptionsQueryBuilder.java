@@ -24,12 +24,14 @@
 package org.sing_group.evoppi.domain.dao;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 public class ListingOptionsQueryBuilder {
@@ -41,19 +43,18 @@ public class ListingOptionsQueryBuilder {
   
   public <T> CriteriaQuery<T> addOrder(CriteriaBuilder cb, CriteriaQuery<T> query, Root<T> root) {
     if (options.hasOrder()) {
-      final Path<Object> orderField = root.get(options.getOrder());
-      final Order order;
-      
-      switch (options.getSort()) {
-        case ASCENDING:
-          order = cb.asc(orderField);
-          break;
-        case DESCENDING:
-          order = cb.desc(orderField);
-          break;
-        default:
-          throw new IllegalStateException("Invalid sort direction: " + options.getSort());
-      }
+      final List<Order> order = this.options.getSortFields()
+        .map(sortField -> {
+          switch (sortField.getSortDirection()) {
+            case ASCENDING:
+              return cb.asc(root.get(sortField.getSortField()));
+            case DESCENDING:
+              return cb.desc(root.get(sortField.getSortField()));
+            default:
+              throw new IllegalStateException("Invalid sort direction: " + sortField.getSortDirection());
+          }
+        })
+      .collect(toList());
       
       return query.orderBy(order);
     } else {
@@ -64,8 +65,8 @@ public class ListingOptionsQueryBuilder {
   public <T> TypedQuery<T> addLimits(TypedQuery<T> query) {
     if (this.options.hasResultLimits()) {
       return query
-        .setFirstResult(options.getStart())
-        .setMaxResults(options.getMaxResults());
+        .setFirstResult(options.getStart().getAsInt())
+        .setMaxResults(options.getMaxResults().getAsInt());
     } else {
       return query;
     }
