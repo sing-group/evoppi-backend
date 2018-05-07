@@ -21,6 +21,7 @@
  */
 package org.sing_group.evoppi.domain.entities.spi.bio;
 
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -59,5 +60,30 @@ public interface HasGenePair extends HasGenePairIds {
   
   public static HasGenePair of(HasGenePair genePair) {
     return new DefaultHasGenePair(genePair);
+  }
+  
+  public static HasGenePair from(HasGenePair genePair, IntFunction<Gene> geneMapper) {
+    return new HasGenePair() {
+      
+      @Override
+      public int getGeneAId() {
+        return genePair.getGeneAId();
+      }
+      
+      @Override
+      public int getGeneBId() {
+        return genePair.getGeneBId();
+      }
+      
+      @Override
+      public Gene getGeneA() {
+        return geneMapper.apply(this.getGeneAId());
+      }
+      
+      @Override
+      public Gene getGeneB() {
+        return geneMapper.apply(this.getGeneBId());
+      }
+    };
   }
 }

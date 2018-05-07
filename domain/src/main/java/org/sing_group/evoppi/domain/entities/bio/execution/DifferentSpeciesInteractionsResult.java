@@ -24,6 +24,7 @@ package org.sing_group.evoppi.domain.entities.bio.execution;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -32,17 +33,19 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
 @Entity
 @DiscriminatorValue("DIFF")
@@ -50,27 +53,25 @@ import javax.persistence.Table;
 public class DifferentSpeciesInteractionsResult extends InteractionsResult implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @ElementCollection
-  @CollectionTable(
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {})
+  @JoinTable(
     name = "different_species_interactions_result_reference_interactomes",
     joinColumns = {
       @JoinColumn(name = "resultId", referencedColumnName = "id")
     },
     foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_reference_interactomes")
   )
-  @Column(name = "interactomeId", nullable = false)
-  private Set<Integer> referenceInteractomeIds;
-
-  @ElementCollection
-  @CollectionTable(
+  private Set<Interactome> referenceInteractome;
+  
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {})
+  @JoinTable(
     name = "different_species_interactions_result_target_interactomes",
     joinColumns = {
       @JoinColumn(name = "resultId", referencedColumnName = "id")
     },
     foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_target_interactomes")
   )
-  @Column(name = "interactomeId", nullable = false)
-  private Set<Integer> targetInteractomeIds;
+  private Set<Interactome> targetInteractome;
 
   @Embedded
   private BlastQueryOptions blastQueryOptions;
@@ -91,16 +92,16 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     String name,
     String description,
     String resultReference,
-    int queryGeneId,
-    Set<Integer> referenceInteractomeIds,
-    Set<Integer> targetInteractomeIds,
+    Gene queryGene,
+    Collection<Interactome> referenceInteractome,
+    Collection<Interactome> targetInteractome,
     BlastQueryOptions blastQueryOptions,
     int queryMaxDegree
   ) {
-    super(name, description, resultReference, queryGeneId, queryMaxDegree);
+    super(name, description, resultReference, queryGene, queryMaxDegree);
     
-    this.referenceInteractomeIds = new HashSet<>(referenceInteractomeIds);
-    this.targetInteractomeIds = new HashSet<>(targetInteractomeIds);
+    this.referenceInteractome = new HashSet<>(referenceInteractome);
+    this.targetInteractome = new HashSet<>(targetInteractome);
 
     this.blastQueryOptions = blastQueryOptions;
     this.blastResults = new HashSet<>();
@@ -110,27 +111,35 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     String name,
     String description,
     Function<String, String> resultReferenceBuilder,
-    int queryGeneId,
-    Set<Integer> referenceInteractomeIds,
-    Set<Integer> targetInteractomeIds,
+    Gene queryGene,
+    Collection<Interactome> referenceInteractome,
+    Collection<Interactome> targetInteractome,
     BlastQueryOptions blastQueryOptions,
     int queryMaxDegree
   ) {
-    super(name, description, resultReferenceBuilder, queryGeneId, queryMaxDegree);
+    super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree);
     
-    this.referenceInteractomeIds = new HashSet<>(referenceInteractomeIds);
-    this.targetInteractomeIds = new HashSet<>(targetInteractomeIds);
+    this.referenceInteractome = new HashSet<>(referenceInteractome);
+    this.targetInteractome = new HashSet<>(targetInteractome);
     
     this.blastQueryOptions = blastQueryOptions;
     this.blastResults = new HashSet<>();
   }
 
   public IntStream getReferenceInteractomeIds() {
-    return referenceInteractomeIds.stream().mapToInt(Integer::intValue);
+    return getReferenceInteractomes().mapToInt(Interactome::getId);
+  }
+  
+  public Stream<Interactome> getReferenceInteractomes() {
+    return this.referenceInteractome.stream();
   }
 
   public IntStream getTargetInteractomeIds() {
-    return targetInteractomeIds.stream().mapToInt(Integer::intValue);
+    return getTargetInteractomes().mapToInt(Interactome::getId);
+  }
+  
+  public Stream<Interactome> getTargetInteractomes() {
+    return this.targetInteractome.stream();
   }
   
   public BlastQueryOptions getBlastQueryOptions() {

@@ -26,8 +26,10 @@ import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -99,23 +101,30 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public SameSpeciesInteractionsResult findSameSpeciesInteractions(
-    int geneId, int[] interactomes, int maxDegree, Function<String, String> resultReferenceBuilder
+    int geneId, int[] interactomeIds, int maxDegree, Function<String, String> resultReferenceBuilder
   ) {
     if (maxDegree < 1 || maxDegree > 3)
       throw new IllegalArgumentException("maxDegree must be between 1 and 3");
     
-    requireNonEmpty(interactomes, "At least one interactome id should be provided");
+    requireNonEmpty(interactomeIds, "At least one interactome id should be provided");
     
-    this.checkSameSpecies(interactomes);
+    this.checkSameSpecies(interactomeIds);
+    
+    final Gene gene = this.geneDao.getGene(geneId);
+    final Collection<Interactome> interactomes = IntStream.of(interactomeIds)
+      .mapToObj(this.interactomeDao::getInteractome)
+    .collect(Collectors.toSet());
     
     final SameSpeciesInteractionsResult result = this.sameInteractionsResultDao.create(
       "Same species interactions",
       "Find same species interactions",
       resultReferenceBuilder,
-      geneId, maxDegree, interactomes
+      gene,
+      maxDegree,
+      interactomes
     );
     
-    this.taskSameEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomes, maxDegree, result.getId()));
+    this.taskSameEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomeIds, maxDegree, result.getId()));
     
     result.setScheduled();
     
@@ -124,7 +133,7 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public DifferentSpeciesInteractionsResult findDifferentSpeciesInteractions(
-    int geneId, int[] referenceInteractomes, int[] targetInteractomes, BlastQueryOptions blastOptions,
+    int geneId, int[] referenceInteractomeIds, int[] targetInteractomeIds, BlastQueryOptions blastOptions,
     int maxDegree, Function<String, String> resultReferenceBuilder
   ) {
     if (maxDegree < 1 || maxDegree > 3)
@@ -132,25 +141,35 @@ public class DefaultInteractionService implements InteractionService {
     
     final Gene gene = this.geneDao.getGene(geneId);
     
-    if (!IntStream.of(referenceInteractomes).anyMatch(interactome -> gene.belongsToInteractome(interactome))) {
+    if (!IntStream.of(referenceInteractomeIds).anyMatch(interactome -> gene.belongsToInteractome(interactome))) {
       throw new IllegalArgumentException("gene must belong to, at least, one reference interactomes");
     }
     
-    checkDifferentSpecies(referenceInteractomes, targetInteractomes);
+    checkDifferentSpecies(referenceInteractomeIds, targetInteractomeIds);
     
-    final Set<Integer> referenceInteractomeIds = IntStream.of(referenceInteractomes).boxed().collect(toSet());
-    final Set<Integer> targetInteractomeIds = IntStream.of(targetInteractomes).boxed().collect(toSet());
+    final Collection<Interactome> referenceInteractomes = IntStream.of(referenceInteractomeIds)
+      .mapToObj(this.interactomeDao::getInteractome)
+    .collect(Collectors.toSet());
+    
+    final Collection<Interactome> targetInteractomes = IntStream.of(targetInteractomeIds)
+      .mapToObj(this.interactomeDao::getInteractome)
+    .collect(Collectors.toSet());
     
     final DifferentSpeciesInteractionsResult result = this.differentInteractionsResultDao.create(
       "Different species interactions",
       "Find different species interactions",
       resultReferenceBuilder,
-      geneId, referenceInteractomeIds, targetInteractomeIds, blastOptions, maxDegree
+      gene, referenceInteractomes, targetInteractomes, blastOptions, maxDegree
     );
     
     this.taskDifferentEvents.fire(new DifferentSpeciesInteractionsRequestEvent(
-      geneId, referenceInteractomeIds, targetInteractomeIds, blastOptions, maxDegree, result.getId())
-    );
+      geneId,
+      referenceInteractomeIds,
+      targetInteractomeIds,
+      blastOptions,
+      maxDegree,
+      result.getId()
+    ));
     
     result.setScheduled();
     

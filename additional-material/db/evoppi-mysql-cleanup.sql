@@ -10,7 +10,7 @@ TRUNCATE TABLE `different_species_interactions_result`;
 TRUNCATE TABLE `same_species_interactions_result_query_interactome`;
 TRUNCATE TABLE `same_species_interactions_result`;
 
-TRUNCATE TABLE `interaction_group_result_interactome`;
+TRUNCATE TABLE `interaction_group_result_interactome_degree`;
 TRUNCATE TABLE `interaction_group_result`;
 TRUNCATE TABLE `interactions_result`;
 

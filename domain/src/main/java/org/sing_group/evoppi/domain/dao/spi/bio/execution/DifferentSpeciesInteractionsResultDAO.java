@@ -21,9 +21,11 @@
  */
 package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.function.Function;
 
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 
@@ -37,9 +39,9 @@ public interface DifferentSpeciesInteractionsResultDAO {
     String name,
     String description,
     String resultReference,
-    int queryGeneId,
-    Set<Integer> referenceInteractomesIds,
-    Set<Integer> targetInteractomesIds,
+    Gene queryGene,
+    Collection<Interactome> referenceInteractomes,
+    Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastOptions,
     int queryMaxDegree
   );
@@ -48,9 +50,9 @@ public interface DifferentSpeciesInteractionsResultDAO {
     String name,
     String description,
     Function<String, String> resultReferenceBuilder,
-    int queryGeneId,
-    Set<Integer> referenceInteractomesIds,
-    Set<Integer> targetInteractomesIds,
+    Gene queryGene,
+    Collection<Interactome> referenceInteractomes,
+    Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastOptions,
     int queryMaxDegree
   );

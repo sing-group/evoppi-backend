@@ -21,8 +21,11 @@
  */
 package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
+import java.util.Collection;
 import java.util.function.Function;
 
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 
 public interface SameSpeciesInteractionsResultDAO {
@@ -33,12 +36,12 @@ public interface SameSpeciesInteractionsResultDAO {
 
   public SameSpeciesInteractionsResult create(
     String name, String description, String resultReference,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
   );
 
   public SameSpeciesInteractionsResult create(
     String name, String description, Function<String, String> resultReferenceBuilder,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
   );
 
 }

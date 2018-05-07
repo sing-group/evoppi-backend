@@ -43,9 +43,9 @@
     <class>org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions</class>
     <class>org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult</class>
     <class>org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult</class>
+    <class>org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultInteractomeDegree</class>
     <class>org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult</class>
     <class>org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult</class>
-    <class>org.sing_group.evoppi.domain.entities.execution.Work</class>
     <class>org.sing_group.evoppi.domain.entities.execution.WorkStep</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
 

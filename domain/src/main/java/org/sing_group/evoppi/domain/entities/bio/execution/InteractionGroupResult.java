@@ -22,177 +22,256 @@
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
 import static java.util.Collections.singletonMap;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult.InteractionGroupResultId;
-import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 
 @Entity
 @Table(name = "interaction_group_result")
 @IdClass(InteractionGroupResultId.class)
-public class InteractionGroupResult implements HasGenePairIds, Serializable {
+public class InteractionGroupResult implements HasGenePair, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @Column(name = "interactionsResultId")
-  private String interactionsResultId;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @JoinColumn(name = "interactionsResult", referencedColumnName = "id", nullable = false)
+  private InteractionsResult interactionsResult;
 
   @Id
-  @Column(name = "geneAId")
-  private int geneAId;
-
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @JoinColumn(name = "geneA", referencedColumnName = "id", nullable = false)
+  private Gene geneA;
+  
   @Id
-  @Column(name = "geneBId")
-  private int geneBId;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @JoinColumn(name = "geneB", referencedColumnName = "id", nullable = false)
+  private Gene geneB;
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(
-    name = "interaction_group_result_interactome",
-    joinColumns = {
-      @JoinColumn(name = "interactionsResultId", referencedColumnName = "interactionsResultId"),
-      @JoinColumn(name = "geneAId", referencedColumnName = "geneAId"),
-      @JoinColumn(name = "geneBId", referencedColumnName = "geneBId")
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumns(
+    value = {
+      @JoinColumn(name = "interactionsResult", referencedColumnName = "interactionsResult"),
+      @JoinColumn(name = "geneA", referencedColumnName = "geneA"),
+      @JoinColumn(name = "geneB", referencedColumnName = "geneB"),
     },
-    foreignKey = @ForeignKey(name = "FK_interaction_group_result_interactome")
+    foreignKey = @ForeignKey(name = "FK_interaction_group_result_interactome_degree")
   )
-  @Column(name = "degree", nullable = false)
-  private Map<Integer, Integer> interactomeDegrees;
+  private Set<InteractionGroupResultInteractomeDegree> interactomeDegrees;
 
   InteractionGroupResult() {}
   
   public InteractionGroupResult(
-    String interactionsResultId, HasGenePairIds genePairIds, Map<Integer, Integer> interactomeDegrees
+    InteractionsResult interactionsResult, HasGenePair genePair, Map<Interactome, Integer> interactomeDegrees
   ) {
-    this.interactionsResultId = interactionsResultId;
-    this.geneAId = genePairIds.getGeneAId();
-    this.geneBId = genePairIds.getGeneBId();
-    this.interactomeDegrees = new HashMap<>(interactomeDegrees);
+    this.interactionsResult = interactionsResult;
+    this.geneA = genePair.getGeneA();
+    this.geneB = genePair.getGeneB();
+    this.interactomeDegrees = interactomeDegrees.entrySet().stream()
+      .map(entry -> new InteractionGroupResultInteractomeDegree(
+        InteractionGroupResult.this.interactionsResult,
+        InteractionGroupResult.this.geneA,
+        InteractionGroupResult.this.geneB,
+        entry.getKey(),
+        entry.getValue()
+      ))
+    .collect(toSet());
   }
   
   public InteractionGroupResult(
-    String interactionsResultId, HasGenePairIds genePairIds, int interactome, int degree
+    InteractionsResult interactionsResult, HasGenePair genePair, Interactome interactome, int degree
   ) {
-    this(interactionsResultId, genePairIds, singletonMap(interactome, degree));
+    this(interactionsResult, genePair, singletonMap(interactome, degree));
   }
 
-  public String getInteractionsResultId() {
-    return interactionsResultId;
-  }
-
-  @Override
-  public int getGeneAId() {
-    return geneAId;
+  public InteractionsResult getInteractionsResult() {
+    return interactionsResult;
   }
 
   @Override
-  public int getGeneBId() {
-    return geneBId;
+  public Gene getGeneA() {
+    return geneA;
+  }
+  
+  @Override
+  public Gene getGeneB() {
+    return geneB;
   }
   
   public IntStream getInteractomeIds() {
-    return interactomeDegrees.keySet().stream().mapToInt(Integer::intValue);
+    return this.getInteractomes()
+      .mapToInt(Interactome::getId);
   }
   
-  public Map<Integer, Integer> getInteractomeDegrees() {
-    return unmodifiableMap(interactomeDegrees);
+  public Stream<Interactome> getInteractomes() {
+    return this.interactomeDegrees.stream()
+      .map(InteractionGroupResultInteractomeDegree::getInteractome);
+  }
+  
+  public Map<Interactome, Integer> getInteractomeDegrees() {
+    return this.interactomeDegrees.stream()
+      .collect(toMap(
+        InteractionGroupResultInteractomeDegree::getInteractome,
+        InteractionGroupResultInteractomeDegree::getDegree
+      ));
+  }
+  
+  public Map<Integer, Integer> getInteractomeDegreesById() {
+    return this.interactomeDegrees.stream()
+      .collect(toMap(
+        interactomeDegree -> interactomeDegree.getInteractome().getId(),
+        InteractionGroupResultInteractomeDegree::getDegree
+      ));
+  }
+  
+  public int getDegreeForInteractome(int interactomeId) {
+    final Optional<Interactome> interactome = this.getInteractomes()
+      .filter(candidateInteractome -> candidateInteractome.getId() == interactomeId)
+    .findAny();
+    
+    return interactome.map(this::getDegreeForInteractome)
+      .orElseThrow(() -> new IllegalArgumentException("Invalid interactome id: " + interactomeId));
   }
 
-  public int getDegreeForInteractome(Integer interactomeId) {
-    return this.interactomeDegrees.get(interactomeId);
+  public int getDegreeForInteractome(Interactome interactome) {
+    return this.getDegreeForInteractome(interactome.getId());
   }
   
   public boolean belongsToInteractome(int interactomeId) {
-    return this.interactomeDegrees.containsKey(interactomeId);
+    return this.getInteractomes()
+      .anyMatch(candidateInteractome -> candidateInteractome.getId() == interactomeId);
+  }
+  
+  public boolean belongsToInteractome(Interactome interactome) {
+    return this.getInteractomes()
+      .anyMatch(candidateInteractome -> candidateInteractome.equals(interactome));
   }
 
-  public void addInteractome(int interactomeId, int degree) {
-    this.interactomeDegrees.put(interactomeId, degree);
+  public void addInteractome(Interactome interactome, int degree) {
+    this.interactomeDegrees.add(new InteractionGroupResultInteractomeDegree(
+      this.interactionsResult,
+      this.geneA,
+      this.geneB,
+      interactome,
+      degree
+    ));
   }
 
-  public void addInteractomes(Map<Integer, Integer> interactomeDegrees) {
-    for (Map.Entry<Integer, Integer> entry : interactomeDegrees.entrySet()) {
-      this.interactomeDegrees.putIfAbsent(entry.getKey(), entry.getValue());
-//      if (this.interactomeDegrees.containsKey(entry.getKey())) {
-//        final Integer currentDegree = this.interactomeDegrees.get(entry.getKey());
-//        
-//        if (currentDegree != entry.getValue()) {
-//          throw new IllegalArgumentException(String.format(
-//            "Interactome %d already present with degree %d instead of %d",
-//            entry.getKey(), currentDegree, entry.getValue()
-//          ));
-//        }
-//      } else {
-//        this.interactomeDegrees.put(entry.getKey(), entry.getValue());
-//      }
-    }
+  public void addInteractomes(Map<Interactome, Integer> interactomeDegrees) {
+    interactomeDegrees.entrySet().stream()
+      .filter(entry -> !this.belongsToInteractome(entry.getKey()))
+    .forEach(entry -> this.addInteractome(entry.getKey(), entry.getValue()));
   }
 
-  public static class InteractionGroupResultId implements HasGenePairIds, Serializable {
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
+    result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
+    result = prime * result + ((interactionsResult == null) ? 0 : interactionsResult.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    InteractionGroupResult other = (InteractionGroupResult) obj;
+    if (geneA == null) {
+      if (other.geneA != null)
+        return false;
+    } else if (!geneA.equals(other.geneA))
+      return false;
+    if (geneB == null) {
+      if (other.geneB != null)
+        return false;
+    } else if (!geneB.equals(other.geneB))
+      return false;
+    if (interactionsResult == null) {
+      if (other.interactionsResult != null)
+        return false;
+    } else if (!interactionsResult.equals(other.interactionsResult))
+      return false;
+    return true;
+  }
+
+  public static class InteractionGroupResultId implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String interactionsResultId;
-
-    private int geneAId;
-
-    private int geneBId;
+    private String interactionsResult;
+    private int geneA;
+    private int geneB;
 
     InteractionGroupResultId() {}
 
-    public InteractionGroupResultId(String interactionsResultId, int geneAId, int geneBId) {
-      this.interactionsResultId = interactionsResultId;
-      this.geneAId = geneAId;
-      this.geneBId = geneBId;
+    public InteractionGroupResultId(InteractionsResult interactionsResult, Gene geneA, Gene geneB) {
+      this(interactionsResult.getId(), geneA.getId(), geneB.getId());
     }
 
-    public String getInteractionsResultId() {
-      return interactionsResultId;
+    public InteractionGroupResultId(String interactionsResult, int geneA, int geneB) {
+      this.interactionsResult = interactionsResult;
+      this.geneA = geneA;
+      this.geneB = geneB;
     }
 
-    public void setInteractionsResultId(String interactionsResultId) {
-      this.interactionsResultId = interactionsResultId;
+    public String getInteractionsResult() {
+      return interactionsResult;
     }
 
-    @Override
-    public int getGeneAId() {
-      return geneAId;
+    public void setInteractionsResult(String interactionsResult) {
+      this.interactionsResult = interactionsResult;
     }
 
-    public void setGeneAId(int geneAId) {
-      this.geneAId = geneAId;
+    public int getGeneA() {
+      return geneA;
     }
 
-    @Override
-    public int getGeneBId() {
-      return geneBId;
+    public void setGeneA(int geneAId) {
+      this.geneA = geneAId;
     }
 
-    public void setGeneBId(int geneBId) {
-      this.geneBId = geneBId;
+    public int getGeneB() {
+      return geneB;
+    }
+
+    public void setGeneB(int geneBId) {
+      this.geneB = geneBId;
     }
 
     @Override
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + geneAId;
-      result = prime * result + geneBId;
-      result = prime * result + ((interactionsResultId == null) ? 0 : interactionsResultId.hashCode());
+      result = prime * result + geneA;
+      result = prime * result + geneB;
+      result = prime * result + ((interactionsResult == null) ? 0 : interactionsResult.hashCode());
       return result;
     }
 
@@ -205,14 +284,14 @@ public class InteractionGroupResult implements HasGenePairIds, Serializable {
       if (getClass() != obj.getClass())
         return false;
       InteractionGroupResultId other = (InteractionGroupResultId) obj;
-      if (geneAId != other.geneAId)
+      if (geneA != other.geneA)
         return false;
-      if (geneBId != other.geneBId)
+      if (geneB != other.geneB)
         return false;
-      if (interactionsResultId == null) {
-        if (other.interactionsResultId != null)
+      if (interactionsResult == null) {
+        if (other.interactionsResult != null)
           return false;
-      } else if (!interactionsResultId.equals(other.interactionsResultId))
+      } else if (!interactionsResult.equals(other.interactionsResult))
         return false;
       return true;
     }

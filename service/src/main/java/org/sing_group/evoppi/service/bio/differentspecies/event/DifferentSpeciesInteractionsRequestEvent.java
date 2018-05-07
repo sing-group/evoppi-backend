@@ -22,11 +22,12 @@
 package org.sing_group.evoppi.service.bio.differentspecies.event;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 
-public class DifferentSpeciesInteractionsRequestEvent extends DifferentSpeciesCalculusEvent implements Serializable {
+public class DifferentSpeciesInteractionsRequestEvent
+extends DifferentSpeciesCalculusEvent
+implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public DifferentSpeciesInteractionsRequestEvent(DifferentSpeciesCalculusEvent event) {
@@ -34,7 +35,7 @@ public class DifferentSpeciesInteractionsRequestEvent extends DifferentSpeciesCa
   }
 
   public DifferentSpeciesInteractionsRequestEvent(
-    int geneId, Set<Integer> referenceInteractomes, Set<Integer> targetInteractomes,
+    int geneId, int[] referenceInteractomes, int[] targetInteractomes,
     BlastQueryOptions blastQueryOptions, int maxDegree,
     String workId
   ) {

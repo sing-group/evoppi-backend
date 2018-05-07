@@ -26,6 +26,7 @@ import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -38,8 +39,11 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteraction;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
+import org.sing_group.evoppi.service.spi.bio.GeneService;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
+import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsPersistenceManager;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEvent;
@@ -51,6 +55,12 @@ public class DefaultDifferentSpeciesGeneInteractionsPersistenceManager
 implements DifferentSpeciesGeneInteractionsPersistenceManager {
   @Inject
   public InteractionService interactionsService;
+  
+  @Inject
+  public GeneService geneService;
+  
+  @Inject
+  public InteractomeService interactomeService;
 
   @Override
   @Transactional(REQUIRES_NEW)
@@ -63,7 +73,10 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
     switch (event.getStatus()) {
     case RUNNING:
       if (context.getTargetCompletedInteractions().isPresent()) {
-        persistInteractions(result, context.getTargetCompletedInteractions().get());
+        final Stream<HasGeneInteraction> interactions = context.getTargetCompletedInteractions().get()
+          .map(this.getGeneInteractionMapper());
+        
+        persistInteractions(result, interactions);
       } else if (context.getTargetInteractions().isPresent()) {
         final Set<Integer> interactomesWithInterations = result.getTargetInteractomeIds()
           .filter(result::hasInteractionsForInteractome)
@@ -75,11 +88,15 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
           interactomesWithInterations,
           context.getTargetInteractionsDegrees().get(),
           degree -> context.getTargetInteractionsWithDegree(degree).get()
+            .map(this.getGeneInteractionMapper())
         );
       } else if (context.getBlastResults().isPresent()) {
         this.persistBlastResults(event);
       } else if (context.getReferenceCompletedInteractions().isPresent()) {
-        persistInteractions(result, context.getReferenceCompletedInteractions().get());
+        final Stream<HasGeneInteraction> interactions = context.getReferenceCompletedInteractions().get()
+          .map(this.getGeneInteractionMapper());
+        
+        persistInteractions(result, interactions);
       } else if (context.getReferenceInteractions().isPresent()) {
         final Set<Integer> interactomesWithInterations = result.getReferenceInteractomeIds()
           .filter(result::hasInteractionsForInteractome)
@@ -91,6 +108,7 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
           interactomesWithInterations,
           context.getReferenceInteractionsDegrees().get(),
           degree -> context.getReferenceInteractionsWithDegree(degree).get()
+            .map(this.getGeneInteractionMapper())
         );
       }
 
@@ -98,12 +116,16 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
     default:
     }
   }
+  
+  private Function<HasGeneInteractionIds, HasGeneInteraction> getGeneInteractionMapper() {
+    return interactionIds -> HasGeneInteraction.from(interactionIds, geneService::get, interactomeService::getInteractome);
+  }
 
   private void persistInteractions(
     final DifferentSpeciesInteractionsResult result,
     final Set<Integer> interactomesWithInterations,
     final IntStream interactionDegrees,
-    final IntFunction<Stream<HasGeneInteractionIds>> getInteractionsWithDegree
+    final IntFunction<Stream<HasGeneInteraction>> getInteractionsWithDegree
   ) {
     interactionDegrees.forEach(degree -> 
       getInteractionsWithDegree.apply(degree)
@@ -111,7 +133,7 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
         .forEach(interaction -> 
           result.addInteraction(
             interaction,
-            interaction.getInteractomeId(),
+            interaction.getInteractome(),
             degree
           )
         )
@@ -119,11 +141,11 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
   }
 
   private void persistInteractions(
-    final DifferentSpeciesInteractionsResult result, final Stream<HasGeneInteractionIds> interactions
+    final DifferentSpeciesInteractionsResult result, final Stream<HasGeneInteraction> interactions
   ) {
     interactions.forEach(interaction -> result.addInteraction(
         interaction,
-        interaction.getInteractomeId()
+        interaction.getInteractome()
     ));
   }
   

@@ -21,7 +21,7 @@
  */
 package org.sing_group.evoppi.domain.dao.bio.execution;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +33,8 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 
@@ -80,16 +82,16 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
     String name,
     String description,
     String resultReference,
-    int queryGeneId,
-    Set<Integer> referenceInteractomesIds,
-    Set<Integer> targetInteractomesIds,
+    Gene queryGene,
+    Collection<Interactome> referenceInteractomes,
+    Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastOptions,
     int queryMaxDegree
   ) {
     return this.dh.persist(
       new DifferentSpeciesInteractionsResult(
         name, description, resultReference,
-        queryGeneId, referenceInteractomesIds, targetInteractomesIds,
+        queryGene, referenceInteractomes, targetInteractomes,
         blastOptions, queryMaxDegree
       )
     );
@@ -100,16 +102,16 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
     String name,
     String description,
     Function<String, String> resultReferenceBuilder,
-    int queryGeneId,
-    Set<Integer> referenceInteractomesIds,
-    Set<Integer> targetInteractomesIds,
+    Gene queryGene,
+    Collection<Interactome> referenceInteractomes,
+    Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastOptions,
     int queryMaxDegree
   ) {
     return this.dh.persist(
       new DifferentSpeciesInteractionsResult(
         name, description, resultReferenceBuilder,
-        queryGeneId, referenceInteractomesIds, targetInteractomesIds,
+        queryGene, referenceInteractomes, targetInteractomes,
         blastOptions, queryMaxDegree
       )
     );

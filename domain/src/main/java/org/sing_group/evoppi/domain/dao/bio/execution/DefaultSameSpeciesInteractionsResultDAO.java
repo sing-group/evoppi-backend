@@ -21,6 +21,7 @@
  */
 package org.sing_group.evoppi.domain.dao.bio.execution;
 
+import java.util.Collection;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,8 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 
 @Default
@@ -76,20 +79,20 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
   @Override
   public SameSpeciesInteractionsResult create(
     String name, String description, String resultReference,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
   ) {
     return this.dh.persist(new SameSpeciesInteractionsResult(
-      name, description, resultReference, queryGeneId, queryMaxDegree, queryInteractomeIds
+      name, description, resultReference, queryGene, queryMaxDegree, queryInteractomes
     ));
   }
   
   @Override
   public SameSpeciesInteractionsResult create(
     String name, String description, Function<String, String> resultReferenceBuilder,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
   ) {
     return this.dh.persist(new SameSpeciesInteractionsResult(
-      name, description, resultReferenceBuilder, queryGeneId, queryMaxDegree, queryInteractomeIds
+      name, description, resultReferenceBuilder, queryGene, queryMaxDegree, queryInteractomes
     ));
   }
 }

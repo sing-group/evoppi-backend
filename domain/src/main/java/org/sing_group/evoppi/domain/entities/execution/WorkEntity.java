@@ -51,6 +51,7 @@ public abstract class WorkEntity implements Work, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
+  @Column(name = "id", length = 36, columnDefinition = "CHAR(36)", nullable = false)
   private String id;
 
   @Column(name = "name", length = 255, nullable = false)

@@ -21,6 +21,9 @@
  */
 package org.sing_group.evoppi.domain.entities.spi.bio;
 
+import java.util.function.IntFunction;
+
+import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
 public interface HasGeneInteraction extends HasInteractome, HasGenePair {
@@ -31,5 +34,42 @@ public interface HasGeneInteraction extends HasInteractome, HasGenePair {
   public static HasGeneInteraction of(HasGeneInteraction interaction) {
     return new DefaultHasGeneInteraction(interaction);
   }
-
+  
+  public static HasGeneInteraction from(
+    HasGeneInteractionIds hasInteractionIds,
+    IntFunction<Gene> geneMapper,
+    IntFunction<Interactome> interactomeMapper
+  ) {
+    return new HasGeneInteraction() {
+      @Override
+      public int getGeneAId() {
+        return hasInteractionIds.getGeneAId();
+      }
+      
+      @Override
+      public Gene getGeneA() {
+        return geneMapper.apply(this.getGeneAId());
+      }
+      
+      @Override
+      public int getGeneBId() {
+        return hasInteractionIds.getGeneBId();
+      }
+      
+      @Override
+      public Gene getGeneB() {
+        return geneMapper.apply(this.getGeneBId());
+      }
+      
+      @Override
+      public int getInteractomeId() {
+        return hasInteractionIds.getInteractomeId();
+      }
+      
+      @Override
+      public Interactome getInteractome() {
+        return interactomeMapper.apply(this.getInteractomeId());
+      }
+    };
+  }
 }

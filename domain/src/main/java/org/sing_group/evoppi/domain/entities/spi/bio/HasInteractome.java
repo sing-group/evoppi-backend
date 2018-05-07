@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.domain.entities.spi.bio;
 
+import java.util.function.IntFunction;
+
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
 public interface HasInteractome extends HasInteractomeId {
@@ -45,5 +47,19 @@ public interface HasInteractome extends HasInteractomeId {
   
   public static HasInteractome of(HasInteractome interactome) {
     return new DefaultHasInteractome(interactome);
+  }
+  
+  public static HasInteractome from(HasInteractomeId hasInteractomeId, IntFunction<Interactome> interactomeMapper) {
+    return new HasInteractome() {
+      @Override
+      public int getInteractomeId() {
+        return hasInteractomeId.getInteractomeId();
+      }
+      
+      @Override
+      public Interactome getInteractome() {
+        return interactomeMapper.apply(this.getInteractomeId());
+      }
+    };
   }
 }

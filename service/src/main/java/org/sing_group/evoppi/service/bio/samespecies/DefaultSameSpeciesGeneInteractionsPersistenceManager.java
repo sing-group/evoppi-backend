@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -33,7 +34,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteraction;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
+import org.sing_group.evoppi.service.spi.bio.GeneService;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
+import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsPersistenceManager;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
@@ -45,6 +50,12 @@ public class DefaultSameSpeciesGeneInteractionsPersistenceManager
 implements SameSpeciesGeneInteractionsPersistenceManager {
   @Inject
   private InteractionService interactionsService;
+  
+  @Inject
+  public GeneService geneService;
+  
+  @Inject
+  public InteractomeService interactomeService;
   
   @Override
   public void manageEvent(
@@ -59,7 +70,8 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
     case RUNNING:
       if (context.getCompletedInteractions().isPresent()) {
         context.getCompletedInteractions().get()
-          .forEach(interaction -> result.addInteraction(interaction, interaction.getInteractomeId()));
+          .map(this.getGeneInteractionMapper())
+          .forEach(interaction -> result.addInteraction(interaction, interaction.getInteractome()));
       } else if (context.getInteractions().isPresent()) {
         final Set<Integer> interactomesWithInterations = result.getQueryInteractomeIds()
           .filter(result::hasInteractionsForInteractome)
@@ -70,8 +82,9 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
           .forEach(degree -> 
             context.getInteractionsWithDegree(degree).get()
               .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
+              .map(this.getGeneInteractionMapper())
               .forEach(interaction -> 
-                result.addInteraction(interaction, interaction.getInteractomeId(), degree)
+                result.addInteraction(interaction, interaction.getInteractome(), degree)
               )
           );
       }
@@ -79,5 +92,9 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
       break;
     default:
     }
+  }
+  
+  private Function<HasGeneInteractionIds, HasGeneInteraction> getGeneInteractionMapper() {
+    return interactionIds -> HasGeneInteraction.from(interactionIds, geneService::get, interactomeService::getInteractome);
   }
 }

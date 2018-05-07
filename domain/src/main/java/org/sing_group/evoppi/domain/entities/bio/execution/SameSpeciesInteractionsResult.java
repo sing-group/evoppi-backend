@@ -21,60 +21,68 @@
  */
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
-import static java.util.stream.Collectors.toSet;
-
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 
 @Entity
 @DiscriminatorValue("SAME")
 @Table(name = "same_species_interactions_result")
 public class SameSpeciesInteractionsResult extends InteractionsResult implements Serializable {
   private static final long serialVersionUID = 1L;
-
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(
+  
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {})
+  @JoinTable(
     name = "same_species_interactions_result_query_interactome",
-    joinColumns = @JoinColumn(name = "interactionsResultId", referencedColumnName = "id"),
+    joinColumns = {
+      @JoinColumn(name = "resultId", referencedColumnName = "id")
+    },
     foreignKey = @ForeignKey(name = "FK_same_species_interactions_result_query_interactome")
   )
-  @Column(name = "interactomeId", nullable = false)
-  private Set<Integer> queryInteractomeIds;
+  private Set<Interactome> queryInteractomes;
 
   SameSpeciesInteractionsResult() {}
   
   public SameSpeciesInteractionsResult(
     String name, String description, String resultReference,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
   ) {
-    super(name, description, resultReference, queryGeneId, queryMaxDegree);
+    super(name, description, resultReference, queryGene, queryMaxDegree);
     
-    this.queryInteractomeIds = IntStream.of(queryInteractomeIds).boxed().collect(toSet());
+    this.queryInteractomes = new HashSet<>(queryInteractomes);
   }
   
   public SameSpeciesInteractionsResult(
     String name, String description, Function<String, String> resultReferenceBuilder,
-    int queryGeneId, int queryMaxDegree, int[] queryInteractomeIds
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
   ) {
-    super(name, description, resultReferenceBuilder, queryGeneId, queryMaxDegree);
+    super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree);
     
-    this.queryInteractomeIds = IntStream.of(queryInteractomeIds).boxed().collect(toSet());
+    this.queryInteractomes = new HashSet<>(queryInteractomes);
   }
 
+  public Stream<Interactome> getQueryInteractomes() {
+    return queryInteractomes.stream();
+  }
+  
   public IntStream getQueryInteractomeIds() {
-    return queryInteractomeIds.stream().mapToInt(Integer::intValue);
+    return getQueryInteractomes().mapToInt(Interactome::getId);
   }
 
   public boolean hasInteractome(int id) {

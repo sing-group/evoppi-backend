@@ -39,12 +39,16 @@ import javax.persistence.ForeignKey;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 
 @Entity
@@ -54,15 +58,16 @@ import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 public abstract class InteractionsResult extends WorkEntity {
   private static final long serialVersionUID = 1L;
   
-  @Column(name = "queryGeneId", nullable = false)
-  private int queryGeneId;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @JoinColumn(name = "queryGene", referencedColumnName = "id", nullable = false)
+  private Gene queryGene;
   
   @Column(name = "queryMaxDegree", nullable = false)
   private int queryMaxDegree;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(
-    name = "interactionsResultId", referencedColumnName = "id", foreignKey = @ForeignKey(
+    name = "interactionsResult", referencedColumnName = "id", foreignKey = @ForeignKey(
       name = "FK_interactions_result_interaction_group_result"
     )
   )
@@ -77,26 +82,30 @@ public abstract class InteractionsResult extends WorkEntity {
     this.interactionsIndex = new HashMap<>();
   }
   
-  protected InteractionsResult(String name, int queryGeneId, int queryMaxDegree) {
-    this(name, null, (String) null, queryGeneId, queryMaxDegree);
+  protected InteractionsResult(String name, Gene queryGene, int queryMaxDegree) {
+    this(name, null, (String) null, queryGene, queryMaxDegree);
   }
   
-  protected InteractionsResult(String name, String description, String resultReference, int queryGeneId, int queryMaxDegree) {
+  protected InteractionsResult(String name, String description, String resultReference, Gene queryGene, int queryMaxDegree) {
     super(name, description, resultReference);
     
-    this.queryGeneId = queryGeneId;
+    this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
   }
   
-  protected InteractionsResult(String name, String description, Function<String, String> resultReferenceBuilder, int queryGeneId, int queryMaxDegree) {
+  protected InteractionsResult(String name, String description, Function<String, String> resultReferenceBuilder, Gene queryGene, int queryMaxDegree) {
     super(name, description, resultReferenceBuilder);
     
-    this.queryGeneId = queryGeneId;
+    this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
   }
 
   public int getQueryGeneId() {
-    return queryGeneId;
+    return this.queryGene.getId();
+  }
+  
+  public Gene getQueryGene() {
+    return queryGene;
   }
 
   public int getQueryMaxDegree() {
@@ -132,8 +141,8 @@ public abstract class InteractionsResult extends WorkEntity {
     return geneBMap == null ? Optional.empty() : Optional.ofNullable(geneBMap.get(genePairIds.getGeneBId()));
   }
   
-  public InteractionGroupResult addInteraction(HasGenePairIds genePairIds, Map<Integer, Integer> interactomeDegrees) {
-    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(genePairIds);
+  public InteractionGroupResult addInteraction(HasGenePair genePair, Map<Interactome, Integer> interactomeDegrees) {
+    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(genePair);
     
     if (maybeAGroup.isPresent()) {
       final InteractionGroupResult group = maybeAGroup.get();
@@ -142,33 +151,33 @@ public abstract class InteractionsResult extends WorkEntity {
       
       return group;
     } else {
-      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), genePairIds, interactomeDegrees);
+      final InteractionGroupResult newResult = new InteractionGroupResult(this, genePair, interactomeDegrees);
       
       this.interactions.add(newResult);
-      this.interactionsIndex.compute(genePairIds.getGeneAId(), createRemappingFunction(newResult));
+      this.interactionsIndex.compute(genePair.getGeneAId(), createRemappingFunction(newResult));
       
       return newResult;
     }
   }
 
-  public InteractionGroupResult addInteraction(HasGenePairIds genePairIds, int interactomeId) {
-    return this.addInteraction(genePairIds, interactomeId, -1);
+  public InteractionGroupResult addInteraction(HasGenePair genePair, Interactome interactome) {
+    return this.addInteraction(genePair, interactome, -1);
   }
 
-  public InteractionGroupResult addInteraction(HasGenePairIds genePairIds, int interactomeId, int degree) {
-    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(genePairIds);
+  public InteractionGroupResult addInteraction(HasGenePair genePair, Interactome interactome, int degree) {
+    final Optional<InteractionGroupResult> maybeAGroup = this.getInteraction(genePair);
     
     if (maybeAGroup.isPresent()) {
       final InteractionGroupResult group = maybeAGroup.get();
 
-      group.addInteractome(interactomeId, degree);
+      group.addInteractome(interactome, degree);
       
       return group;
     } else {
-      final InteractionGroupResult newResult = new InteractionGroupResult(this.getId(), genePairIds, interactomeId, degree);
+      final InteractionGroupResult newResult = new InteractionGroupResult(this, genePair, interactome, degree);
       
       this.interactions.add(newResult);
-      this.interactionsIndex.compute(genePairIds.getGeneAId(), createRemappingFunction(newResult));
+      this.interactionsIndex.compute(genePair.getGeneAId(), createRemappingFunction(newResult));
       
       return newResult;
     }

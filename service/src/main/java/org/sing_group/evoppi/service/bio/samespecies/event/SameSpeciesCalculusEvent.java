@@ -39,7 +39,7 @@ public abstract class SameSpeciesCalculusEvent implements Serializable {
   
   public SameSpeciesCalculusEvent(int geneId, int[] interactomes, int maxDegree, String workId) {
     this.geneId = geneId;
-    this.interactomes = interactomes;
+    this.interactomes = Arrays.copyOf(interactomes, interactomes.length);
     this.maxDegree = maxDegree;
     this.workId = workId;
   }
