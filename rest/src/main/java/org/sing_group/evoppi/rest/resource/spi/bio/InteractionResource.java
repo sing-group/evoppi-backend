@@ -24,7 +24,7 @@ package org.sing_group.evoppi.rest.resource.spi.bio;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
-import org.sing_group.evoppi.service.bio.entity.InteractionOrderField;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultField;
 
 public interface InteractionResource {
   public Response getInteractions(
@@ -36,7 +36,7 @@ public interface InteractionResource {
     String resultId,
     Integer page,
     Integer pageSize,
-    InteractionOrderField orderField,
+    InteractionGroupResultField orderField,
     SortDirection sortDirection,
     Integer interactomeId,
     boolean summarize
@@ -50,7 +50,7 @@ public interface InteractionResource {
     String id,
     Integer page,
     Integer pageSize,
-    InteractionOrderField orderField,
+    InteractionGroupResultField orderField,
     SortDirection sortDirection,
     Integer interactomeId
   );

@@ -43,7 +43,7 @@ public class SameSpeciesInteractionsData extends InteractionsData {
 
   public SameSpeciesInteractionsData(
     UuidAndUri result,
-    InteractionsResultFilteringOptions filteringOptions,
+    InteractionsResultFilteringOptionsData filteringOptions,
     InteractionResultData[] interactions,
     GeneNamesData[] genes
   ) {

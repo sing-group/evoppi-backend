@@ -110,7 +110,7 @@ public class DAOHelper<K, T> {
     
     return query.getResultList();
   }
-  
+
   public void removeByKey(K key) {
     this.em.remove(get(key).orElseThrow(() -> new IllegalArgumentException("No entity found with id: " + key)));
     this.em.flush();

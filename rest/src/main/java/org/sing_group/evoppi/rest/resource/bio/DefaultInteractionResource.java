@@ -45,18 +45,18 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultField;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultData;
-import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptions;
+import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptionsData;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 import org.sing_group.evoppi.rest.resource.spi.bio.InteractionResource;
-import org.sing_group.evoppi.service.bio.entity.InteractionOrderField;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 
 import io.swagger.annotations.Api;
@@ -170,8 +170,8 @@ public class DefaultInteractionResource implements InteractionResource {
     @PathParam("id") String id,
     @QueryParam("page") Integer page,
     @QueryParam("pageSize") Integer pageSize,
-    @QueryParam("orderField") InteractionOrderField orderField,
-    @QueryParam("sortDirection") SortDirection sortDirection,
+    @QueryParam("orderField") @DefaultValue("NONE") InteractionGroupResultField orderField,
+    @QueryParam("sortDirection") @DefaultValue("NONE") SortDirection sortDirection,
     @QueryParam("interactomeId") Integer interactomeId,
     @QueryParam("summarize") @DefaultValue("false") boolean summarize
   ) {
@@ -183,7 +183,7 @@ public class DefaultInteractionResource implements InteractionResource {
           .ok(this.bioMapper.toInteractionQueryResultSummary(result))
         .build();
       } else {
-        final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
+        final InteractionsResultFilteringOptionsData filteringOptions = new InteractionsResultFilteringOptionsData(
           page, pageSize, orderField, sortDirection, interactomeId
         );
         
@@ -199,7 +199,7 @@ public class DefaultInteractionResource implements InteractionResource {
           .ok(this.bioMapper.toInteractionQueryResultSummary(result))
         .build();
       } else {
-        final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
+        final InteractionsResultFilteringOptionsData filteringOptions = new InteractionsResultFilteringOptionsData(
           page, pageSize, orderField, sortDirection, interactomeId
         );
         
@@ -227,14 +227,14 @@ public class DefaultInteractionResource implements InteractionResource {
     @PathParam("id") String id,
     @QueryParam("page") Integer page,
     @QueryParam("pageSize") Integer pageSize,
-    @QueryParam("orderField") InteractionOrderField orderField,
-    @QueryParam("sortDirection") SortDirection sortDirection,
+    @QueryParam("orderField") @DefaultValue("NONE") InteractionGroupResultField orderField,
+    @QueryParam("sortDirection") @DefaultValue("NONE") SortDirection sortDirection,
     @QueryParam("interactomeId") Integer interactomeId
   ) {
     if (this.service.isSameSpeciesResult(id)) {
       final SameSpeciesInteractionsResult result = this.service.getSameSpeciesResult(id);
       
-      final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
+      final InteractionsResultFilteringOptionsData filteringOptions = new InteractionsResultFilteringOptionsData(
         page, pageSize, orderField, sortDirection, interactomeId
       );
       
@@ -244,7 +244,7 @@ public class DefaultInteractionResource implements InteractionResource {
     } else if (this.service.isDifferentSpeciesResult(id)) {
       final DifferentSpeciesInteractionsResult result = this.service.getDifferentSpeciesResult(id);
 
-      final InteractionsResultFilteringOptions filteringOptions = new InteractionsResultFilteringOptions(
+      final InteractionsResultFilteringOptionsData filteringOptions = new InteractionsResultFilteringOptionsData(
         page, pageSize, orderField, sortDirection, interactomeId
       );
       

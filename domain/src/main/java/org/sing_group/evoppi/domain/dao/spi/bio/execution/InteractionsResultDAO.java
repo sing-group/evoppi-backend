@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,8 +19,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.bio.entity;
+package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
-public enum InteractionOrderField {
-  GENE_A_ID, GENE_A_NAME, GENE_B_ID, GENE_B_NAME, INTERACTOME;
+import java.util.stream.Stream;
+
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+
+public interface InteractionsResultDAO {
+  public Stream<InteractionGroupResult> getInteractions(
+    InteractionsResult result, InteractionGroupResultListingOptions listingOptions
+  );
 }

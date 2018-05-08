@@ -22,11 +22,15 @@
 package org.sing_group.evoppi.service.spi.bio;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.ejb.Local;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 
 @Local
@@ -54,4 +58,9 @@ public interface InteractionService {
   public String getSameSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix);
 
   public String getDifferentSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix);
+  
+  public Stream<InteractionGroupResult> getInteractions(
+    InteractionsResult result,
+    InteractionGroupResultListingOptions filteringOptions
+  );
 }

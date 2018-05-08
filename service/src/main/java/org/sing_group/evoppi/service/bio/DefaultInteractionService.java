@@ -41,6 +41,7 @@ import javax.inject.Inject;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionsResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
@@ -49,6 +50,8 @@ import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
@@ -72,6 +75,9 @@ public class DefaultInteractionService implements InteractionService {
   
   @Inject
   private DifferentSpeciesInteractionsResultDAO differentInteractionsResultDao;
+  
+  @Inject
+  private InteractionsResultDAO interactionsResultDao;
   
   @Inject
   private Event<SameSpeciesInteractionsRequestEvent> taskSameEvents;
@@ -222,6 +228,13 @@ public class DefaultInteractionService implements InteractionService {
     } else {
       throw new IllegalArgumentException("Invalid interactome id: " + interactomeId);
     }
+  }
+
+  @Override
+  public Stream<InteractionGroupResult> getInteractions(
+    InteractionsResult result, InteractionGroupResultListingOptions filteringOptions
+  ) {
+    return this.interactionsResultDao.getInteractions(result, filteringOptions);
   }
 
   private String createFastaFromGeneIds(

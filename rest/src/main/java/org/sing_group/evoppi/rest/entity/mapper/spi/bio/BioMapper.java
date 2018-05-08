@@ -37,7 +37,7 @@ import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
-import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptions;
+import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsData;
@@ -62,7 +62,7 @@ public interface BioMapper {
 
   public SameSpeciesInteractionsResultData toInteractionQueryResult(
     SameSpeciesInteractionsResult result,
-    InteractionsResultFilteringOptions filteringOptions
+    InteractionsResultFilteringOptionsData filteringOptions
   );
   
   public SameSpeciesInteractionsResultSummaryData toInteractionQueryResultSummary(
@@ -71,7 +71,7 @@ public interface BioMapper {
 
   public DifferentSpeciesInteractionsResultData toInteractionQueryResult(
     DifferentSpeciesInteractionsResult result,
-    InteractionsResultFilteringOptions filteringOptions
+    InteractionsResultFilteringOptionsData filteringOptions
   );
   
   public DifferentSpeciesInteractionsResultSummaryData toInteractionQueryResultSummary(
@@ -82,11 +82,11 @@ public interface BioMapper {
 
   public SameSpeciesInteractionsData toInteractionsResultData(
     SameSpeciesInteractionsResult result,
-    InteractionsResultFilteringOptions filteringOptions
+    InteractionsResultFilteringOptionsData filteringOptions
   );
   
   public DifferentSpeciesInteractionsData toInteractionsResultData(
     DifferentSpeciesInteractionsResult result,
-    InteractionsResultFilteringOptions filteringOptions
+    InteractionsResultFilteringOptionsData filteringOptions
   );
 }

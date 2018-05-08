@@ -40,14 +40,17 @@ public class GeneNamesData implements Serializable {
 
   private int geneId;
   
+  private String defaultName;
+  
   private GeneNameData[] names;
   
   private IdAndUri[] interactomes;
 
   GeneNamesData() {}
 
-  public GeneNamesData(int id, GeneNameData[] names, IdAndUri[] interactomes) {
+  public GeneNamesData(int id, String defaultName, GeneNameData[] names, IdAndUri[] interactomes) {
     this.geneId = id;
+    this.defaultName = defaultName;
     this.names = names;
     this.interactomes = interactomes;
   }
@@ -58,6 +61,14 @@ public class GeneNamesData implements Serializable {
 
   public void setGeneId(int id) {
     this.geneId = id;
+  }
+  
+  public String getDefaultName() {
+    return defaultName;
+  }
+
+  public void setDefaultName(String defaultName) {
+    this.defaultName = defaultName;
   }
 
   public GeneNameData[] getNames() {
@@ -80,6 +91,7 @@ public class GeneNamesData implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((defaultName == null) ? 0 : defaultName.hashCode());
     result = prime * result + geneId;
     result = prime * result + Arrays.hashCode(interactomes);
     result = prime * result + Arrays.hashCode(names);
@@ -95,6 +107,11 @@ public class GeneNamesData implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     GeneNamesData other = (GeneNamesData) obj;
+    if (defaultName == null) {
+      if (other.defaultName != null)
+        return false;
+    } else if (!defaultName.equals(other.defaultName))
+      return false;
     if (geneId != other.geneId)
       return false;
     if (!Arrays.equals(interactomes, other.interactomes))

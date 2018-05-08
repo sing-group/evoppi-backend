@@ -55,7 +55,7 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
     String id,
     int queryGene,
     int queryMaxDegree,
-    InteractionsResultFilteringOptions filteringOptions,
+    InteractionsResultFilteringOptionsData filteringOptions,
     IdAndUri[] referenceInteractomes,
     IdAndUri[] targetInteractomes,
     DifferentSpeciesInteractionsData interactions,

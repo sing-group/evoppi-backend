@@ -31,7 +31,7 @@ public abstract class InteractionsData implements Serializable {
 
   private UuidAndUri result;
   
-  private InteractionsResultFilteringOptions filteringOptions;
+  private InteractionsResultFilteringOptionsData filteringOptions;
   
   private InteractionResultData[] interactions;
   
@@ -39,7 +39,7 @@ public abstract class InteractionsData implements Serializable {
 
   public InteractionsData(
     UuidAndUri result,
-    InteractionsResultFilteringOptions filteringOptions,
+    InteractionsResultFilteringOptionsData filteringOptions,
     InteractionResultData[] interactions
   ) {
     this.result = result;
@@ -55,11 +55,11 @@ public abstract class InteractionsData implements Serializable {
     this.result = result;
   }
 
-  public InteractionsResultFilteringOptions getFilteringOptions() {
+  public InteractionsResultFilteringOptionsData getFilteringOptions() {
     return filteringOptions;
   }
 
-  public void setFilteringOptions(InteractionsResultFilteringOptions filteringOptions) {
+  public void setFilteringOptions(InteractionsResultFilteringOptionsData filteringOptions) {
     this.filteringOptions = filteringOptions;
   }
 

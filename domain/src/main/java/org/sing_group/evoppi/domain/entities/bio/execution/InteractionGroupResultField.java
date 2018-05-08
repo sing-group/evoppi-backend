@@ -19,17 +19,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.bio.entity;
+package org.sing_group.evoppi.domain.entities.bio.execution;
 
-import java.util.stream.Stream;
-
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
-
-public class InteractionResultSortByGeneNameStrategy implements InteractionsResultSortStrategy {
-
-  @Override
-  public Stream<InteractionGroupResult> sort(Stream<InteractionGroupResult> results) {
-    return null;
-  }
-
+public enum InteractionGroupResultField {
+  GENE_A_ID,
+  GENE_A_NAME,
+  GENE_B_ID,
+  GENE_B_NAME,
+  INTERACTOME,
+  NONE;
 }

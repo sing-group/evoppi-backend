@@ -21,32 +21,32 @@
  */
 package org.sing_group.evoppi.rest.entity.bio;
 
-import static org.sing_group.evoppi.service.bio.entity.InteractionOrderField.INTERACTOME;
+import static org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultField.INTERACTOME;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
-import org.sing_group.evoppi.service.bio.entity.InteractionOrderField;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultField;
 
 import io.swagger.annotations.ApiModel;
 
 @XmlRootElement(name = "interactions-result-filtering-options", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
 @ApiModel(value = "interactions-result-filtering-options", description = "Filtering options for the interactions.")
-public class InteractionsResultFilteringOptions {
+public class InteractionsResultFilteringOptionsData {
   private Integer page;
   private Integer pageSize;
-  private InteractionOrderField orderField;
+  private InteractionGroupResultField orderField;
   private SortDirection sortDirection;
   private Integer interactomeId;
 
-  InteractionsResultFilteringOptions() {}
+  InteractionsResultFilteringOptionsData() {}
   
-  public InteractionsResultFilteringOptions(
+  public InteractionsResultFilteringOptionsData(
     Integer page, Integer pageSize,
-    InteractionOrderField orderField, SortDirection sortDirection,
+    InteractionGroupResultField orderField, SortDirection sortDirection,
     Integer interactomeId
   ) {
     if (page == null ^ pageSize == null) {
@@ -84,11 +84,11 @@ public class InteractionsResultFilteringOptions {
     this.pageSize = pageSize;
   }
 
-  public InteractionOrderField getOrderField() {
+  public InteractionGroupResultField getOrderField() {
     return orderField;
   }
 
-  public void setOrderField(InteractionOrderField orderField) {
+  public void setOrderField(InteractionGroupResultField orderField) {
     this.orderField = orderField;
   }
 
@@ -136,7 +136,7 @@ public class InteractionsResultFilteringOptions {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractionsResultFilteringOptions other = (InteractionsResultFilteringOptions) obj;
+    InteractionsResultFilteringOptionsData other = (InteractionsResultFilteringOptionsData) obj;
     if (interactomeId == null) {
       if (other.interactomeId != null)
         return false;

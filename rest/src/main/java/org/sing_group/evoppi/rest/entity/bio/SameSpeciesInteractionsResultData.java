@@ -49,7 +49,7 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
     String id,
     int queryGene,
     int queryMaxDegree,
-    InteractionsResultFilteringOptions filteringOptions,
+    InteractionsResultFilteringOptionsData filteringOptions,
     IdAndUri[] interactomes,
     SameSpeciesInteractionsData interactions,
     int totalInteractions,

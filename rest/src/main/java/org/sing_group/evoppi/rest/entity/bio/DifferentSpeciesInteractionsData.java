@@ -49,7 +49,7 @@ public class DifferentSpeciesInteractionsData extends InteractionsData {
     UuidAndUri result,
     GeneNamesData[] referenceGenes,
     GeneNamesData[] targetGenes,
-    InteractionsResultFilteringOptions filteringOptions,
+    InteractionsResultFilteringOptionsData filteringOptions,
     BlastResultData[] blastResults,
     InteractionResultData[] interactions
   ) {
