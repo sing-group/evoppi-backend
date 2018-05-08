@@ -40,6 +40,8 @@ public class GeneData implements Serializable {
 
   private int id;
   
+  private String defaultName;
+  
   private IdAndUri speciesId;
   
   private GeneNameData[] names;
@@ -48,9 +50,10 @@ public class GeneData implements Serializable {
 
   GeneData() {}
   
-  public GeneData(int id, IdAndUri speciesId, GeneNameData[] names, String[] sequences) {
-    this.speciesId = speciesId;
+  public GeneData(int id, String defaultName, IdAndUri speciesId, GeneNameData[] names, String[] sequences) {
     this.id = id;
+    this.speciesId = speciesId;
+    this.defaultName = defaultName;
     this.sequences = sequences;
     this.names = names;
   }
@@ -63,6 +66,14 @@ public class GeneData implements Serializable {
     this.id = id;
   }
   
+  public String getDefaultName() {
+    return defaultName;
+  }
+
+  public void setDefaultName(String defaultName) {
+    this.defaultName = defaultName;
+  }
+
   public IdAndUri getSpeciesId() {
     return speciesId;
   }
@@ -91,6 +102,7 @@ public class GeneData implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((defaultName == null) ? 0 : defaultName.hashCode());
     result = prime * result + id;
     result = prime * result + Arrays.hashCode(names);
     result = prime * result + Arrays.hashCode(sequences);
@@ -107,6 +119,11 @@ public class GeneData implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     GeneData other = (GeneData) obj;
+    if (defaultName == null) {
+      if (other.defaultName != null)
+        return false;
+    } else if (!defaultName.equals(other.defaultName))
+      return false;
     if (id != other.id)
       return false;
     if (!Arrays.equals(names, other.names))

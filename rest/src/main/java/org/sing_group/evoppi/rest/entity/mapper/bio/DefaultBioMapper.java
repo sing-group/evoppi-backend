@@ -176,6 +176,7 @@ public class DefaultBioMapper implements BioMapper {
     
     return new GeneData(
       gene.getId(),
+      gene.getDefaultName(),
       new IdAndUri(gene.getSpecies().getId(), pathBuilder.species(gene.getSpecies()).build()),
       gene.getNames()
         .map(this::toGeneNameData)
@@ -441,10 +442,10 @@ public class DefaultBioMapper implements BioMapper {
           builder = orderBuilder.byGeneBId();
           break;
         case GENE_A_NAME:
-          builder = orderBuilder.byGeneAName(id -> this.geneService.get(id).getRepresentativeName());
+          builder = orderBuilder.byGeneAName(id -> this.geneService.get(id).getDefaultName());
           break;
         case GENE_B_NAME:
-          builder = orderBuilder.byGeneBName(id -> this.geneService.get(id).getRepresentativeName());
+          builder = orderBuilder.byGeneBName(id -> this.geneService.get(id).getDefaultName());
           break;
         case INTERACTOME:
           builder = orderBuilder.byDegreeInInteractome(filteringOptions.getInteractomeId());

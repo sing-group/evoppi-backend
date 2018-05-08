@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -44,6 +45,9 @@ public class Gene implements Serializable {
 
   @Id
   private int id;
+  
+  @Column(name = "defaultName", length = 255, nullable = false)
+  private String defaultName;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "geneId", referencedColumnName = "id")
@@ -64,6 +68,10 @@ public class Gene implements Serializable {
 
   public int getId() {
     return id;
+  }
+  
+  public String getDefaultName() {
+    return defaultName;
   }
 
   public Stream<Interaction> getInteractions() {
@@ -105,13 +113,6 @@ public class Gene implements Serializable {
     return this.names.stream();
   }
   
-  public String getRepresentativeName() {
-    return this.names.stream()
-      .findFirst()
-      .map(GeneNames::getRepresentativeName)
-      .orElseThrow(() -> new IllegalStateException("No name found for gene: " + this.id));
-  }
-
   public Species getSpecies() {
     return species;
   }

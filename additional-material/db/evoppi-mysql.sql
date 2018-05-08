@@ -135,6 +135,7 @@ DROP TABLE IF EXISTS `gene`;
 CREATE TABLE `gene` (
   `id` int(11) NOT NULL,
   `species` int(11) NOT NULL,
+  `defaultName` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDXnkshoslla6kq08gqh38grefke` (`id`,`species`),
   KEY `FKg5uaph3wq3eu765ch9lkq6qi1` (`species`),
