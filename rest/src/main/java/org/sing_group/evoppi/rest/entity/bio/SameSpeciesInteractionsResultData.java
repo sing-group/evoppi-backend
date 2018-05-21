@@ -45,6 +45,8 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
 
   private SameSpeciesInteractionsData interactions;
 
+  SameSpeciesInteractionsResultData() {}
+  
   public SameSpeciesInteractionsResultData(
     String id,
     int queryGene,
