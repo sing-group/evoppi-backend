@@ -63,6 +63,10 @@ public class InteractionGroupResultListingOptions implements Serializable {
     this.interactomeId = interactomeId;
   }
   
+  public boolean hasAnyQueryModification() {
+    return this.hasPagination() || this.hasSortField();
+  }
+  
   public boolean hasPagination() {
     return this.start != null && this.end != null;
   }

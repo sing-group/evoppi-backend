@@ -73,81 +73,87 @@ public class DefaultInteractionsResultDAO implements InteractionsResultDAO {
   public Stream<InteractionGroupResult> getInteractions(
     InteractionsResult result, InteractionGroupResultListingOptions listingOptions
   ) {
-    final CriteriaBuilder cb = dh.cb();
-    
-    CriteriaQuery<InteractionGroupResult> query = dh.createCBQuery();
-    final Root<InteractionGroupResult> root = query.from(dh.getEntityType());
-    
-    query = query.select(root);
-    
-    final Function<Expression<?>, Order> order;
-    switch(listingOptions.getSortDirection()) {
-      case ASCENDING:
-        order = cb::asc;
+    if (!listingOptions.hasAnyQueryModification()) {
+      return result.getInteractions();
+    } else {
+      final CriteriaBuilder cb = dh.cb();
+      
+      CriteriaQuery<InteractionGroupResult> query = dh.createCBQuery();
+      final Root<InteractionGroupResult> root = query.from(dh.getEntityType());
+      
+      final Path<InteractionsResult> fieldId = root.get("interactionsResult");
+      
+      query = query.select(root).where(cb.equal(fieldId, result));
+      
+      final Function<Expression<?>, Order> order;
+      switch(listingOptions.getSortDirection()) {
+        case ASCENDING:
+          order = cb::asc;
+          break;
+        case DESCENDING:
+          order = cb::desc;
+          break;
+        default:
+          order = null;
+      }
+      
+      switch(listingOptions.getField()) {
+      case GENE_A_ID:
+        query = query.orderBy(
+          order.apply(root.get("geneA").get("id")),
+          order.apply(root.get("geneB").get("id"))
+        );
         break;
-      case DESCENDING:
-        order = cb::desc;
+      case GENE_B_ID:
+        query = query.orderBy(
+          order.apply(root.get("geneB").get("id")),
+          order.apply(root.get("geneA").get("id"))
+        );
+        break;
+      case GENE_A_NAME:
+        query = query.orderBy(
+          order.apply(root.get("geneA").get("defaultName")),
+          order.apply(root.get("geneB").get("defaultName"))
+        );
+        break;
+      case GENE_B_NAME:
+        query = query.orderBy(
+          order.apply(root.get("geneB").get("defaultName")),
+          order.apply(root.get("geneA").get("defaultName"))
+        );
+        break;
+      case INTERACTOME:
+        Join<InteractionGroupResult, InteractionGroupResultInteractomeDegree> joinDegree =
+          root.join("interactomeDegrees", JoinType.LEFT);
+        
+        final Path<Integer> interactomeIdField = joinDegree.get("interactome").get("id");
+        
+        joinDegree = joinDegree.on(cb.equal(interactomeIdField, listingOptions.getInteractomeId().getAsInt()));
+        
+        final Path<Integer> degreeField = joinDegree.get("degree");
+        
+        query = query.orderBy(
+          order.apply(degreeField),
+          order.apply(root.get("geneA").get("id")),
+          order.apply(root.get("geneB").get("id"))
+        );
+          
         break;
       default:
-        order = null;
-    }
-    
-    switch(listingOptions.getField()) {
-    case GENE_A_ID:
-      query = query.orderBy(
-        order.apply(root.get("geneA").get("id")),
-        order.apply(root.get("geneB").get("id"))
-      );
-      break;
-    case GENE_B_ID:
-      query = query.orderBy(
-        order.apply(root.get("geneB").get("id")),
-        order.apply(root.get("geneA").get("id"))
-      );
-      break;
-    case GENE_A_NAME:
-      query = query.orderBy(
-        order.apply(root.get("geneA").get("defaultName")),
-        order.apply(root.get("geneB").get("defaultName"))
-      );
-      break;
-    case GENE_B_NAME:
-      query = query.orderBy(
-        order.apply(root.get("geneB").get("defaultName")),
-        order.apply(root.get("geneA").get("defaultName"))
-      );
-      break;
-    case INTERACTOME:
-      Join<InteractionGroupResult, InteractionGroupResultInteractomeDegree> joinDegree =
-        root.join("interactomeDegrees", JoinType.LEFT);
+      }
       
-      final Path<Integer> interactomeIdField = joinDegree.get("interactome").get("id");
-      
-      joinDegree = joinDegree.on(cb.equal(interactomeIdField, listingOptions.getInteractomeId().getAsInt()));
-      
-      final Path<Integer> degreeField = joinDegree.get("degree");
-      
-      query = query.orderBy(
-        order.apply(degreeField),
-        order.apply(root.get("geneA").get("id")),
-        order.apply(root.get("geneB").get("id"))
-      );
+      TypedQuery<InteractionGroupResult> typedQuery = em.createQuery(query);
+      if (listingOptions.hasPagination()) {
+        final int start = listingOptions.getStart().getAsInt();
+        final int end = listingOptions.getEnd().getAsInt();
         
-      break;
-    default:
-    }
-    
-    TypedQuery<InteractionGroupResult> typedQuery = em.createQuery(query);
-    if (listingOptions.hasPagination()) {
-      final int start = listingOptions.getStart().getAsInt();
-      final int end = listingOptions.getEnd().getAsInt();
+        typedQuery = typedQuery
+          .setFirstResult(start)
+          .setMaxResults(end - start + 1);
+      }
       
-      typedQuery = typedQuery
-        .setFirstResult(start)
-        .setMaxResults(end - start + 1);
+      return typedQuery.getResultList().stream();
     }
-    
-    return typedQuery.getResultList().stream();
   }
 
 }
