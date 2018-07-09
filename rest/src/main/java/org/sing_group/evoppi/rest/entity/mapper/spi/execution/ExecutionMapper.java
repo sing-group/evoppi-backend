@@ -19,6 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package org.sing_group.evoppi.rest.entity.mapper.spi.execution;
 
 import javax.ws.rs.core.UriBuilder;

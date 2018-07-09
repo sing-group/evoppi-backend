@@ -19,6 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package org.sing_group.evoppi.domain.entities.bio.execution;
 
 import static org.sing_group.fluent.checker.Checks.requireNonNegative;

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.sing_group</groupId>
   <artifactId>evoppi</artifactId>
-  <version>0.2.1</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>EvoPPI</name>
@@ -81,7 +81,7 @@
       </snapshots>
     </repository>
   </repositories>
-  
+
   <properties>
     <!-- General properties -->
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -89,7 +89,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    
+
     <wildfly.home>${project.build.directory}/wildfly-${wildfly.version}</wildfly.home>
     <wildfly.standalone>${project.basedir}/additional-material/wildfly10</wildfly.standalone>
 
@@ -109,7 +109,7 @@
     <swagger.version>1.5.16</swagger.version>
     <wildfly.arquillian.container.version>2.1.0.Final</wildfly.arquillian.container.version>
     <wildfly.version>10.1.0.Final</wildfly.version>
-    
+
     <!-- Resteasy specific version required, as it fixes ResourceInfo injection bug -->
     <resteasy.version>3.0.24.Final</resteasy.version>
 
@@ -349,7 +349,7 @@
           <artifactId>wildfly-maven-plugin</artifactId>
           <version>${wildfly.maven.plugin.version}</version>
           <configuration>
-            <!-- Avoids the execution of the wildfly:* goals in the subproject 
+            <!-- Avoids the execution of the wildfly:* goals in the subproject
               unless the plugin is activated in the subproject. -->
             <skip>true</skip>
           </configuration>
@@ -562,7 +562,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>wildfly-mysql-run</id>
       <build>
@@ -574,7 +574,7 @@
               <skipTests>true</skipTests>
             </configuration>
           </plugin>
-  
+
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
