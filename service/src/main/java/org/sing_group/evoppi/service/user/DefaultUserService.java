@@ -25,6 +25,7 @@
 package org.sing_group.evoppi.service.user;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -48,8 +49,14 @@ public class DefaultUserService implements UserService {
 
   @Override
   @SuppressWarnings("unchecked")
-  public <U extends User> U getCurrentUser() {
-    return (U) this.dao.get(this.principal.getName());
+  public <U extends User> Optional<U> getCurrentUser() {
+    final String currentUserName = this.principal.getName();
+    
+    if ("anonymous".equals(currentUserName)) {
+      return Optional.empty();
+    } else {
+      return Optional.of((U) this.dao.get(currentUserName));
+    }
   }
 
 }

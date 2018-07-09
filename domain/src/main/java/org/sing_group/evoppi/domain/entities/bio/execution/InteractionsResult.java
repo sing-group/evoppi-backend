@@ -51,6 +51,7 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
+import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -68,11 +69,19 @@ public abstract class InteractionsResult extends WorkEntity {
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(
-    name = "interactionsResult", referencedColumnName = "id", foreignKey = @ForeignKey(
+    name = "interactionsResult", referencedColumnName = "id",
+    foreignKey = @ForeignKey(
       name = "FK_interactions_result_interaction_group_result"
     )
   )
   private Set<InteractionGroupResult> interactions;
+  
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  @JoinColumn(
+    name = "owner", referencedColumnName = "login",
+    nullable = true
+  )
+  private User owner;
   
   @Transient
   private Map<Integer, Map<Integer, InteractionGroupResult>> interactionsIndex;
@@ -81,24 +90,27 @@ public abstract class InteractionsResult extends WorkEntity {
     super();
     this.interactions = new HashSet<>();
     this.interactionsIndex = new HashMap<>();
+    this.owner = null;
   }
   
   protected InteractionsResult(String name, Gene queryGene, int queryMaxDegree) {
-    this(name, null, (String) null, queryGene, queryMaxDegree);
+    this(name, null, (String) null, queryGene, queryMaxDegree, null);
   }
   
-  protected InteractionsResult(String name, String description, String resultReference, Gene queryGene, int queryMaxDegree) {
+  protected InteractionsResult(String name, String description, String resultReference, Gene queryGene, int queryMaxDegree, User owner) {
     super(name, description, resultReference);
     
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
+    this.owner = owner;
   }
   
-  protected InteractionsResult(String name, String description, Function<String, String> resultReferenceBuilder, Gene queryGene, int queryMaxDegree) {
+  protected InteractionsResult(String name, String description, Function<String, String> resultReferenceBuilder, Gene queryGene, int queryMaxDegree, User owner) {
     super(name, description, resultReferenceBuilder);
     
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
+    this.owner = owner;
   }
 
   public int getQueryGeneId() {
@@ -115,6 +127,10 @@ public abstract class InteractionsResult extends WorkEntity {
 
   public Stream<InteractionGroupResult> getInteractions() {
     return interactions.stream();
+  }
+  
+  public Optional<User> getOwner() {
+    return Optional.ofNullable(owner);
   }
   
   @PostLoad

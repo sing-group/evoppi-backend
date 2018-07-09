@@ -41,6 +41,7 @@ import javax.persistence.Table;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
 @DiscriminatorValue("SAME")
@@ -62,18 +63,18 @@ public class SameSpeciesInteractionsResult extends InteractionsResult implements
   
   public SameSpeciesInteractionsResult(
     String name, String description, String resultReference,
-    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes, User owner
   ) {
-    super(name, description, resultReference, queryGene, queryMaxDegree);
+    super(name, description, resultReference, queryGene, queryMaxDegree, owner);
     
     this.queryInteractomes = new HashSet<>(queryInteractomes);
   }
   
   public SameSpeciesInteractionsResult(
     String name, String description, Function<String, String> resultReferenceBuilder,
-    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes
+    Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes, User owner
   ) {
-    super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree);
+    super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree, owner);
     
     this.queryInteractomes = new HashSet<>(queryInteractomes);
   }

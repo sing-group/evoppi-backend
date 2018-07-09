@@ -32,17 +32,27 @@ import static org.sing_group.fluent.checker.Checks.requirePattern;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 
 @Entity
 @Table(name = "user")
@@ -76,6 +86,9 @@ public abstract class User implements Serializable {
   @Column(length = 100, nullable = false, unique = true)
   protected String email;
 
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<InteractionsResult> results;
+
   // For JPA
   User() {}
   
@@ -86,6 +99,8 @@ public abstract class User implements Serializable {
   public User(String login, String email, String password, boolean encodedPassword) {
     this.setLogin(login);
     this.setEmail(email);
+    
+    this.results = new HashSet<>();
     
     if (password != null) {
       if (encodedPassword)
@@ -168,6 +183,18 @@ public abstract class User implements Serializable {
     } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException("MD5 algorithm not found", e);
     }
+  }
+  
+  public Stream<SameSpeciesInteractionsResult> getSameSpeciesResults() {
+    return results.stream()
+      .filter(result -> result instanceof SameSpeciesInteractionsResult)
+      .map(result -> (SameSpeciesInteractionsResult) result);
+  }
+  
+  public Stream<DifferentSpeciesInteractionsResult> getDifferentSpeciesResults() {
+    return results.stream()
+      .filter(result -> result instanceof DifferentSpeciesInteractionsResult)
+      .map(result -> (DifferentSpeciesInteractionsResult) result);
   }
 
   @Override

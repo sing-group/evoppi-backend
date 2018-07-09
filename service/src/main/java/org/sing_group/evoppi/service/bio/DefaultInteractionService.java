@@ -30,7 +30,6 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -59,6 +58,7 @@ import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractio
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.storage.FastaOutputConfiguration;
 import org.sing_group.evoppi.service.spi.storage.FastaWriter;
+import org.sing_group.evoppi.service.spi.user.UserService;
 
 @Stateless
 @PermitAll
@@ -79,6 +79,9 @@ public class DefaultInteractionService implements InteractionService {
   
   @Inject
   private InteractionsResultDAO interactionsResultDao;
+  
+  @Inject
+  private UserService userService;
   
   @Inject
   private Event<SameSpeciesInteractionsRequestEvent> taskSameEvents;
@@ -120,7 +123,7 @@ public class DefaultInteractionService implements InteractionService {
     final Gene gene = this.geneDao.getGene(geneId);
     final Collection<Interactome> interactomes = IntStream.of(interactomeIds)
       .mapToObj(this.interactomeDao::getInteractome)
-    .collect(Collectors.toSet());
+    .collect(toSet());
     
     final SameSpeciesInteractionsResult result = this.sameInteractionsResultDao.create(
       "Same species interactions",
@@ -128,7 +131,8 @@ public class DefaultInteractionService implements InteractionService {
       resultReferenceBuilder,
       gene,
       maxDegree,
-      interactomes
+      interactomes,
+      this.userService.getCurrentUser().orElse(null)
     );
     
     this.taskSameEvents.fire(new SameSpeciesInteractionsRequestEvent(geneId, interactomeIds, maxDegree, result.getId()));
@@ -156,17 +160,18 @@ public class DefaultInteractionService implements InteractionService {
     
     final Collection<Interactome> referenceInteractomes = IntStream.of(referenceInteractomeIds)
       .mapToObj(this.interactomeDao::getInteractome)
-    .collect(Collectors.toSet());
+    .collect(toSet());
     
     final Collection<Interactome> targetInteractomes = IntStream.of(targetInteractomeIds)
       .mapToObj(this.interactomeDao::getInteractome)
-    .collect(Collectors.toSet());
+    .collect(toSet());
     
     final DifferentSpeciesInteractionsResult result = this.differentInteractionsResultDao.create(
       "Different species interactions",
       "Find different species interactions",
       resultReferenceBuilder,
-      gene, referenceInteractomes, targetInteractomes, blastOptions, maxDegree
+      gene, referenceInteractomes, targetInteractomes, blastOptions, maxDegree,
+      this.userService.getCurrentUser().orElse(null)
     );
     
     this.taskDifferentEvents.fire(new DifferentSpeciesInteractionsRequestEvent(

@@ -24,6 +24,8 @@
 
 package org.sing_group.evoppi.service.spi.user;
 
+import java.util.Optional;
+
 import javax.ejb.Local;
 
 import org.sing_group.evoppi.domain.entities.user.User;
@@ -31,6 +33,6 @@ import org.sing_group.evoppi.domain.entities.user.User;
 @Local
 public interface UserService {
   
-  public <U extends User> U getCurrentUser();
+  public <U extends User> Optional<U> getCurrentUser();
   
 }

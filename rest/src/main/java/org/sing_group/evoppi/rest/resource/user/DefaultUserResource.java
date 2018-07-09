@@ -24,6 +24,8 @@
 
 package org.sing_group.evoppi.rest.resource.user;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -83,9 +85,15 @@ public class DefaultUserResource implements UserResource {
       request.logout();
       request.login(login, password);
       
+      final Optional<User> currentUser = this.userService.getCurrentUser();
+      
       return Response.ok(
-        User.getRoleName(this.userService.getCurrentUser())
+        User.getRoleName(currentUser.orElseThrow(IllegalArgumentException::new))
       ).build();
+    } catch (IllegalArgumentException iae) {
+      LOG.warn("No user in session after login", iae);
+      
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     } catch (ServletException e) {
       LOG.warn("Login attempt error", e);
       

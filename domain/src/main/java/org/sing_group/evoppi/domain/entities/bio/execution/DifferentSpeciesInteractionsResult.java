@@ -47,6 +47,7 @@ import javax.persistence.Table;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
 @DiscriminatorValue("DIFF")
@@ -97,9 +98,10 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     Collection<Interactome> referenceInteractome,
     Collection<Interactome> targetInteractome,
     BlastQueryOptions blastQueryOptions,
-    int queryMaxDegree
+    int queryMaxDegree,
+    User owner
   ) {
-    super(name, description, resultReference, queryGene, queryMaxDegree);
+    super(name, description, resultReference, queryGene, queryMaxDegree, owner);
     
     this.referenceInteractome = new HashSet<>(referenceInteractome);
     this.targetInteractome = new HashSet<>(targetInteractome);
@@ -116,9 +118,10 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     Collection<Interactome> referenceInteractome,
     Collection<Interactome> targetInteractome,
     BlastQueryOptions blastQueryOptions,
-    int queryMaxDegree
+    int queryMaxDegree,
+    User owner
   ) {
-    super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree);
+    super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree, owner);
     
     this.referenceInteractome = new HashSet<>(referenceInteractome);
     this.targetInteractome = new HashSet<>(targetInteractome);

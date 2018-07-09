@@ -29,6 +29,7 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.user.User;
 
 public interface DifferentSpeciesInteractionsResultDAO {
 
@@ -44,7 +45,8 @@ public interface DifferentSpeciesInteractionsResultDAO {
     Collection<Interactome> referenceInteractomes,
     Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastOptions,
-    int queryMaxDegree
+    int queryMaxDegree,
+    User owner
   );
 
   public DifferentSpeciesInteractionsResult create(
@@ -55,7 +57,8 @@ public interface DifferentSpeciesInteractionsResultDAO {
     Collection<Interactome> referenceInteractomes,
     Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastOptions,
-    int queryMaxDegree
+    int queryMaxDegree,
+    User owner
   );
 
 }

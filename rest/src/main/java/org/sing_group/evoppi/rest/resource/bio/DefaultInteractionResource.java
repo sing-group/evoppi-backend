@@ -96,7 +96,9 @@ public class DefaultInteractionResource implements InteractionResource {
   @ApiOperation(
     value = "Calculates the interactions of a gene according to one or many interactomes. "
       + "The calculus are done asynchronously, thus this method returns a work-data instance with information about "
-      + "the asynchronous task doing the calculations.",
+      + "the asynchronous task doing the calculations."
+      + "If the request contains authentication headers, the analysis results will be associated with the"
+      + "corresponding user.",
     response = WorkData.class,
     code = 200
   )
