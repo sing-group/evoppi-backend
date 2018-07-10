@@ -57,6 +57,16 @@ public class DefaultSecurityCheckBuilder implements SecurityCheckBuilder {
     
     return stream(logins).anyMatch(callerPrincipal::equals);
   }
+  
+  @Override
+  public SecurityCheck metsTheCondition(boolean condition) {
+    return this.metsTheCondition(condition, "condition is not met");
+  }
+  
+  @Override
+  public SecurityCheck metsTheCondition(boolean condition, String description) {
+    return () -> condition ? SecurityCheckResult.valid() : SecurityCheckResult.invalid(description);
+  }
 
   @Override
   public SecurityCheck hasRole(RoleType role) {

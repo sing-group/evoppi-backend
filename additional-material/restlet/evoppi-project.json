@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-07-10T19:11:36.377+02:00",
+      "lastModified": "2018-07-10T21:06:28.714+02:00",
       "name": "EvoPPI"
     },
     {
@@ -505,10 +505,11 @@
           "version": "V11"
         },
         "host": "${restUrl}",
-        "path": "/video/haahaa"
+        "path": "/interaction/result/287e1cc3-4068-46a9-9000-51f95532a2c6"
       },
+      "description": "",
       "id": "0238c5d2-b656-4810-8500-206da5fae1d7",
-      "lastModified": "2018-06-14T17:03:00.676+02:00",
+      "lastModified": "2018-07-10T20:17:50.962+02:00",
       "name": "Different Species Interaction Results",
       "headers": [
         {
@@ -555,7 +556,7 @@
         "path": "/interaction/result/287e1cc3-4068-46a9-9000-51f95532a2c6"
       },
       "id": "18f8b889-0fee-46be-ac9f-2c8434a2d65e",
-      "lastModified": "2018-05-09T19:22:54.991+02:00",
+      "lastModified": "2018-07-10T20:21:13.179+02:00",
       "name": "Different Species Interaction Results Summarized",
       "headers": [],
       "metaInfo": {},
@@ -1192,6 +1193,411 @@
       "uri": {
         "query": {
           "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "summarize",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03"
+      },
+      "id": "d9155e27-1899-4143-932b-dd0ef8e11dfe",
+      "lastModified": "2018-07-10T21:00:37.551+02:00",
+      "name": "Different Species Result Interactions Summary [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "summarize",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03"
+      },
+      "id": "c4da120f-c415-424f-8472-5c9cc6dfdba1",
+      "lastModified": "2018-07-10T21:00:41.051+02:00",
+      "name": "Different Species Result Interactions Summary [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "summarize",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03"
+      },
+      "id": "6106cf2f-a1f3-4bd6-a92d-c07370bd259c",
+      "lastModified": "2018-07-10T21:00:46.231+02:00",
+      "name": "Different Species Result Interactions Summary [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03/interactome/13/fasta"
+      },
+      "id": "384bfb48-b7e2-4500-9ce2-9b3ad934b141",
+      "lastModified": "2018-07-10T21:02:22.960+02:00",
+      "name": "Interaction Results Fasta [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03/interactome/13/fasta"
+      },
+      "id": "d3b3de77-f9c4-43c1-827b-8c45914b6bda",
+      "lastModified": "2018-07-10T21:03:18.210+02:00",
+      "name": "Interaction Results Fasta [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03/interactome/13/fasta"
+      },
+      "id": "a5290a1f-b490-4481-b8ca-9338c7eacf53",
+      "lastModified": "2018-07-10T21:03:00.497+02:00",
+      "name": "Interaction Results Fasta [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03/interactome/fasta"
+      },
+      "id": "0293940c-e79a-4e60-ba3e-8a3415995d2c",
+      "lastModified": "2018-07-10T21:03:57.569+02:00",
+      "name": "Interaction Results Single Fasta [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03/interactome/fasta"
+      },
+      "id": "7d98387b-4ece-45bb-b78d-0d8bc7f7b6e5",
+      "lastModified": "2018-07-10T21:04:23.191+02:00",
+      "name": "Interaction Results Single Fasta [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "addVersionSuffix",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03/interactome/fasta"
+      },
+      "id": "5bd5172b-ff48-4572-836b-2d8557309f84",
+      "lastModified": "2018-07-10T21:04:40.653+02:00",
+      "name": "Interaction Results Single Fasta [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
           "items": []
         },
         "scheme": {
@@ -1256,13 +1662,256 @@
       "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
     },
     {
-      "type": "Scenario",
-      "description": "",
-      "id": "cea10757-0408-4553-8e04-cee8174a031d",
-      "lastModified": "2018-05-03T17:48:13.088+02:00",
-      "name": "Bio",
-      "requestOrder": [],
-      "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "summarize",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/2fa4da16-2704-4d11-9baa-0ba3b41b4c6d"
+      },
+      "id": "981f48c7-74d1-45fa-8ffb-dedbd78fecd4",
+      "lastModified": "2018-07-10T21:00:51.781+02:00",
+      "name": "Same Species Result Interactions Summary [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "summarize",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/2fa4da16-2704-4d11-9baa-0ba3b41b4c6d"
+      },
+      "id": "2fab4d5d-7fb2-4559-b116-44c505122b44",
+      "lastModified": "2018-07-10T21:01:24.839+02:00",
+      "name": "Same Species Result Interactions Summary [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "summarize",
+              "value": "true"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/2fa4da16-2704-4d11-9baa-0ba3b41b4c6d"
+      },
+      "id": "119786d1-43eb-4b3c-bd4d-f2fbd6a4a817",
+      "lastModified": "2018-07-10T21:01:30.287+02:00",
+      "name": "Same Species Result Interactions Summary [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/work/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03"
+      },
+      "id": "836ce591-e5e3-4722-b0f5-92430686be30",
+      "lastModified": "2018-07-10T21:05:35.244+02:00",
+      "name": "Work [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/work/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03"
+      },
+      "id": "06991da8-8a0d-4705-b5c0-50bcd8ace8ef",
+      "lastModified": "2018-07-10T21:06:09.885+02:00",
+      "name": "Work [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/work/299ca0b0-edb1-4cd4-a8db-c332a9cb1a03"
+      },
+      "id": "a2e36210-bdc7-4b19-ad2a-4c509993bf0a",
+      "lastModified": "2018-07-10T21:06:28.715+02:00",
+      "name": "Work [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
     }
   ]
 }

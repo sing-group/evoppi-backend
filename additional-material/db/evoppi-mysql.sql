@@ -85,9 +85,12 @@ CREATE TABLE `different_species_interactions_result` (
   `maxTargetSeqs` int(11) DEFAULT NULL,
   `minimumAlignmentLength` int(11) DEFAULT NULL,
   `minimumIdentity` double DEFAULT NULL,
+  `owner` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_c80h74nea2044bfsgv075i85k` (`queryGene`),
-  CONSTRAINT `FK_c80h74nea2044bfsgv075i85k` FOREIGN KEY (`queryGene`) REFERENCES `gene` (`id`)
+  KEY `FK_fdpxtpw6shpokegxaghqhggk3` (`owner`),
+  CONSTRAINT `FK_c80h74nea2044bfsgv075i85k` FOREIGN KEY (`queryGene`) REFERENCES `gene` (`id`),
+  CONSTRAINT `FK_fdpxtpw6shpokegxaghqhggk3` FOREIGN KEY (`owner`) REFERENCES `user` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -343,9 +346,12 @@ CREATE TABLE `same_species_interactions_result` (
   `status` varchar(9) NOT NULL,
   `queryMaxDegree` int(11) NOT NULL,
   `queryGene` int(11) NOT NULL,
+  `owner` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_6tnwpwpj40p4rqif4fij807fc` (`queryGene`),
-  CONSTRAINT `FK_6tnwpwpj40p4rqif4fij807fc` FOREIGN KEY (`queryGene`) REFERENCES `gene` (`id`)
+  KEY `FK_ppmdhee2so3jk9u2ggkj3db5u` (`owner`),
+  CONSTRAINT `FK_6tnwpwpj40p4rqif4fij807fc` FOREIGN KEY (`queryGene`) REFERENCES `gene` (`id`),
+  CONSTRAINT `FK_ppmdhee2so3jk9u2ggkj3db5u` FOREIGN KEY (`owner`) REFERENCES `user` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -423,4 +429,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-08 12:36:53
+-- Dump completed on 2018-07-10 21:25:57

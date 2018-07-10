@@ -76,13 +76,6 @@ public abstract class InteractionsResult extends WorkEntity {
   )
   private Set<InteractionGroupResult> interactions;
   
-  @ManyToOne(fetch = FetchType.LAZY, optional = true)
-  @JoinColumn(
-    name = "owner", referencedColumnName = "login",
-    nullable = true
-  )
-  private User owner;
-  
   @Transient
   private Map<Integer, Map<Integer, InteractionGroupResult>> interactionsIndex;
 
@@ -90,7 +83,6 @@ public abstract class InteractionsResult extends WorkEntity {
     super();
     this.interactions = new HashSet<>();
     this.interactionsIndex = new HashMap<>();
-    this.owner = null;
   }
   
   protected InteractionsResult(String name, Gene queryGene, int queryMaxDegree) {
@@ -98,19 +90,17 @@ public abstract class InteractionsResult extends WorkEntity {
   }
   
   protected InteractionsResult(String name, String description, String resultReference, Gene queryGene, int queryMaxDegree, User owner) {
-    super(name, description, resultReference);
+    super(name, description, resultReference, owner);
     
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
-    this.owner = owner;
   }
   
   protected InteractionsResult(String name, String description, Function<String, String> resultReferenceBuilder, Gene queryGene, int queryMaxDegree, User owner) {
-    super(name, description, resultReferenceBuilder);
+    super(name, description, resultReferenceBuilder, owner);
     
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
-    this.owner = owner;
   }
 
   public int getQueryGeneId() {
@@ -127,10 +117,6 @@ public abstract class InteractionsResult extends WorkEntity {
 
   public Stream<InteractionGroupResult> getInteractions() {
     return interactions.stream();
-  }
-  
-  public Optional<User> getOwner() {
-    return Optional.ofNullable(owner);
   }
   
   @PostLoad

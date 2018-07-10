@@ -53,4 +53,8 @@ public interface SecurityCheckBuilder {
   
   public SecurityCheck hasLoginAndAnyRoleOf(Supplier<String> loginSupplier, RoleType ... roles);
 
+  public SecurityCheck metsTheCondition(boolean condition);
+  
+  public SecurityCheck metsTheCondition(boolean condition, String description);
+
 }

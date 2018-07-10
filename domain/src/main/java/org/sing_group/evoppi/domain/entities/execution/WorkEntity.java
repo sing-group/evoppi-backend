@@ -40,10 +40,14 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
 @Table(name = "work")
@@ -68,6 +72,13 @@ public abstract class WorkEntity implements Work, Serializable {
   @OrderBy("order ASC")
   private SortedSet<WorkStep> steps;
   
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  @JoinColumn(
+    name = "owner", referencedColumnName = "login",
+    nullable = true
+  )
+  private User owner;
+  
   @Embedded
   private ExecutionStatusAndTime status;
   
@@ -87,18 +98,20 @@ public abstract class WorkEntity implements Work, Serializable {
     this.steps = new TreeSet<>();
   }
 
-  public WorkEntity(String name, String description, String resultReference) {
+  public WorkEntity(String name, String description, String resultReference, User owner) {
     this(name);
     
     this.description = description;
     this.resultReference = resultReference;
+    this.owner = owner;
   }
   
-  public WorkEntity(String name, String description, Function<String, String> resultReferenceBuilder) {
+  public WorkEntity(String name, String description, Function<String, String> resultReferenceBuilder, User owner) {
     this(name);
     
     this.description = description;
     this.resultReference = resultReferenceBuilder.apply(this.id);
+    this.owner = owner;
   }
 
   @Override
@@ -109,6 +122,11 @@ public abstract class WorkEntity implements Work, Serializable {
   @Override
   public String getName() {
     return name;
+  }
+  
+  @Override
+  public Optional<User> getOwner() {
+    return Optional.ofNullable(owner);
   }
 
   @Override

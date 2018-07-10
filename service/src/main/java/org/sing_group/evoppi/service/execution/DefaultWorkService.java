@@ -22,12 +22,18 @@
 
 package org.sing_group.evoppi.service.execution;
 
+import java.util.Optional;
+
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
+import org.sing_group.evoppi.domain.entities.user.RoleType;
+import org.sing_group.evoppi.domain.entities.user.User;
+import org.sing_group.evoppi.service.security.SecurityGuard;
+import org.sing_group.evoppi.service.security.check.SecurityCheckBuilder;
 import org.sing_group.evoppi.service.spi.execution.WorkService;
 
 @Stateless
@@ -36,8 +42,23 @@ public class DefaultWorkService implements WorkService {
   @Inject
   private WorkDAO dao;
   
+  @Inject
+  private SecurityGuard securityManager;
+  
+  @Inject
+  private SecurityCheckBuilder checkThat;
+  
   @Override
   public WorkEntity get(String id) {
-    return this.dao.get(id);
+    final WorkEntity work = this.dao.get(id);
+    final Optional<User> owner = work.getOwner();
+    
+    return this.securityManager.ifAuthorized(
+      checkThat.hasRole(RoleType.ADMIN),
+      checkThat.metsTheCondition(!owner.isPresent(), "result does not have an owner"),
+      checkThat.hasLogin(owner.map(User::getLogin).orElse(null))
+    )
+      .throwing(() -> new IllegalArgumentException("Unknown work id: " + id))
+    .returnValue(work);
   }
 }

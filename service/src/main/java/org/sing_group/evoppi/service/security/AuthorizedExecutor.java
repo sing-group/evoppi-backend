@@ -52,6 +52,12 @@ public class AuthorizedExecutor {
     return this;
   }
   
+  public AuthorizedExecutor throwing(Supplier<RuntimeException> throwableBuilder) {
+    this.throwableBuilder = __ -> throwableBuilder.get();
+    
+    return this;
+  }
+  
   private boolean checkValidity(SecurityCheckResult...results) {
     return this.shouldPassAllTheChecks
       ? stream(results).allMatch(SecurityCheckResult::isValid)
@@ -62,14 +68,12 @@ public class AuthorizedExecutor {
     return this.throwing(cause -> throwableBuilder);
   }
 
-  private boolean check() {
+  private void check() {
     final SecurityCheckResult[] results = stream(this.checks)
       .map(SecurityCheck::check)
     .toArray(SecurityCheckResult[]::new);
     
-    if (checkValidity(results)) {
-      return true;
-    } else {
+    if (!checkValidity(results)) {
       final String cause = stream(results)
         .filter(result -> !result.isValid())
         .map(SecurityCheckResult::getReason)
@@ -90,5 +94,41 @@ public class AuthorizedExecutor {
     this.check();
     
     return action.get();
+  }
+  
+  public <T> T returnValue(T value) {
+    this.check();
+    
+    return value;
+  }
+
+  public void runOrElse(Runnable action, Runnable elseAction) {
+    try {
+      this.check();
+      
+      action.run();
+    } catch (RuntimeException re) {
+      elseAction.run();
+    }
+  }
+
+  public <T> T callOrElse(Supplier<T> action, Supplier<T> elseAction) {
+    try {
+      this.check();
+      
+      return action.get();
+    } catch (RuntimeException re) {
+      return elseAction.get();
+    }
+  }
+  
+  public <T> T returnValueOrElse(T value, T elseValue) {
+    try {
+      this.check();
+      
+      return value;
+    } catch (RuntimeException re) {
+      return elseValue;
+    }
   }
 }

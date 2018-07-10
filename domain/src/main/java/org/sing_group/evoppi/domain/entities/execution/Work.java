@@ -25,11 +25,15 @@ package org.sing_group.evoppi.domain.entities.execution;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.sing_group.evoppi.domain.entities.user.User;
+
 public interface Work extends HasExecutionStatus, HasExecutionTime {
 
   public String getId();
 
   public String getName();
+  
+  public Optional<User> getOwner();
 
   public Optional<String> getDescription();
 

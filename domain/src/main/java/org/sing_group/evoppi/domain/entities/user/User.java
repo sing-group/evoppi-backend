@@ -53,6 +53,7 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 
 @Entity
 @Table(name = "user")
@@ -87,7 +88,7 @@ public abstract class User implements Serializable {
   protected String email;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<InteractionsResult> results;
+  private Set<WorkEntity> results;
 
   // For JPA
   User() {}
@@ -185,18 +186,19 @@ public abstract class User implements Serializable {
     }
   }
   
-  public Stream<InteractionsResult> getResults() {
-    return this.results.stream();
+  public Stream<WorkEntity> getResults() {
+    return this.results.stream()
+      .filter(work -> work instanceof InteractionsResult);
   }
   
   public Stream<SameSpeciesInteractionsResult> getSameSpeciesResults() {
-    return results.stream()
+    return this.results.stream()
       .filter(result -> result instanceof SameSpeciesInteractionsResult)
       .map(result -> (SameSpeciesInteractionsResult) result);
   }
   
   public Stream<DifferentSpeciesInteractionsResult> getDifferentSpeciesResults() {
-    return results.stream()
+    return this.results.stream()
       .filter(result -> result instanceof DifferentSpeciesInteractionsResult)
       .map(result -> (DifferentSpeciesInteractionsResult) result);
   }

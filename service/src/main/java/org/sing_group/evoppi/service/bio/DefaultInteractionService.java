@@ -28,8 +28,10 @@ import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -53,8 +55,12 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResul
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.user.RoleType;
+import org.sing_group.evoppi.domain.entities.user.User;
 import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
+import org.sing_group.evoppi.service.security.SecurityGuard;
+import org.sing_group.evoppi.service.security.check.SecurityCheckBuilder;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.storage.FastaOutputConfiguration;
 import org.sing_group.evoppi.service.spi.storage.FastaWriter;
@@ -84,6 +90,12 @@ public class DefaultInteractionService implements InteractionService {
   private UserService userService;
   
   @Inject
+  private SecurityGuard securityManager;
+  
+  @Inject
+  private SecurityCheckBuilder checkThat;
+  
+  @Inject
   private Event<SameSpeciesInteractionsRequestEvent> taskSameEvents;
   
   @Inject
@@ -91,22 +103,53 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public boolean isSameSpeciesResult(String id) {
-    return this.sameInteractionsResultDao.exists(id);
+    return this.isResult(id, this.sameInteractionsResultDao::exists, this.sameInteractionsResultDao::get);
   }
   
   @Override
   public boolean isDifferentSpeciesResult(String id) {
-    return this.differentInteractionsResultDao.exists(id);
+    return this.isResult(id, this.differentInteractionsResultDao::exists, this.differentInteractionsResultDao::get);
+  }
+  
+  private boolean isResult(String id, Predicate<String> exists, Function<String, ? extends InteractionsResult> get) {
+    if (exists.test(id)) {
+      final InteractionsResult result = get.apply(id);
+      final Optional<User> owner = result.getOwner();
+      
+      // If the result has an owner, users that are not admins or the owner will get a false value
+      return this.securityManager.ifAuthorized(
+        checkThat.hasRole(RoleType.ADMIN),
+        checkThat.metsTheCondition(!owner.isPresent(), "result does not have an owner"),
+        checkThat.hasLogin(owner.map(User::getLogin).orElse(null))
+      ).returnValueOrElse(true, false);
+    } else {
+      return false;
+    }
   }
   
   @Override
   public SameSpeciesInteractionsResult getSameSpeciesResult(String id) {
-    return this.sameInteractionsResultDao.get(id);
+    return this.getResult(id, this.sameInteractionsResultDao::get);
   }
   
   @Override
   public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(String id) {
-    return this.differentInteractionsResultDao.get(id);
+    return this.getResult(id, this.differentInteractionsResultDao::get);
+  }
+  
+  private <T extends InteractionsResult> T getResult(String id, Function<String, T> get) {
+    final T result = get.apply(id);
+    final Optional<User> owner = result.getOwner();
+
+    // If the result has an owner, users that are not admins or the owner will get the
+    // same exception as if the result didn't exists
+    return this.securityManager.ifAuthorized(
+      checkThat.hasRole(RoleType.ADMIN),
+      checkThat.metsTheCondition(!owner.isPresent(), "result does not have an owner"),
+      checkThat.hasLogin(owner.map(User::getLogin).orElse(null))
+    )
+      .throwing(() -> new IllegalArgumentException("Unknown interaction result: " + id))
+    .returnValue(result);
   }
   
   @Override
@@ -190,6 +233,7 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public String getSameSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix) {
+    // Security check is done in getSameSpeciesResult method
     final SameSpeciesInteractionsResult result = this.getSameSpeciesResult(resultId);
 
     return createFastaFromInteractions(result.getInteractions(), includeVersionSuffix);
@@ -197,6 +241,7 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public String getDifferentSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix) {
+    // Security check is done in getDifferentSpeciesResult method
     final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
     
     final IntStream orthologIds = result.getBlastResults()
@@ -208,6 +253,7 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public String getSameSpeciesResultFasta(String resultId, int interactomeId, boolean includeVersionSuffix) {
+    // Security check is done in getSameSpeciesResult method
     final SameSpeciesInteractionsResult result = this.getSameSpeciesResult(resultId);
     
     if (result.getQueryInteractomeIds().noneMatch(id -> id == interactomeId))
@@ -221,6 +267,7 @@ public class DefaultInteractionService implements InteractionService {
   
   @Override
   public String getDifferentSpeciesResultFasta(String resultId, int interactomeId, boolean includeVersionSuffix) {
+    // Security check is done in getDifferentSpeciesResult method
     final DifferentSpeciesInteractionsResult result = this.getDifferentSpeciesResult(resultId);
     
     if (result.getReferenceInteractomeIds().anyMatch(id -> id == interactomeId)) {
@@ -240,7 +287,14 @@ public class DefaultInteractionService implements InteractionService {
   public Stream<InteractionGroupResult> getInteractions(
     InteractionsResult result, InteractionGroupResultListingOptions filteringOptions
   ) {
-    return this.interactionsResultDao.getInteractions(result, filteringOptions);
+    final Optional<User> owner = result.getOwner();
+    
+    return this.securityManager.ifAuthorized(
+      checkThat.hasRole(RoleType.ADMIN),
+      checkThat.metsTheCondition(!owner.isPresent(), "result does not have an owner"),
+      checkThat.hasLogin(owner.map(User::getLogin).orElse(null))
+    )
+    .call(() -> this.interactionsResultDao.getInteractions(result, filteringOptions));
   }
 
   private String createFastaFromGeneIds(
