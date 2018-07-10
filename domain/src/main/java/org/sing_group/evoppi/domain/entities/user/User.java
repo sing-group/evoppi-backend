@@ -185,6 +185,10 @@ public abstract class User implements Serializable {
     }
   }
   
+  public Stream<InteractionsResult> getResults() {
+    return this.results.stream();
+  }
+  
   public Stream<SameSpeciesInteractionsResult> getSameSpeciesResults() {
     return results.stream()
       .filter(result -> result instanceof SameSpeciesInteractionsResult)

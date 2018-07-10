@@ -31,5 +31,9 @@ import javax.ws.rs.core.Response;
 public interface UserResource {
 
   public Response role(String login, String password);
+  
+  public Response listDifferentSpeciesResults();
+
+  public Response listSameSpeciesResults();
 
 }
