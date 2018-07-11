@@ -58,7 +58,7 @@ public class AuthorizedExecutor {
     return this;
   }
   
-  private boolean checkValidity(SecurityCheckResult...results) {
+  private boolean checkValidity(SecurityCheckResult ... results) {
     return this.shouldPassAllTheChecks
       ? stream(results).allMatch(SecurityCheckResult::isValid)
       : stream(results).anyMatch(SecurityCheckResult::isValid);
@@ -125,7 +125,7 @@ public class AuthorizedExecutor {
   public <T> T returnValueOrElse(T value, T elseValue) {
     try {
       this.check();
-      
+
       return value;
     } catch (RuntimeException re) {
       return elseValue;

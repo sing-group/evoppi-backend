@@ -37,7 +37,7 @@ import org.sing_group.evoppi.domain.dao.spi.user.ResearcherDAO;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.domain.entities.user.RoleType;
 import org.sing_group.evoppi.service.security.SecurityGuard;
-import org.sing_group.evoppi.service.security.check.SecurityCheckBuilder;
+import org.sing_group.evoppi.service.security.check.SecurityCheckFactory;
 import org.sing_group.evoppi.service.spi.user.ResearcherService;
 
 @Stateless
@@ -50,7 +50,7 @@ public class DefaultResearcherService implements ResearcherService {
   private SecurityGuard securityGuard;
   
   @Inject
-  private SecurityCheckBuilder checkThat;
+  private SecurityCheckFactory checkThat;
 
   @RolesAllowed({ "ADMIN", "RESEARCHER" })
   @Override

@@ -33,7 +33,7 @@ import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.user.RoleType;
 import org.sing_group.evoppi.domain.entities.user.User;
 import org.sing_group.evoppi.service.security.SecurityGuard;
-import org.sing_group.evoppi.service.security.check.SecurityCheckBuilder;
+import org.sing_group.evoppi.service.security.check.SecurityCheckFactory;
 import org.sing_group.evoppi.service.spi.execution.WorkService;
 
 @Stateless
@@ -46,7 +46,7 @@ public class DefaultWorkService implements WorkService {
   private SecurityGuard securityManager;
   
   @Inject
-  private SecurityCheckBuilder checkThat;
+  private SecurityCheckFactory checkThat;
   
   @Override
   public WorkEntity get(String id) {

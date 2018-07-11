@@ -60,7 +60,7 @@ import org.sing_group.evoppi.domain.entities.user.User;
 import org.sing_group.evoppi.service.bio.differentspecies.event.DifferentSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
 import org.sing_group.evoppi.service.security.SecurityGuard;
-import org.sing_group.evoppi.service.security.check.SecurityCheckBuilder;
+import org.sing_group.evoppi.service.security.check.SecurityCheckFactory;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.storage.FastaOutputConfiguration;
 import org.sing_group.evoppi.service.spi.storage.FastaWriter;
@@ -93,7 +93,7 @@ public class DefaultInteractionService implements InteractionService {
   private SecurityGuard securityManager;
   
   @Inject
-  private SecurityCheckBuilder checkThat;
+  private SecurityCheckFactory checkThat;
   
   @Inject
   private Event<SameSpeciesInteractionsRequestEvent> taskSameEvents;

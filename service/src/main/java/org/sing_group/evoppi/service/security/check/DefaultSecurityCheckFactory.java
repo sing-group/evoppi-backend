@@ -44,7 +44,7 @@ import org.sing_group.evoppi.domain.entities.user.RoleType;
 @Default
 @PermitAll
 @TransactionAttribute(SUPPORTS)
-public class DefaultSecurityCheckBuilder implements SecurityCheckBuilder {
+public class DefaultSecurityCheckFactory implements SecurityCheckFactory {
   @Resource
   private SessionContext context;
   

@@ -31,7 +31,7 @@ import javax.ejb.Local;
 import org.sing_group.evoppi.domain.entities.user.RoleType;
 
 @Local
-public interface SecurityCheckBuilder {
+public interface SecurityCheckFactory {
 
   public SecurityCheck hasRole(RoleType role);
 
