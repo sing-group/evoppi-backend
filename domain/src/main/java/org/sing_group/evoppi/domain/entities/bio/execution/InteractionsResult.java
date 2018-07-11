@@ -60,7 +60,7 @@ import org.sing_group.evoppi.domain.entities.user.User;
 public abstract class InteractionsResult extends WorkEntity {
   private static final long serialVersionUID = 1L;
   
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "queryGene", referencedColumnName = "id", nullable = false)
   private Gene queryGene;
   

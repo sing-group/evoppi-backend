@@ -91,10 +91,10 @@ public class Interactome implements Serializable {
   @Column(name = "probFinalInteractions", scale = 1, precision = 2, nullable = true)
   private Double probFinalInteractions;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
   private Species species;
-
+  
   @OneToMany(mappedBy = "interactome", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactions;
 

@@ -43,22 +43,22 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResul
 public class InteractionGroupResultInteractomeDegree {
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "interactionsResult", referencedColumnName = "id", nullable = false)
   private InteractionsResult interactionsResult;
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "geneA", referencedColumnName = "id", nullable = false)
   private Gene geneA;
   
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "geneB", referencedColumnName = "id", nullable = false)
   private Gene geneB;
   
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "interactome", referencedColumnName = "id", nullable = false)
   private Interactome interactome;
   

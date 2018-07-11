@@ -24,7 +24,6 @@ package org.sing_group.evoppi.domain.entities.bio;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -44,26 +43,26 @@ public class Interaction implements HasGeneInteraction, Serializable {
   private static final long serialVersionUID = 1L;
   
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
   private Species species;
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "interactome", referencedColumnName = "id", nullable = false)
   private Interactome interactome;
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "geneA", referencedColumnName = "id", nullable = false)
   private Gene geneA;
   
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "geneB", referencedColumnName = "id", nullable = false)
   private Gene geneB;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumns({
     @JoinColumn(name = "species", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "interactome", referencedColumnName = "interactome", nullable = false, insertable = false, updatable = false),
@@ -71,7 +70,7 @@ public class Interaction implements HasGeneInteraction, Serializable {
   })
   private GeneInInteractome geneInInteractomeA;
   
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumns({
     @JoinColumn(name = "species", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "interactome", referencedColumnName = "interactome", nullable = false, insertable = false, updatable = false),

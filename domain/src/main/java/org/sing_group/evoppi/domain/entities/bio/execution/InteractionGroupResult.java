@@ -57,17 +57,17 @@ public class InteractionGroupResult implements HasGenePair, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "interactionsResult", referencedColumnName = "id", nullable = false)
   private InteractionsResult interactionsResult;
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "geneA", referencedColumnName = "id", nullable = false)
   private Gene geneA;
   
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "geneB", referencedColumnName = "id", nullable = false)
   private Gene geneB;
 

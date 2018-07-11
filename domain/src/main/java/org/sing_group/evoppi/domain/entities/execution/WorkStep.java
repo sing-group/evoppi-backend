@@ -25,7 +25,6 @@ package org.sing_group.evoppi.domain.entities.execution;
 import java.io.Serializable;
 import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,7 +45,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(
     name = "workId", referencedColumnName = "id",
     insertable = false, updatable = false,

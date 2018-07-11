@@ -54,7 +54,7 @@ public class Gene implements Serializable {
   @JoinColumn(name = "geneId", referencedColumnName = "id")
   private Set<GeneNames> names;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
   private Species species;
 

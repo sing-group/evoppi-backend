@@ -87,7 +87,7 @@ public abstract class User implements Serializable {
   @Column(length = 100, nullable = false, unique = true)
   protected String email;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = false)
   private Set<WorkEntity> results;
 
   // For JPA

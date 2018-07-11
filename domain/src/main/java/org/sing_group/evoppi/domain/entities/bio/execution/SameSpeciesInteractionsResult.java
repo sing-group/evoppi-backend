@@ -49,12 +49,10 @@ import org.sing_group.evoppi.domain.entities.user.User;
 public class SameSpeciesInteractionsResult extends InteractionsResult implements Serializable {
   private static final long serialVersionUID = 1L;
   
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {})
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
     name = "same_species_interactions_result_query_interactome",
-    joinColumns = {
-      @JoinColumn(name = "resultId", referencedColumnName = "id")
-    },
+    joinColumns = @JoinColumn(name = "resultId", referencedColumnName = "id"),
     foreignKey = @ForeignKey(name = "FK_same_species_interactions_result_query_interactome")
   )
   private Set<Interactome> queryInteractomes;

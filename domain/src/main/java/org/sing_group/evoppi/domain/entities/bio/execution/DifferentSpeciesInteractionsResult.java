@@ -55,22 +55,18 @@ import org.sing_group.evoppi.domain.entities.user.User;
 public class DifferentSpeciesInteractionsResult extends InteractionsResult implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {})
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
     name = "different_species_interactions_result_reference_interactomes",
-    joinColumns = {
-      @JoinColumn(name = "resultId", referencedColumnName = "id")
-    },
+    joinColumns = @JoinColumn(name = "resultId", referencedColumnName = "id"),
     foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_reference_interactomes")
   )
   private Set<Interactome> referenceInteractome;
   
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {})
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
     name = "different_species_interactions_result_target_interactomes",
-    joinColumns = {
-      @JoinColumn(name = "resultId", referencedColumnName = "id")
-    },
+    joinColumns = @JoinColumn(name = "resultId", referencedColumnName = "id"),
     foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_target_interactomes")
   )
   private Set<Interactome> targetInteractome;
@@ -82,9 +78,7 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   @JoinColumn(
     name = "interactionsResultId",
     referencedColumnName = "id",
-    foreignKey = @ForeignKey(
-      name = "FK_different_species_interactions_result_blast_result"
-    )
+    foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_blast_result")
   )
   private Set<BlastResult> blastResults;
 
