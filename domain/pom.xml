@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.sing_group</groupId>
     <artifactId>evoppi</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
   </parent>
   <artifactId>evoppi-domain</artifactId>
   <packaging>jar</packaging>

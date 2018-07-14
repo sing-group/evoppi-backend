@@ -82,4 +82,11 @@ class DefaultHasGenePair implements HasGenePair, Serializable {
       return false;
     return true;
   }
+
+  @Override
+  public String toString() {
+    return "DefaultHasGenePair [geneA=" + geneA.getId() + ", geneB=" + geneB.getId() + "]";
+  }
+  
+  
 }

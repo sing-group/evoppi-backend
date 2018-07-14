@@ -22,9 +22,13 @@
 package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.REQUIRED;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -35,9 +39,8 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
-import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.service.bio.BlastResultOrthologsManager;
 import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.OrthologsManager;
@@ -120,15 +123,16 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     
     final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
     
-    final Gene gene = this.geneDao.getGene(configuration.getGeneId());
-
     final DifferentSpeciesGeneInteractionsContextBuilder createBuilder = this.contextBuilderFactory.createBuilderFor(context);
     final OrthologsManager orthologsManager = new BlastResultOrthologsManager(context.getBlastResults().get());
     final BridgeInteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(
       this.interactomeId, createBuilder, orthologsManager
     );
     
-    this.interactionsCalculator.calculateInteractions(gene, this.interactomeId, configuration.getMaxDegree(), callback);
+    orthologsManager.getOrthologsForReferenceGene(configuration.getGeneId())
+      .peek(id -> System.out.println(id))
+      .mapToObj(this.geneDao::getGene)
+      .forEach(gene -> this.interactionsCalculator.calculateInteractions(gene, this.interactomeId, configuration.getMaxDegree(), callback));
     
     this.entityManager.clear(); // Avoids unnecessary persistence check
     
@@ -140,12 +144,16 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     
     private final Function<HasGenePair, Stream<HasGeneInteractionIds>> interactionsMapper;
     
+    private final Map<Integer, Set<HasGeneInteractionIds>> interactions;
+    
     public BridgeInteractionsCalculusCallback(
       int interactomeId,
       DifferentSpeciesGeneInteractionsContextBuilder contextBuilder,
       OrthologsManager orthologsManager
     ) {
       this.contextBuilder = contextBuilder;
+      
+      this.interactions = new HashMap<>();
       
       this.interactionsMapper = interaction ->
         orthologsManager.mapTargetPairOrthologs(
@@ -155,12 +163,21 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     }
     
     public DifferentSpeciesGeneInteractionsContext getContext() {
+      this.contextBuilder.setTargetInteractions(this.interactions);
+      
       return contextBuilder.build();
     }
     
     @Override
     public void interactionsCalculated(int degree, Collection<HasGenePair> interactions) {
-      contextBuilder.setTargetInteractions(degree, interactions.stream().flatMap(interactionsMapper));
+      final Set<HasGeneInteractionIds> interactionIds = interactions.stream()
+        .flatMap(this.interactionsMapper)
+      .collect(toSet());
+      
+      this.interactions.merge(degree, interactionIds, (s1, s2) -> {
+        s1.addAll(s2);
+        return s1;
+      });
     }
   }
 }
