@@ -24,6 +24,7 @@
 
 package org.sing_group.evoppi.service.security.check;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import javax.ejb.Local;
@@ -56,5 +57,9 @@ public interface SecurityCheckFactory {
   public SecurityCheck metsTheCondition(boolean condition);
   
   public SecurityCheck metsTheCondition(boolean condition, String description);
+
+  public SecurityCheck metsTheCondition(BooleanSupplier condition);
+  
+  public SecurityCheck metsTheCondition(BooleanSupplier condition, String description);
 
 }

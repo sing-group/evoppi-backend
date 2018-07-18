@@ -24,7 +24,12 @@
 
 package org.sing_group.evoppi.rest.mapper;
 
+import static java.util.Objects.requireNonNull;
+
+import java.security.Principal;
+
 import javax.ejb.EJBTransactionRolledbackException;
+import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -38,7 +43,18 @@ public class EJBTransactionRolledbackExceptionMapper
 implements ExceptionMapper<EJBTransactionRolledbackException> {
   private final static Logger LOG = LoggerFactory.getLogger(IllegalArgumentException.class);
 
+  private Principal principal;
+  
   public EJBTransactionRolledbackExceptionMapper() {}
+  
+  public EJBTransactionRolledbackExceptionMapper(Principal principal) {
+    this.setPrincipal(principal);
+  }
+  
+  @Inject
+  public void setPrincipal(Principal principal) {
+    this.principal = requireNonNull(principal);
+  }
   
   @Override
   public Response toResponse(EJBTransactionRolledbackException e) {
@@ -50,6 +66,11 @@ implements ExceptionMapper<EJBTransactionRolledbackException> {
       final IllegalArgumentException iae = (IllegalArgumentException) cause;
       
       return new IllegalArgumentExceptionMapper().toResponse(iae);
+    } else if (cause instanceof SecurityException) {
+      final SecurityException se = (SecurityException) cause;
+      
+      return new SecurityExceptionMapper(this.principal).toResponse(se);
+      
     } else {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
         .entity(e.getMessage())

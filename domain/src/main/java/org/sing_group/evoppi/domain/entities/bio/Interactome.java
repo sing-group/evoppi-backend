@@ -97,7 +97,7 @@ public class Interactome implements Serializable {
   
   @OneToMany(mappedBy = "interactome", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactions;
-
+  
   public Integer getId() {
     return id;
   }

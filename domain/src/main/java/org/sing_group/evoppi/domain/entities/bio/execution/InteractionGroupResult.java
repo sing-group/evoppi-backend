@@ -40,7 +40,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -58,7 +57,12 @@ public class InteractionGroupResult implements HasGenePair, Serializable {
 
   @Id
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "interactionsResult", referencedColumnName = "id", nullable = false)
+  @JoinColumn(
+    name = "interactionsResultId", referencedColumnName = "id",
+    foreignKey = @ForeignKey(
+      name = "FK_interactions_result_interaction_group_result"
+    )
+  )
   private InteractionsResult interactionsResult;
 
   @Id
@@ -71,15 +75,7 @@ public class InteractionGroupResult implements HasGenePair, Serializable {
   @JoinColumn(name = "geneB", referencedColumnName = "id", nullable = false)
   private Gene geneB;
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumns(
-    value = {
-      @JoinColumn(name = "interactionsResult", referencedColumnName = "interactionsResult"),
-      @JoinColumn(name = "geneA", referencedColumnName = "geneA"),
-      @JoinColumn(name = "geneB", referencedColumnName = "geneB"),
-    },
-    foreignKey = @ForeignKey(name = "FK_interaction_group_result_interactome_degree")
-  )
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "interactionGroupResult", cascade = CascadeType.PERSIST, orphanRemoval = true)
   private Set<InteractionGroupResultInteractomeDegree> interactomeDegrees;
 
   InteractionGroupResult() {}
@@ -92,9 +88,7 @@ public class InteractionGroupResult implements HasGenePair, Serializable {
     this.geneB = genePair.getGeneB();
     this.interactomeDegrees = interactomeDegrees.entrySet().stream()
       .map(entry -> new InteractionGroupResultInteractomeDegree(
-        InteractionGroupResult.this.interactionsResult,
-        InteractionGroupResult.this.geneA,
-        InteractionGroupResult.this.geneB,
+        InteractionGroupResult.this,
         entry.getKey(),
         entry.getValue()
       ))
@@ -172,11 +166,7 @@ public class InteractionGroupResult implements HasGenePair, Serializable {
 
   public void addInteractome(Interactome interactome, int degree) {
     this.interactomeDegrees.add(new InteractionGroupResultInteractomeDegree(
-      this.interactionsResult,
-      this.geneA,
-      this.geneB,
-      interactome,
-      degree
+      this, interactome, degree
     ));
   }
 
@@ -184,6 +174,10 @@ public class InteractionGroupResult implements HasGenePair, Serializable {
     interactomeDegrees.entrySet().stream()
       .filter(entry -> !this.belongsToInteractome(entry.getKey()))
     .forEach(entry -> this.addInteractome(entry.getKey(), entry.getValue()));
+  }
+  
+  public Stream<InteractionGroupResultInteractomeDegree> getInteractionGroupResultInteractomeDegree() {
+    return this.interactomeDegrees.stream();
   }
 
   @Override

@@ -59,22 +59,24 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   @JoinTable(
     name = "different_species_interactions_result_reference_interactomes",
     joinColumns = @JoinColumn(name = "resultId", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "referenceInteractomeId", referencedColumnName = "id"),
     foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_reference_interactomes")
   )
-  private Set<Interactome> referenceInteractome;
+  private Set<Interactome> referenceInteractomes;
   
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
     name = "different_species_interactions_result_target_interactomes",
     joinColumns = @JoinColumn(name = "resultId", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "targetInteractomeId", referencedColumnName = "id"),
     foreignKey = @ForeignKey(name = "FK_different_species_interactions_result_target_interactomes")
   )
-  private Set<Interactome> targetInteractome;
+  private Set<Interactome> targetInteractomes;
 
   @Embedded
   private BlastQueryOptions blastQueryOptions;
   
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
   @JoinColumn(
     name = "interactionsResultId",
     referencedColumnName = "id",
@@ -89,16 +91,16 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     String description,
     String resultReference,
     Gene queryGene,
-    Collection<Interactome> referenceInteractome,
-    Collection<Interactome> targetInteractome,
+    Collection<Interactome> referenceInteractomes,
+    Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastQueryOptions,
     int queryMaxDegree,
     User owner
   ) {
     super(name, description, resultReference, queryGene, queryMaxDegree, owner);
     
-    this.referenceInteractome = new HashSet<>(referenceInteractome);
-    this.targetInteractome = new HashSet<>(targetInteractome);
+    this.referenceInteractomes = new HashSet<>(referenceInteractomes);
+    this.targetInteractomes = new HashSet<>(targetInteractomes);
 
     this.blastQueryOptions = blastQueryOptions;
     this.blastResults = new HashSet<>();
@@ -109,16 +111,16 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
     String description,
     Function<String, String> resultReferenceBuilder,
     Gene queryGene,
-    Collection<Interactome> referenceInteractome,
-    Collection<Interactome> targetInteractome,
+    Collection<Interactome> referenceInteractomes,
+    Collection<Interactome> targetInteractomes,
     BlastQueryOptions blastQueryOptions,
     int queryMaxDegree,
     User owner
   ) {
     super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree, owner);
     
-    this.referenceInteractome = new HashSet<>(referenceInteractome);
-    this.targetInteractome = new HashSet<>(targetInteractome);
+    this.referenceInteractomes = new HashSet<>(referenceInteractomes);
+    this.targetInteractomes = new HashSet<>(targetInteractomes);
     
     this.blastQueryOptions = blastQueryOptions;
     this.blastResults = new HashSet<>();
@@ -129,7 +131,7 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   }
   
   public Stream<Interactome> getReferenceInteractomes() {
-    return this.referenceInteractome.stream();
+    return this.referenceInteractomes.stream();
   }
 
   public IntStream getTargetInteractomeIds() {
@@ -137,7 +139,7 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   }
   
   public Stream<Interactome> getTargetInteractomes() {
-    return this.targetInteractome.stream();
+    return this.targetInteractomes.stream();
   }
   
   public BlastQueryOptions getBlastQueryOptions() {

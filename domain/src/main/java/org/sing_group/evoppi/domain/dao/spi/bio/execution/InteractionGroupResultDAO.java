@@ -19,13 +19,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
+import java.util.stream.Stream;
+
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 
-public interface InteractionsResultDAO {
-  public InteractionsResult get(String uuid);
-  
-  public void delete(String uuid);
+public interface InteractionGroupResultDAO {
+  public Stream<InteractionGroupResult> getInteractions(
+    InteractionsResult result, InteractionGroupResultListingOptions listingOptions
+  );
 }

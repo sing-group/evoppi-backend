@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-07-10T21:06:28.714+02:00",
+      "lastModified": "2018-07-18T16:49:07.340+02:00",
       "name": "EvoPPI"
     },
     {
@@ -887,6 +887,480 @@
     {
       "type": "Request",
       "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/aaaaaaaa-ac80-4b35-a726-fcf5aaf03c90"
+      },
+      "id": "cff2477a-9aa0-479d-876b-c17e565ddd62",
+      "lastModified": "2018-07-18T16:44:34.774+02:00",
+      "name": "Delete Different Species Interactions [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/aaaaaaaa-ac80-4b35-a726-fcf5aaf03c90"
+      },
+      "id": "c24a670b-e8d9-4d1f-a339-913a152da889",
+      "lastModified": "2018-07-18T16:44:49.453+02:00",
+      "name": "Delete Different Species Interactions [ANONYMOUS]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/aaaaaaaa-ac80-4b35-a726-fcf5aaf03c90"
+      },
+      "id": "22b3f448-924c-4fd8-a525-f4ec613ac812",
+      "lastModified": "2018-07-18T16:45:11.990+02:00",
+      "name": "Delete Different Species Interactions [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/53081992-ac80-4b35-a726-fcf5aaf03c90"
+      },
+      "id": "4a710d50-344a-4637-827d-47672f10c7b3",
+      "lastModified": "2018-07-17T21:23:47.333+02:00",
+      "name": "Delete Guest Different Species Interactions [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/53081992-ac80-4b35-a726-fcf5aaf03c90"
+      },
+      "id": "ff7d2d36-c6be-4d68-a5fc-a8c1bf1baf0f",
+      "lastModified": "2018-07-18T16:44:08.480+02:00",
+      "name": "Delete Guest Different Species Interactions [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/53081992-ac80-4b35-a726-fcf5aaf03c90"
+      },
+      "id": "d82d7f40-3d71-4dbb-a6c6-0b17d6775cc7",
+      "lastModified": "2018-07-18T16:40:44.281+02:00",
+      "name": "Delete Guest Different Species Interactions [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/aaaaaaaa-77bf-4797-98c8-40875b426f5c"
+      },
+      "id": "dcca5843-a5b4-4297-bb0b-b6bea0da1679",
+      "lastModified": "2018-07-18T16:47:23.578+02:00",
+      "name": "Delete Guest Same Species Interactions [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/644e0fd0-77bf-4797-98c8-40875b426f5c"
+      },
+      "id": "2eefeb87-acb2-41a0-9852-394edeb194f3",
+      "lastModified": "2018-07-18T16:41:11.502+02:00",
+      "name": "Delete Guest Same Species Interactions [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/644e0fd0-77bf-4797-98c8-40875b426f5c"
+      },
+      "id": "e2b06f80-73dd-425a-a917-e8206fca9296",
+      "lastModified": "2018-07-18T16:41:22.719+02:00",
+      "name": "Delete Guest Same Species Interactions [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/aaaaaaaa-77bf-4797-98c8-40875b426f5c"
+      },
+      "id": "59aaf337-f1b5-4120-bf9c-9fe26a679fa0",
+      "lastModified": "2018-07-18T16:48:32.433+02:00",
+      "name": "Delete Same Species Interactions [ADMIN]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW5wYXNz"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/aaaaaaaa-77bf-4797-98c8-40875b426f5c"
+      },
+      "id": "7c5dafae-6ebc-402d-89c5-4dd58e18a959",
+      "lastModified": "2018-07-18T16:48:15.444+02:00",
+      "name": "Delete Same Species Interactions [ANONYMOUS]",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/aaaaaaaa-77bf-4797-98c8-40875b426f5c"
+      },
+      "id": "fb46d838-548d-4cf9-9a97-9697f230f172",
+      "lastModified": "2018-07-18T16:49:07.340+02:00",
+      "name": "Delete Same Species Interactions [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
         "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
         "name": "GET"
       },
@@ -936,6 +1410,41 @@
       "id": "9a580a7f-ae65-476b-bce5-6b5d69e31e16",
       "lastModified": "2018-04-09T19:44:18.878+02:00",
       "name": "Different Species Interactions",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/53081992-ac80-4b35-a726-fcf5aaf03c90"
+      },
+      "id": "eb3c4c65-ed70-403f-a982-7ada47b9a443",
+      "lastModified": "2018-07-18T16:42:38.231+02:00",
+      "name": "Different Species Interactions [ANONYMOUS]",
       "headers": [],
       "metaInfo": {},
       "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"

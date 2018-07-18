@@ -53,6 +53,7 @@ public class SameSpeciesInteractionsResult extends InteractionsResult implements
   @JoinTable(
     name = "same_species_interactions_result_query_interactome",
     joinColumns = @JoinColumn(name = "resultId", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "queryInteractomesId", referencedColumnName = "id"),
     foreignKey = @ForeignKey(name = "FK_same_species_interactions_result_query_interactome")
   )
   private Set<Interactome> queryInteractomes;

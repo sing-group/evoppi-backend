@@ -29,6 +29,7 @@ import static java.util.stream.Collectors.joining;
 import static javax.ejb.TransactionAttributeType.SUPPORTS;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import javax.annotation.Resource;
@@ -66,6 +67,16 @@ public class DefaultSecurityCheckFactory implements SecurityCheckFactory {
   @Override
   public SecurityCheck metsTheCondition(boolean condition, String description) {
     return () -> condition ? SecurityCheckResult.valid() : SecurityCheckResult.invalid(description);
+  }
+  
+  @Override
+  public SecurityCheck metsTheCondition(BooleanSupplier condition) {
+    return this.metsTheCondition(condition, "condition is not met");
+  }
+  
+  @Override
+  public SecurityCheck metsTheCondition(BooleanSupplier condition, String description) {
+    return () -> condition.getAsBoolean() ? SecurityCheckResult.valid() : SecurityCheckResult.invalid(description);
   }
 
   @Override

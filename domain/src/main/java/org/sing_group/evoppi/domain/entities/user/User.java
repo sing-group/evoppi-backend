@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -87,7 +86,7 @@ public abstract class User implements Serializable {
   @Column(length = 100, nullable = false, unique = true)
   protected String email;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = false)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
   private Set<WorkEntity> results;
 
   // For JPA

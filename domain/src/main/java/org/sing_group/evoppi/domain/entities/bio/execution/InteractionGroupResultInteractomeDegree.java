@@ -27,9 +27,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -41,10 +43,20 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResul
 @Table(name = "interaction_group_result_interactome_degree")
 @IdClass(InteractionGroupResultInteractomeDegreeId.class)
 public class InteractionGroupResultInteractomeDegree {
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumns(
+    value = {
+      @JoinColumn(name = "interactionsResultId", referencedColumnName = "interactionsResultId", insertable = false, updatable = false),
+      @JoinColumn(name = "geneA", referencedColumnName = "geneA", insertable = false, updatable = false),
+      @JoinColumn(name = "geneB", referencedColumnName = "geneB", insertable = false, updatable = false),
+    },
+    foreignKey = @ForeignKey(name = "FK_interaction_group_result_interactome_degree")
+  )
+  private InteractionGroupResult interactionGroupResult;
 
   @Id
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "interactionsResult", referencedColumnName = "id", nullable = false)
+  @JoinColumn(name = "interactionsResultId", referencedColumnName = "id", nullable = false)
   private InteractionsResult interactionsResult;
 
   @Id
@@ -68,15 +80,14 @@ public class InteractionGroupResultInteractomeDegree {
   InteractionGroupResultInteractomeDegree() {}
     
   public InteractionGroupResultInteractomeDegree(
-    InteractionsResult interactionsResult,
-    Gene geneA,
-    Gene geneB,
+    InteractionGroupResult interactionGroupResult,
     Interactome interactome,
     int degree
   ) {
-    this.interactionsResult = interactionsResult;
-    this.geneA = geneA;
-    this.geneB = geneB;
+    this.interactionGroupResult = interactionGroupResult;
+    this.interactionsResult = interactionGroupResult.getInteractionsResult();
+    this.geneA = interactionGroupResult.getGeneA();
+    this.geneB = interactionGroupResult.getGeneB();
     this.interactome = interactome;
     this.degree = degree;
   }

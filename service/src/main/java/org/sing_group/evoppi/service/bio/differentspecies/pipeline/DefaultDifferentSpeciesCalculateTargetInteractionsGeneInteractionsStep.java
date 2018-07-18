@@ -131,7 +131,6 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     );
     
     orthologsManager.getOrthologsForReferenceGene(configuration.getGeneId())
-      .peek(id -> System.out.println(id))
       .mapToObj(this.geneDao::getGene)
       .forEach(gene -> this.interactionsCalculator.calculateInteractions(gene, this.interactomeId, configuration.getMaxDegree(), callback));
     

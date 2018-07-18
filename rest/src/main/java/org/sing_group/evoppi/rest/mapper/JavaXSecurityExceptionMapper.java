@@ -2,7 +2,7 @@
  * #%L
  * REST
  * %%
- * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -21,14 +21,16 @@
  */
 
 
-
 package org.sing_group.evoppi.rest.mapper;
 
 import static java.util.Objects.requireNonNull;
+import static org.sing_group.evoppi.rest.mapper.SecurityExceptionMapper.FORBIDDEN_MESSAGE;
+import static org.sing_group.evoppi.rest.mapper.SecurityExceptionMapper.UNAUTHORIZED_MESSAGE;
 
 import java.security.Principal;
 
 import javax.inject.Inject;
+import javax.resource.spi.SecurityException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -38,18 +40,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Provider
-public class SecurityExceptionMapper
+public class JavaXSecurityExceptionMapper
 implements ExceptionMapper<SecurityException> {
-  private final static Logger LOG = LoggerFactory.getLogger(SecurityExceptionMapper.class);
+  private final static Logger LOG = LoggerFactory.getLogger(JavaXSecurityExceptionMapper.class);
   
-  public final static String UNAUTHORIZED_MESSAGE = "Unauthorized operation";
-  public final static String FORBIDDEN_MESSAGE = "Forbidden operation";
-
   private Principal principal;
   
-  public SecurityExceptionMapper() {}
+  public JavaXSecurityExceptionMapper() {}
   
-  public SecurityExceptionMapper(Principal principal) {
+  public JavaXSecurityExceptionMapper(Principal principal) {
     this.setPrincipal(principal);
   }
   

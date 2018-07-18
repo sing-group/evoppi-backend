@@ -42,7 +42,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -61,19 +60,18 @@ public abstract class InteractionsResult extends WorkEntity {
   private static final long serialVersionUID = 1L;
   
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "queryGene", referencedColumnName = "id", nullable = false)
+  @JoinColumn(
+    name = "queryGene", referencedColumnName = "id", nullable = false,
+    foreignKey = @ForeignKey(
+      name = "FK_gene_interactions_result"
+    )
+  )
   private Gene queryGene;
   
   @Column(name = "queryMaxDegree", nullable = false)
   private int queryMaxDegree;
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(
-    name = "interactionsResult", referencedColumnName = "id",
-    foreignKey = @ForeignKey(
-      name = "FK_interactions_result_interaction_group_result"
-    )
-  )
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "interactionsResult", cascade = CascadeType.PERSIST, orphanRemoval = true)
   private Set<InteractionGroupResult> interactions;
   
   @Transient
@@ -82,7 +80,6 @@ public abstract class InteractionsResult extends WorkEntity {
   protected InteractionsResult() {
     super();
     this.interactions = new HashSet<>();
-    this.interactionsIndex = new HashMap<>();
   }
   
   protected InteractionsResult(String name, Gene queryGene, int queryMaxDegree) {
@@ -119,13 +116,6 @@ public abstract class InteractionsResult extends WorkEntity {
     return interactions.stream();
   }
   
-  @PostLoad
-  private void createGroupIndex() {
-    for (InteractionGroupResult result : this.interactions) {
-      this.interactionsIndex.compute(result.getGeneAId(), createRemappingFunction(result));
-    }
-  }
-  
   private static BiFunction<Integer, Map<Integer, InteractionGroupResult>, Map<Integer, InteractionGroupResult>> createRemappingFunction(
     InteractionGroupResult result
   ) {
@@ -139,7 +129,7 @@ public abstract class InteractionsResult extends WorkEntity {
   }
   
   private Optional<InteractionGroupResult> getInteraction(HasGenePairIds genePairIds) {
-    final Map<Integer, InteractionGroupResult> geneBMap = this.interactionsIndex.get(genePairIds.getGeneAId());
+    final Map<Integer, InteractionGroupResult> geneBMap = this.getInteractionsIndex().get(genePairIds.getGeneAId());
     
     return geneBMap == null ? Optional.empty() : Optional.ofNullable(geneBMap.get(genePairIds.getGeneBId()));
   }
@@ -157,7 +147,7 @@ public abstract class InteractionsResult extends WorkEntity {
       final InteractionGroupResult newResult = new InteractionGroupResult(this, genePair, interactomeDegrees);
       
       this.interactions.add(newResult);
-      this.interactionsIndex.compute(genePair.getGeneAId(), createRemappingFunction(newResult));
+      this.getInteractionsIndex().compute(genePair.getGeneAId(), createRemappingFunction(newResult));
       
       return newResult;
     }
@@ -180,7 +170,7 @@ public abstract class InteractionsResult extends WorkEntity {
       final InteractionGroupResult newResult = new InteractionGroupResult(this, genePair, interactome, degree);
       
       this.interactions.add(newResult);
-      this.interactionsIndex.compute(genePair.getGeneAId(), createRemappingFunction(newResult));
+      this.getInteractionsIndex().compute(genePair.getGeneAId(), createRemappingFunction(newResult));
       
       return newResult;
     }
@@ -189,5 +179,21 @@ public abstract class InteractionsResult extends WorkEntity {
   public boolean hasInteractionsForInteractome(int interactomeId) {
     return this.interactions.stream()
       .anyMatch(interaction -> interaction.belongsToInteractome(interactomeId));
+  }
+  
+  private Map<Integer, Map<Integer, InteractionGroupResult>> getInteractionsIndex() {
+    if (this.interactionsIndex == null) {
+      synchronized(this) {
+        if (this.interactionsIndex == null) {
+          this.interactionsIndex = new HashMap<>();
+          
+          for (InteractionGroupResult result : this.interactions) {
+            this.interactionsIndex.compute(result.getGeneAId(), createRemappingFunction(result));
+          }
+        }
+      } 
+    }
+    
+    return this.interactionsIndex;
   }
 }

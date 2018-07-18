@@ -48,8 +48,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.dao.ListingOptions.SortField;
+import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.user.ResearcherData;

@@ -64,4 +64,6 @@ public interface InteractionService {
     InteractionsResult result,
     InteractionGroupResultListingOptions filteringOptions
   );
+
+  public void deleteResult(String id);
 }

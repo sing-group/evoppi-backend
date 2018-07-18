@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 @Provider
 public class IllegalArgumentExceptionMapper
 implements ExceptionMapper<IllegalArgumentException> {
-  private final static Logger LOG = LoggerFactory.getLogger(IllegalArgumentException.class);
+  private final static Logger LOG = LoggerFactory.getLogger(IllegalArgumentExceptionMapper.class);
   
   @Override
   public Response toResponse(IllegalArgumentException e) {

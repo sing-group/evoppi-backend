@@ -43,7 +43,6 @@ implements SameSpeciesGeneInteractionsEventManager {
 
   @Override
   public void fireEvent(SameSpeciesGeneInteractionsContext context, String description, double progress, ExecutionStatus status) {
-    System.out.println(description);
     this.events.fire(new DefaultSameSpeciesGeneInteractionsEvent(context, description, progress, status));
   }
 

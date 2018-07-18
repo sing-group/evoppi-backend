@@ -32,6 +32,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -213,6 +214,24 @@ public class DefaultInteractionResource implements InteractionResource {
     } else {
       throw new IllegalArgumentException("Unknown interactions results id: " + id);
     }
+  }
+
+  @DELETE
+  @Path("result/{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}")
+  @ApiOperation(
+    value = "Deletes the result of a interaction calculus.",
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown interaction result: {id}")
+  )
+  @Override
+  public Response deleteInterationResult(
+    @PathParam("id") String id
+  ) {
+    this.service.deleteResult(id);
+    
+    return Response.ok().build();
   }
 
   @GET

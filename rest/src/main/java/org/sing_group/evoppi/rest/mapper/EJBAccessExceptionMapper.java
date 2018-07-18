@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 @Provider
 public class EJBAccessExceptionMapper
 implements ExceptionMapper<EJBAccessException> {
-  private final static Logger LOG = LoggerFactory.getLogger(IllegalArgumentException.class);
+  private final static Logger LOG = LoggerFactory.getLogger(EJBAccessExceptionMapper.class);
 
   private Principal principal;
   

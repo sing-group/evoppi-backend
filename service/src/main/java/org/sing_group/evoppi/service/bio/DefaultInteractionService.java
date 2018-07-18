@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -43,6 +44,7 @@ import javax.inject.Inject;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionGroupResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionsResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -84,6 +86,9 @@ public class DefaultInteractionService implements InteractionService {
   private DifferentSpeciesInteractionsResultDAO differentInteractionsResultDao;
   
   @Inject
+  private InteractionGroupResultDAO interactionGroupResultDao;
+  
+  @Inject
   private InteractionsResultDAO interactionsResultDao;
   
   @Inject
@@ -113,14 +118,13 @@ public class DefaultInteractionService implements InteractionService {
   
   private boolean isResult(String id, Predicate<String> exists, Function<String, ? extends InteractionsResult> get) {
     if (exists.test(id)) {
-      final InteractionsResult result = get.apply(id);
-      final Optional<User> owner = result.getOwner();
+      final Supplier<Optional<User>> getOwner = () -> get.apply(id).getOwner();
       
       // If the result has an owner, users that are not admins or the owner will get a false value
       return this.securityManager.ifAuthorized(
         checkThat.hasRole(RoleType.ADMIN),
-        checkThat.metsTheCondition(!owner.isPresent(), "result does not have an owner"),
-        checkThat.hasLogin(owner.map(User::getLogin).orElse(null))
+        checkThat.metsTheCondition(() -> !getOwner.get().isPresent(), "result does not have an owner"),
+        checkThat.hasLogin(() -> getOwner.get().map(User::getLogin).orElse(null))
       ).returnValueOrElse(true, false);
     } else {
       return false;
@@ -138,18 +142,17 @@ public class DefaultInteractionService implements InteractionService {
   }
   
   private <T extends InteractionsResult> T getResult(String id, Function<String, T> get) {
-    final T result = get.apply(id);
-    final Optional<User> owner = result.getOwner();
+    final Supplier<Optional<User>> getOwner = () -> get.apply(id).getOwner();
 
     // If the result has an owner, users that are not admins or the owner will get the
     // same exception as if the result didn't exists
     return this.securityManager.ifAuthorized(
       checkThat.hasRole(RoleType.ADMIN),
-      checkThat.metsTheCondition(!owner.isPresent(), "result does not have an owner"),
-      checkThat.hasLogin(owner.map(User::getLogin).orElse(null))
+      checkThat.metsTheCondition(() -> !getOwner.get().isPresent(), "result does not have an owner"),
+      checkThat.hasLogin(() -> getOwner.get().map(User::getLogin).orElse(null))
     )
       .throwing(() -> new IllegalArgumentException("Unknown interaction result: " + id))
-    .returnValue(result);
+    .call(() -> get.apply(id));
   }
   
   @Override
@@ -287,14 +290,28 @@ public class DefaultInteractionService implements InteractionService {
   public Stream<InteractionGroupResult> getInteractions(
     InteractionsResult result, InteractionGroupResultListingOptions filteringOptions
   ) {
-    final Optional<User> owner = result.getOwner();
+    final Supplier<Optional<User>> getOwner = () -> result.getOwner();
     
     return this.securityManager.ifAuthorized(
       checkThat.hasRole(RoleType.ADMIN),
-      checkThat.metsTheCondition(!owner.isPresent(), "result does not have an owner"),
-      checkThat.hasLogin(owner.map(User::getLogin).orElse(null))
+      checkThat.metsTheCondition(() -> !getOwner.get().isPresent(), "result does not have an owner"),
+      checkThat.hasLogin(() -> getOwner.get().map(User::getLogin).orElse(null))
     )
-    .call(() -> this.interactionsResultDao.getInteractions(result, filteringOptions));
+    .call(() -> this.interactionGroupResultDao.getInteractions(result, filteringOptions));
+  }
+  
+  @Override
+  public void deleteResult(String id) {
+    final Supplier<String> loginSupplier = () -> 
+      this.interactionsResultDao.get(id)
+        .getOwner()
+        .map(User::getLogin)
+      .orElse(null);
+    
+    this.securityManager.ifAuthorized(
+      checkThat.hasRole(RoleType.ADMIN),
+      checkThat.hasLogin(loginSupplier)
+    ).run(() -> this.interactionsResultDao.delete(id));
   }
 
   private String createFastaFromGeneIds(

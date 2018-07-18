@@ -55,4 +55,6 @@ public interface InteractionResource {
     SortDirection sortDirection,
     Integer interactomeId
   );
+
+  public Response deleteInterationResult(String id);
 }

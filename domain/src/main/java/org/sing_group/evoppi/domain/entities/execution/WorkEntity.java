@@ -68,7 +68,7 @@ public abstract class WorkEntity implements Work, Serializable {
   @Column(name = "resultReference", length = 1023, nullable = true)
   private String resultReference;
 
-  @OneToMany(mappedBy = "work", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "work", cascade = CascadeType.PERSIST, orphanRemoval = true)
   @OrderBy("order ASC")
   private SortedSet<WorkStep> steps;
   
