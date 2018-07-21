@@ -27,6 +27,7 @@ package org.sing_group.evoppi.rest.resource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.rest.resource.user.AdministratorResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.ResearcherResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.UserResourceIntegrationTest;
@@ -34,7 +35,8 @@ import org.sing_group.evoppi.rest.resource.user.UserResourceIntegrationTest;
 @SuiteClasses({
 	UserResourceIntegrationTest.class,
 	AdministratorResourceIntegrationTest.class,
-	ResearcherResourceIntegrationTest.class
+	ResearcherResourceIntegrationTest.class,
+	SameSpeciesInteractionsResult.class
 })
 @RunWith(Suite.class)
 public class ResourceIntegrationTestSuite {

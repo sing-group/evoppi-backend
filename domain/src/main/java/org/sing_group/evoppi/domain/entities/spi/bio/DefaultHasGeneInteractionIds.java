@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 class DefaultHasGeneInteractionIds implements HasGeneInteractionIds, Serializable {
   private static final long serialVersionUID = 1L;
-  
+
   private final int interactomeId;
   private final int geneAId;
   private final int geneBId;
@@ -82,5 +82,10 @@ class DefaultHasGeneInteractionIds implements HasGeneInteractionIds, Serializabl
     if (interactomeId != other.interactomeId)
       return false;
     return true;
+  }
+  
+  @Override
+  public String toString() {
+    return interactomeId + ": " + geneAId + " - " + geneBId;
   }
 }

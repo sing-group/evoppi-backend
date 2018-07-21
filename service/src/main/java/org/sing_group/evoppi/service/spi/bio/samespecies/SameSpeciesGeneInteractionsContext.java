@@ -22,6 +22,8 @@
 
 package org.sing_group.evoppi.service.spi.bio.samespecies;
 
+import static java.util.stream.Stream.empty;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -59,6 +61,13 @@ extends PipelineContext<
       .map(Set::stream);
   }
   
+  public default Optional<Stream<HasGeneInteractionIds>> getInteractionsForInteractome(int interactomeId) {
+    return this.getInteractions()
+      .map(interactions -> interactions
+        .filter(interaction -> interaction.getInteractomeId() == interactomeId)
+      );
+  }
+  
   public default Optional<Boolean> hasInteractionsWithDegree(int degree) {
     return this.getInteractionsDegrees().map(
       interactions -> interactions.anyMatch(interactionDegree -> interactionDegree == degree)
@@ -73,4 +82,19 @@ extends PipelineContext<
   }
   
   public Optional<Stream<HasGeneInteractionIds>> getCompletedInteractions();
+  
+  public default boolean hasInteraction(HasGeneInteractionIds interaction) {
+    return this.getInteractions().orElse(empty())
+      .anyMatch(interaction::equals);
+  }
+  
+  public default boolean hasCompletedInteraction(HasGeneInteractionIds interaction) {
+    return this.getCompletedInteractions().orElse(empty())
+      .anyMatch(interaction::equals);
+  }
+  
+  public default boolean hasInteractionWithGene(int interactomeId, int geneId) {
+    return this.getInteractionsForInteractome(interactomeId).orElse(empty())
+      .anyMatch(interaction -> interaction.getGeneAId() == geneId || interaction.getGeneBId() == geneId);
+  }
 }

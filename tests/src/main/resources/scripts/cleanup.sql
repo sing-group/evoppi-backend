@@ -18,6 +18,28 @@
 -- License along with this program.  If not, see
 -- <http://www.gnu.org/licenses/gpl-3.0.html>.
 -- #L%
-DELETE FROM `researcher`;
-DELETE FROM `administrator`;
-DELETE FROM `user`;
+DELETE `work_step`;
+
+DELETE `blast_result`;
+
+DELETE `interaction_group_result_interactome_degree`;
+DELETE `interaction_group_result`;
+
+DELETE `different_species_interactions_result_reference_interactomes`;
+DELETE `different_species_interactions_result_target_interactomes`;
+DELETE `different_species_interactions_result`;
+DELETE `same_species_interactions_result_query_interactome`;
+DELETE `same_species_interactions_result`;
+
+DELETE `interaction`;
+DELETE `gene_in_interactome`;
+DELETE `gene_name_value`;
+DELETE `gene_name`;
+DELETE `gene_sequence`;
+DELETE `gene`;
+DELETE `interactome`;
+DELETE `species`;
+
+DELETE `researcher`;
+DELETE `administrator`;
+DELETE `user`;

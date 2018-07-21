@@ -63,7 +63,7 @@ public class DefaultInteractionsCalculator implements InteractionsCalculator {
       
       interactions.addAll(newInteractions);
       
-      callback.interactionsCalculated(currentDegree, interactions);
+      callback.interactionsCalculated(currentDegree, newInteractions);
       
       closedGenes.addAll(openGenes);
       

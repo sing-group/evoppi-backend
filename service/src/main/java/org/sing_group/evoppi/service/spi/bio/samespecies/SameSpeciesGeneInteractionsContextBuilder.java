@@ -28,16 +28,16 @@ import java.util.stream.Stream;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 
 public interface SameSpeciesGeneInteractionsContextBuilder {
-  public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<HasGeneInteractionIds> interactions);
+  public SameSpeciesGeneInteractionsContextBuilder addInteractions(int degree, Stream<HasGeneInteractionIds> interactions);
   
-  public default SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Collection<HasGeneInteractionIds> interactions) {
-    return this.setInteractions(degree, interactions.stream());
+  public default SameSpeciesGeneInteractionsContextBuilder addInteractions(int degree, Collection<HasGeneInteractionIds> interactions) {
+    return this.addInteractions(degree, interactions.stream());
   }
   
-  public SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Stream<HasGeneInteractionIds> interactions);
+  public SameSpeciesGeneInteractionsContextBuilder addCompletedInteractions(Stream<HasGeneInteractionIds> interactions);
   
-  public default SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Collection<HasGeneInteractionIds> interactions) {
-    return this.setCompletedInteractions(interactions.stream());
+  public default SameSpeciesGeneInteractionsContextBuilder addCompletedInteractions(Collection<HasGeneInteractionIds> interactions) {
+    return this.addCompletedInteractions(interactions.stream());
   }
   
   public SameSpeciesGeneInteractionsContext build();

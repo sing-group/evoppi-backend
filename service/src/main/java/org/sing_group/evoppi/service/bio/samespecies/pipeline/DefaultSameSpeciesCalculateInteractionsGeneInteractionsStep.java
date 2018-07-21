@@ -151,7 +151,7 @@ implements SingleSameSpeciesGeneInteractionsStep {
       final Stream<HasGeneInteractionIds> mappedInteractions = interactions.stream()
         .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction));
       
-      contextBuilder.setInteractions(degree, mappedInteractions);
+      contextBuilder.addInteractions(degree, mappedInteractions);
     }
     
     @Override

@@ -97,13 +97,19 @@ implements SingleSameSpeciesGeneInteractionsStep {
 
     final SameSpeciesGeneInteractionsContextBuilder contextBuilder = this.contextBuilderFactory.createBuilderFor(context);
     
-    final Stream<HasGeneInteractionIds> completedInteractions = context.getInteractions().get()
+    final Stream<HasGeneInteractionIds> completedInteractions = context.getInteractions()
+      .orElseThrow(() -> new IllegalStateException("Context should have interactions"))
       .filter(interaction -> interaction.getInteractomeId() != this.interactomeId)
-      .filter(interaction -> !interactomeIndex.has(interaction))
+      .filter(interaction -> interactomeIndex.has(interaction))
+      // Checking for genes avoids including interactions that are linked with the query gene and,
+      // therefore, that have a known degree that, in fact, would be higher than the maxDegree.
+      .filter(interaction -> !context.hasInteractionWithGene(this.interactomeId, interaction.getGeneAId()))
+      .filter(interaction -> !context.hasInteractionWithGene(this.interactomeId, interaction.getGeneBId()))
       .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction))
-      .distinct();
+      .filter(interaction -> !context.hasCompletedInteraction(interaction))
+    .distinct();
     
-    contextBuilder.setCompletedInteractions(completedInteractions);
+    contextBuilder.addCompletedInteractions(completedInteractions);
     
     return contextBuilder.build();
   }

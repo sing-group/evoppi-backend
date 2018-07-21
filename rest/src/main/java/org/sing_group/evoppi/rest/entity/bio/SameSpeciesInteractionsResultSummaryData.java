@@ -29,9 +29,11 @@ import java.util.Arrays;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
 import org.sing_group.evoppi.rest.entity.IdAndUri;
+import org.sing_group.evoppi.rest.entity.UriToStringAdapter;
 
 import io.swagger.annotations.ApiModel;
 
@@ -43,8 +45,11 @@ public class SameSpeciesInteractionsResultSummaryData extends InteractionsResult
 
   private IdAndUri[] interactomes;
   
+  @XmlJavaTypeAdapter(UriToStringAdapter.class)
   private URI interactions;
 
+  SameSpeciesInteractionsResultSummaryData() {}
+  
   public SameSpeciesInteractionsResultSummaryData(
     String id,
     int queryGene,

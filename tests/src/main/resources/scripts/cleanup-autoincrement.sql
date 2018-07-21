@@ -18,3 +18,7 @@
 -- License along with this program.  If not, see
 -- <http://www.gnu.org/licenses/gpl-3.0.html>.
 -- #L%
+
+ALTER TABLE `blast_result` ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE `interactome` ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE `species` ALTER COLUMN id RESTART WITH 1;

@@ -25,6 +25,7 @@ package org.sing_group.evoppi.service.bio.samespecies;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -79,18 +80,24 @@ public class DefaultSameSpeciesGeneInteractionsContextBuilder implements SameSpe
   }
   
   @Override
-  public SameSpeciesGeneInteractionsContextBuilder setInteractions(int degree, Stream<HasGeneInteractionIds> interactions) {
+  public SameSpeciesGeneInteractionsContextBuilder addInteractions(int degree, Stream<HasGeneInteractionIds> interactions) {
     if (this.interactions == null)
       this.interactions = new HashMap<>();
     
-    this.interactions.put(degree, interactions.collect(toSet()));
+    this.interactions.merge(degree, interactions.collect(toSet()), (prev, curr) -> {
+      prev.addAll(curr);
+      return prev;
+    });
     
     return this;
   }
   
   @Override
-  public SameSpeciesGeneInteractionsContextBuilder setCompletedInteractions(Stream<HasGeneInteractionIds> interactions) {
-    this.completedInteractions = interactions.collect(toSet());
+  public SameSpeciesGeneInteractionsContextBuilder addCompletedInteractions(Stream<HasGeneInteractionIds> interactions) {
+    if (this.completedInteractions == null)
+      this.completedInteractions = new HashSet<>();
+    
+    interactions.forEach(this.completedInteractions::add);
     
     return this;
   }

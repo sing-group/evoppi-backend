@@ -72,7 +72,7 @@ public class GenePairIndexer {
     final GenePairIndex index = new GenePairIndex();
     
     interactome.getInteractions()
-    .forEach(interaction -> index.add(interaction));
+      .forEach(interaction -> index.add(interaction));
     
     return index;
   }
