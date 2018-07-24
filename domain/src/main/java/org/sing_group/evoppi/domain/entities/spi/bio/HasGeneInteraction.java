@@ -71,6 +71,17 @@ public interface HasGeneInteraction extends HasInteractome, HasGenePair {
       public Interactome getInteractome() {
         return interactomeMapper.apply(this.getInteractomeId());
       }
+      
+      @Override
+      public String toString() {
+        return new StringBuilder()
+          .append(this.getInteractomeId())
+          .append(": ")
+          .append(this.getGeneAId())
+          .append(" - ")
+          .append(this.getGeneBId())
+        .toString();
+      }
     };
   }
 }

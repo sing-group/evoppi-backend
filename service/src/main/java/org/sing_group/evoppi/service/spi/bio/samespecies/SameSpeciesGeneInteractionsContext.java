@@ -27,6 +27,7 @@ import static java.util.stream.Stream.empty;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -93,8 +94,11 @@ extends PipelineContext<
       .anyMatch(interaction::equals);
   }
   
-  public default boolean hasInteractionWithGene(int interactomeId, int geneId) {
+  public default boolean hasInteractionWithAnyGeneOf(int interactomeId, int ... geneId) {
+    final Predicate<HasGeneInteractionIds> interactionHasAnyGene = interaction ->
+      IntStream.of(geneId).anyMatch(id -> interaction.getGeneAId() == id || interaction.getGeneBId() == id);
+    
     return this.getInteractionsForInteractome(interactomeId).orElse(empty())
-      .anyMatch(interaction -> interaction.getGeneAId() == geneId || interaction.getGeneBId() == geneId);
+      .anyMatch(interactionHasAnyGene);
   }
 }

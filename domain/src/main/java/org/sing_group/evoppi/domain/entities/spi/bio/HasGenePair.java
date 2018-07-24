@@ -85,6 +85,15 @@ public interface HasGenePair extends HasGenePairIds {
       public Gene getGeneB() {
         return geneMapper.apply(this.getGeneBId());
       }
+      
+      @Override
+      public String toString() {
+        return new StringBuilder()
+          .append(this.getGeneAId())
+          .append(" - ")
+          .append(this.getGeneBId())
+        .toString();
+      }
     };
   }
 }

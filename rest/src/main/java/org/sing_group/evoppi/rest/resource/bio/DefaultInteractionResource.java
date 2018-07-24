@@ -112,8 +112,8 @@ public class DefaultInteractionResource implements InteractionResource {
     @QueryParam("maxDegree") @DefaultValue("1") int maxDegree,
     @QueryParam("evalue") @DefaultValue("0.05") double evalue,
     @QueryParam("maxTargetSeqs") @DefaultValue("1") int maxTargetSeqs,
-    @QueryParam("minIdentity") @DefaultValue("0.1") double minimumIdentity,
-    @QueryParam("minAlignmentLength") @DefaultValue("1") int minimumAlignmentLength
+    @QueryParam("minIdentity") @DefaultValue("0.95") double minimumIdentity,
+    @QueryParam("minAlignmentLength") @DefaultValue("18") int minimumAlignmentLength
   ) {
     if (maxDegree < 1 || maxDegree > 3)
       throw new IllegalArgumentException("maxDegree must be between 1 and 3");

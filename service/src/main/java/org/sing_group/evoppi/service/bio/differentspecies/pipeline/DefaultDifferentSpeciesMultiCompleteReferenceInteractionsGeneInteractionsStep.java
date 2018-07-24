@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static javax.transaction.Transactional.TxType.SUPPORTS;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.MULTIPLE_COMPLETE_REFERENCE_INTERACTIONS_STEP_ID;
 
 import java.util.OptionalInt;
 import java.util.stream.Stream;
@@ -55,6 +56,11 @@ implements MultipleDifferentSpeciesGeneInteractionsStep {
   @Inject
   public void setStepInstances(Instance<DefaultDifferentSpeciesCompleteReferenceInteractionsGeneInteractionsStep> stepInstances) {
     this.stepInstances = stepInstances;
+  }
+  
+  @Override
+  public String getStepId() {
+    return MULTIPLE_COMPLETE_REFERENCE_INTERACTIONS_STEP_ID;
   }
 
   @Override

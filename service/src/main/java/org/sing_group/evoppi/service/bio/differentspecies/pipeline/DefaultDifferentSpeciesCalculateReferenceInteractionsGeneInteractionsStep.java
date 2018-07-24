@@ -24,6 +24,7 @@ package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
 import static javax.transaction.Transactional.TxType.REQUIRED;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_CACULATE_REFERENCE_INTERACTIONS_STEP_ID;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -36,8 +37,8 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
@@ -96,6 +97,11 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
   }
   
   @Override
+  public String getStepId() {
+    return SINGLE_CACULATE_REFERENCE_INTERACTIONS_STEP_ID;
+  }
+  
+  @Override
   public String getName() {
     return "Reference interactome retrieval: " + this.interactomeId;
   }
@@ -148,7 +154,7 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
       final Stream<HasGeneInteractionIds> mappedInteractions = interactions.stream()
         .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction));
       
-      contextBuilder.setReferenceInteractions(degree, mappedInteractions);
+      contextBuilder.addReferenceInteractions(degree, mappedInteractions);
     }
   }
 }

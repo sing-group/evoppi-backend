@@ -345,7 +345,7 @@
                 
                 <simple name="java:global/evoppi/docker/blast/makeblastdb/command" value="/opt/blast/bin/makeblastdb -in [INPUT] -dbtype prot -out [OUTPUT]" type="java.lang.String"/>
                 <simple name="java:global/evoppi/docker/blast/blast/command" value="/opt/blast/bin/blastp -query [QUERY] -db [DATABASE] -outfmt 6 -evalue [EVALUE] -max_target_seqs [MAX_TARGET_SEQS] -out [OUTPUT]" type="java.lang.String"/>
-                <simple name="java:global/evoppi/docker/blast/file/deleteOnFinish" value="false" type="boolean"/>
+                <simple name="java:global/evoppi/docker/blast/file/deleteOnFinish" value="true" type="boolean"/>
                 
                 <simple name="java:global/evoppi/storage/genome/path" value="/tmp/evoppi/genome" type="java.lang.String"/>
                 

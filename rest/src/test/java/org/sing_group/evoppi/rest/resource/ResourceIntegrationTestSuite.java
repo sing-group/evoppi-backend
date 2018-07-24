@@ -27,7 +27,14 @@ package org.sing_group.evoppi.rest.resource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceIntegrationTest;
+import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceMissingQueryGene12vs34InteractomeIntegrationTest;
+import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceMissingQueryGene1vs3InteractomeIntegrationTest;
+import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceMissingQueryGene1vs4InteractomeIntegrationTest;
+import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceMissingQueryGene2vs3InteractomeIntegrationTest;
+import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceMissingQueryGene2vs4InteractomeIntegrationTest;
+import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceMultipleAlignmentIntegrationTest;
+import org.sing_group.evoppi.rest.resource.bio.SameSpeciesInteractionResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.AdministratorResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.ResearcherResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.UserResourceIntegrationTest;
@@ -36,7 +43,14 @@ import org.sing_group.evoppi.rest.resource.user.UserResourceIntegrationTest;
 	UserResourceIntegrationTest.class,
 	AdministratorResourceIntegrationTest.class,
 	ResearcherResourceIntegrationTest.class,
-	SameSpeciesInteractionsResult.class
+	SameSpeciesInteractionResourceIntegrationTest.class,
+	DifferentSpeciesInteractionResourceIntegrationTest.class,
+	DifferentSpeciesInteractionResourceMissingQueryGene1vs3InteractomeIntegrationTest.class,
+	DifferentSpeciesInteractionResourceMissingQueryGene1vs4InteractomeIntegrationTest.class,
+	DifferentSpeciesInteractionResourceMissingQueryGene2vs3InteractomeIntegrationTest.class,
+	DifferentSpeciesInteractionResourceMissingQueryGene2vs4InteractomeIntegrationTest.class,
+	DifferentSpeciesInteractionResourceMissingQueryGene12vs34InteractomeIntegrationTest.class,
+	DifferentSpeciesInteractionResourceMultipleAlignmentIntegrationTest.class
 })
 @RunWith(Suite.class)
 public class ResourceIntegrationTestSuite {

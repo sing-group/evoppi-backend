@@ -61,6 +61,11 @@ public interface HasInteractome extends HasInteractomeId {
       public Interactome getInteractome() {
         return interactomeMapper.apply(this.getInteractomeId());
       }
+      
+      @Override
+      public String toString() {
+        return Integer.toString(this.getInteractomeId());
+      }
     };
   }
 }

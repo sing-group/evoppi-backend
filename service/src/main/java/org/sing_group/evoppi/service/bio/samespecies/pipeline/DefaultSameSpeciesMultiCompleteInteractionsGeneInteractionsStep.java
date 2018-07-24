@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.service.bio.samespecies.pipeline;
 
 import static javax.transaction.Transactional.TxType.SUPPORTS;
+import static org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline.MULTIPLE_COMPLETE_INTERACTIONS_STEP_ID;
 
 import java.util.OptionalInt;
 import java.util.stream.Stream;
@@ -57,6 +58,11 @@ implements MultipleSameSpeciesGeneInteractionsStep {
     this.stepInstances = stepInstances;
   }
 
+  @Override
+  public String getStepId() {
+    return MULTIPLE_COMPLETE_INTERACTIONS_STEP_ID;
+  }
+  
   @Override
   public String getName() {
     return "Multi interactome gene interactions completion";

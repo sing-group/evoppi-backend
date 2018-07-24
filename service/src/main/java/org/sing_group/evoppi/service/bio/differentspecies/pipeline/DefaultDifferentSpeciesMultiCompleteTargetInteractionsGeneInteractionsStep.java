@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static javax.transaction.Transactional.TxType.SUPPORTS;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.MULTIPLE_COMPLETE_TARGET_INTERACTIONS_STEP_ID;
 
 import java.util.OptionalInt;
 import java.util.stream.Stream;
@@ -56,6 +57,11 @@ implements MultipleDifferentSpeciesGeneInteractionsStep {
   public void setStepInstances(Instance<DefaultDifferentSpeciesCompleteTargetInteractionsGeneInteractionsStep> stepInstances) {
     this.stepInstances = stepInstances;
   }
+  
+  @Override
+  public String getStepId() {
+    return MULTIPLE_COMPLETE_TARGET_INTERACTIONS_STEP_ID;
+  }
 
   @Override
   public String getName() {
@@ -77,7 +83,7 @@ implements MultipleDifferentSpeciesGeneInteractionsStep {
   public Stream<DifferentSpeciesGeneInteractionsStep> getSteps(DifferentSpeciesGeneInteractionsContext context) {
     final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
     
-    if (configuration.getMaxDegree() == 1 || configuration.getTargetInteractomes().count() == 1) {
+    if (configuration.getMaxDegree() == 1) {
       return Stream.empty();
     } else {
       return configuration.getTargetInteractomes()
@@ -93,7 +99,7 @@ implements MultipleDifferentSpeciesGeneInteractionsStep {
   public OptionalInt countSteps(DifferentSpeciesGeneInteractionsContext context) {
     final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
 
-    if (configuration.getMaxDegree() == 1 || configuration.getTargetInteractomes().count() == 1) {
+    if (configuration.getMaxDegree() == 1) {
       return OptionalInt.empty();
     } else {
       return OptionalInt.of((int) context.getConfiguration().getTargetInteractomes().count());

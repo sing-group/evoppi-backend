@@ -22,9 +22,14 @@
 
 package org.sing_group.evoppi.service.bio.samespecies.event;
 
+import static java.util.Objects.requireNonNull;
+import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
+
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.event.SameSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.execution.event.WorkStepEvent;
@@ -37,14 +42,32 @@ implements SameSpeciesGeneInteractionsEvent, WorkStepEvent, Serializable {
   private final String description;
   private final double progress;
   private final ExecutionStatus status;
+  private final String runningStepId;
+  private final StepExecutionStatus runningStepStatus;
   
   public DefaultSameSpeciesGeneInteractionsEvent(
     SameSpeciesGeneInteractionsContext context, String description, double progress, ExecutionStatus status
   ) {
+    if (status == ExecutionStatus.RUNNING)
+      throw new IllegalArgumentException("Running events must declare a stage identifier");
+    
     this.context = context;
     this.description = description;
     this.progress = progress;
     this.status = status;
+    this.runningStepId = null;
+    this.runningStepStatus = null;
+  }
+  
+  public DefaultSameSpeciesGeneInteractionsEvent(
+    SameSpeciesGeneInteractionsContext context, String description, double progress, String runningStepId, StepExecutionStatus runningStepStatus
+  ) {
+    this.context = context;
+    this.description = description;
+    this.progress = progress;
+    this.status = ExecutionStatus.RUNNING;
+    this.runningStepId = requireNonEmpty(runningStepId);
+    this.runningStepStatus = requireNonNull(runningStepStatus);
   }
 
   @Override
@@ -65,6 +88,16 @@ implements SameSpeciesGeneInteractionsEvent, WorkStepEvent, Serializable {
   @Override
   public ExecutionStatus getStatus() {
     return this.status;
+  }
+  
+  @Override
+  public Optional<String> getRunningStepId() {
+    return Optional.ofNullable(this.runningStepId);
+  }
+  
+  @Override
+  public Optional<StepExecutionStatus> getRunningStepStatus() {
+    return Optional.ofNullable(this.runningStepStatus);
   }
 
   @Override

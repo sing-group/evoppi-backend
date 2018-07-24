@@ -22,10 +22,13 @@
 
 package org.sing_group.evoppi.service.spi.bio.differentspecies;
 
+import static java.util.stream.Stream.empty;
+
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -61,6 +64,12 @@ extends PipelineContext<
       .map(Set::stream);
   }
   
+  public default Optional<Stream<HasGeneInteractionIds>> getReferenceInteractionsForInteractome(int interactomeId) {
+    return this.getReferenceInteractions().map(
+      interactions -> interactions.filter(interaction -> interaction.getInteractomeId() == interactomeId)
+    );
+  }
+  
   public default Optional<Boolean> hasReferenceInteractionsWithDegree(int degree) {
     return this.getReferenceInteractionsDegrees().map(
       interactions -> interactions.anyMatch(interactionDegree -> interactionDegree == degree)
@@ -90,6 +99,14 @@ extends PipelineContext<
         .flatMapToInt(HasGeneInteractionIds::getGeneIds)
         .distinct()
     );
+  }
+  
+  public default boolean hasReferenceInteractionWithAnyGeneOf(int interactomeId, int ... geneId) {
+    final Predicate<HasGeneInteractionIds> interactionHasAnyGene = interaction ->
+      IntStream.of(geneId).anyMatch(id -> interaction.getGeneAId() == id || interaction.getGeneBId() == id);
+    
+    return this.getReferenceInteractionsForInteractome(interactomeId).orElse(Stream.empty())
+      .anyMatch(interactionHasAnyGene);
   }
   
   public Optional<Path> getReferenceFastaPath();
@@ -141,6 +158,25 @@ extends PipelineContext<
       interactions -> interactions
         .flatMapToInt(HasGeneInteractionIds::getGeneIds)
         .distinct()
+    );
+  }
+
+  public default boolean hasCompletedTargetInteraction(HasGeneInteractionIds interaction) {
+    return this.getReferenceCompletedInteractions().orElse(empty())
+      .anyMatch(targetInteraction -> targetInteraction.equals(interaction));
+  }
+
+  public default boolean hasTargetInteractionWithAnyGeneOf(int interactomeId, int ... geneId) {
+    final Predicate<HasGeneInteractionIds> interactionHasAnyGene = interaction ->
+      IntStream.of(geneId).anyMatch(id -> interaction.getGeneAId() == id || interaction.getGeneBId() == id);
+    
+    return this.getTargetInteractionsForInteractome(interactomeId).orElse(Stream.empty())
+      .anyMatch(interactionHasAnyGene);
+  }
+
+  public default Optional<Stream<HasGeneInteractionIds>> getTargetInteractionsForInteractome(int interactomeId) {
+    return this.getTargetInteractions().map(
+      interactions -> interactions.filter(interaction -> interaction.getInteractomeId() == interactomeId)
     );
   }
 }

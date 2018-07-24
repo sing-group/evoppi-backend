@@ -25,6 +25,7 @@ package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 import static java.nio.file.Files.isReadable;
 import static java.nio.file.Files.isRegularFile;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.GENERATE_TARGET_FASTA_STEP_ID;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -51,6 +52,11 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
 
   @Inject
   private DifferentSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
+  
+  @Override
+  public String getStepId() {
+    return GENERATE_TARGET_FASTA_STEP_ID;
+  }
 
   @Override
   public String getName() {

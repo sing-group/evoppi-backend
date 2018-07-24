@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.BLAST_ALIGNMENT_STEP_ID;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -45,6 +46,11 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
 
   @Inject
   private DifferentSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
+  
+  @Override
+  public String getStepId() {
+    return BLAST_ALIGNMENT_STEP_ID;
+  }
   
   @Override
   public String getName() {

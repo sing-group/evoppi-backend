@@ -24,6 +24,7 @@ package org.sing_group.evoppi.service.bio.samespecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
 import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
+import static org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline.SINGLE_COMPLETE_INTERACTIONS_STEP_ID;
 
 import java.util.stream.Stream;
 
@@ -43,7 +44,6 @@ import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SingleSameSpec
 @Transactional(NOT_SUPPORTED)
 public class DefaultSameSpeciesCompleteInteractionsGeneInteractionsStep
 implements SingleSameSpeciesGeneInteractionsStep {
-  
   private GenePairIndexer interactomeIndexer;
   private SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
   
@@ -71,6 +71,11 @@ implements SingleSameSpeciesGeneInteractionsStep {
   
   public void setInteractomeId(int interactomeId) {
     this.interactomeId = interactomeId;
+  }
+  
+  @Override
+  public String getStepId() {
+    return SINGLE_COMPLETE_INTERACTIONS_STEP_ID;
   }
   
   @Override
@@ -103,8 +108,7 @@ implements SingleSameSpeciesGeneInteractionsStep {
       .filter(interaction -> interactomeIndex.has(interaction))
       // Checking for genes avoids including interactions that are linked with the query gene and,
       // therefore, that have a known degree that, in fact, would be higher than the maxDegree.
-      .filter(interaction -> !context.hasInteractionWithGene(this.interactomeId, interaction.getGeneAId()))
-      .filter(interaction -> !context.hasInteractionWithGene(this.interactomeId, interaction.getGeneBId()))
+      .filter(interaction -> !context.hasInteractionWithAnyGeneOf(this.interactomeId, interaction.getGeneIds().toArray()))
       .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction))
       .filter(interaction -> !context.hasCompletedInteraction(interaction))
     .distinct();

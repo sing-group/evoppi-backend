@@ -86,6 +86,12 @@ class DefaultHasGeneInteractionIds implements HasGeneInteractionIds, Serializabl
   
   @Override
   public String toString() {
-    return interactomeId + ": " + geneAId + " - " + geneBId;
+    return new StringBuilder()
+      .append(this.interactomeId)
+      .append(": ")
+      .append(this.geneAId)
+      .append(" - ")
+      .append(this.geneBId)
+    .toString();
   }
 }

@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.service.spi.execution.pipeline;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 
 public interface PipelineEventManager<
   C extends PipelineConfiguration,
@@ -32,6 +33,7 @@ public interface PipelineEventManager<
   PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
   PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
 > {
-  public void fireEvent(PC context, String description, double progress, ExecutionStatus status);
-  public void fireStepEvent(PS step, PC context, String description, double progress);
+  public void fireEvent(PC context, ExecutionStatus status, double progress, String description);
+//  public void fireRunningEvent(PC context, ExecutionStepStatus status, String stepId, double progress, String description);
+  public void fireRunningStepEvent(PS step, PC context, String stepId, StepExecutionStatus stepStatus, double progress, String description);
 }

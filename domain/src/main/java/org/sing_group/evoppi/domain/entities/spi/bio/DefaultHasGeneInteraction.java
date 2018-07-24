@@ -99,5 +99,15 @@ class DefaultHasGeneInteraction implements HasGeneInteraction, Serializable {
       return false;
     return true;
   }
-
+  
+  @Override
+  public String toString() {
+    return new StringBuilder()
+      .append(this.getInteractomeId())
+      .append(": ")
+      .append(this.getGeneAId())
+      .append(" - ")
+      .append(this.getGeneBId())
+    .toString();
+  }
 }

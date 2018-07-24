@@ -24,6 +24,7 @@ package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
 import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_COMPLETE_REFERENCE_INTERACTIONS_STEP_ID;
 
 import java.util.stream.Stream;
 
@@ -74,6 +75,11 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
   }
   
   @Override
+  public String getStepId() {
+    return SINGLE_COMPLETE_REFERENCE_INTERACTIONS_STEP_ID;
+  }
+  
+  @Override
   public String getName() {
     return "Reference interactome completion: " + this.interactomeId;
   }
@@ -100,11 +106,15 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     final Stream<HasGeneInteractionIds> completedInteractions = context.getReferenceInteractions()
       .orElseThrow(() -> new IllegalStateException("Context should have reference interactions"))
       .filter(interaction -> interaction.getInteractomeId() != this.interactomeId)
-      .filter(interaction -> !interactomeIndex.has(interaction))
+      .filter(interaction -> interactomeIndex.has(interaction))
+      // Checking for genes avoids including interactions that are linked with the query gene and,
+      // therefore, that have a known degree that, in fact, would be higher than the maxDegree.
+      .filter(interaction -> !context.hasReferenceInteractionWithAnyGeneOf(this.interactomeId, interaction.getGeneIds().toArray()))
       .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction))
-      .distinct();
+      .filter(interaction -> !context.hasCompletedTargetInteraction(interaction))
+    .distinct();
     
-    contextBuilder.setReferenceCompletedInteractions(completedInteractions);
+    contextBuilder.addReferenceCompletedInteractions(completedInteractions);
     
     return contextBuilder.build();
   }

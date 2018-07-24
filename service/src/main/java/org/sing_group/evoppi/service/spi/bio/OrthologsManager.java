@@ -54,15 +54,15 @@ public interface OrthologsManager {
     return getOrthologsForReferenceGene(genePairIds.getGeneAId())
       .mapToObj(orthologA -> getOrthologsForReferenceGene(genePairIds.getGeneBId())
         .mapToObj(orthologB -> action.apply(HasGenePairIds.of(orthologA, orthologB)))
-        )
-      .flatMap(identity());
+      )
+    .flatMap(identity());
   }
   
   public default <T> Stream<T> mapTargetPairOrthologs(HasGenePairIds genePairIds, Function<HasGenePairIds, T> action) {
     return getOrthologsForTargetGene(genePairIds.getGeneAId())
       .mapToObj(orthologA -> getOrthologsForTargetGene(genePairIds.getGeneBId())
         .mapToObj(orthologB -> action.apply(HasGenePairIds.of(orthologA, orthologB)))
-        )
-      .flatMap(identity());
+      )
+    .flatMap(identity());
   }
 }

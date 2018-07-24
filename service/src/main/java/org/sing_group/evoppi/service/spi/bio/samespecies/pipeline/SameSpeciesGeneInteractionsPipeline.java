@@ -37,4 +37,8 @@ extends Pipeline<
   SameSpeciesGeneInteractionsEvent,
   SameSpeciesGeneInteractionsEventManager
 > {
+  public static final String MULTIPLE_CACULATE_INTERACTIONS_STEP_ID = "MULTIPLE CALCULATE INTERACTIONS";
+  public static final String SINGLE_CACULATE_INTERACTIONS_STEP_ID = "SINGLE CALCULATE INTERACTIONS";
+  public static final String MULTIPLE_COMPLETE_INTERACTIONS_STEP_ID = "MULTIPLE COMPLETE INTERACTIONS";
+  public static final String SINGLE_COMPLETE_INTERACTIONS_STEP_ID = "SINGLE COMPLETE INTERACTIONS";
 }

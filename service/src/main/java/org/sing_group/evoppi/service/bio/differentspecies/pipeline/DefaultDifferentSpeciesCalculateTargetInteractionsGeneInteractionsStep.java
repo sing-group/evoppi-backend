@@ -23,13 +23,10 @@
 package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.REQUIRED;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_CACULATE_TARGET_INTERACTIONS_STEP_ID;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -102,6 +99,11 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
   }
   
   @Override
+  public String getStepId() {
+    return SINGLE_CACULATE_TARGET_INTERACTIONS_STEP_ID;
+  }
+  
+  @Override
   public String getName() {
     return "Target interactome retrieval: " + this.interactomeId;
   }
@@ -144,16 +146,12 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     
     private final Function<HasGenePair, Stream<HasGeneInteractionIds>> interactionsMapper;
     
-    private final Map<Integer, Set<HasGeneInteractionIds>> interactions;
-    
     public BridgeInteractionsCalculusCallback(
       int interactomeId,
       DifferentSpeciesGeneInteractionsContextBuilder contextBuilder,
       OrthologsManager orthologsManager
     ) {
       this.contextBuilder = contextBuilder;
-      
-      this.interactions = new HashMap<>();
       
       this.interactionsMapper = interaction ->
         orthologsManager.mapTargetPairOrthologs(
@@ -163,21 +161,17 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     }
     
     public DifferentSpeciesGeneInteractionsContext getContext() {
-      this.contextBuilder.setTargetInteractions(this.interactions);
+      this.contextBuilder.setTargetInteractionsCalculated();
       
       return contextBuilder.build();
     }
     
     @Override
     public void interactionsCalculated(int degree, Collection<HasGenePair> interactions) {
-      final Set<HasGeneInteractionIds> interactionIds = interactions.stream()
-        .flatMap(this.interactionsMapper)
-      .collect(toSet());
+      final Stream<HasGeneInteractionIds> mappedInteractions = interactions.stream()
+        .flatMap(this.interactionsMapper);
       
-      this.interactions.merge(degree, interactionIds, (s1, s2) -> {
-        s1.addAll(s2);
-        return s1;
-      });
+      contextBuilder.addTargetInteractions(degree, mappedInteractions);
     }
   }
 }

@@ -71,4 +71,8 @@ class DefaultHasInteractome implements HasInteractome, Serializable {
     return true;
   }
   
+  @Override
+  public String toString() {
+    return Integer.toString(this.getInteractomeId());
+  }
 }

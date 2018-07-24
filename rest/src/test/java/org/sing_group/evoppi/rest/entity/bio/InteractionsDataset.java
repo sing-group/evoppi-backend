@@ -27,72 +27,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public final class InteractionsDataset {
-  private InteractionsDataset() {}
-
-  public static Stream<InteractionResultData> sameSpeciesInteractionsWithMaxDegree(int degree) {
+public abstract class InteractionsDataset {
+  public Stream<InteractionResultData> interactionsWithMaxDegree(int degree) {
     switch (degree) {
       case 1:
-        return sameSpeciesInteractionsMaxDegree1();
+        return interactionsMaxDegree1();
       case 2:
-        return sameSpeciesInteractionsMaxDegree2();
+        return interactionsMaxDegree2();
       case 3:
-        return sameSpeciesInteractionsMaxDegree3();
+        return interactionsMaxDegree3();
       default:
         throw new IllegalArgumentException("Invalid degree: " + degree);
     }
-
   }
 
-  public static Stream<InteractionResultData> sameSpeciesInteractionsMaxDegree1() {
-    return Stream.of(
-      new InteractionResultData(100, 101, degrees(1, 1)),
-      new InteractionResultData(100, 102, degrees(2, 1)),
-      new InteractionResultData(100, 105, degrees(1, 1)),
-      new InteractionResultData(100, 106, degrees(2, 1)),
-      new InteractionResultData(100, 109, degrees(1, 1)),
-      new InteractionResultData(100, 112, degrees(1, 1, 2, 1))
-    );
-  }
+  protected abstract Stream<InteractionResultData> interactionsMaxDegree1();
 
-  public static Stream<InteractionResultData> sameSpeciesInteractionsMaxDegree2() {
-    return Stream.concat(
-      sameSpeciesInteractionsMaxDegree1(),
-      Stream.of(
-        new InteractionResultData(101, 103, degrees(1, 2)),
-        new InteractionResultData(102, 103, degrees(2, 2)),
-        new InteractionResultData(105, 106, degrees(2, 2)),
-        new InteractionResultData(105, 107, degrees(1, 2)),
-        new InteractionResultData(109, 110, degrees(1, 2, 2, -1)),
-        new InteractionResultData(112, 113, degrees(1, 2, 2, 2))
-      )
-    );
-  }
+  protected abstract Stream<InteractionResultData> interactionsMaxDegree2();
 
-  public static Stream<InteractionResultData> sameSpeciesInteractionsMaxDegree3() {
-    return Stream.concat(
-      sameSpeciesInteractionsMaxDegree1(),
-      Stream.of(
-        new InteractionResultData(101, 103, degrees(1, 2)),
-        new InteractionResultData(102, 103, degrees(2, 2)),
-        new InteractionResultData(105, 106, degrees(2, 2)),
-        new InteractionResultData(105, 107, degrees(1, 2, 2, 3)),
-        new InteractionResultData(109, 110, degrees(1, 2, 2, -1)),
-        new InteractionResultData(112, 113, degrees(1, 2, 2, 2)),
+  protected abstract Stream<InteractionResultData> interactionsMaxDegree3();
 
-        new InteractionResultData(103, 104, degrees(1, 3, 2, 3)),
-        new InteractionResultData(107, 108, degrees(1, 3)),
-        new InteractionResultData(110, 111, degrees(1, 3, 2, -1)),
-        new InteractionResultData(113, 114, degrees(1, 3, 2, 3))
-      )
-    );
-  }
-
-  private static Map<Integer, Integer> degrees(int interactome, int degree) {
+  protected static Map<Integer, Integer> degrees(int interactome, int degree) {
     return singletonMap(interactome, degree);
   }
 
-  private static Map<Integer, Integer> degrees(
+  protected static Map<Integer, Integer> degrees(
     int interactomeA, int degreeA,
     int interactomeB, int degreeB
   ) {
@@ -100,6 +59,31 @@ public final class InteractionsDataset {
 
     degrees.put(interactomeA, degreeA);
     degrees.put(interactomeB, degreeB);
+
+    return degrees;
+  }
+
+  protected static Map<Integer, Integer> degrees(
+    int interactomeA, int degreeA,
+    int interactomeB, int degreeB,
+    int interactomeC, int degreeC
+  ) {
+    final Map<Integer, Integer> degrees = degrees(interactomeA, degreeA, interactomeB, degreeB);
+
+    degrees.put(interactomeC, degreeC);
+
+    return degrees;
+  }
+
+  protected static Map<Integer, Integer> degrees(
+    int interactomeA, int degreeA,
+    int interactomeB, int degreeB,
+    int interactomeC, int degreeC,
+    int interactomeD, int degreeD
+  ) {
+    final Map<Integer, Integer> degrees = degrees(interactomeA, degreeA, interactomeB, degreeB, interactomeC, degreeC);
+    
+    degrees.put(interactomeD, degreeD);
 
     return degrees;
   }

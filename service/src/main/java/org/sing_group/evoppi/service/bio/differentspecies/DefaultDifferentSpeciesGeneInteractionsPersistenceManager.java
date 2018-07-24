@@ -25,7 +25,13 @@ package org.sing_group.evoppi.service.bio.differentspecies;
 import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.BLAST_ALIGNMENT_STEP_ID;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_CACULATE_REFERENCE_INTERACTIONS_STEP_ID;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_CACULATE_TARGET_INTERACTIONS_STEP_ID;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_COMPLETE_REFERENCE_INTERACTIONS_STEP_ID;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_COMPLETE_TARGET_INTERACTIONS_STEP_ID;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -40,6 +46,7 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteraction;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.GeneService;
@@ -70,51 +77,62 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
     final String resultId = context.getConfiguration().getWorkId();
     
     final DifferentSpeciesInteractionsResult result = this.interactionsService.getDifferentSpeciesResult(resultId);
-    
-    switch (event.getStatus()) {
-    case RUNNING:
-      if (context.getTargetCompletedInteractions().isPresent()) {
-        final Stream<HasGeneInteraction> interactions = context.getTargetCompletedInteractions().get()
-          .map(this.getGeneInteractionMapper());
-        
-        persistInteractions(result, interactions);
-      } else if (context.getTargetInteractions().isPresent()) {
-        final Set<Integer> interactomesWithInterations = result.getTargetInteractomeIds()
-          .filter(result::hasInteractionsForInteractome)
-          .boxed()
-        .collect(toSet());
-        
-        persistInteractions(
-          result,
-          interactomesWithInterations,
-          context.getTargetInteractionsDegrees().get(),
-          degree -> context.getTargetInteractionsWithDegree(degree).get()
-            .map(this.getGeneInteractionMapper())
-        );
-      } else if (context.getBlastResults().isPresent()) {
-        this.persistBlastResults(event);
-      } else if (context.getReferenceCompletedInteractions().isPresent()) {
-        final Stream<HasGeneInteraction> interactions = context.getReferenceCompletedInteractions().get()
-          .map(this.getGeneInteractionMapper());
-        
-        persistInteractions(result, interactions);
-      } else if (context.getReferenceInteractions().isPresent()) {
-        final Set<Integer> interactomesWithInterations = result.getReferenceInteractomeIds()
-          .filter(result::hasInteractionsForInteractome)
-          .boxed()
-        .collect(toSet());
-        
-        persistInteractions(
-          result,
-          interactomesWithInterations,
-          context.getReferenceInteractionsDegrees().get(),
-          degree -> context.getReferenceInteractionsWithDegree(degree).get()
-            .map(this.getGeneInteractionMapper())
-        );
-      }
 
-      break;
-    default:
+    final Optional<String> step = event.getRunningStepId();
+    
+    if (step.isPresent() && event.getRunningStepStatus().get() == StepExecutionStatus.FINISHED) {
+      switch (step.get()) {
+        case SINGLE_CACULATE_REFERENCE_INTERACTIONS_STEP_ID: {
+          final Set<Integer> interactomesWithInterations = result.getReferenceInteractomeIds()
+            .filter(result::hasInteractionsForInteractome)
+            .boxed()
+          .collect(toSet());
+          
+          persistInteractions(
+            result,
+            interactomesWithInterations,
+            context.getReferenceInteractionsDegrees().get(),
+            degree -> context.getReferenceInteractionsWithDegree(degree).get()
+              .map(this.getGeneInteractionMapper())
+          );
+          break;
+        }
+        case SINGLE_COMPLETE_REFERENCE_INTERACTIONS_STEP_ID: {
+          final Stream<HasGeneInteraction> interactions = context.getReferenceCompletedInteractions().get()
+            .map(this.getGeneInteractionMapper());
+          
+          persistCompletedInteractions(result, interactions);
+          break;
+        }
+        case BLAST_ALIGNMENT_STEP_ID: {
+            this.persistBlastResults(event);
+            break;
+        }
+        case SINGLE_CACULATE_TARGET_INTERACTIONS_STEP_ID: {
+          final Set<Integer> interactomesWithInterations = result.getTargetInteractomeIds()
+            .filter(result::hasInteractionsForInteractome)
+            .boxed()
+          .collect(toSet());
+          
+          persistInteractions(
+            result,
+            interactomesWithInterations,
+            context.getTargetInteractionsDegrees().get(),
+            degree -> context.getTargetInteractionsWithDegree(degree).get()
+              .map(this.getGeneInteractionMapper())
+          );
+          
+          break;
+        }
+        case SINGLE_COMPLETE_TARGET_INTERACTIONS_STEP_ID: {
+          final Stream<HasGeneInteraction> interactions = context.getTargetCompletedInteractions().get()
+            .map(this.getGeneInteractionMapper());
+          
+          persistCompletedInteractions(result, interactions);
+          break;
+        }
+        default:
+      }
     }
   }
   
@@ -141,12 +159,12 @@ implements DifferentSpeciesGeneInteractionsPersistenceManager {
     );
   }
 
-  private void persistInteractions(
+  private void persistCompletedInteractions(
     final DifferentSpeciesInteractionsResult result, final Stream<HasGeneInteraction> interactions
   ) {
     interactions.forEach(interaction -> result.addInteraction(
-        interaction,
-        interaction.getInteractome()
+      interaction,
+      interaction.getInteractome()
     ));
   }
   

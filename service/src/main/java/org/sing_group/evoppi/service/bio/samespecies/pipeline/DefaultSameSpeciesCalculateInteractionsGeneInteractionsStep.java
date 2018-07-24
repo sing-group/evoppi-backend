@@ -24,6 +24,7 @@ package org.sing_group.evoppi.service.bio.samespecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
 import static javax.transaction.Transactional.TxType.REQUIRED;
+import static org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline.SINGLE_CACULATE_INTERACTIONS_STEP_ID;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -36,8 +37,8 @@ import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 import org.sing_group.evoppi.service.spi.bio.InteractionsCalculator;
 import org.sing_group.evoppi.service.spi.bio.event.InteractionsCalculusCallback;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
@@ -49,7 +50,6 @@ import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SingleSameSpec
 @Default
 public class DefaultSameSpeciesCalculateInteractionsGeneInteractionsStep
 implements SingleSameSpeciesGeneInteractionsStep {
-  
   private GeneDAO geneDao;
   private InteractionsCalculator interactionsCalculator;
   private SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory;
@@ -93,6 +93,11 @@ implements SingleSameSpeciesGeneInteractionsStep {
   @Inject
   public void setContextBuilderFactory(SameSpeciesGeneInteractionsContextBuilderFactory contextBuilderFactory) {
     this.contextBuilderFactory = requireNonNull(contextBuilderFactory);
+  }
+  
+  @Override
+  public String getStepId() {
+    return SINGLE_CACULATE_INTERACTIONS_STEP_ID;
   }
   
   @Override

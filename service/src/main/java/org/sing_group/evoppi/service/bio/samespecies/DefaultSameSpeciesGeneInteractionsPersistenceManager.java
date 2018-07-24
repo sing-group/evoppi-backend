@@ -24,7 +24,10 @@ package org.sing_group.evoppi.service.bio.samespecies;
 
 import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
+import static org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline.SINGLE_CACULATE_INTERACTIONS_STEP_ID;
+import static org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline.SINGLE_COMPLETE_INTERACTIONS_STEP_ID;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -35,6 +38,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteraction;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
 import org.sing_group.evoppi.service.spi.bio.GeneService;
@@ -67,31 +71,33 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
     
     final SameSpeciesInteractionsResult result = this.interactionsService.getSameSpeciesResult(resultId);
     
-    switch (event.getStatus()) {
-    case RUNNING:
-      if (context.getCompletedInteractions().isPresent()) {
-        context.getCompletedInteractions().get()
-          .map(this.getGeneInteractionMapper())
-          .forEach(interaction -> result.addInteraction(interaction, interaction.getInteractome()));
-      } else if (context.getInteractions().isPresent()) {
-        final Set<Integer> interactomesWithInterations = result.getQueryInteractomeIds()
-          .filter(result::hasInteractionsForInteractome)
-          .boxed()
-        .collect(toSet());
-        
-        context.getInteractionsDegrees().get()
-          .forEach(degree -> 
-            context.getInteractionsWithDegree(degree).get()
-              .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
-              .map(this.getGeneInteractionMapper())
+    final Optional<String> step = event.getRunningStepId();
+    
+    if (step.isPresent() && event.getRunningStepStatus().get() == StepExecutionStatus.FINISHED) {
+      switch(step.get()) {
+        case SINGLE_CACULATE_INTERACTIONS_STEP_ID:
+          final Set<Integer> interactomesWithInterations = result.getQueryInteractomeIds()
+            .filter(result::hasInteractionsForInteractome)
+            .boxed()
+          .collect(toSet());
+          
+          context.getInteractionsDegrees().get()
+            .forEach(degree -> 
+              context.getInteractionsWithDegree(degree).get()
+                .filter(interaction -> !interactomesWithInterations.contains(interaction.getInteractomeId()))
+                .map(this.getGeneInteractionMapper())
               .forEach(interaction -> 
                 result.addInteraction(interaction, interaction.getInteractome(), degree)
               )
-          );
+            );
+          break;
+        case SINGLE_COMPLETE_INTERACTIONS_STEP_ID:
+          context.getCompletedInteractions().get()
+            .map(this.getGeneInteractionMapper())
+          .forEach(interaction -> result.addInteraction(interaction, interaction.getInteractome()));
+          break;
+        default:
       }
-      
-      break;
-    default:
     }
   }
   

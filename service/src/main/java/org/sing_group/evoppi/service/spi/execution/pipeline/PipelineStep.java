@@ -30,6 +30,8 @@ public interface PipelineStep<
   PE extends PipelineEvent<C, PC, PS, P, PE, PEM>,
   PEM extends PipelineEventManager<C, PC, PS, P, PE, PEM>
 > {
+  public String getStepId();
+  
   public String getName();
 
   public int getOrder();

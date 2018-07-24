@@ -71,7 +71,8 @@ public abstract class InteractionsResult extends WorkEntity {
   @Column(name = "queryMaxDegree", nullable = false)
   private int queryMaxDegree;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "interactionsResult", cascade = CascadeType.PERSIST, orphanRemoval = true)
+  // Required due to a bug that fails lazy-loading fields in super-classes
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "interactionsResult", cascade = CascadeType.PERSIST, orphanRemoval = true)
   private Set<InteractionGroupResult> interactions;
   
   @Transient

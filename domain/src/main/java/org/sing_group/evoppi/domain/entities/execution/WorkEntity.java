@@ -223,7 +223,7 @@ public abstract class WorkEntity implements Work, Serializable {
       return true;
     if (obj == null)
       return false;
-    if (getClass() != obj.getClass())
+    if (!getClass().isAssignableFrom(obj.getClass()))
       return false;
     WorkEntity other = (WorkEntity) obj;
     if (id == null) {

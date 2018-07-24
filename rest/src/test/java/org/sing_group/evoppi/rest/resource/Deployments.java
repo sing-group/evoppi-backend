@@ -32,6 +32,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 public final class Deployments {
   private Deployments() {}
   
+  public static void cleanContext() {
+    
+  }
+  
   public static WebArchive createDeployment() {
     return ShrinkWrap.create(WebArchive.class, "test.war")
       .addPackages(true, "org.sing_group.evoppi.rest")

@@ -28,6 +28,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsStep;
@@ -42,17 +43,24 @@ implements SameSpeciesGeneInteractionsEventManager {
   private Event<SameSpeciesGeneInteractionsEvent> events;
 
   @Override
-  public void fireEvent(SameSpeciesGeneInteractionsContext context, String description, double progress, ExecutionStatus status) {
+  public void fireEvent(SameSpeciesGeneInteractionsContext context, ExecutionStatus status, double progress, String description) {
     this.events.fire(new DefaultSameSpeciesGeneInteractionsEvent(context, description, progress, status));
   }
-
+//
+//  @Override
+//  public void fireRunningEvent(
+//    SameSpeciesGeneInteractionsContext context, String stageId, double progress, String description
+//  ) {
+//    this.events.fire(new DefaultSameSpeciesGeneInteractionsEvent(context, description, progress, stageId));
+//  }
+  
   @Override
-  public  void fireStepEvent(
-    SameSpeciesGeneInteractionsStep step, SameSpeciesGeneInteractionsContext context, String description, double progress
+  public  void fireRunningStepEvent(
+    SameSpeciesGeneInteractionsStep step, SameSpeciesGeneInteractionsContext context, String stepId, StepExecutionStatus stepStatus, double progress, String description
   ) {
     final double currentProgress = calculateStepEventProgress(step, context, progress);
     
-    this.fireEvent(context, description, currentProgress, ExecutionStatus.RUNNING);
+    this.events.fire(new DefaultSameSpeciesGeneInteractionsEvent(context, description, currentProgress, stepId, stepStatus));
   }
 
   private static double calculateStepEventProgress(

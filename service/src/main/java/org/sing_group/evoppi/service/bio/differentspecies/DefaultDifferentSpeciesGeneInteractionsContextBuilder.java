@@ -22,10 +22,12 @@
 
 package org.sing_group.evoppi.service.bio.differentspecies;
 
+import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toSet;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -102,31 +104,33 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
   }
 
   @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
+  public DifferentSpeciesGeneInteractionsContextBuilder addReferenceInteractions(
     int degree, Stream<HasGeneInteractionIds> interactions
   ) {
     if (this.referenceInteractions == null)
       this.referenceInteractions = new HashMap<>();
     
-    this.referenceInteractions.put(degree, interactions.collect(toSet()));
+    final Set<HasGeneInteractionIds> interactionsSet = interactions.collect(toSet());
+    
+    if (!interactionsSet.isEmpty()) {
+      this.referenceInteractions.merge(degree, interactionsSet, (prev, curr) -> {
+        prev.addAll(curr);
+        
+        return prev;
+      });
+    }
     
     return this;
   }
   
   @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceInteractions(
-    Map<Integer, Set<HasGeneInteractionIds>> referenceInteractions
-  ) {
-    this.referenceInteractions = referenceInteractions;
-    
-    return this;
-  }
-  
-  @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setReferenceCompletedInteractions(
+  public DifferentSpeciesGeneInteractionsContextBuilder addReferenceCompletedInteractions(
     Stream<HasGeneInteractionIds> interactions
   ) {
-    this.referenceCompletedInteractions = interactions.collect(toSet());
+    if (this.referenceCompletedInteractions == null)
+      this.referenceCompletedInteractions = new HashSet<>();
+    
+    interactions.forEach(this.referenceCompletedInteractions::add);
     
     return this;
   }
@@ -153,31 +157,41 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
   }
 
   @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
+  public DifferentSpeciesGeneInteractionsContextBuilder addTargetInteractions(
     int degree, Stream<HasGeneInteractionIds> interactions
   ) {
     if (this.targetInteractions == null)
       this.targetInteractions = new HashMap<>();
     
-    this.targetInteractions.put(degree, interactions.collect(toSet()));
+    final Set<HasGeneInteractionIds> interactionsSet = interactions.collect(toSet());
+    
+    if (!interactionsSet.isEmpty()) {
+      this.targetInteractions.merge(degree, interactionsSet, (prev, curr) -> {
+        prev.addAll(curr);
+        
+        return prev;
+      });
+    }
     
     return this;
   }
 
   @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractions(
-    Map<Integer, Set<HasGeneInteractionIds>> targetInteractions
-  ) {
-    this.targetInteractions = new HashMap<>(targetInteractions);
+  public DifferentSpeciesGeneInteractionsContextBuilder setTargetInteractionsCalculated() {
+    if (this.targetInteractions == null)
+      this.targetInteractions = emptyMap();
     
     return this;
   }
-
+  
   @Override
-  public DifferentSpeciesGeneInteractionsContextBuilder setTargetCompletedInteractions(
+  public DifferentSpeciesGeneInteractionsContextBuilder addTargetCompletedInteractions(
     Stream<HasGeneInteractionIds> interactions
   ) {
-    this.targetCompletedInteractions = interactions.collect(toSet());
+    if (this.targetCompletedInteractions == null)
+      this.targetCompletedInteractions = new HashSet<>();
+    
+    interactions.forEach(this.targetCompletedInteractions::add);
     
     return this;
   }

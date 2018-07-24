@@ -35,6 +35,7 @@ import javax.ejb.TransactionManagement;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 import org.sing_group.evoppi.service.spi.execution.pipeline.MultiplePipelineStep;
 import org.sing_group.evoppi.service.spi.execution.pipeline.Pipeline;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineConfiguration;
@@ -51,6 +52,8 @@ import org.slf4j.Logger;
 @TransactionManagement(BEAN)
 @TransactionAttribute(NEVER)
 public class TransactionalPipelineExecutor implements PipelineExecutor {
+  public static final String INITIAL_STAGE_ID = "Initial Stage";
+  
   @Inject
   private Logger logger;
   
@@ -69,16 +72,14 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
     
     final String pipelineName = formatStepName(pipeline.getName());
     try {
-      eventManager.fireEvent(context, "Starting " + pipelineName + " analysis", 0d, ExecutionStatus.RUNNING);
-      
       final double stepProgressSize = 1d / (double) pipeline.countTotalSteps();
 
       context = this.execute(pipeline.getSteps(), context, 0d, stepProgressSize);
       
-      eventManager.fireEvent(context, "Completed " + pipelineName + " analysis", 1d, ExecutionStatus.COMPLETED);
+      eventManager.fireEvent(context, ExecutionStatus.COMPLETED, 1d, "Completed " + pipelineName + " analysis");
     } catch (RuntimeException re) {
       logger.error("Error in pipeline " + pipelineName, re);
-      eventManager.fireEvent(context, re.getMessage(), Double.NaN, ExecutionStatus.FAILED);
+      eventManager.fireEvent(context, ExecutionStatus.FAILED, Double.NaN, re.getMessage());
     }
   }
   
@@ -97,7 +98,7 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
     steps.forEach(step -> {
       final String name = formatStepName(step.getName());
 
-      eventManager.fireEvent(pac.getContext(), "Starting " + name, pac.getProgress(), ExecutionStatus.RUNNING);
+      eventManager.fireRunningStepEvent(step, pac.getContext(), step.getStepId(), StepExecutionStatus.STARTED, pac.getProgress(), "Starting " + name);
       
       final PC newContext;
       if (step instanceof SinglePipelineStep) {
@@ -118,7 +119,7 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
       pac.setContext(newContext);
       pac.increaseProgress(stepProgressSize);
       
-      eventManager.fireEvent(pac.getContext(), "Completed " + name, pac.getProgress(), ExecutionStatus.RUNNING);
+      eventManager.fireRunningStepEvent(step, pac.getContext(), step.getStepId(), StepExecutionStatus.FINISHED, pac.getProgress(), "Completed " + name);
     });
     
     return pac.getContext();

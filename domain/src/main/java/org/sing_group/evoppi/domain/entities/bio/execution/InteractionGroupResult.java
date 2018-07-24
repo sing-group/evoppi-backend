@@ -165,9 +165,24 @@ public class InteractionGroupResult implements HasGenePair, Serializable {
   }
 
   public void addInteractome(Interactome interactome, int degree) {
-    this.interactomeDegrees.add(new InteractionGroupResultInteractomeDegree(
+    final InteractionGroupResultInteractomeDegree interaction = new InteractionGroupResultInteractomeDegree(
       this, interactome, degree
-    ));
+    );
+    
+    if (this.interactomeDegrees.contains(interaction)) {
+      final InteractionGroupResultInteractomeDegree presentInteraction = this.interactomeDegrees.stream()
+        .filter(interaction::equals)
+        .findAny()
+      .get();
+      
+      if (interaction.getDegree() != presentInteraction.getDegree())
+        throw new IllegalArgumentException(String.format(
+          "Interaction '%s' already present with different degree (current: %d, new: %d",
+          interaction, degree, presentInteraction.getDegree()
+        ));
+    } else {
+      this.interactomeDegrees.add(interaction);
+    }
   }
 
   public void addInteractomes(Map<Interactome, Integer> interactomeDegrees) {

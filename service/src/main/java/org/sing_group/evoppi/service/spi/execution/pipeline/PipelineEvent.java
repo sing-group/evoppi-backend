@@ -22,7 +22,10 @@
 
 package org.sing_group.evoppi.service.spi.execution.pipeline;
 
+import java.util.Optional;
+
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 
 public interface PipelineEvent<
   C extends PipelineConfiguration,
@@ -39,4 +42,8 @@ public interface PipelineEvent<
   public double getProgress();
   
   public ExecutionStatus getStatus();
+
+  public Optional<String> getRunningStepId();
+  
+  public Optional<StepExecutionStatus> getRunningStepStatus();
 }

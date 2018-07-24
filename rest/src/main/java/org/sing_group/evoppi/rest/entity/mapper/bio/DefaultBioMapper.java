@@ -25,6 +25,7 @@ package org.sing_group.evoppi.rest.entity.mapper.bio;
 import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
+import static javax.transaction.Transactional.TxType.MANDATORY;
 
 import java.net.URI;
 import java.util.Set;
@@ -35,6 +36,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -74,6 +76,7 @@ import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.bio.OrthologsManager;
 
 @Default
+@Transactional(MANDATORY)
 public class DefaultBioMapper implements BioMapper {
   private UriBuilder uriBuilder;
   

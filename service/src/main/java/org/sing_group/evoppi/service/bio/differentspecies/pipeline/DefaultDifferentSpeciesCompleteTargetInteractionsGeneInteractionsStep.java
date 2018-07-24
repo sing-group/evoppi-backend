@@ -24,8 +24,10 @@ package org.sing_group.evoppi.service.bio.differentspecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
 import static javax.transaction.Transactional.TxType.NOT_SUPPORTED;
+import static org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline.SINGLE_COMPLETE_TARGET_INTERACTIONS_STEP_ID;
 
 import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.Default;
@@ -77,6 +79,11 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
   }
   
   @Override
+  public String getStepId() {
+    return SINGLE_COMPLETE_TARGET_INTERACTIONS_STEP_ID;
+  }
+  
+  @Override
   public String getName() {
     return "Target interactome completion: " + this.interactomeId;
   }
@@ -102,28 +109,36 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     
     final OrthologsManager orthologsManager = new BlastResultOrthologsManager(context.getBlastResults().get());
     
-    final Function<HasGeneInteractionIds, Stream<HasGeneInteractionIds>> interactionsToTarget = interactionIds ->
+    final Function<HasGeneInteractionIds, Stream<HasGeneInteractionIds>> interactionToTarget = interactionIds ->
       orthologsManager.mapReferencePairOrthologs(
         interactionIds,
         (genePairIds) -> HasGeneInteractionIds.of(this.interactomeId, genePairIds)
       );
 
-    final Function<HasGeneInteractionIds, Stream<HasGeneInteractionIds>> interactionsToReference = interactionIds ->
+    final Function<HasGeneInteractionIds, Stream<HasGeneInteractionIds>> interactionToReference = interactionIds ->
       orthologsManager.mapTargetPairOrthologs(
         interactionIds,
         (genePairIds) -> HasGeneInteractionIds.of(this.interactomeId, genePairIds)
       );
     
+    final Function<HasGeneInteractionIds, IntStream> interactionToReferenceIds = interactionIds ->
+      interactionToReference.apply(interactionIds).flatMapToInt(HasGeneInteractionIds::getGeneIds);
+      
+      // TODO: Revisar. Continuar aquí
     final Stream<HasGeneInteractionIds> completedInteractions = context.getReferenceInteractions()
       .orElseThrow(() -> new IllegalStateException("Context should have reference interactions"))
       .filter(interaction -> interaction.getInteractomeId() != this.interactomeId)
-      .flatMap(interactionsToTarget)
-      .filter(interaction -> !interactomeIndex.has(interaction))
+      .flatMap(interactionToTarget)
+      .filter(interactomeIndex::has)
+      // Checking for genes avoids including interactions that are linked with the query gene and,
+      // therefore, that have a known degree that, in fact, would be higher than the maxDegree.
+      .filter(interaction -> !context.hasTargetInteractionWithAnyGeneOf(this.interactomeId, interactionToReferenceIds.apply(interaction).toArray()))
       .map(interaction -> HasGeneInteractionIds.of(this.interactomeId, interaction))
-      .flatMap(interactionsToReference)
-      .distinct();
+      .filter(interaction -> !context.hasCompletedTargetInteraction(interaction))
+      .flatMap(interactionToReference)
+    .distinct();
     
-    contextBuilder.setTargetCompletedInteractions(completedInteractions);
+    contextBuilder.addTargetCompletedInteractions(completedInteractions);
     
     return contextBuilder.build();
   }

@@ -143,7 +143,20 @@ public class InteractionGroupResultInteractomeDegree {
     return true;
   }
 
-
+  @Override
+  public String toString() {
+    return new StringBuilder()
+      .append(this.interactionsResult.getId())
+      .append(" - ")
+      .append(this.interactome.getId())
+      .append("/")
+      .append(this.degree)
+      .append(": ")
+      .append(this.geneA.getId())
+      .append(" - ")
+      .append(this.geneB.getId())
+    .toString();
+  }
 
   public static class InteractionGroupResultInteractomeDegreeId implements Serializable {
     private static final long serialVersionUID = 1L;
