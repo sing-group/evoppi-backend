@@ -22,24 +22,22 @@
 
 
 
-package org.sing_group.evoppi.rest.resource.spi.user;
+package org.sing_group.evoppi.rest.resource.route;
 
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
+import java.net.URI;
 
-import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
+import javax.ws.rs.core.UriBuilder;
 
-@Local
-public interface UserResource {
-
-  public Response role(String login, String password);
+public class RoleRestPathBuilder implements RestPathBuilder {
+  protected UriBuilder builder;
   
-  public Response listDifferentSpeciesResults();
+  public RoleRestPathBuilder(UriBuilder builder) {
+    this.builder = builder.clone().path("role");
+  }
 
-  public Response listSameSpeciesResults();
-  
-  public Response register(UserRegistrationData registration);
-
-  public Response confirm(String code);
+  @Override
+  public URI build() {
+    return this.builder.build();
+  }
 
 }

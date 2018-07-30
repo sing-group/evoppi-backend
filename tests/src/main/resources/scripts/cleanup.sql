@@ -1,4 +1,3 @@
-
 -- #%L
 -- Tests
 -- %%
@@ -43,3 +42,5 @@ DELETE `species`;
 DELETE `researcher`;
 DELETE `administrator`;
 DELETE `user`;
+
+DELETE `registration`;

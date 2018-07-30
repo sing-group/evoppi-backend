@@ -77,7 +77,7 @@ public abstract class WorkEntity implements Work, Serializable {
     name = "owner", referencedColumnName = "login",
     nullable = true
   )
-  private User owner;
+  protected User owner;
   
   @Embedded
   private ExecutionStatusAndTime status;

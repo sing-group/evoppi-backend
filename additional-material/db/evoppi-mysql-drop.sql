@@ -23,3 +23,5 @@ DROP TABLE `species`;
 DROP TABLE `researcher`;
 DROP TABLE `administrator`;
 DROP TABLE `user`;
+
+DROP TABLE `registration`;

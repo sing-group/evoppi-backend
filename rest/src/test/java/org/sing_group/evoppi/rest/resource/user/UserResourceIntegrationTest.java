@@ -77,7 +77,7 @@ public class UserResourceIntegrationTest {
   ) {
     final Consumer<User> testAuthorized = user -> testAuthorized(webTarget, user);
     
-    users().sequential().forEach(testAuthorized);
+    users().forEach(testAuthorized);
   }
 
   @Test

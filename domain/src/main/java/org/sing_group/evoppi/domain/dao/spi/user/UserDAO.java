@@ -30,4 +30,8 @@ public interface UserDAO {
   
   public User get(String login);
 
+  public boolean exists(String login);
+
+  public boolean existsEmail(String email);
+
 }

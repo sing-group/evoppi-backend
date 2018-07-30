@@ -32,10 +32,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 public final class Deployments {
   private Deployments() {}
   
-  public static void cleanContext() {
-    
-  }
-  
   public static WebArchive createDeployment() {
     return ShrinkWrap.create(WebArchive.class, "test.war")
       .addPackages(true, "org.sing_group.evoppi.rest")
@@ -43,6 +39,7 @@ public final class Deployments {
         Maven.resolver()
           .loadPomFromFile("pom.xml")
           .importCompileAndRuntimeDependencies()
+          .addDependencies(createDependency("com.github.sleroy:fakesmtp-junit-runner", ScopeType.RUNTIME, false))
           .addDependencies(createDependency("org.sing_group:evoppi-domain", ScopeType.RUNTIME, false))
           .addDependencies(createDependency("org.sing_group:evoppi-service", ScopeType.RUNTIME, false))
           .addDependencies(createDependency("org.sing_group:evoppi-tests", ScopeType.TEST, false))
@@ -54,6 +51,6 @@ public final class Deployments {
       .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
       .addAsWebInfResource("jboss-web.xml")
       .addAsWebInfResource("web.xml")
-      .addAsWebInfResource("beans.xml");
+      .addAsWebInfResource("beans.xml", "beans.xml");
   }
 }

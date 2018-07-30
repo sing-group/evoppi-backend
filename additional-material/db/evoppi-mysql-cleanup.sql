@@ -1,4 +1,5 @@
 SET FOREIGN_KEY_CHECKS = 0;
+
 TRUNCATE TABLE `work_step`;
 
 TRUNCATE TABLE `blast_result`;
@@ -24,6 +25,9 @@ TRUNCATE TABLE `species`;
 TRUNCATE TABLE `researcher`;
 TRUNCATE TABLE `administrator`;
 TRUNCATE TABLE `user`;
+
+TRUNCATE TABLE `registration`;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 ALTER TABLE `blast_result` AUTO_INCREMENT = 1;

@@ -65,8 +65,8 @@ public final class BaseRestPathBuilder implements RestPathBuilder {
     return researcher(researcher.getLogin());
   }
   
-  public UserRoleRestPathBuilder userRole() {
-    return new UserRoleRestPathBuilder(this.builder);
+  public UserRestPathBuilder user() {
+    return new UserRestPathBuilder(this.builder);
   }
   
   public SpeciesRestPathBuilder species() {

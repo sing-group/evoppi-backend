@@ -36,6 +36,7 @@ import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResour
 import org.sing_group.evoppi.rest.resource.bio.DifferentSpeciesInteractionResourceMultipleAlignmentIntegrationTest;
 import org.sing_group.evoppi.rest.resource.bio.SameSpeciesInteractionResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.AdministratorResourceIntegrationTest;
+import org.sing_group.evoppi.rest.resource.user.RegistrationResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.ResearcherResourceIntegrationTest;
 import org.sing_group.evoppi.rest.resource.user.UserResourceIntegrationTest;
 
@@ -43,6 +44,7 @@ import org.sing_group.evoppi.rest.resource.user.UserResourceIntegrationTest;
 	UserResourceIntegrationTest.class,
 	AdministratorResourceIntegrationTest.class,
 	ResearcherResourceIntegrationTest.class,
+	RegistrationResourceIntegrationTest.class,
 	SameSpeciesInteractionResourceIntegrationTest.class,
 	DifferentSpeciesInteractionResourceIntegrationTest.class,
 	DifferentSpeciesInteractionResourceMissingQueryGene1vs3InteractomeIntegrationTest.class,

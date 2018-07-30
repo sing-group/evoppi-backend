@@ -24,30 +24,22 @@
 
 package org.sing_group.evoppi.domain.entities.user;
 
-import static java.util.Objects.requireNonNull;
-import static org.sing_group.fluent.checker.Checks.requireEmail;
-import static org.sing_group.fluent.checker.Checks.requireMD5;
-import static org.sing_group.fluent.checker.Checks.requirePattern;
-
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
@@ -76,15 +68,11 @@ public abstract class User implements Serializable {
     return getRole(user1).equals(getRole(user2));
   }
 
-  @Id
-  @Column(length = 100, nullable = false, unique = true)
-  protected String login;
-
-  @Column(length = 32, nullable = false)
-  protected String password;
-
-  @Column(length = 100, nullable = false, unique = true)
-  protected String email;
+  @EmbeddedId
+  private Login login;
+  
+  @Embedded
+  private UserCredentials credentials;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
   private Set<WorkEntity> results;
@@ -96,26 +84,19 @@ public abstract class User implements Serializable {
     this(login, email, password, true);
   }
   
-  public User(String login, String email, String password, boolean encodedPassword) {
-    this.setLogin(login);
-    this.setEmail(email);
+  public User(String login, String email, String password, boolean encodePassword) {
+    this.login = new Login(login);
+    this.credentials = new UserCredentials(email, password, encodePassword);
     
     this.results = new HashSet<>();
-    
-    if (password != null) {
-      if (encodedPassword)
-        this.changePassword(password);
-      else
-        this.setPassword(password);
-    }
   }
 
   public String getLogin() {
-    return login;
+    return login.getLogin();
   }
   
   void setLogin(String login) {
-    this.login = requirePattern(login, "[a-zA-ZñÑ0-9_]{1,100}", "'login' can only contain letters, numbers or underscore and should have a length between 1 and 100");
+    this.login.setLogin(login);
   }
 
   /**
@@ -124,7 +105,7 @@ public abstract class User implements Serializable {
    * @return the email of this user.
    */
   public String getEmail() {
-    return email;
+    return this.credentials.getEmail();
   }
 
   /**
@@ -139,7 +120,7 @@ public abstract class User implements Serializable {
    *           if the length of the string passed is not valid.
    */
   public void setEmail(String email) {
-    this.email = requireEmail(email, 100, "'email' should have email format and a length between 1 and 100");
+    this.credentials.setEmail(email);
   }
 
   /**
@@ -150,11 +131,11 @@ public abstract class User implements Serializable {
    *         returned string.
    */
   public String getPassword() {
-    return password;
+    return this.credentials.getPassword();
   }
 
   public void setPassword(String password) {
-    this.password = requireMD5(password, "'password' should be a valid MD5 string").toUpperCase();
+    this.credentials.setPassword(password);
   }
 
   /**
@@ -171,17 +152,12 @@ public abstract class User implements Serializable {
    *           if the length of the string passed is not valid.
    */
   public void changePassword(String password) {
-    requireNonNull(password, "password can't be null");
-    if (password.length() < 6)
-      throw new IllegalArgumentException("password can't be shorter than 6");
-
-    try {
-      final MessageDigest digester = MessageDigest.getInstance("MD5");
-      final HexBinaryAdapter adapter = new HexBinaryAdapter();
-
-      this.password = adapter.marshal(digester.digest(password.getBytes()));
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException("MD5 algorithm not found", e);
+    this.credentials.changePassword(password);
+  }
+  
+  public void addResult(InteractionsResult result) {
+    if (this.results.add(result)) {
+      result.setOwner(this);
     }
   }
   

@@ -19,27 +19,27 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.rest.resource.route;
 
+import java.net.URI;
 
+import javax.ws.rs.core.UriBuilder;
 
-package org.sing_group.evoppi.rest.resource.spi.user;
+public class RegistrationPathBuilder implements RestPathBuilder {
+  protected UriBuilder builder;
 
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
-
-import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
-
-@Local
-public interface UserResource {
-
-  public Response role(String login, String password);
+  public RegistrationPathBuilder(UriBuilder builder) {
+    this.builder = builder.clone().path("registration");
+  }
   
-  public Response listDifferentSpeciesResults();
+  public RegistrationPathBuilder(UriBuilder builder, String uuid) {
+    this(builder);
+    
+    this.builder = this.builder.path(uuid);
+  }
 
-  public Response listSameSpeciesResults();
-  
-  public Response register(UserRegistrationData registration);
-
-  public Response confirm(String code);
-
+  @Override
+  public URI build() {
+    return this.builder.clone().build();
+  }
 }

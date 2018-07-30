@@ -312,6 +312,9 @@
             <mail-session name="default" jndi-name="java:jboss/mail/Default">
                 <smtp-server outbound-socket-binding-ref="mail-smtp"/>
             </mail-session>
+            <mail-session name="evoppi-mail" jndi-name="java:/evoppi/mail">
+                <smtp-server outbound-socket-binding-ref="mail-smtp"/>
+            </mail-session>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
@@ -338,6 +341,11 @@
                 <simple name="java:global/evoppi/storage/file/charset" value="UTF-8" type="java.lang.String"/>
                 <!-- Valid values: windows (\r\n) or unix (\r) -->
                 <simple name="java:global/evoppi/storage/file/lineSeparator" value="unix" type="java.lang.String"/>
+                
+                <simple name="java:global/evoppi/email/from" value="no-reply@evoppi.sing-group.org" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/registration/confirmationUrl" value="http://localhost:8080/evoppi/regitration/confirmation?uuid=[UUID]" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/registration/subject" value="EvoPPI registration confirmation" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/registration/message" value="&lt;p&gt;Dear [USER],&lt;/p&gt;&lt;p&gt;In order to complete your EvoPPI registration, please access the follow &lt;a href=&quot;[CONFIRMATION_URL]&quot;&gt;link&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Sincerely,&lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;EvoPPI Team&lt;/p&gt;" type="java.lang.String"/>
             </bindings>
             <remote-naming/>
         </subsystem>

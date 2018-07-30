@@ -28,11 +28,16 @@ import java.util.Optional;
 
 import javax.ejb.Local;
 
+import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Local
 public interface UserService {
   
   public <U extends User> Optional<U> getCurrentUser();
+
+  public void register(Registration registration);
+  
+  public void confirm(String code);
   
 }

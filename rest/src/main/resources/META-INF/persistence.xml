@@ -30,6 +30,9 @@
   <persistence-unit name="runtime">
     <jta-data-source>java:jboss/datasources/evoppi</jta-data-source>
 
+    <class>org.sing_group.evoppi.domain.entities.user.Login</class>
+    <class>org.sing_group.evoppi.domain.entities.user.UserCredentials</class>
+    <class>org.sing_group.evoppi.domain.entities.user.Registration</class>
     <class>org.sing_group.evoppi.domain.entities.user.User</class>
     <class>org.sing_group.evoppi.domain.entities.user.Administrator</class>
     <class>org.sing_group.evoppi.domain.entities.user.Researcher</class>

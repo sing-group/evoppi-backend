@@ -40,6 +40,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -170,7 +171,7 @@ public class DAOHelper<K, T> {
     final Root<T> root = query.from(getEntityType());
     
     final Function<F, Predicate> fieldEqualsTo = value -> 
-      cb().equal(root.get(fieldName), value);
+      cb().equal(getField(root, fieldName), value);
 
     final ListingOptionsQueryBuilder queryBuilder = new ListingOptionsQueryBuilder(listingOptions);
       
@@ -192,6 +193,23 @@ public class DAOHelper<K, T> {
       return queryBuilder.addLimits(em.createQuery(
         query.select(root).where(predicate)
       ));
+    }
+  }
+  
+  private Path<T> getField(Root<T> root, String fieldName) {
+    if (fieldName.contains(".")) {
+      final String[] fieldParts = fieldName.split("[.]");
+      
+      Path<T> field = root.get(fieldParts[0]);
+      
+      for (int i = 1; i < fieldParts.length; i++) {
+        field = field.get(fieldParts[i]);
+      }
+      
+      return field;
+      
+    } else {
+      return root.get(fieldName);
     }
   }
   

@@ -120,6 +120,7 @@
 		<arquillian.rest.version>1.0.0.Alpha4</arquillian.rest.version>
 		<dbunit.version>2.5.4</dbunit.version>
 		<easymock.version>3.5.1</easymock.version>
+		<fakesmtp.junit.runner.version>0.1.1</fakesmtp.junit.runner.version>
 		<hamcrest.version>2.0.0.0</hamcrest.version>
 		<jacoco.version>0.8.0</jacoco.version>
 		<junit.version>4.12</junit.version>
@@ -132,6 +133,7 @@
 		<maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
 		<maven.ear.plugin.version>2.10.1</maven.ear.plugin.version>
 		<maven.javadoc.plugin.version>2.10.4</maven.javadoc.plugin.version>
+		<maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
 		<maven.dependency.plugin.version>3.0.1</maven.dependency.plugin.version>
 		<maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
 		<maven.resources.plugin.version>3.0.2</maven.resources.plugin.version>
@@ -236,6 +238,11 @@
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.sleroy</groupId>
+				<artifactId>fakesmtp-junit-runner</artifactId>
+				<version>${fakesmtp.junit.runner.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.arquillian.extension</groupId>
@@ -359,6 +366,11 @@
 						<!-- Avoids the execution of the wildfly:* goals in the subproject unless the plugin is activated in the subproject. -->
 						<skip>true</skip>
 					</configuration>
+				</plugin>
+				<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-jar-plugin</artifactId>
+	        <version>${maven.jar.plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

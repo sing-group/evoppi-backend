@@ -162,9 +162,17 @@ public class UsersDataset {
   ) {
     return filterUsers(researchers(), start, end, getter, sort);
   }
+  
+  public static String newResearcherLogin() {
+    return "researcherNew";
+  }
+
+  public static String newResearcherEmail() {
+    return "researcherNew@email.com";
+  }
 
   public static Researcher newResearcher() {
-    return new Researcher("researcherNew", "researcherNew@email.com", passwordOf("researcherNew"));
+    return new Researcher(newResearcherLogin(), newResearcherEmail(), passwordOf("researcherNew"));
   }
 
   public static Researcher modifiedResearcher() {
@@ -181,6 +189,14 @@ public class UsersDataset {
 
   public static long countResearchers() {
     return researchers().count();
+  }
+  
+  public static String registrationCode() {
+    return "4fa6a6fb-6858-4b65-a3cf-bef8405a5986";
+  }
+  
+  public static String registrationBadCode() {
+    return "bad0code-bad0-code-bad0-codebad0code";
   }
   
   private static <U extends User, T extends Comparable<T>> Stream<U> filterUsers(

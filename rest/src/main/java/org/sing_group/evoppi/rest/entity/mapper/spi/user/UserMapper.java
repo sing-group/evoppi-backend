@@ -25,11 +25,13 @@
 package org.sing_group.evoppi.rest.entity.mapper.spi.user;
 
 import org.sing_group.evoppi.domain.entities.user.Administrator;
+import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.rest.entity.user.AdministratorData;
 import org.sing_group.evoppi.rest.entity.user.AdministratorEditionData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
+import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 
 public interface UserMapper {
   public Administrator toAdministrator(AdministratorEditionData data);
@@ -43,4 +45,6 @@ public interface UserMapper {
   public ResearcherData toResearcherData(Researcher researcher);
 
   public ResearcherEditionData toResearcherEditionData(Researcher researcher, String password);
+
+  public Registration toRegistration(UserRegistrationData registration);
 }

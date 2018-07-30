@@ -32,13 +32,14 @@ import javax.persistence.PersistenceContext;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.entities.user.Login;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 public abstract class AbstractUserManagementDAO<E extends User> implements UserManagementDAO<E> {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<String, E> dh;
+  protected DAOHelper<Login, E> dh;
 
   public AbstractUserManagementDAO() {
     super();
@@ -51,14 +52,14 @@ public abstract class AbstractUserManagementDAO<E extends User> implements UserM
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(String.class, this.getEntityClass(), this.em);
+    this.dh = DAOHelper.of(Login.class, this.getEntityClass(), this.em);
   }
   
   protected abstract Class<E> getEntityClass();
 
   @Override
   public E get(String login) {
-    return this.dh.get(login)
+    return this.dh.get(new Login(login))
       .orElseThrow(() -> new IllegalArgumentException("Unknown user: " + login));
   }
 

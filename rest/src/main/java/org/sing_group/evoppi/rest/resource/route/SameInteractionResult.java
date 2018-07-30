@@ -2,7 +2,7 @@
  * #%L
  * REST
  * %%
- * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -21,18 +21,17 @@
  */
 
 
-
 package org.sing_group.evoppi.rest.resource.route;
 
 import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
-public class UserRoleRestPathBuilder implements RestPathBuilder {
+public class SameInteractionResult implements RestPathBuilder {
   protected UriBuilder builder;
   
-  public UserRoleRestPathBuilder(UriBuilder builder) {
-    this.builder = builder.clone().path("user").path("role");
+  public SameInteractionResult(UriBuilder builder) {
+    this.builder = builder.clone().path("interaction").path("result").path("same");
   }
 
   @Override

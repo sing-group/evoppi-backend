@@ -100,6 +100,14 @@ public abstract class InteractionsResult extends WorkEntity {
     this.queryGene = queryGene;
     this.queryMaxDegree = queryMaxDegree;
   }
+  
+  public void setOwner(User owner) {
+    if (this.owner != null)
+      throw new IllegalStateException("Result already has an owner");
+    
+    this.owner.addResult(this);
+    this.owner = owner;
+  }
 
   public int getQueryGeneId() {
     return this.queryGene.getId();

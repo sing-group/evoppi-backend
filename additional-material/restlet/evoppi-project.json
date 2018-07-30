@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-07-18T16:49:07.340+02:00",
+      "lastModified": "2018-07-30T18:49:08.964+02:00",
       "name": "EvoPPI"
     },
     {
@@ -2165,6 +2165,92 @@
           "enabled": true,
           "name": "Authorization",
           "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "{\n  \"login\": \"newuser\",\n  \"email\": \"newuser@email.com\",\n  \"password\": \"newuserpass\"\n}"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/registration"
+      },
+      "id": "46bcccf3-e7fb-48f8-bdc7-3c1117beb16c",
+      "lastModified": "2018-07-30T18:48:44.919+02:00",
+      "name": "Registration",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": ""
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/registration/96176eb9-bea8-4d10-8d1b-5df9da09abe6"
+      },
+      "id": "83d8cbb0-79a1-45fc-a189-d4203cc7b1e2",
+      "lastModified": "2018-07-30T18:49:08.964+02:00",
+      "name": "Registration Confirmation",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/plain"
         }
       ],
       "metaInfo": {},

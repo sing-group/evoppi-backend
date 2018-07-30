@@ -2,7 +2,7 @@
  * #%L
  * REST
  * %%
- * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -21,25 +21,22 @@
  */
 
 
+package org.sing_group.evoppi.rest.resource.route;
 
-package org.sing_group.evoppi.rest.resource.spi.user;
+import java.net.URI;
 
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
-import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
-
-@Local
-public interface UserResource {
-
-  public Response role(String login, String password);
+public class DifferentInteractionResult implements RestPathBuilder {
+  protected UriBuilder builder;
   
-  public Response listDifferentSpeciesResults();
+  public DifferentInteractionResult(UriBuilder builder) {
+    this.builder = builder.clone().path("interaction").path("result").path("different");
+  }
 
-  public Response listSameSpeciesResults();
-  
-  public Response register(UserRegistrationData registration);
-
-  public Response confirm(String code);
+  @Override
+  public URI build() {
+    return this.builder.build();
+  }
 
 }

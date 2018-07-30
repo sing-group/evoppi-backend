@@ -1,6 +1,6 @@
 /*-
  * #%L
- * REST
+ * Service
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,27 +19,10 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.service.spi.notification;
 
+public interface Mailer {
 
-
-package org.sing_group.evoppi.rest.resource.spi.user;
-
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
-
-import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
-
-@Local
-public interface UserResource {
-
-  public Response role(String login, String password);
+  public void sendEmail(String from, String to, String subject, String message);
   
-  public Response listDifferentSpeciesResults();
-
-  public Response listSameSpeciesResults();
-  
-  public Response register(UserRegistrationData registration);
-
-  public Response confirm(String code);
-
 }

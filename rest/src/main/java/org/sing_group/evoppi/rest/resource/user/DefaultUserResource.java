@@ -27,6 +27,7 @@ package org.sing_group.evoppi.rest.resource.user;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.net.URI;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -37,20 +38,27 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.RoleType;
 import org.sing_group.evoppi.domain.entities.user.User;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
+import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.mapper.SecurityExceptionMapper;
+import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 import org.sing_group.evoppi.rest.resource.spi.user.UserResource;
 import org.sing_group.evoppi.service.spi.user.UserService;
 import org.slf4j.Logger;
@@ -79,6 +87,9 @@ public class DefaultUserResource implements UserResource {
   
   @Inject
   private BioMapper bioMapper;
+  
+  @Inject
+  private UserMapper userMapper;
 
   @Context
   private UriInfo uriInfo;
@@ -174,5 +185,38 @@ public class DefaultUserResource implements UserResource {
     } else {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
+  }
+
+  @POST
+  @Path("registration")
+  @ApiOperation(
+    value = "Returns a 201 code if registration was successful.",
+    code = 201
+  )
+  @Override
+  public Response register(UserRegistrationData registrationData) {
+    final Registration registration = this.userMapper.toRegistration(registrationData);
+    
+    this.userService.register(registration);
+    
+    final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriInfo.getAbsolutePathBuilder());
+    
+    final URI uri = pathBuilder.user().registration(registration.getCode()).build();
+    
+    return Response.created(uri).build();
+  }
+
+  @POST
+  @Consumes(MediaType.WILDCARD)
+  @Path("registration/{code}")
+  @ApiOperation(
+    value = "Returns a 200 code if the registration is successfully confirmed.",
+    code = 200
+  )
+  @Override
+  public Response confirm(@PathParam("code") String code) {
+    this.userService.confirm(code);
+    
+    return Response.ok().build();
   }
 }

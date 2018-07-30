@@ -1,0 +1,64 @@
+<!-- #%L Tests %% Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González %% This program is 
+	free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by 
+	the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed 
+	in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+	FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU 
+	General Public License along with this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>. #L% -->
+<dataset>
+	<same_species_interactions_result id="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		name="Same species interactions" description="Find same species interactions"
+		resultReference="http://localhost:8080/evoppi-backend/rest/api/interaction/result/2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		creationDateTime="2018-07-19 11:09:09" finishingDateTime="2018-07-19 11:09:16"
+		schedulingDateTime="2018-07-19 11:09:09" startDateTime="2018-07-19 11:09:09" status="COMPLETED" queryMaxDegree="1"
+		queryGene="100" />
+
+	<same_species_interactions_result_query_interactome
+		resultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" queryInteractomesId="1" />
+
+	<interaction_group_result interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		geneA="100" geneB="101" />
+	<interaction_group_result interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		geneA="100" geneB="102" />
+	<interaction_group_result interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		geneA="100" geneB="105" />
+	<interaction_group_result interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		geneA="100" geneB="106" />
+	<interaction_group_result interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		geneA="100" geneB="109" />
+	<interaction_group_result interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+	geneA="100" geneB="112" />
+
+	<interaction_group_result_interactome_degree
+		interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" geneA="100" geneB="101" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" geneA="100" geneB="102" interactome="2" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" geneA="100" geneB="105" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" geneA="100" geneB="106" interactome="2" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" geneA="100" geneB="109" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" geneA="100" geneB="112" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="2566f689-ccb0-43df-a5c2-cc67d70c0915" geneA="100" geneB="112" interactome="2" degree="1" />
+
+	<work_step stepOrder="1" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Starting multi interactome gene interactions calculation" progress="-0.5" />
+	<work_step stepOrder="2" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Starting interactome retrieval: 13" progress="-1" />
+	<work_step stepOrder="3" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Completed interactome retrieval: 13" progress="-0.875" />
+	<work_step stepOrder="4" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Starting interactome retrieval: 26" progress="-0.875" />
+	<work_step stepOrder="5" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Completed interactome retrieval: 26" progress="-0.75" />
+	<work_step stepOrder="6" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Completed multi interactome gene interactions calculation" progress="-0.25" />
+	<work_step stepOrder="7" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Starting multi interactome gene interactions completion" progress="0.25" />
+	<work_step stepOrder="8" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Completed multi interactome gene interactions completion" progress="0.5" />
+	<work_step stepOrder="9" workId="2566f689-ccb0-43df-a5c2-cc67d70c0915"
+		description="Completed same species gene interactions calculus analysis" progress="1" />
+</dataset>

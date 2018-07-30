@@ -27,12 +27,14 @@ package org.sing_group.evoppi.rest.entity.mapper.user;
 import javax.enterprise.inject.Default;
 
 import org.sing_group.evoppi.domain.entities.user.Administrator;
+import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.user.AdministratorData;
 import org.sing_group.evoppi.rest.entity.user.AdministratorEditionData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
+import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 
 @Default
 public class DefaultUserMapper implements UserMapper {
@@ -75,5 +77,14 @@ public class DefaultUserMapper implements UserMapper {
   @Override
   public Researcher toResearcher(ResearcherEditionData data) {
     return new Researcher(data.getLogin(), data.getEmail(), data.getPassword());
+  }
+
+  @Override
+  public Registration toRegistration(UserRegistrationData registration) {
+    return new Registration(
+      registration.getLogin(),
+      registration.getEmail(),
+      registration.getPassword()
+    );
   }
 }

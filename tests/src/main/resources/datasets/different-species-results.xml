@@ -1,0 +1,109 @@
+<!-- #%L Tests %% Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González %% This program is 
+	free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by 
+	the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed 
+	in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+	FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU 
+	General Public License along with this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>. #L% -->
+<dataset>
+	<different_species_interactions_result id="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		name="Different species interactions" description="Find different species interactions"
+		resultReference="http://localhost:8080/evoppi-backend/rest/api/interaction/result/5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		creationDateTime="2018-07-19 11:09:09" finishingDateTime="2018-07-19 11:09:16"
+		schedulingDateTime="2018-07-19 11:09:09" startDateTime="2018-07-19 11:09:09" status="COMPLETED" queryMaxDegree="1"
+		queryGene="100" evalue="0.05" maxTargetSeqs="1" minimumAlignmentLength="18" minimumIdentity="0.95" />
+
+	<different_species_interactions_result_reference_interactomes
+		resultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" referenceInteractomeId="1" />
+
+	<different_species_interactions_result_target_interactomes
+		resultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" targetInteractomeId="3" />
+
+	<interaction_group_result interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		geneA="100" geneB="101" />
+	<interaction_group_result interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		geneA="100" geneB="105" />
+	<interaction_group_result interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		geneA="100" geneB="109" />
+	<interaction_group_result interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		geneA="100" geneB="112" />
+
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="101" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="101" interactome="3" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="105" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="105" interactome="3" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="109" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="109" interactome="3" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="112" interactome="1" degree="1" />
+	<interaction_group_result_interactome_degree
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" geneA="100" geneB="112" interactome="3" degree="1" />
+
+	<blast_result id="1" qseqid="200" qseqversion="1" sseqid="100" sseqversion="1" pident="100.000"
+		length="100" mismatch="0" gapopen="0" qstart="1" qend="100" sstart="1" send="100" evalue="1.78e-77" bitscore="209"
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" />
+	<blast_result id="2" qseqid="201" qseqversion="1" sseqid="101" sseqversion="1" pident="100.000"
+		length="100" mismatch="0" gapopen="0" qstart="1" qend="100" sstart="1" send="100" evalue="1.78e-77" bitscore="209"
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" />
+	<blast_result id="3" qseqid="202" qseqversion="1" sseqid="102" sseqversion="1" pident="100.000"
+		length="100" mismatch="0" gapopen="0" qstart="1" qend="100" sstart="1" send="100" evalue="1.78e-77" bitscore="209"
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" />
+	<blast_result id="4" qseqid="205" qseqversion="1" sseqid="105" sseqversion="1" pident="100.000"
+		length="100" mismatch="0" gapopen="0" qstart="1" qend="100" sstart="1" send="100" evalue="1.78e-77" bitscore="209"
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" />
+	<blast_result id="5" qseqid="206" qseqversion="1" sseqid="106" sseqversion="1" pident="100.000"
+		length="100" mismatch="0" gapopen="0" qstart="1" qend="100" sstart="1" send="100" evalue="1.78e-77" bitscore="209"
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" />
+	<blast_result id="6" qseqid="209" qseqversion="1" sseqid="109" sseqversion="1" pident="100.000"
+		length="100" mismatch="0" gapopen="0" qstart="1" qend="100" sstart="1" send="100" evalue="1.78e-77" bitscore="209"
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" />
+	<blast_result id="7" qseqid="212" qseqversion="1" sseqid="112" sseqversion="1" pident="100.000"
+		length="100" mismatch="0" gapopen="0" qstart="1" qend="100" sstart="1" send="100" evalue="1.78e-77" bitscore="209"
+		interactionsResultId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f" />
+
+	<work_step stepOrder="1" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting different species gene interactions calculus analysis" progress="0" />
+	<work_step stepOrder="2" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting multi reference interactome gene interactions calculation" progress="0" />
+	<work_step stepOrder="3" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting reference interactome retrieval: 1" progress="0" />
+	<work_step stepOrder="4" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed reference interactome retrieval: 1" progress="0.14285714285714285" />
+	<work_step stepOrder="5" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed multi reference interactome gene interactions calculation" progress="0.14285714285714285" />
+	<work_step stepOrder="6" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting multi reference interactome gene interactions completion" progress="0.14285714285714285" />
+	<work_step stepOrder="7" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed multi reference interactome gene interactions completion" progress="0.2857142857142857" />
+	<work_step stepOrder="8" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting reference FASTA creation" progress="0.2857142857142857" />
+	<work_step stepOrder="9" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed reference FASTA creation" progress="0.42857142857142855" />
+	<work_step stepOrder="10" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting target FASTA creation" progress="0.42857142857142855" />
+	<work_step stepOrder="11" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed target FASTA creation" progress="0.5714285714285714" />
+	<work_step stepOrder="12" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting blast alignment" progress="0.5714285714285714" />
+	<work_step stepOrder="13" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed blast alignment" progress="0.7142857142857142" />
+	<work_step stepOrder="14" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting multi target interactome target gene interactions calculation" progress="0.7142857142857142" />
+	<work_step stepOrder="15" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting target interactome retrieval: 3" progress="0.7142857142857142" />
+	<work_step stepOrder="16" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed target interactome retrieval: 3" progress="0.857142857142857" />
+	<work_step stepOrder="17" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed multi target interactome target gene interactions calculation" progress="0.857142857142857" />
+	<work_step stepOrder="18" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Starting multi target interactome target gene interactions completion" progress="0.857142857142857" />
+	<work_step stepOrder="19" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed multi target interactome target gene interactions completion" progress="0.9999999999999998" />
+	<work_step stepOrder="20" workId="5a5006b1-5dc6-4859-bd2b-6df7d27fd70f"
+		description="Completed different species gene interactions calculus analysis" progress="1" />
+</dataset>
