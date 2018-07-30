@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.service.bio;
 
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toSet;
 import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 
@@ -312,6 +313,31 @@ public class DefaultInteractionService implements InteractionService {
       checkThat.hasRole(RoleType.ADMIN),
       checkThat.hasLogin(loginSupplier)
     ).run(() -> this.interactionsResultDao.delete(id));
+  }
+
+  @Override
+  public void linkDifferentSpeciesResultsToCurrentUser(String[] uuids) {
+    this.linkResultsToCurrentUser(uuids, this::getDifferentSpeciesResult);
+  }
+
+  @Override
+  public void linkSameSpeciesResultsToCurrentUser(String[] uuids) {
+    this.linkResultsToCurrentUser(uuids, this::getSameSpeciesResult);
+  }
+  
+  private void linkResultsToCurrentUser(String[] uuids, Function<String, InteractionsResult> resultGetter) {
+    final Optional<User> user = this.userService.getCurrentUser();
+    
+    if (user.isPresent()) {
+      final User owner = user.get();
+      
+      stream(uuids)
+        .map(resultGetter)
+      .forEach(result -> result.setOwner(owner));
+    } else {
+      throw new SecurityException("An authenticated user is required");
+    }
+    
   }
 
   private String createFastaFromGeneIds(

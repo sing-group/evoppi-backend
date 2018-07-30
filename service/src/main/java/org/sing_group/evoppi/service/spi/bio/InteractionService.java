@@ -66,4 +66,8 @@ public interface InteractionService {
   );
 
   public void deleteResult(String id);
+
+  public void linkDifferentSpeciesResultsToCurrentUser(String[] uuids);
+  
+  public void linkSameSpeciesResultsToCurrentUser(String[] uuids);
 }

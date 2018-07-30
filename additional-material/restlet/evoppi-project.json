@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-07-30T19:12:00.982+02:00",
+      "lastModified": "2018-07-30T20:22:50.580+02:00",
       "name": "EvoPPI"
     },
     {
@@ -1778,6 +1778,103 @@
       "lastModified": "2018-07-10T18:58:36.884+02:00",
       "name": "User",
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.4",
+        "name": "PUT"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "{\n  \"uuids\": [\n    \"53081992-ac80-4b35-a726-fcf5aaf03c90\",\n  \t\"547a0bbf-35eb-41b6-895b-4c1eea737d2c\",\n  \t\"5a5006b1-5dc6-4859-bd2b-6df7d27fd70f\",\n    \"5b7ceabd-bdf5-4955-92ae-bd0fbed82bb0\"\n  ]\n}"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/interaction/result/different"
+      },
+      "description": "",
+      "id": "cec08144-d4d7-4db3-b57e-9580d9e7cfe7",
+      "lastModified": "2018-07-30T20:22:36.269+02:00",
+      "name": "Claim Different Species Result Interactions [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.4",
+        "name": "PUT"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "{\n  \"uuids\": [\n    \"644e0fd0-77bf-4797-98c8-40875b426f5c\",\n  \t\"6501613f-5ba3-4507-ae27-94de214b3414\"\n  ]\n}"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/interaction/result/same"
+      },
+      "id": "d1246fbe-baba-4ed9-a85f-02669ab2f831",
+      "lastModified": "2018-07-30T20:22:50.580+02:00",
+      "name": "Claim Same Species Result Interactions [RESEARCHER]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        },
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
     },
     {
       "type": "Request",

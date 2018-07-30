@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -52,6 +53,7 @@ import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.RoleType;
 import org.sing_group.evoppi.domain.entities.user.User;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
+import org.sing_group.evoppi.rest.entity.bio.ResultUuids;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
@@ -60,6 +62,7 @@ import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.mapper.SecurityExceptionMapper;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 import org.sing_group.evoppi.rest.resource.spi.user.UserResource;
+import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +87,9 @@ public class DefaultUserResource implements UserResource {
   
   @Inject
   private UserService userService;
+  
+  @Inject
+  private InteractionService interactionService;
   
   @Inject
   private BioMapper bioMapper;
@@ -179,6 +185,33 @@ public class DefaultUserResource implements UserResource {
     } else {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
+  }
+
+  
+  @PUT
+  @Path("interaction/result/different")
+  @ApiOperation(
+    value = "Links public different species results with the requresting user.",
+    code = 200
+  )
+  @Override
+  public Response claimDifferentSpeciesResults(ResultUuids uuids) {
+    this.interactionService.linkDifferentSpeciesResultsToCurrentUser(uuids.getUuids());
+    
+    return Response.ok().build();
+  }
+  
+  @PUT
+  @Path("interaction/result/same")
+  @ApiOperation(
+    value = "Links public same species results with the requresting user.",
+    code = 200
+  )
+  @Override
+  public Response claimSameSpeciesResults(ResultUuids uuids) {
+    this.interactionService.linkSameSpeciesResultsToCurrentUser(uuids.getUuids());
+    
+    return Response.ok().build();
   }
 
   @POST

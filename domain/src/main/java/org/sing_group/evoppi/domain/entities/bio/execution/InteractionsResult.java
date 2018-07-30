@@ -105,7 +105,7 @@ public abstract class InteractionsResult extends WorkEntity {
     if (this.owner != null)
       throw new IllegalStateException("Result already has an owner");
     
-    this.owner.addResult(this);
+    owner.addResult(this);
     this.owner = owner;
   }
 

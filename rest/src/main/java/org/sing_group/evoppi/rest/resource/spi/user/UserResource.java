@@ -27,6 +27,7 @@ package org.sing_group.evoppi.rest.resource.spi.user;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.evoppi.rest.entity.bio.ResultUuids;
 import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 
 @Local
@@ -41,5 +42,9 @@ public interface UserResource {
   public Response register(UserRegistrationData registration);
 
   public Response confirm(String code);
+
+  public Response claimDifferentSpeciesResults(ResultUuids uuids);
+  
+  public Response claimSameSpeciesResults(ResultUuids uuids);
 
 }
