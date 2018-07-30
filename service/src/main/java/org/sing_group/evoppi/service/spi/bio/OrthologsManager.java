@@ -22,6 +22,8 @@
 
 package org.sing_group.evoppi.service.spi.bio;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.util.function.Function.identity;
 
 import java.util.function.BiConsumer;
@@ -39,21 +41,21 @@ public interface OrthologsManager {
   public default void forEachReferencePairOrthologs(HasGenePairIds genePairIds, BiConsumer<Integer, Integer> action) {
     getOrthologsForReferenceGene(genePairIds.getGeneAId())
       .forEach(orthologA -> getOrthologsForReferenceGene(genePairIds.getGeneBId())
-        .forEach(orthologB -> action.accept(orthologA, orthologB))
+        .forEach(orthologB -> action.accept(min(orthologA, orthologB), max(orthologA, orthologB)))
       );
   }
   
   public default void forEachTargetPairOrthologs(HasGenePairIds genePairIds, BiConsumer<Integer, Integer> action) {
     getOrthologsForTargetGene(genePairIds.getGeneAId())
       .forEach(orthologA -> getOrthologsForTargetGene(genePairIds.getGeneBId())
-        .forEach(orthologB -> action.accept(orthologA, orthologB))
+        .forEach(orthologB -> action.accept(min(orthologA, orthologB), max(orthologA, orthologB)))
       );
   }
   
   public default <T> Stream<T> mapReferencePairOrthologs(HasGenePairIds genePairIds, Function<HasGenePairIds, T> action) {
     return getOrthologsForReferenceGene(genePairIds.getGeneAId())
       .mapToObj(orthologA -> getOrthologsForReferenceGene(genePairIds.getGeneBId())
-        .mapToObj(orthologB -> action.apply(HasGenePairIds.of(orthologA, orthologB)))
+        .mapToObj(orthologB -> action.apply(HasGenePairIds.of(min(orthologA, orthologB), max(orthologA, orthologB))))
       )
     .flatMap(identity());
   }
@@ -61,7 +63,7 @@ public interface OrthologsManager {
   public default <T> Stream<T> mapTargetPairOrthologs(HasGenePairIds genePairIds, Function<HasGenePairIds, T> action) {
     return getOrthologsForTargetGene(genePairIds.getGeneAId())
       .mapToObj(orthologA -> getOrthologsForTargetGene(genePairIds.getGeneBId())
-        .mapToObj(orthologB -> action.apply(HasGenePairIds.of(orthologA, orthologB)))
+        .mapToObj(orthologB -> action.apply(HasGenePairIds.of(min(orthologA, orthologB), max(orthologA, orthologB))))
       )
     .flatMap(identity());
   }

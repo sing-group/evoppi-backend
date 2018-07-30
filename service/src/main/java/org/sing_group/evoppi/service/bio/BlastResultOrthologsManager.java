@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.service.spi.bio.OrthologsManager;
+import org.sing_group.fluent.compare.Compare;
 
 public class BlastResultOrthologsManager implements OrthologsManager {
   private final Set<BlastResult> blastResults;
@@ -65,4 +66,16 @@ public class BlastResultOrthologsManager implements OrthologsManager {
       .distinct();
   }
 
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder();
+    
+    this.blastResults.stream()
+      .sorted((a, b) -> Compare.objects(a, b).byInt(BlastResult::getQseqid).thenByInt(BlastResult::getSseqid).andGet())
+      .map(result -> result.getQseqid() + " <-> " + result.getSseqid())
+      .distinct()
+    .forEach(result -> sb.append(result).append("\n"));
+    
+    return sb.toString();
+  }
 }

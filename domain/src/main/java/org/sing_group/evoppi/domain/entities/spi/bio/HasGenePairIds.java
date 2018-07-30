@@ -49,4 +49,9 @@ public interface HasGenePairIds {
   public static DefaultHasGenePairIds of(HasGenePairIds genePairIds) {
     return new DefaultHasGenePairIds(genePairIds);
   }
+  
+  public static boolean haveSameGenes(HasGenePairIds genePairA, HasGenePairIds genePairB) {
+    return genePairA.getGeneAId() == genePairB.getGeneAId()
+      && genePairA.getGeneBId() == genePairB.getGeneBId();
+  }
 }

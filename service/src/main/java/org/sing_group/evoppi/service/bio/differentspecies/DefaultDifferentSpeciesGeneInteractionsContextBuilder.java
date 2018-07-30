@@ -30,10 +30,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
+import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilder;
@@ -163,7 +165,18 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
     if (this.targetInteractions == null)
       this.targetInteractions = new HashMap<>();
     
-    final Set<HasGeneInteractionIds> interactionsSet = interactions.collect(toSet());
+    final Set<HasGenePairIds> referenceInteractions = this.referenceInteractions.values()
+      .stream()
+      .flatMap(Set::stream)
+    .collect(toSet());
+    
+    final Predicate<HasGeneInteractionIds> isGenePairInReference = genePair ->
+      referenceInteractions.stream()
+        .anyMatch(genePair::hasGenes);
+    
+    final Set<HasGeneInteractionIds> interactionsSet = interactions
+      .filter(isGenePairInReference)
+    .collect(toSet());
     
     if (!interactionsSet.isEmpty()) {
       this.targetInteractions.merge(degree, interactionsSet, (prev, curr) -> {
