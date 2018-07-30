@@ -143,9 +143,6 @@ public class DefaultUserResource implements UserResource {
     responseContainer = "List",
     code = 200
   )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown interaction result: {id}")
-  )
   @Override
   public Response listDifferentSpeciesResults() {
     final Optional<User> currentUser = this.userService.getCurrentUser();
@@ -168,9 +165,6 @@ public class DefaultUserResource implements UserResource {
     response = SameSpeciesInteractionsResultSummaryData.class,
     responseContainer = "List",
     code = 200
-  )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown interaction result: {id}")
   )
   @Override
   public Response listSameSpeciesResults() {

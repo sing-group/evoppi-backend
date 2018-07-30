@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-07-30T18:49:08.964+02:00",
+      "lastModified": "2018-07-30T19:12:00.982+02:00",
       "name": "EvoPPI"
     },
     {
@@ -498,6 +498,54 @@
       "uri": {
         "query": {
           "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "ids",
+              "value": "5a5006b1-5dc6-4859-bd2b-6df7d27fd70f,3ce15596-f6ed-4b24-b2a6-e3f83be5381b,53081992-ac80-4b35-a726-fcf5aaf03c90"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/different"
+      },
+      "description": "",
+      "id": "3c0a1090-7701-4db4-b766-8faefe51332f",
+      "lastModified": "2018-07-30T19:11:23.524+02:00",
+      "name": "Different Species Interaction Result List",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "d33bf036-b611-4c1b-a713-680dd3fe8adf"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
           "items": []
         },
         "scheme": {
@@ -702,6 +750,54 @@
       "lastModified": "2018-05-09T19:27:37.866+02:00",
       "name": "Interaction Results Single Fasta",
       "headers": [],
+      "metaInfo": {},
+      "parentId": "d33bf036-b611-4c1b-a713-680dd3fe8adf"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": [
+            {
+              "enabled": true,
+              "name": "ids",
+              "value": "6501613f-5ba3-4507-ae27-94de214b3414,a42c35da-8a69-4129-927e-9f44b6a46ff6,cf1651c4-e333-48d7-b705-ce2f5ef0f356"
+            }
+          ]
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/interaction/result/same"
+      },
+      "description": "",
+      "id": "312cd71b-a168-492e-84d0-63112150e9fb",
+      "lastModified": "2018-07-30T19:12:00.983+02:00",
+      "name": "Same Species Interaction Result List",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "metaInfo": {},
       "parentId": "d33bf036-b611-4c1b-a713-680dd3fe8adf"
     },

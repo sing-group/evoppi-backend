@@ -32,6 +32,10 @@ public interface InteractionResource {
     int geneId, int[] interactomes, int[] referenceInteractomes, int[] targetInteractomes, int maxDegree,
     double evalue, int maxTargetSeqs, double minimumIdentity, int minimumAlignmentLength
   );
+  
+  public Response listDifferentSpeciesResults(String ids);
+
+  public Response listSameSpeciesResults(String ids);
 
   public Response getInterationResult(
     String resultId,

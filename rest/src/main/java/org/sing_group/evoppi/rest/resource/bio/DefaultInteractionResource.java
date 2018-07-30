@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.rest.resource.bio;
 
+import static java.util.Arrays.stream;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
@@ -50,9 +51,11 @@ import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInter
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultField;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
+import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptionsData;
+import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
@@ -74,6 +77,8 @@ import io.swagger.annotations.ApiResponses;
 @Default
 @CrossDomain
 public class DefaultInteractionResource implements InteractionResource {
+  private static String MULTIPLE_UUID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(,[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})*";
+  
   @Inject
   private InteractionService service;
   
@@ -159,6 +164,48 @@ public class DefaultInteractionResource implements InteractionResource {
     }
   }
 
+  @GET
+  @Path("result/different")
+  @ApiOperation(
+    value = "Returns a summary of the different species interactions whose id is provided.",
+    response = DifferentSpeciesInteractionsResultSummaryData.class,
+    responseContainer = "List",
+    code = 200
+  )
+  @Override
+  public Response listDifferentSpeciesResults(@QueryParam("ids") String ids) {
+    if (!ids.matches(MULTIPLE_UUID_PATTERN))
+      throw new IllegalArgumentException("Invalid 'ids' format");
+    
+    final DifferentSpeciesInteractionsResultSummaryData[] results = stream(ids.split(","))
+      .map(this.service::getDifferentSpeciesResult)
+      .map(bioMapper::toInteractionQueryResultSummary)
+    .toArray(DifferentSpeciesInteractionsResultSummaryData[]::new);
+    
+    return Response.ok(results).build();
+  }
+
+  @GET
+  @Path("result/same")
+  @ApiOperation(
+    value = "Returns a summary of the same species interactions whose id is provided.",
+    response = SameSpeciesInteractionsResultSummaryData.class,
+    responseContainer = "List",
+    code = 200
+  )
+  @Override
+  public Response listSameSpeciesResults(@QueryParam("ids") String ids) {
+    if (!ids.matches(MULTIPLE_UUID_PATTERN))
+      throw new IllegalArgumentException("Invalid 'ids' format");
+    
+    final SameSpeciesInteractionsResultSummaryData[] results = stream(ids.split(","))
+      .map(this.service::getSameSpeciesResult)
+      .map(bioMapper::toInteractionQueryResultSummary)
+    .toArray(SameSpeciesInteractionsResultSummaryData[]::new);
+    
+    return Response.ok(results).build();
+  }
+  
   @GET
   @Path("result/{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}")
   @ApiOperation(
