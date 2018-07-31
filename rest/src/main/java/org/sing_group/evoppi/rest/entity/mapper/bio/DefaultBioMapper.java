@@ -50,6 +50,7 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResul
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.rest.entity.IdAndUri;
+import org.sing_group.evoppi.rest.entity.IdNameAndUri;
 import org.sing_group.evoppi.rest.entity.UuidAndUri;
 import org.sing_group.evoppi.rest.entity.bio.BlastResultData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsData;
@@ -227,15 +228,27 @@ public class DefaultBioMapper implements BioMapper {
     try {
       final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
       
-      final IdAndUri[] interactomeIds = result.getQueryInteractomeIds()
-        .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
-      .toArray(IdAndUri[]::new);
+      final Species species = result.getQuerySpecies();
+      final IdNameAndUri speciesId = new IdNameAndUri(
+        species.getId(), species.getName(), pathBuilder.species(species).build()
+      );
+      
+      final Gene queryGene = result.getQueryGene();
+      
+      final IdNameAndUri queryGeneId = new IdNameAndUri(
+        queryGene.getId(), queryGene.getDefaultName(), pathBuilder.gene(queryGene).build()
+      );
+      
+      final IdNameAndUri[] interactomeIds = result.getQueryInteractomes()
+        .map(interactome -> new IdNameAndUri(interactome.getId(), interactome.getName(), pathBuilder.interactome(interactome).build()))
+      .toArray(IdNameAndUri[]::new);
       
       return new SameSpeciesInteractionsResultData(
         result.getId(),
-        result.getQueryGeneId(),
+        queryGeneId,
         result.getQueryMaxDegree(),
         filteringOptions,
+        speciesId,
         interactomeIds,
         this.toInteractionsResultData(result, filteringOptions),
         (int) result.getInteractions().count(),
@@ -249,18 +262,30 @@ public class DefaultBioMapper implements BioMapper {
   @Override
   public SameSpeciesInteractionsResultSummaryData toInteractionQueryResultSummary(SameSpeciesInteractionsResult result) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
+
+    final Species species = result.getQuerySpecies();
+    final IdNameAndUri speciesId = new IdNameAndUri(
+      species.getId(), species.getName(), pathBuilder.species(species).build()
+    );
     
-    final IdAndUri[] interactomeIds = result.getQueryInteractomeIds()
-      .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
-    .toArray(IdAndUri[]::new);
+    final Gene queryGene = result.getQueryGene();
+    
+    final IdNameAndUri queryGeneId = new IdNameAndUri(
+      queryGene.getId(), queryGene.getDefaultName(), pathBuilder.gene(queryGene).build()
+    );
+
+    final IdNameAndUri[] interactomeIds = result.getQueryInteractomes()
+      .map(interactome -> new IdNameAndUri(interactome.getId(), interactome.getName(), pathBuilder.interactome(interactome).build()))
+    .toArray(IdNameAndUri[]::new);
     
     final ResultRestPathBuilder interactionPathBuilder = pathBuilder.interaction().result(result.getId());
     final URI interactions = interactionPathBuilder.interaction().build();
     
     return new SameSpeciesInteractionsResultSummaryData(
       result.getId(),
-      result.getQueryGeneId(),
+      queryGeneId,
       result.getQueryMaxDegree(),
+      speciesId,
       interactomeIds,
       interactions,
       (int) result.getInteractions().count(),
@@ -276,19 +301,37 @@ public class DefaultBioMapper implements BioMapper {
     try {
       final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
       
-      final IdAndUri[] referenceInteractomeIds = result.getReferenceInteractomeIds()
-        .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
-      .toArray(IdAndUri[]::new);
+      final Species referenceSpecies = result.getReferenceSpecies();
+      final IdNameAndUri referenceSpeciesId = new IdNameAndUri(
+        referenceSpecies.getId(), referenceSpecies.getName(), pathBuilder.species(referenceSpecies).build()
+      );
       
-      final IdAndUri[] targetInteractomeIds = result.getTargetInteractomeIds()
-        .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
-      .toArray(IdAndUri[]::new);
+      final Species targetSpecies = result.getTargetSpecies();
+      final IdNameAndUri targetSpeciesId = new IdNameAndUri(
+        targetSpecies.getId(), targetSpecies.getName(), pathBuilder.species(targetSpecies).build()
+      );
+      
+      final Gene queryGene = result.getQueryGene();
+      
+      final IdNameAndUri queryGeneId = new IdNameAndUri(
+        queryGene.getId(), queryGene.getDefaultName(), pathBuilder.gene(queryGene).build()
+      );
+      
+      final IdNameAndUri[] referenceInteractomeIds = result.getReferenceInteractomes()
+        .map(interactome -> new IdNameAndUri(interactome.getId(), interactome.getName(), pathBuilder.interactome(interactome).build()))
+      .toArray(IdNameAndUri[]::new);
+      
+      final IdNameAndUri[] targetInteractomeIds = result.getTargetInteractomes()
+        .map(interactome -> new IdNameAndUri(interactome.getId(), interactome.getName(), pathBuilder.interactome(interactome).build()))
+      .toArray(IdNameAndUri[]::new);
       
       return new DifferentSpeciesInteractionsResultData(
         result.getId(),
-        result.getQueryGeneId(),
+        queryGeneId,
         result.getQueryMaxDegree(),
         filteringOptions,
+        referenceSpeciesId,
+        targetSpeciesId,
         referenceInteractomeIds,
         targetInteractomeIds,
         this.toInteractionsResultData(result, filteringOptions),
@@ -307,18 +350,36 @@ public class DefaultBioMapper implements BioMapper {
     final ResultRestPathBuilder interactionPathBuilder = pathBuilder.interaction().result(result.getId());
     final URI interactions = interactionPathBuilder.interaction().build();
     
-    final IdAndUri[] referenceInteractomeIds = result.getReferenceInteractomeIds()
-      .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
-    .toArray(IdAndUri[]::new);
+    final Species referenceSpecies = result.getReferenceSpecies();
+    final IdNameAndUri referenceSpeciesId = new IdNameAndUri(
+      referenceSpecies.getId(), referenceSpecies.getName(), pathBuilder.species(referenceSpecies).build()
+    );
     
-    final IdAndUri[] targetInteractomeIds = result.getTargetInteractomeIds()
-      .mapToObj(id -> new IdAndUri(id, pathBuilder.interactome(id).build()))
-    .toArray(IdAndUri[]::new);
+    final Species targetSpecies = result.getTargetSpecies();
+    final IdNameAndUri targetSpeciesId = new IdNameAndUri(
+      targetSpecies.getId(), targetSpecies.getName(), pathBuilder.species(targetSpecies).build()
+    );
+    
+    final Gene queryGene = result.getQueryGene();
+    
+    final IdNameAndUri queryGeneId = new IdNameAndUri(
+      queryGene.getId(), queryGene.getDefaultName(), pathBuilder.gene(queryGene).build()
+    );
+
+    final IdNameAndUri[] referenceInteractomeIds = result.getReferenceInteractomes()
+      .map(interactome -> new IdNameAndUri(interactome.getId(), interactome.getName(), pathBuilder.interactome(interactome).build()))
+    .toArray(IdNameAndUri[]::new);
+    
+    final IdNameAndUri[] targetInteractomeIds = result.getTargetInteractomes()
+      .map(interactome -> new IdNameAndUri(interactome.getId(), interactome.getName(), pathBuilder.interactome(interactome).build()))
+    .toArray(IdNameAndUri[]::new);
 
     return new DifferentSpeciesInteractionsResultSummaryData(
       result.getId(),
-      result.getQueryGeneId(),
+      queryGeneId,
       result.getQueryMaxDegree(),
+      referenceSpeciesId,
+      targetSpeciesId,
       referenceInteractomeIds,
       targetInteractomeIds,
       interactions,

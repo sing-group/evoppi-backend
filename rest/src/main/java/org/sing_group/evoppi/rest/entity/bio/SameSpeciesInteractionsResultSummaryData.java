@@ -24,7 +24,6 @@ package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,45 +31,40 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
-import org.sing_group.evoppi.rest.entity.IdAndUri;
+import org.sing_group.evoppi.rest.entity.IdNameAndUri;
 import org.sing_group.evoppi.rest.entity.UriToStringAdapter;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "same-species-interaction-result-summary", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
+@XmlRootElement(
+  name = "same-species-interaction-result-summary", namespace = "http://entity.resource.rest.evoppi.sing-group.org"
+)
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "same-species-interaction-result-summary", description = "Summary of a result of an interaction query.")
-public class SameSpeciesInteractionsResultSummaryData extends InteractionsResultData implements Serializable {
+@ApiModel(
+  value = "same-species-interaction-result-summary", description = "Summary of a result of an interaction query."
+)
+public class SameSpeciesInteractionsResultSummaryData extends AbstractSameSpeciesInteractionsResultData
+  implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  private IdAndUri[] interactomes;
-  
   @XmlJavaTypeAdapter(UriToStringAdapter.class)
   private URI interactions;
 
   SameSpeciesInteractionsResultSummaryData() {}
-  
+
   public SameSpeciesInteractionsResultSummaryData(
     String id,
-    int queryGene,
+    IdNameAndUri queryGene,
     int queryMaxDegree,
-    IdAndUri[] interactomes,
+    IdNameAndUri species,
+    IdNameAndUri[] interactomes,
     URI interactions,
     int totalInteractions,
     ExecutionStatus status
   ) {
-    super(id, queryGene, queryMaxDegree, totalInteractions, status);
-    
-    this.interactomes = interactomes;
+    super(id, queryGene, queryMaxDegree, totalInteractions, status, species, interactomes);
+
     this.interactions = interactions;
-  }
-
-  public IdAndUri[] getInteractomes() {
-    return interactomes;
-  }
-
-  public void setInteractomes(IdAndUri[] interactomes) {
-    this.interactomes = interactomes;
   }
 
   public URI getInteractions() {
@@ -86,7 +80,6 @@ public class SameSpeciesInteractionsResultSummaryData extends InteractionsResult
     final int prime = 31;
     int result = super.hashCode();
     result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
-    result = prime * result + Arrays.hashCode(interactomes);
     return result;
   }
 
@@ -104,9 +97,7 @@ public class SameSpeciesInteractionsResultSummaryData extends InteractionsResult
         return false;
     } else if (!interactions.equals(other.interactions))
       return false;
-    if (!Arrays.equals(interactomes, other.interactomes))
-      return false;
     return true;
   }
-  
+
 }

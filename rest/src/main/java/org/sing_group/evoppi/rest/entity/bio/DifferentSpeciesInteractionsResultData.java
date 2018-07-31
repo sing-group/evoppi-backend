@@ -23,14 +23,13 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
-import org.sing_group.evoppi.rest.entity.IdAndUri;
+import org.sing_group.evoppi.rest.entity.IdNameAndUri;
 
 import io.swagger.annotations.ApiModel;
 
@@ -41,12 +40,8 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(
   value = "different-species-interactions-result", description = "Result of an interaction different species query."
 )
-public class DifferentSpeciesInteractionsResultData extends InteractionsResultData implements Serializable {
+public class DifferentSpeciesInteractionsResultData extends AbstractDifferentSpeciesInteractionsResultData implements Serializable {
   private static final long serialVersionUID = 1L;
-
-  private IdAndUri[] referenceInteractomes;
-
-  private IdAndUri[] targetInteractomes;
 
   private DifferentSpeciesInteractionsData interactions;
 
@@ -54,37 +49,18 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
 
   public DifferentSpeciesInteractionsResultData(
     String id,
-    int queryGene,
+    IdNameAndUri queryGene,
     int queryMaxDegree,
     InteractionsResultFilteringOptionsData filteringOptions,
-    IdAndUri[] referenceInteractomes,
-    IdAndUri[] targetInteractomes,
+    IdNameAndUri referenceSpecies, IdNameAndUri targetSpecies,
+    IdNameAndUri[] referenceInteractomes, IdNameAndUri[] targetInteractomes,
     DifferentSpeciesInteractionsData interactions,
     int totalInteractions,
     ExecutionStatus status
   ) {
-    super(id, queryGene, queryMaxDegree, totalInteractions, status);
+    super(id, queryGene, queryMaxDegree, totalInteractions, status, referenceSpecies, targetSpecies, referenceInteractomes, targetInteractomes);
     
-    this.referenceInteractomes = referenceInteractomes;
-    this.targetInteractomes = targetInteractomes;
-
     this.interactions = interactions;
-  }
-
-  public IdAndUri[] getReferenceInteractomes() {
-    return referenceInteractomes;
-  }
-
-  public void setReferenceInteractomes(IdAndUri[] referenceInteractome) {
-    this.referenceInteractomes = referenceInteractome;
-  }
-
-  public IdAndUri[] getTargetInteractomes() {
-    return targetInteractomes;
-  }
-
-  public void setTargetInteractomes(IdAndUri[] targetInteractome) {
-    this.targetInteractomes = targetInteractome;
   }
 
   public DifferentSpeciesInteractionsData getInteractions() {
@@ -100,8 +76,6 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
     final int prime = 31;
     int result = super.hashCode();
     result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
-    result = prime * result + Arrays.hashCode(referenceInteractomes);
-    result = prime * result + Arrays.hashCode(targetInteractomes);
     return result;
   }
 
@@ -118,10 +92,6 @@ public class DifferentSpeciesInteractionsResultData extends InteractionsResultDa
       if (other.interactions != null)
         return false;
     } else if (!interactions.equals(other.interactions))
-      return false;
-    if (!Arrays.equals(referenceInteractomes, other.referenceInteractomes))
-      return false;
-    if (!Arrays.equals(targetInteractomes, other.targetInteractomes))
       return false;
     return true;
   }

@@ -41,6 +41,7 @@ import javax.persistence.Table;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
@@ -76,6 +77,13 @@ public class SameSpeciesInteractionsResult extends InteractionsResult implements
     super(name, description, resultReferenceBuilder, queryGene, queryMaxDegree, owner);
     
     this.queryInteractomes = new HashSet<>(queryInteractomes);
+  }
+
+  public Species getQuerySpecies() {
+    return this.getQueryInteractomes()
+      .findAny()
+      .map(Interactome::getSpecies)
+    .orElseThrow(() -> new IllegalStateException("Species could not retrieved because there is not any query interactome"));
   }
 
   public Stream<Interactome> getQueryInteractomes() {

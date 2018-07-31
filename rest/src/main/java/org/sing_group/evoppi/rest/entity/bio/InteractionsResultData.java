@@ -23,10 +23,11 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
+import org.sing_group.evoppi.rest.entity.IdNameAndUri;
 
 public abstract class InteractionsResultData {
   private String id;
-  private int queryGene;
+  private IdNameAndUri queryGene;
   private int queryMaxDegree;
   private int totalInteractions;
   private ExecutionStatus status;
@@ -34,7 +35,7 @@ public abstract class InteractionsResultData {
   InteractionsResultData() {}
   
   public InteractionsResultData(
-    String id, int queryGene, int queryMaxDegree, int totalInteractions, ExecutionStatus status
+    String id, IdNameAndUri queryGene, int queryMaxDegree, int totalInteractions, ExecutionStatus status
   ) {
     this.id = id;
     this.queryGene = queryGene;
@@ -53,11 +54,11 @@ public abstract class InteractionsResultData {
     this.id = id;
   }
 
-  public int getQueryGene() {
+  public IdNameAndUri getQueryGene() {
     return queryGene;
   }
 
-  public void setQueryGene(int queryGene) {
+  public void setQueryGene(IdNameAndUri queryGene) {
     this.queryGene = queryGene;
   }
 
@@ -90,7 +91,7 @@ public abstract class InteractionsResultData {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + queryGene;
+    result = prime * result + ((queryGene == null) ? 0 : queryGene.hashCode());
     result = prime * result + queryMaxDegree;
     result = prime * result + ((status == null) ? 0 : status.hashCode());
     result = prime * result + totalInteractions;
@@ -111,7 +112,10 @@ public abstract class InteractionsResultData {
         return false;
     } else if (!id.equals(other.id))
       return false;
-    if (queryGene != other.queryGene)
+    if (queryGene == null) {
+      if (other.queryGene != null)
+        return false;
+    } else if (!queryGene.equals(other.queryGene))
       return false;
     if (queryMaxDegree != other.queryMaxDegree)
       return false;

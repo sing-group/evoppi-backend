@@ -23,14 +23,13 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sing_group.evoppi.domain.entities.execution.ExecutionStatus;
-import org.sing_group.evoppi.rest.entity.IdAndUri;
+import org.sing_group.evoppi.rest.entity.IdNameAndUri;
 
 import io.swagger.annotations.ApiModel;
 
@@ -39,37 +38,28 @@ import io.swagger.annotations.ApiModel;
 )
 @XmlAccessorType(XmlAccessType.FIELD)
 @ApiModel(value = "same-species-interaction-result", description = "Result of an interaction query.")
-public class SameSpeciesInteractionsResultData extends InteractionsResultData implements Serializable {
+public class SameSpeciesInteractionsResultData extends AbstractSameSpeciesInteractionsResultData
+  implements Serializable {
   private static final long serialVersionUID = 1L;
-
-  private IdAndUri[] interactomes;
 
   private SameSpeciesInteractionsData interactions;
 
   SameSpeciesInteractionsResultData() {}
-  
+
   public SameSpeciesInteractionsResultData(
     String id,
-    int queryGene,
+    IdNameAndUri queryGene,
     int queryMaxDegree,
     InteractionsResultFilteringOptionsData filteringOptions,
-    IdAndUri[] interactomes,
+    IdNameAndUri species,
+    IdNameAndUri[] interactomes,
     SameSpeciesInteractionsData interactions,
     int totalInteractions,
     ExecutionStatus status
   ) {
-    super(id, queryGene, queryMaxDegree, totalInteractions, status);
+    super(id, queryGene, queryMaxDegree, totalInteractions, status, species, interactomes);
 
-    this.interactomes = interactomes;
     this.interactions = interactions;
-  }
-
-  public IdAndUri[] getInteractomes() {
-    return interactomes;
-  }
-
-  public void setInteractomes(IdAndUri[] interactomes) {
-    this.interactomes = interactomes;
   }
 
   public SameSpeciesInteractionsData getInteractions() {
@@ -85,7 +75,6 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
     final int prime = 31;
     int result = super.hashCode();
     result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
-    result = prime * result + Arrays.hashCode(interactomes);
     return result;
   }
 
@@ -102,8 +91,6 @@ public class SameSpeciesInteractionsResultData extends InteractionsResultData im
       if (other.interactions != null)
         return false;
     } else if (!interactions.equals(other.interactions))
-      return false;
-    if (!Arrays.equals(interactomes, other.interactomes))
       return false;
     return true;
   }
