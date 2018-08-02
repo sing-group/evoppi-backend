@@ -1,0 +1,99 @@
+<!--
+  #%L
+  Tests
+  %%
+  Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+<dataset>
+  <species id="1" name="Species 1"/>
+  <species id="2" name="Species 2"/>
+  <interactome id="1" name="Interactome 1" species="1"/>
+  <interactome id="2" name="Interactome 2" species="2"/>
+  <gene id="100" species="1" defaultName="A11"/>
+  <gene id="101" species="1" defaultName="B11"/>
+  <gene id="102" species="1" defaultName="C11"/>
+  <gene id="103" species="1" defaultName="D11"/>
+  <gene id="110" species="1" defaultName="A12"/>
+  <gene id="111" species="1" defaultName="B12"/>
+  <gene id="112" species="1" defaultName="C12"/>
+  <gene id="113" species="1" defaultName="D12"/>
+  <gene id="200" species="2" defaultName="A2"/>
+  <gene id="201" species="2" defaultName="B2"/>
+  <gene id="202" species="2" defaultName="C2"/>
+  <gene id="203" species="2" defaultName="D2"/>
+  <gene_sequence geneId="100" version="1" sequence="GAEMGTKASFYMYQHTPTEWMIIYIHLTFGBQKUSKFHVMQZKNUBTNFFTSTIRSISBZRMILRMCKQISDZVVUDNAIHWKAUHZGVTAYWCSSZNLQ"/>
+  <gene_sequence geneId="101" version="1" sequence="NHZGUQNFDRUUPDRKSDKEFANPNLDQKBGDMMPLKDTWRMNKUWYKGRFPSBHPSVPFBHSBPKPLVUYZDKSBDIMGNSICPVWRNAPVLFCKEMVE"/>
+  <gene_sequence geneId="102" version="1" sequence="BHLKBCKYIVBMPMGMZPQVSFVVIDTCNANGRMGLMNMQYFBBTBSSNTRBAQCBGYEQZCGNTGYMTEALVUHUWNCNWYMACKBPNTFEMZUBLKGY"/>
+  <gene_sequence geneId="103" version="1" sequence="QAYVEKIACBCAMDCGRAUFLUGBUHARLDIBFNKHEQEFLEECMNQEKAFYKHYTAVHYDHPWBILYEYIUDWLAATQLCGSFYYATIEWIKIBCZSZH"/>
+  <gene_sequence geneId="110" version="1" sequence="GAEMGTKASFYMYQHTPTEWMIIYIHLTFGBQKUSKFHVMQZKNUBTNFFTSTIRSISBZRMILRMCKQISDZVVUDNAIHWKAUHZGVTAYWCSSZNLQ"/>
+  <gene_sequence geneId="111" version="1" sequence="NHZGUQNFDRUUPDRKSDKEFANPNLDQKBGDMMPLKDTWRMNKUWYKGRFPSBHPSVPFBHSBPKPLVUYZDKSBDIMGNSICPVWRNAPVLFCKEMVE"/>
+  <gene_sequence geneId="112" version="1" sequence="BHLKBCKYIVBMPMGMZPQVSFVVIDTCNANGRMGLMNMQYFBBTBSSNTRBAQCBGYEQZCGNTGYMTEALVUHUWNCNWYMACKBPNTFEMZUBLKGY"/>
+  <gene_sequence geneId="113" version="1" sequence="QAYVEKIACBCAMDCGRAUFLUGBUHARLDIBFNKHEQEFLEECMNQEKAFYKHYTAVHYDHPWBILYEYIUDWLAATQLCGSFYYATIEWIKIBCZSZH"/>
+  <gene_sequence geneId="200" version="1" sequence="GAEMGTKASFYMYQHTPTEWMIIYIHLTFGBQKUSKFHVMQZKNUBTNFFTSTIRSISBZRMILRMCKQISDZVVUDNAIHWKAUHZGVTAYWCSSZNLQ"/>
+  <gene_sequence geneId="201" version="1" sequence="NHZGUQNFDRUUPDRKSDKEFANPNLDQKBGDMMPLKDTWRMNKUWYKGRFPSBHPSVPFBHSBPKPLVUYZDKSBDIMGNSICPVWRNAPVLFCKEMVE"/>
+  <gene_sequence geneId="202" version="1" sequence="BHLKBCKYIVBMPMGMZPQVSFVVIDTCNANGRMGLMNMQYFBBTBSSNTRBAQCBGYEQZCGNTGYMTEALVUHUWNCNWYMACKBPNTFEMZUBLKGY"/>
+  <gene_sequence geneId="203" version="1" sequence="QAYVEKIACBCAMDCGRAUFLUGBUHARLDIBFNKHEQEFLEECMNQEKAFYKHYTAVHYDHPWBILYEYIUDWLAATQLCGSFYYATIEWIKIBCZSZH"/>
+  <gene_name geneId="100" source="Gene Source"/>
+  <gene_name geneId="101" source="Gene Source"/>
+  <gene_name geneId="102" source="Gene Source"/>
+  <gene_name geneId="103" source="Gene Source"/>
+  <gene_name geneId="110" source="Gene Source"/>
+  <gene_name geneId="111" source="Gene Source"/>
+  <gene_name geneId="112" source="Gene Source"/>
+  <gene_name geneId="113" source="Gene Source"/>
+  <gene_name geneId="200" source="Gene Source"/>
+  <gene_name geneId="201" source="Gene Source"/>
+  <gene_name geneId="202" source="Gene Source"/>
+  <gene_name geneId="203" source="Gene Source"/>
+  <gene_name_value geneId="100" geneSource="Gene Source" name="A11"/>
+  <gene_name_value geneId="101" geneSource="Gene Source" name="B11"/>
+  <gene_name_value geneId="102" geneSource="Gene Source" name="C11"/>
+  <gene_name_value geneId="103" geneSource="Gene Source" name="D11"/>
+  <gene_name_value geneId="110" geneSource="Gene Source" name="A12"/>
+  <gene_name_value geneId="111" geneSource="Gene Source" name="B12"/>
+  <gene_name_value geneId="112" geneSource="Gene Source" name="C12"/>
+  <gene_name_value geneId="113" geneSource="Gene Source" name="D12"/>
+  <gene_name_value geneId="200" geneSource="Gene Source" name="A2"/>
+  <gene_name_value geneId="201" geneSource="Gene Source" name="B2"/>
+  <gene_name_value geneId="202" geneSource="Gene Source" name="C2"/>
+  <gene_name_value geneId="203" geneSource="Gene Source" name="D2"/>
+  <gene_in_interactome gene="100" interactome="1" species="1"/>
+  <gene_in_interactome gene="101" interactome="1" species="1"/>
+  <gene_in_interactome gene="102" interactome="1" species="1"/>
+  <gene_in_interactome gene="103" interactome="1" species="1"/>
+  <gene_in_interactome gene="110" interactome="1" species="1"/>
+  <gene_in_interactome gene="111" interactome="1" species="1"/>
+  <gene_in_interactome gene="112" interactome="1" species="1"/>
+  <gene_in_interactome gene="113" interactome="1" species="1"/>
+  <gene_in_interactome gene="200" interactome="2" species="2"/>
+  <gene_in_interactome gene="201" interactome="2" species="2"/>
+  <gene_in_interactome gene="202" interactome="2" species="2"/>
+  <gene_in_interactome gene="203" interactome="2" species="2"/>
+  <interaction geneA="100" geneB="101" interactome="1" species="1"/>
+  <interaction geneA="101" geneB="102" interactome="1" species="1"/>
+  <interaction geneA="102" geneB="103" interactome="1" species="1"/>
+  <interaction geneA="110" geneB="111" interactome="1" species="1"/>
+  <interaction geneA="111" geneB="112" interactome="1" species="1"/>
+  <interaction geneA="112" geneB="113" interactome="1" species="1"/>
+  <interaction geneA="100" geneB="110" interactome="1" species="1"/>
+  <interaction geneA="101" geneB="111" interactome="1" species="1"/>
+  <interaction geneA="102" geneB="112" interactome="1" species="1"/>
+  <interaction geneA="200" geneB="201" interactome="2" species="2"/>
+  <interaction geneA="201" geneB="202" interactome="2" species="2"/>
+  <interaction geneA="202" geneB="203" interactome="2" species="2"/>
+</dataset>

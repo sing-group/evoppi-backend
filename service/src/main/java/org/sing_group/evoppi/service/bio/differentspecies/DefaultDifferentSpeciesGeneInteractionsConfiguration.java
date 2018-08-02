@@ -31,7 +31,7 @@ import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGe
 
 public class DefaultDifferentSpeciesGeneInteractionsConfiguration
 implements DifferentSpeciesGeneInteractionsConfiguration {
-  private final int geneId;
+  private final int queryGeneId;
   private final Set<Integer> referenceInteractomes;
   private final Set<Integer> targetInteractomes;
   private final BlastQueryOptions blastQueryOptions;
@@ -39,11 +39,11 @@ implements DifferentSpeciesGeneInteractionsConfiguration {
   private final String workId;
 
   public DefaultDifferentSpeciesGeneInteractionsConfiguration(
-    int geneId, Set<Integer> referenceInteractomes, Set<Integer> targetInteractomes,
+    int queryGeneId, Set<Integer> referenceInteractomes, Set<Integer> targetInteractomes,
     BlastQueryOptions blastQueryOptions, int maxDegree,
     String workId
   ) {
-    this.geneId = geneId;
+    this.queryGeneId = queryGeneId;
     this.referenceInteractomes = new HashSet<>(referenceInteractomes);
     this.targetInteractomes = new HashSet<>(targetInteractomes);
     this.blastQueryOptions = blastQueryOptions;
@@ -52,8 +52,8 @@ implements DifferentSpeciesGeneInteractionsConfiguration {
   }
 
   @Override
-  public int getGeneId() {
-    return geneId;
+  public int getQueryGeneId() {
+    return queryGeneId;
   }
 
   @Override

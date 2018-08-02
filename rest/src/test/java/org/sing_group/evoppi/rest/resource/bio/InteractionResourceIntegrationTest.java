@@ -107,6 +107,7 @@ public abstract class InteractionResourceIntegrationTest {
   private void testDegree(ResteasyWebTarget webTarget, int maxDegree) {
     final Response response = prepareQuery(webTarget)
       .queryParam("maxDegree", maxDegree)
+      .queryParam("minimumIdentity", 0.9)
       .request()
     .get();
     

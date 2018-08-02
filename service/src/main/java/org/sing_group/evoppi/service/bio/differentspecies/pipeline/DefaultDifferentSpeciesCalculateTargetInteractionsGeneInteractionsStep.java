@@ -132,7 +132,7 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
       this.interactomeId, createBuilder, orthologsManager
     );
     
-    orthologsManager.getOrthologsForReferenceGene(configuration.getGeneId())
+    orthologsManager.getOrthologsForReferenceGene(configuration.getQueryGeneId())
       .mapToObj(this.geneDao::getGene)
       .forEach(gene -> this.interactionsCalculator.calculateInteractions(gene, this.interactomeId, configuration.getMaxDegree(), callback));
     

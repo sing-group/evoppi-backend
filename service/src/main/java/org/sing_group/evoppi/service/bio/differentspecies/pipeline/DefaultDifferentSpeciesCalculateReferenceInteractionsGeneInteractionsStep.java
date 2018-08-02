@@ -124,7 +124,7 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
     
     final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
     
-    final Gene gene = this.geneDao.getGene(configuration.getGeneId());
+    final Gene gene = this.geneDao.getGene(configuration.getQueryGeneId());
 
     final DifferentSpeciesGeneInteractionsContextBuilder createBuilder = this.contextBuilderFactory.createBuilderFor(context);
     final BridgeInteractionsCalculusCallback callback = new BridgeInteractionsCalculusCallback(this.interactomeId, createBuilder);

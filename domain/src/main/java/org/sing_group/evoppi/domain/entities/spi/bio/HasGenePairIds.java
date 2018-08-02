@@ -38,6 +38,10 @@ public interface HasGenePairIds {
       || (getGeneBId() == geneAId && getGeneAId() == geneBId);
   }
 
+  public default boolean hasGene(int geneId) {
+    return getGeneAId() == geneId || getGeneBId() == geneId;
+  }
+
   public default IntStream getGeneIds() {
     return IntStream.of(getGeneAId(), getGeneBId());
   }

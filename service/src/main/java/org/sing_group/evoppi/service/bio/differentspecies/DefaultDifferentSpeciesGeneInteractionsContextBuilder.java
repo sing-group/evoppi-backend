@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.service.bio.differentspecies;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
 import java.nio.file.Path;
@@ -31,11 +32,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGeneInteractionIds;
-import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsConfiguration;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContextBuilder;
@@ -94,9 +95,9 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
     Map<Integer, Set<HasGeneInteractionIds>> targetInteractions,
     Set<HasGeneInteractionIds> targetCompletedInteractions
   ) {
-    this.pipeline = pipeline;
-    this.configuration = configuration;
-    this.eventManager = eventManager;
+    this.pipeline = requireNonNull(pipeline);
+    this.configuration = requireNonNull(configuration);
+    this.eventManager = requireNonNull(eventManager);
     this.referenceFastaPath = referenceFastaPath;
     this.targetFastaPath = targetFastaPath;
     this.referenceInteractions = referenceInteractions;
@@ -164,18 +165,17 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
   ) {
     if (this.targetInteractions == null)
       this.targetInteractions = new HashMap<>();
-    
-    final Set<HasGenePairIds> referenceInteractions = this.referenceInteractions.values()
-      .stream()
-      .flatMap(Set::stream)
+
+    final Set<Integer> frontierGeneIds = this.getTargetFrontierGenes(degree - 1)
+      .boxed()
     .collect(toSet());
     
-    final Predicate<HasGeneInteractionIds> isGenePairInReference = genePair ->
-      referenceInteractions.stream()
-        .anyMatch(genePair::hasGenes);
+    final Predicate<HasGeneInteractionIds> isValidInteraction = interaction ->
+      interaction.getGeneIds().anyMatch(frontierGeneIds::contains);
     
     final Set<HasGeneInteractionIds> interactionsSet = interactions
-      .filter(isGenePairInReference)
+       .peek(System.out::println)
+      .filter(isValidInteraction)
     .collect(toSet());
     
     if (!interactionsSet.isEmpty()) {
@@ -187,6 +187,30 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
     }
     
     return this;
+  }
+  
+  // Frontier genes from a degree are those that will generate the next degree
+  // interactions. I.E. the genes that are not related with other genes with
+  // a lower degree interaction.
+  // For example, in the relation: Q <-1-> A <-2-> B <-3-> C
+  // where Q is the query gene, the frontier gene for degree 2 is B.
+  private IntStream getTargetFrontierGenes(int degree) {
+    if (degree < 0) {
+      throw new IllegalArgumentException("Only non-negative degrees are accepted");
+    } else if (degree == 0) {
+      return IntStream.of(this.configuration.getQueryGeneId());
+    } else if (!this.targetInteractions.containsKey(degree)) {
+      return IntStream.empty();
+    } else {
+      final Set<Integer> lowerDegreeFrontier = this.getTargetFrontierGenes(degree - 1)
+        .boxed()
+      .collect(toSet());
+      
+      return this.targetInteractions.get(degree).stream()
+        .flatMapToInt(HasGeneInteractionIds::getGeneIds)
+        .distinct()
+      .filter(geneId -> !lowerDegreeFrontier.contains(geneId));
+    }
   }
 
   @Override

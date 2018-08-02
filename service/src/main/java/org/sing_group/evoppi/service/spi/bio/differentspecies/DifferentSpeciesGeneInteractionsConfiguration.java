@@ -29,7 +29,7 @@ import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineConfiguratio
 
 public interface DifferentSpeciesGeneInteractionsConfiguration extends PipelineConfiguration {
 
-  public int getGeneId();
+  public int getQueryGeneId();
   
   public IntStream getReferenceInteractomes();
   
