@@ -49,6 +49,8 @@ public interface Pipeline<
   }
   
   public default int countTotalSteps() {
-    return (int) this.getSteps().count();
+    return (int) this.getSteps()
+      .filter(step -> step.getOrder() >= 0)
+    .count();
   }
 }

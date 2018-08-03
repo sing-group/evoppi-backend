@@ -98,7 +98,7 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
     steps.forEach(step -> {
       final String name = formatStepName(step.getName());
 
-      eventManager.fireRunningStepEvent(step, pac.getContext(), step.getStepId(), StepExecutionStatus.STARTED, pac.getProgress(), "Starting " + name);
+      eventManager.fireRunningStepEvent(step, pac.getContext(), step.getStepId(), StepExecutionStatus.STARTED, pac.getProgress(), "Running " + name);
       
       final PC newContext;
       if (step instanceof SinglePipelineStep) {
@@ -115,9 +115,11 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
       } else {
         throw new IllegalArgumentException("Unknown pipeline step type: " + step.getClass());
       }
+      
+      pac.increaseProgress(stepProgressSize);
+      
 
       pac.setContext(newContext);
-      pac.increaseProgress(stepProgressSize);
       
       eventManager.fireRunningStepEvent(step, pac.getContext(), step.getStepId(), StepExecutionStatus.FINISHED, pac.getProgress(), "Completed " + name);
     });

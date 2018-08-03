@@ -30,7 +30,6 @@ import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.DifferentSpeciesGeneInteractionsContext;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEvent;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.event.DifferentSpeciesGeneInteractionsEventManager;
-import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsPipeline;
 import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsStep;
 
 public class DefaultDifferentSpeciesGeneInteractionsEventManager
@@ -42,33 +41,11 @@ implements DifferentSpeciesGeneInteractionsEventManager {
   public void fireEvent(DifferentSpeciesGeneInteractionsContext context, ExecutionStatus status, double progress, String description) {
     this.events.fire(new DefaultDifferentSpeciesGeneInteractionsEvent(context, description, progress, status));
   }
-//  
-//  @Override
-//  public void fireRunningEvent(
-//    DifferentSpeciesGeneInteractionsContext context, String stageId, double progress, String description
-//  ) {
-//    this.events.fire(new DefaultDifferentSpeciesGeneInteractionsEvent(context, description, progress, stageId));
-//  }
 
   @Override
   public  void fireRunningStepEvent(
     DifferentSpeciesGeneInteractionsStep step, DifferentSpeciesGeneInteractionsContext context, String stepId, StepExecutionStatus stepStatus, double progress, String description
   ) {
-    final double currentProgress = calculateStepEventProgress(step, context, progress);
-    
-    this.events.fire(new DefaultDifferentSpeciesGeneInteractionsEvent(context, description, currentProgress, stepId, stepStatus));
-  }
-
-  private static double calculateStepEventProgress(
-    DifferentSpeciesGeneInteractionsStep step, DifferentSpeciesGeneInteractionsContext context, double progress
-  ) {
-    final DifferentSpeciesGeneInteractionsPipeline pipeline = context.getPipeline();
-    final double stepIndex = step.getOrder();
-    final double stepTotal = pipeline.countTotalSteps();
-    
-    final double stepProgress = (stepIndex - 1) / stepTotal;
-    final double stepSize = 1 / stepTotal;
-    
-    return stepProgress + progress * stepSize;
+    this.events.fire(new DefaultDifferentSpeciesGeneInteractionsEvent(context, description, progress, stepId, stepStatus));
   }
 }

@@ -61,7 +61,7 @@ public class WorkStep implements Serializable, Comparable<WorkStep> {
   @Column(name = "description", length = 255, nullable = true)
   private String description;
   
-  @Column(name = "progress", scale = 1, precision = 2, nullable = true)
+  @Column(name = "progress", scale = 1, precision = 4, nullable = true)
   private Double progress;
 
   WorkStep() {}
