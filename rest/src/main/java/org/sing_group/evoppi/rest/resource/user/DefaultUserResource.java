@@ -57,6 +57,7 @@ import org.sing_group.evoppi.rest.entity.bio.ResultUuids;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
+import org.sing_group.evoppi.rest.entity.user.InteractionResultLinkageData;
 import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.mapper.SecurityExceptionMapper;
@@ -64,6 +65,7 @@ import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 import org.sing_group.evoppi.rest.resource.spi.user.UserResource;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.user.UserService;
+import org.sing_group.evoppi.service.user.entity.InteractionResultLinkage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,26 +194,34 @@ public class DefaultUserResource implements UserResource {
   @Path("interaction/result/different")
   @ApiOperation(
     value = "Links public different species results with the requresting user.",
+    response = InteractionResultLinkageData.class,
     code = 200
   )
   @Override
   public Response claimDifferentSpeciesResults(ResultUuids uuids) {
-    this.interactionService.linkDifferentSpeciesResultsToCurrentUser(uuids.getUuids());
+    final InteractionResultLinkage linkageResult =
+      this.interactionService.linkDifferentSpeciesResultsToCurrentUser(uuids.getUuids());
     
-    return Response.ok().build();
+    return Response
+      .ok(this.userMapper.toInteractionResultLinkageData(linkageResult))
+    .build();
   }
   
   @PUT
   @Path("interaction/result/same")
   @ApiOperation(
     value = "Links public same species results with the requresting user.",
+      response = InteractionResultLinkageData.class,
     code = 200
   )
   @Override
   public Response claimSameSpeciesResults(ResultUuids uuids) {
-    this.interactionService.linkSameSpeciesResultsToCurrentUser(uuids.getUuids());
+    final InteractionResultLinkage linkageResult =
+      this.interactionService.linkSameSpeciesResultsToCurrentUser(uuids.getUuids());
     
-    return Response.ok().build();
+    return Response
+      .ok(this.userMapper.toInteractionResultLinkageData(linkageResult))
+    .build();
   }
 
   @POST

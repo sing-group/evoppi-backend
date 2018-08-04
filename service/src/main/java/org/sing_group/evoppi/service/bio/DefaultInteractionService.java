@@ -22,13 +22,13 @@
 
 package org.sing_group.evoppi.service.bio;
 
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toSet;
 import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -68,6 +68,7 @@ import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.storage.FastaOutputConfiguration;
 import org.sing_group.evoppi.service.spi.storage.FastaWriter;
 import org.sing_group.evoppi.service.spi.user.UserService;
+import org.sing_group.evoppi.service.user.entity.InteractionResultLinkage;
 
 @Stateless
 @PermitAll
@@ -316,24 +317,36 @@ public class DefaultInteractionService implements InteractionService {
   }
 
   @Override
-  public void linkDifferentSpeciesResultsToCurrentUser(String[] uuids) {
-    this.linkResultsToCurrentUser(uuids, this::getDifferentSpeciesResult);
+  public InteractionResultLinkage linkDifferentSpeciesResultsToCurrentUser(String[] uuids) {
+    return this.linkResultsToCurrentUser(uuids, this::getDifferentSpeciesResult);
   }
 
   @Override
-  public void linkSameSpeciesResultsToCurrentUser(String[] uuids) {
-    this.linkResultsToCurrentUser(uuids, this::getSameSpeciesResult);
+  public InteractionResultLinkage linkSameSpeciesResultsToCurrentUser(String[] uuids) {
+    return this.linkResultsToCurrentUser(uuids, this::getSameSpeciesResult);
   }
   
-  private void linkResultsToCurrentUser(String[] uuids, Function<String, InteractionsResult> resultGetter) {
+  private InteractionResultLinkage linkResultsToCurrentUser(String[] uuids, Function<String, InteractionsResult> resultGetter) {
     final Optional<User> user = this.userService.getCurrentUser();
     
     if (user.isPresent()) {
       final User owner = user.get();
       
-      stream(uuids)
-        .map(resultGetter)
-      .forEach(result -> result.setOwner(owner));
+      final Set<String> linkedUuids = new HashSet<>();
+      final Set<String> linkageFailedUuids = new HashSet<>();
+      
+      for (String uuid : uuids) {
+        try {
+          final InteractionsResult result = resultGetter.apply(uuid);
+          
+          result.setOwner(owner);
+          linkedUuids.add(uuid);
+        } catch (RuntimeException re) {
+          linkageFailedUuids.add(uuid);
+        }
+      }
+      
+      return new InteractionResultLinkage(linkedUuids, linkageFailedUuids);
     } else {
       throw new SecurityException("An authenticated user is required");
     }

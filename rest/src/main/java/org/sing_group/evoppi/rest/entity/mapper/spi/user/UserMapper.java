@@ -29,9 +29,11 @@ import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.rest.entity.user.AdministratorData;
 import org.sing_group.evoppi.rest.entity.user.AdministratorEditionData;
+import org.sing_group.evoppi.rest.entity.user.InteractionResultLinkageData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
 import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
+import org.sing_group.evoppi.service.user.entity.InteractionResultLinkage;
 
 public interface UserMapper {
   public Administrator toAdministrator(AdministratorEditionData data);
@@ -47,4 +49,6 @@ public interface UserMapper {
   public ResearcherEditionData toResearcherEditionData(Researcher researcher, String password);
 
   public Registration toRegistration(UserRegistrationData registration);
+  
+  public InteractionResultLinkageData toInteractionResultLinkageData(InteractionResultLinkage linkageResult);
 }

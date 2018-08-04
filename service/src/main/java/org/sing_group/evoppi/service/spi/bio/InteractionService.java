@@ -33,6 +33,7 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResul
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.service.user.entity.InteractionResultLinkage;
 
 @Local
 public interface InteractionService {
@@ -67,7 +68,7 @@ public interface InteractionService {
 
   public void deleteResult(String id);
 
-  public void linkDifferentSpeciesResultsToCurrentUser(String[] uuids);
+  public InteractionResultLinkage linkDifferentSpeciesResultsToCurrentUser(String[] uuids);
   
-  public void linkSameSpeciesResultsToCurrentUser(String[] uuids);
+  public InteractionResultLinkage linkSameSpeciesResultsToCurrentUser(String[] uuids);
 }

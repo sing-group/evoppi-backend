@@ -32,9 +32,11 @@ import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.user.AdministratorData;
 import org.sing_group.evoppi.rest.entity.user.AdministratorEditionData;
+import org.sing_group.evoppi.rest.entity.user.InteractionResultLinkageData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
 import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
+import org.sing_group.evoppi.service.user.entity.InteractionResultLinkage;
 
 @Default
 public class DefaultUserMapper implements UserMapper {
@@ -85,6 +87,14 @@ public class DefaultUserMapper implements UserMapper {
       registration.getLogin(),
       registration.getEmail(),
       registration.getPassword()
+    );
+  }
+  
+  @Override
+  public InteractionResultLinkageData toInteractionResultLinkageData(InteractionResultLinkage linkageResult) {
+    return new InteractionResultLinkageData(
+      linkageResult.getLinkedUuids().toArray(String[]::new),
+      linkageResult.getLinkageFailedUuids().toArray(String[]::new)
     );
   }
 }
