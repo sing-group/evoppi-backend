@@ -174,7 +174,6 @@ implements DifferentSpeciesGeneInteractionsContextBuilder {
       interaction.getGeneIds().anyMatch(frontierGeneIds::contains);
     
     final Set<HasGeneInteractionIds> interactionsSet = interactions
-       .peek(System.out::println)
       .filter(isValidInteraction)
     .collect(toSet());
     
