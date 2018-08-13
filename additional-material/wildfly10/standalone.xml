@@ -343,7 +343,7 @@
                 <simple name="java:global/evoppi/storage/file/lineSeparator" value="unix" type="java.lang.String"/>
                 
                 <simple name="java:global/evoppi/email/from" value="no-reply@evoppi.sing-group.org" type="java.lang.String"/>
-                <simple name="java:global/evoppi/email/registration/confirmationUrl" value="http://localhost:8080/evoppi/regitration/confirmation?uuid=[UUID]" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/registration/confirmationUrl" value="http://localhost:4200/evoppi/regitration/confirmation?uuid=[UUID]" type="java.lang.String"/>
                 <simple name="java:global/evoppi/email/registration/subject" value="EvoPPI registration confirmation" type="java.lang.String"/>
                 <simple name="java:global/evoppi/email/registration/message" value="&lt;p&gt;Dear [USER],&lt;/p&gt;&lt;p&gt;In order to complete your EvoPPI registration, please access the follow &lt;a href=&quot;[CONFIRMATION_URL]&quot;&gt;link&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Sincerely,&lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;EvoPPI Team&lt;/p&gt;" type="java.lang.String"/>
             </bindings>
