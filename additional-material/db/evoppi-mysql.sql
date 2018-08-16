@@ -303,6 +303,7 @@ CREATE TABLE `interactome` (
   `numUniqueOriginalInteractions` int(11) DEFAULT NULL,
   `probFinalInteractions` double DEFAULT NULL,
   `numRemovedInterSpeciesInteractions`  int(11) DEFAULT NULL,
+  `numMultimappedToGeneId`  int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UKp5x9ydinmkxbuy09ha9unypf7` (`name`,`species`),
   UNIQUE KEY `UK_p5x9ydinmkxbuy09ha9unypf7` (`name`,`species`),

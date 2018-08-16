@@ -65,6 +65,8 @@ public class InteractomeData implements Serializable {
 
   private Integer numRemovedInterSpeciesInteractions;
 
+  private Integer numMultimappedToGeneId;
+
   @XmlElement(name = "species", required = true)
   private IdAndUri species;
 
@@ -75,7 +77,7 @@ public class InteractomeData implements Serializable {
     Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
     Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Double probFinalInteractions, Integer numRemovedInterSpeciesInteractions
+    Double probFinalInteractions, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId
   ) {
     this.id = id;
     this.name = name;
@@ -91,6 +93,7 @@ public class InteractomeData implements Serializable {
     this.numFinalInteractions = numFinalInteractions;
     this.probFinalInteractions = probFinalInteractions;
     this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
+    this.numRemovedInterSpeciesInteractions = numMultimappedToGeneId;
   }
 
   public int getId() {
@@ -197,6 +200,14 @@ public class InteractomeData implements Serializable {
     this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
   }
 
+  public Integer getNumMultimappedToGeneId() {
+    return numMultimappedToGeneId;
+  }
+
+  public void setNumMultimappedToGeneId(Integer numMultimappedToGeneId) {
+    this.numMultimappedToGeneId = numMultimappedToGeneId;
+  }
+
   public IdAndUri getSpecies() {
     return species;
   }
@@ -217,6 +228,7 @@ public class InteractomeData implements Serializable {
     result = prime * result + ((numGenesNotToUniProtKB == null) ? 0 : numGenesNotToUniProtKB.hashCode());
     result = prime * result + ((numInteractionsNotToGeneId == null) ? 0 : numInteractionsNotToGeneId.hashCode());
     result = prime * result + ((numInteractionsNotToUniProtKB == null) ? 0 : numInteractionsNotToUniProtKB.hashCode());
+    result = prime * result + ((numMultimappedToGeneId == null) ? 0 : numMultimappedToGeneId.hashCode());
     result = prime * result + ((numOriginalInteractions == null) ? 0 : numOriginalInteractions.hashCode());
     result =
       prime * result
@@ -273,6 +285,11 @@ public class InteractomeData implements Serializable {
       if (other.numInteractionsNotToUniProtKB != null)
         return false;
     } else if (!numInteractionsNotToUniProtKB.equals(other.numInteractionsNotToUniProtKB))
+      return false;
+    if (numMultimappedToGeneId == null) {
+      if (other.numMultimappedToGeneId != null)
+        return false;
+    } else if (!numMultimappedToGeneId.equals(other.numMultimappedToGeneId))
       return false;
     if (numOriginalInteractions == null) {
       if (other.numOriginalInteractions != null)

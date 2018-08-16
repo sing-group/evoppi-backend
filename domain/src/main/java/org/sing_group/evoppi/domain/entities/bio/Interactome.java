@@ -95,6 +95,9 @@ public class Interactome implements Serializable {
 
   @Column(name = "numRemovedInterSpeciesInteractions", nullable = true)
   private Integer numRemovedInterSpeciesInteractions;
+  
+  @Column(name = "numMultimappedToGeneId", nullable = true)
+  private Integer numMultimappedToGeneId;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
@@ -157,6 +160,10 @@ public class Interactome implements Serializable {
   
   public OptionalInt getNumRemovedInterSpeciesInteractions() {
     return numRemovedInterSpeciesInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numRemovedInterSpeciesInteractions);
+  }
+  
+  public OptionalInt getNumMultimappedToGeneId() {
+    return numMultimappedToGeneId == null ? OptionalInt.empty() : OptionalInt.of(this.numMultimappedToGeneId);
   }
   
   public Stream<Interaction> getInteractions() {

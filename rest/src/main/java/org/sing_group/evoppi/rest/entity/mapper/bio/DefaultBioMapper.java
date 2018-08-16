@@ -131,7 +131,8 @@ public class DefaultBioMapper implements BioMapper {
       interactome.getNumGenesNotToGeneId().isPresent() ? interactome.getNumGenesNotToGeneId().getAsInt() : null,
       interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
       interactome.getProbFinalInteractions().isPresent() ? interactome.getProbFinalInteractions().getAsDouble() : null,
-      interactome.getNumRemovedInterSpeciesInteractions().isPresent() ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt() : null
+      interactome.getNumRemovedInterSpeciesInteractions().isPresent() ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt() : null,
+      interactome.getNumMultimappedToGeneId().isPresent() ? interactome.getNumMultimappedToGeneId().getAsInt() : null
     );
   }
   
@@ -167,6 +168,7 @@ public class DefaultBioMapper implements BioMapper {
       interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
       interactome.getProbFinalInteractions().isPresent() ? interactome.getProbFinalInteractions().getAsDouble() : null,
       interactome.getNumRemovedInterSpeciesInteractions().isPresent() ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt() : null,
+      interactome.getNumMultimappedToGeneId().isPresent() ? interactome.getNumMultimappedToGeneId().getAsInt() : null,
       genes,
       interactions
     );
