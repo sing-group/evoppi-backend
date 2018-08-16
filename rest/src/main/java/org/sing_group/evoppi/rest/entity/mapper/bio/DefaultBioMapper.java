@@ -121,16 +121,17 @@ public class DefaultBioMapper implements BioMapper {
         interactome.getSpecies().getId(),
         pathBuilder.species(interactome.getSpecies()).build()
       ),
-      interactome.getDbSourceIdType(),
-      interactome.getNumOriginalInteractions(),
-      interactome.getNumUniqueOriginalInteractions(),
-      interactome.getNumUniqueOriginalGenes(),
-      interactome.getNumInteractionsNotToUniProtKB(),
-      interactome.getNumGenesNotToUniProtKB(),
-      interactome.getNumInteractionsNotToGeneId(),
-      interactome.getNumGenesNotToGeneId(),
-      interactome.getNumFinalInteractions(),
-      interactome.getProbFinalInteractions()
+      interactome.getDbSourceIdType().orElse(null),
+      interactome.getNumOriginalInteractions().isPresent() ? interactome.getNumOriginalInteractions().getAsInt() : null,
+      interactome.getNumUniqueOriginalInteractions().isPresent() ? interactome.getNumUniqueOriginalInteractions().getAsInt() : null,
+      interactome.getNumUniqueOriginalGenes().isPresent() ? interactome.getNumUniqueOriginalGenes().getAsInt() : null,
+      interactome.getNumInteractionsNotToUniProtKB().isPresent() ? interactome.getNumInteractionsNotToUniProtKB().getAsInt() : null,
+      interactome.getNumGenesNotToUniProtKB().isPresent() ? interactome.getNumGenesNotToUniProtKB().getAsInt(): null,
+      interactome.getNumInteractionsNotToGeneId().isPresent() ? interactome.getNumInteractionsNotToGeneId().getAsInt() : null,
+      interactome.getNumGenesNotToGeneId().isPresent() ? interactome.getNumGenesNotToGeneId().getAsInt() : null,
+      interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
+      interactome.getProbFinalInteractions().isPresent() ? interactome.getProbFinalInteractions().getAsDouble() : null,
+      interactome.getNumRemovedInterSpeciesInteractions().isPresent() ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt() : null
     );
   }
   
@@ -155,16 +156,17 @@ public class DefaultBioMapper implements BioMapper {
         interactome.getSpecies().getId(),
         pathBuilder.species(interactome.getSpecies()).build()
       ),
-      interactome.getDbSourceIdType(),
-      interactome.getNumOriginalInteractions(),
-      interactome.getNumUniqueOriginalInteractions(),
-      interactome.getNumUniqueOriginalGenes(),
-      interactome.getNumInteractionsNotToUniProtKB(),
-      interactome.getNumGenesNotToUniProtKB(),
-      interactome.getNumInteractionsNotToGeneId(),
-      interactome.getNumGenesNotToGeneId(),
-      interactome.getNumFinalInteractions(),
-      interactome.getProbFinalInteractions(),
+      interactome.getDbSourceIdType().orElse(null),
+      interactome.getNumOriginalInteractions().isPresent() ? interactome.getNumOriginalInteractions().getAsInt() : null,
+      interactome.getNumUniqueOriginalInteractions().isPresent() ? interactome.getNumUniqueOriginalInteractions().getAsInt() : null,
+      interactome.getNumUniqueOriginalGenes().isPresent() ? interactome.getNumUniqueOriginalGenes().getAsInt() : null,
+      interactome.getNumInteractionsNotToUniProtKB().isPresent() ? interactome.getNumInteractionsNotToUniProtKB().getAsInt() : null,
+      interactome.getNumGenesNotToUniProtKB().isPresent() ? interactome.getNumGenesNotToUniProtKB().getAsInt(): null,
+      interactome.getNumInteractionsNotToGeneId().isPresent() ? interactome.getNumInteractionsNotToGeneId().getAsInt() : null,
+      interactome.getNumGenesNotToGeneId().isPresent() ? interactome.getNumGenesNotToGeneId().getAsInt() : null,
+      interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
+      interactome.getProbFinalInteractions().isPresent() ? interactome.getProbFinalInteractions().getAsDouble() : null,
+      interactome.getNumRemovedInterSpeciesInteractions().isPresent() ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt() : null,
       genes,
       interactions
     );

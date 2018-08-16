@@ -26,6 +26,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -91,6 +93,9 @@ public class Interactome implements Serializable {
   @Column(name = "probFinalInteractions", scale = 1, precision = 2, nullable = true)
   private Double probFinalInteractions;
 
+  @Column(name = "numRemovedInterSpeciesInteractions", nullable = true)
+  private Integer numRemovedInterSpeciesInteractions;
+
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
   private Species species;
@@ -110,44 +115,48 @@ public class Interactome implements Serializable {
     return species;
   }
 
-  public String getDbSourceIdType() {
-    return dbSourceIdType;
+  public Optional<String> getDbSourceIdType() {
+    return Optional.ofNullable(dbSourceIdType);
   }
 
-  public Integer getNumOriginalInteractions() {
-    return numOriginalInteractions;
+  public OptionalInt getNumOriginalInteractions() {
+    return numOriginalInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numOriginalInteractions);
   }
 
-  public Integer getNumUniqueOriginalInteractions() {
-    return numUniqueOriginalInteractions;
+  public OptionalInt getNumUniqueOriginalInteractions() {
+    return numUniqueOriginalInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numUniqueOriginalInteractions);
   }
 
-  public Integer getNumUniqueOriginalGenes() {
-    return numUniqueOriginalGenes;
+  public OptionalInt getNumUniqueOriginalGenes() {
+    return numUniqueOriginalGenes == null ? OptionalInt.empty() : OptionalInt.of(this.numUniqueOriginalGenes);
   }
 
-  public Integer getNumInteractionsNotToUniProtKB() {
-    return numInteractionsNotToUniProtKB;
+  public OptionalInt getNumInteractionsNotToUniProtKB() {
+    return numInteractionsNotToUniProtKB == null ? OptionalInt.empty() : OptionalInt.of(this.numInteractionsNotToUniProtKB);
   }
 
-  public Integer getNumGenesNotToUniProtKB() {
-    return numGenesNotToUniProtKB;
+  public OptionalInt getNumGenesNotToUniProtKB() {
+    return numGenesNotToUniProtKB == null ? OptionalInt.empty() : OptionalInt.of(this.numGenesNotToUniProtKB);
   }
 
-  public Integer getNumInteractionsNotToGeneId() {
-    return numInteractionsNotToGeneId;
+  public OptionalInt getNumInteractionsNotToGeneId() {
+    return numInteractionsNotToGeneId == null ? OptionalInt.empty() : OptionalInt.of(this.numInteractionsNotToGeneId);
   }
 
-  public Integer getNumGenesNotToGeneId() {
-    return numGenesNotToGeneId;
+  public OptionalInt getNumGenesNotToGeneId() {
+    return numGenesNotToGeneId == null ? OptionalInt.empty() : OptionalInt.of(this.numGenesNotToGeneId);
   }
 
-  public Integer getNumFinalInteractions() {
-    return numFinalInteractions;
+  public OptionalInt getNumFinalInteractions() {
+    return numFinalInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numFinalInteractions);
   }
 
-  public Double getProbFinalInteractions() {
-    return probFinalInteractions;
+  public OptionalDouble getProbFinalInteractions() {
+    return probFinalInteractions == null ? OptionalDouble.empty() : OptionalDouble.of(this.probFinalInteractions);
+  }
+  
+  public OptionalInt getNumRemovedInterSpeciesInteractions() {
+    return numRemovedInterSpeciesInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numRemovedInterSpeciesInteractions);
   }
   
   public Stream<Interaction> getInteractions() {

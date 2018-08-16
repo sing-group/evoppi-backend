@@ -58,7 +58,7 @@ CREATE TABLE `blast_result` (
   PRIMARY KEY (`id`),
   KEY `FK_different_species_interactions_result_blast_result` (`interactionsResultId`),
   CONSTRAINT `FK_different_species_interactions_result_blast_result` FOREIGN KEY (`interactionsResultId`) REFERENCES `different_species_interactions_result` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1567 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -302,6 +302,7 @@ CREATE TABLE `interactome` (
   `numUniqueOriginalGenes` int(11) DEFAULT NULL,
   `numUniqueOriginalInteractions` int(11) DEFAULT NULL,
   `probFinalInteractions` double DEFAULT NULL,
+  `numRemovedInterSpeciesInteractions`  int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UKp5x9ydinmkxbuy09ha9unypf7` (`name`,`species`),
   UNIQUE KEY `UK_p5x9ydinmkxbuy09ha9unypf7` (`name`,`species`),
@@ -309,7 +310,7 @@ CREATE TABLE `interactome` (
   KEY `FK9tl8gsonmm6ksaxy4wt4xs8mr` (`species`),
   KEY `UK_auoiyeswmacye8t54i4uf98x0` (`id`,`species`),
   CONSTRAINT `FK9tl8gsonmm6ksaxy4wt4xs8mr` FOREIGN KEY (`species`) REFERENCES `species` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -384,7 +385,7 @@ CREATE TABLE `species` (
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_29ixq8ot8e88rk6v7jpkisgr3` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

@@ -38,9 +38,9 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(value = "interactome-data", description = "Data of an interactome entity.")
 public class InteractomeData implements Serializable {
   private static final long serialVersionUID = 1L;
-  
+
   private int id;
-  
+
   private String name;
 
   private String dbSourceIdType;
@@ -63,16 +63,20 @@ public class InteractomeData implements Serializable {
 
   private Double probFinalInteractions;
 
+  private Integer numRemovedInterSpeciesInteractions;
+
   @XmlElement(name = "species", required = true)
   private IdAndUri species;
-  
+
   InteractomeData() {}
 
-  public InteractomeData(int id, String name, IdAndUri species, String dbSourceIdType, Integer numOriginalInteractions,
-                         Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
-                         Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
-                         Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-                         Double probFinalInteractions) {
+  public InteractomeData(
+    int id, String name, IdAndUri species, String dbSourceIdType, Integer numOriginalInteractions,
+    Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
+    Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
+    Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
+    Double probFinalInteractions, Integer numRemovedInterSpeciesInteractions
+  ) {
     this.id = id;
     this.name = name;
     this.species = species;
@@ -86,6 +90,7 @@ public class InteractomeData implements Serializable {
     this.numGenesNotToGeneId = numGenesNotToGeneId;
     this.numFinalInteractions = numFinalInteractions;
     this.probFinalInteractions = probFinalInteractions;
+    this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
   }
 
   public int getId() {
@@ -95,7 +100,7 @@ public class InteractomeData implements Serializable {
   public void setId(int id) {
     this.id = id;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -104,60 +109,92 @@ public class InteractomeData implements Serializable {
     this.name = name;
   }
 
-  public String getDbSourceIdType() { return dbSourceIdType; }
+  public String getDbSourceIdType() {
+    return dbSourceIdType;
+  }
 
-  public void setDbSourceIdType(String dbSourceIdType) { this.dbSourceIdType = dbSourceIdType; }
+  public void setDbSourceIdType(String dbSourceIdType) {
+    this.dbSourceIdType = dbSourceIdType;
+  }
 
-  public Integer getNumOriginalInteractions() { return numOriginalInteractions; }
+  public Integer getNumOriginalInteractions() {
+    return numOriginalInteractions;
+  }
 
   public void setNumOriginalInteractions(Integer numOriginalInteractions) {
     this.numOriginalInteractions = numOriginalInteractions;
   }
 
-  public Integer getNumUniqueOriginalInteractions() { return numUniqueOriginalInteractions; }
+  public Integer getNumUniqueOriginalInteractions() {
+    return numUniqueOriginalInteractions;
+  }
 
   public void setNumUniqueOriginalInteractions(Integer numUniqueOriginalInteractions) {
     this.numUniqueOriginalInteractions = numUniqueOriginalInteractions;
   }
 
-  public Integer getNumUniqueOriginalGenes() { return numUniqueOriginalGenes; }
+  public Integer getNumUniqueOriginalGenes() {
+    return numUniqueOriginalGenes;
+  }
 
   public void setNumUniqueOriginalGenes(Integer numUniqueOriginalGenes) {
     this.numUniqueOriginalGenes = numUniqueOriginalGenes;
   }
 
-  public Integer getNumInteractionsNotToUniProtKB() { return numInteractionsNotToUniProtKB; }
+  public Integer getNumInteractionsNotToUniProtKB() {
+    return numInteractionsNotToUniProtKB;
+  }
 
   public void setNumInteractionsNotToUniProtKB(Integer numInteractionsNotToUniProtKB) {
     this.numInteractionsNotToUniProtKB = numInteractionsNotToUniProtKB;
   }
 
-  public Integer getNumGenesNotToUniProtKB() { return numGenesNotToUniProtKB; }
+  public Integer getNumGenesNotToUniProtKB() {
+    return numGenesNotToUniProtKB;
+  }
 
   public void setNumGenesNotToUniProtKB(Integer numGenesNotToUniProtKB) {
     this.numGenesNotToUniProtKB = numGenesNotToUniProtKB;
   }
 
-  public Integer getNumInteractionsNotToGeneId() { return numInteractionsNotToGeneId; }
+  public Integer getNumInteractionsNotToGeneId() {
+    return numInteractionsNotToGeneId;
+  }
 
   public void setNumInteractionsNotToGeneId(Integer numInteractionsNotToGeneId) {
     this.numInteractionsNotToGeneId = numInteractionsNotToGeneId;
   }
 
-  public Integer getNumGenesNotToGeneId() { return numGenesNotToGeneId; }
+  public Integer getNumGenesNotToGeneId() {
+    return numGenesNotToGeneId;
+  }
 
-  public void setNumGenesNotToGeneId(Integer numGenesNotToGeneId) { this.numGenesNotToGeneId = numGenesNotToGeneId; }
+  public void setNumGenesNotToGeneId(Integer numGenesNotToGeneId) {
+    this.numGenesNotToGeneId = numGenesNotToGeneId;
+  }
 
-  public Integer getNumFinalInteractions() { return numFinalInteractions; }
+  public Integer getNumFinalInteractions() {
+    return numFinalInteractions;
+  }
 
   public void setNumFinalInteractions(Integer numFinalInteractions) {
     this.numFinalInteractions = numFinalInteractions;
   }
 
-  public Double getProbFinalInteractions() { return probFinalInteractions; }
+  public Double getProbFinalInteractions() {
+    return probFinalInteractions;
+  }
 
   public void setProbFinalInteractions(Double probFinalInteractions) {
     this.probFinalInteractions = probFinalInteractions;
+  }
+
+  public Integer getNumRemovedInterSpeciesInteractions() {
+    return numRemovedInterSpeciesInteractions;
+  }
+
+  public void setNumRemovedInterSpeciesInteractions(Integer numRemovedInterSpeciesInteractions) {
+    this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
   }
 
   public IdAndUri getSpecies() {
@@ -172,8 +209,21 @@ public class InteractomeData implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((dbSourceIdType == null) ? 0 : dbSourceIdType.hashCode());
     result = prime * result + id;
     result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((numFinalInteractions == null) ? 0 : numFinalInteractions.hashCode());
+    result = prime * result + ((numGenesNotToGeneId == null) ? 0 : numGenesNotToGeneId.hashCode());
+    result = prime * result + ((numGenesNotToUniProtKB == null) ? 0 : numGenesNotToUniProtKB.hashCode());
+    result = prime * result + ((numInteractionsNotToGeneId == null) ? 0 : numInteractionsNotToGeneId.hashCode());
+    result = prime * result + ((numInteractionsNotToUniProtKB == null) ? 0 : numInteractionsNotToUniProtKB.hashCode());
+    result = prime * result + ((numOriginalInteractions == null) ? 0 : numOriginalInteractions.hashCode());
+    result =
+      prime * result
+        + ((numRemovedInterSpeciesInteractions == null) ? 0 : numRemovedInterSpeciesInteractions.hashCode());
+    result = prime * result + ((numUniqueOriginalGenes == null) ? 0 : numUniqueOriginalGenes.hashCode());
+    result = prime * result + ((numUniqueOriginalInteractions == null) ? 0 : numUniqueOriginalInteractions.hashCode());
+    result = prime * result + ((probFinalInteractions == null) ? 0 : probFinalInteractions.hashCode());
     result = prime * result + ((species == null) ? 0 : species.hashCode());
     return result;
   }
@@ -187,12 +237,67 @@ public class InteractomeData implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     InteractomeData other = (InteractomeData) obj;
+    if (dbSourceIdType == null) {
+      if (other.dbSourceIdType != null)
+        return false;
+    } else if (!dbSourceIdType.equals(other.dbSourceIdType))
+      return false;
     if (id != other.id)
       return false;
     if (name == null) {
       if (other.name != null)
         return false;
     } else if (!name.equals(other.name))
+      return false;
+    if (numFinalInteractions == null) {
+      if (other.numFinalInteractions != null)
+        return false;
+    } else if (!numFinalInteractions.equals(other.numFinalInteractions))
+      return false;
+    if (numGenesNotToGeneId == null) {
+      if (other.numGenesNotToGeneId != null)
+        return false;
+    } else if (!numGenesNotToGeneId.equals(other.numGenesNotToGeneId))
+      return false;
+    if (numGenesNotToUniProtKB == null) {
+      if (other.numGenesNotToUniProtKB != null)
+        return false;
+    } else if (!numGenesNotToUniProtKB.equals(other.numGenesNotToUniProtKB))
+      return false;
+    if (numInteractionsNotToGeneId == null) {
+      if (other.numInteractionsNotToGeneId != null)
+        return false;
+    } else if (!numInteractionsNotToGeneId.equals(other.numInteractionsNotToGeneId))
+      return false;
+    if (numInteractionsNotToUniProtKB == null) {
+      if (other.numInteractionsNotToUniProtKB != null)
+        return false;
+    } else if (!numInteractionsNotToUniProtKB.equals(other.numInteractionsNotToUniProtKB))
+      return false;
+    if (numOriginalInteractions == null) {
+      if (other.numOriginalInteractions != null)
+        return false;
+    } else if (!numOriginalInteractions.equals(other.numOriginalInteractions))
+      return false;
+    if (numRemovedInterSpeciesInteractions == null) {
+      if (other.numRemovedInterSpeciesInteractions != null)
+        return false;
+    } else if (!numRemovedInterSpeciesInteractions.equals(other.numRemovedInterSpeciesInteractions))
+      return false;
+    if (numUniqueOriginalGenes == null) {
+      if (other.numUniqueOriginalGenes != null)
+        return false;
+    } else if (!numUniqueOriginalGenes.equals(other.numUniqueOriginalGenes))
+      return false;
+    if (numUniqueOriginalInteractions == null) {
+      if (other.numUniqueOriginalInteractions != null)
+        return false;
+    } else if (!numUniqueOriginalInteractions.equals(other.numUniqueOriginalInteractions))
+      return false;
+    if (probFinalInteractions == null) {
+      if (other.probFinalInteractions != null)
+        return false;
+    } else if (!probFinalInteractions.equals(other.probFinalInteractions))
       return false;
     if (species == null) {
       if (other.species != null)
