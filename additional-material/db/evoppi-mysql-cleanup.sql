@@ -22,6 +22,8 @@ TRUNCATE TABLE `gene`;
 TRUNCATE TABLE `interactome`;
 TRUNCATE TABLE `species`;
 
+TRUNCATE TABLE `password_recovery`;
+
 TRUNCATE TABLE `researcher`;
 TRUNCATE TABLE `administrator`;
 TRUNCATE TABLE `user`;

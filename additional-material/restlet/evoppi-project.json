@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-08-17T12:28:24.131+02:00",
+      "lastModified": "2018-08-17T13:42:51.660+02:00",
       "name": "EvoPPI"
     },
     {
@@ -2539,6 +2539,86 @@
           "enabled": true,
           "name": "Authorization",
           "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": ""
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/researcher/password/recovery"
+      },
+      "id": "1e6e5df1-683a-4f9d-978a-11c92f90ce4c",
+      "lastModified": "2018-08-17T13:42:03.210+02:00",
+      "name": "Password Recovery",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "newpassword"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/password/recovery/7ad0daa0-4868-444c-954c-c73c72fe9d14"
+      },
+      "id": "b657bc8e-df4e-49eb-94ea-cf2719f5cf5c",
+      "lastModified": "2018-08-17T13:42:51.660+02:00",
+      "name": "Password Recovery Confirmation",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/plain"
         }
       ],
       "metaInfo": {},

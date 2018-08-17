@@ -146,13 +146,45 @@ public class DefaultUserResource implements UserResource {
   @PUT
   @Path("password")
   @ApiOperation(
-    value = "Changes the password of the user doing the requires. User authentication is required",
+    value = "Changes the password of the user doing the requires. User authentication is required.",
     code = 200
   )
   @Consumes(MediaType.TEXT_PLAIN)
   @Override
   public Response changePassword(String password) {
     this.userService.changeCurrentUserPassword(password);
+    
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("{login}/password/recovery")
+  @ApiOperation(
+    value = "Request a password recovery, so that an user can change his/her password without login in.",
+    code = 200
+  )
+  @Override
+  public Response requestPasswordRecovery(@PathParam("login") String login) {
+    try {
+    this.userService.allowPassowdRecovery(login);
+    } catch (RuntimeException iae) {
+      // Exceptions are silenced, so that a client can't know whether an users exists or not
+      // using this service
+    }
+    
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("password/recovery/{code}")
+  @ApiOperation(
+    value = "Request a password change using a recovery code.",
+    code = 200
+  )
+  @Consumes(MediaType.TEXT_PLAIN)
+  @Override
+  public Response recoverPassword(@PathParam("code") String code, String newPassword) {
+    this.userService.recoverPassword(code, newPassword);
     
     return Response.ok().build();
   }

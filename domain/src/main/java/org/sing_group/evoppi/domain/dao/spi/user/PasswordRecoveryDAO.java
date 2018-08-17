@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,31 +19,12 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.domain.dao.spi.user;
 
+import org.sing_group.evoppi.domain.entities.user.PasswordRecovery;
 
-
-package org.sing_group.evoppi.service.spi.user;
-
-import java.util.Optional;
-
-import javax.ejb.Local;
-
-import org.sing_group.evoppi.domain.entities.user.Registration;
-import org.sing_group.evoppi.domain.entities.user.User;
-
-@Local
-public interface UserService {
+public interface PasswordRecoveryDAO {
+  public PasswordRecovery register(PasswordRecovery recovery);
   
-  public <U extends User> Optional<U> getCurrentUser();
-
-  public void register(Registration registration);
-  
-  public void confirm(String code);
-
-  public void changeCurrentUserPassword(String newPassword);
-  
-  public void allowPassowdRecovery(String login);
-  
-  public void recoverPassword(String code, String newPassword);
-  
+  public PasswordRecovery confirm(String code, String password);
 }

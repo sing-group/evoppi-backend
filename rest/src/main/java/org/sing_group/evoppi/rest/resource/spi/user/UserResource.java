@@ -48,5 +48,9 @@ public interface UserResource {
   public Response claimSameSpeciesResults(ResultUuids uuids);
   
   public Response changePassword(String password);
+  
+  public Response requestPasswordRecovery(String login);
+  
+  public Response recoverPassword(String code, String newPassword);
 
 }

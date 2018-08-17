@@ -31,9 +31,11 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.sing_group.evoppi.domain.dao.spi.user.PasswordRecoveryDAO;
 import org.sing_group.evoppi.domain.dao.spi.user.RegistrationDAO;
 import org.sing_group.evoppi.domain.dao.spi.user.ResearcherDAO;
 import org.sing_group.evoppi.domain.dao.spi.user.UserDAO;
+import org.sing_group.evoppi.domain.entities.user.PasswordRecovery;
 import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.domain.entities.user.User;
@@ -53,6 +55,9 @@ public class DefaultUserService implements UserService {
 
   @Inject
   private RegistrationDAO registrationDao;
+  
+  @Inject
+  private PasswordRecoveryDAO passwordRecoveryDao;
 
   @Inject
   private Principal principal;
@@ -67,10 +72,19 @@ public class DefaultUserService implements UserService {
   private String emailConfirmationUrl;
 
   @Resource(name = "java:global/evoppi/email/registration/subject")
-  private String emailSubject;
+  private String emailConfirmationSubject;
 
   @Resource(name = "java:global/evoppi/email/registration/message")
-  private String emailMessage;
+  private String emailConfirmationMessage;
+
+  @Resource(name = "java:global/evoppi/email/passwordrecovery/confirmationUrl")
+  private String emailPasswordRecoveryUrl;
+
+  @Resource(name = "java:global/evoppi/email/passwordrecovery/subject")
+  private String emailPasswordRecoverySubject;
+
+  @Resource(name = "java:global/evoppi/email/passwordrecovery/message")
+  private String emailPasswordRecoveryMessage;
 
   @Override
   @SuppressWarnings("unchecked")
@@ -96,7 +110,7 @@ public class DefaultUserService implements UserService {
       registration = this.registrationDao.register(registration);
 
       this.mailer.sendEmail(
-        this.emailFrom, registration.getEmail(), this.emailSubject,
+        this.emailFrom, registration.getEmail(), this.emailConfirmationSubject,
         this.composeConfirmationEmail(registration)
       );
     }
@@ -113,7 +127,7 @@ public class DefaultUserService implements UserService {
   }
 
   private String composeConfirmationEmail(Registration registration) {
-    return this.emailMessage
+    return this.emailConfirmationMessage
       .replaceAll("\\[USER\\]", registration.getLogin())
       .replaceAll("\\[CONFIRMATION_URL\\]", this.emailConfirmationUrl.replaceAll("\\[UUID\\]", registration.getCode()));
   }
@@ -124,5 +138,27 @@ public class DefaultUserService implements UserService {
       .orElseThrow(() -> new SecurityException("A logged user is required to change password"));
     
     this.userDao.changePassword(user.getLogin(), password);
+  }
+
+  @Override
+  public void allowPassowdRecovery(String login) {
+    final PasswordRecovery recovery =
+      this.passwordRecoveryDao.register(new PasswordRecovery(this.userDao.get(login)));
+
+    this.mailer.sendEmail(
+      this.emailFrom, recovery.getUser().getEmail(), this.emailPasswordRecoverySubject,
+      this.composePasswordRecoveryEmail(recovery)
+    );
+  }
+
+  @Override
+  public void recoverPassword(String code, String newPassword) {
+    this.passwordRecoveryDao.confirm(code, newPassword);
+  }
+
+  private String composePasswordRecoveryEmail(PasswordRecovery recovery) {
+    return this.emailPasswordRecoveryMessage
+      .replaceAll("\\[USER\\]", recovery.getUser().getLogin())
+      .replaceAll("\\[PASSWORD_RECOVERY_URL\\]", this.emailPasswordRecoveryUrl.replaceAll("\\[UUID\\]", recovery.getCode()));
   }
 }

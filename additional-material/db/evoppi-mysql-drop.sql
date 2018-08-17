@@ -20,6 +20,8 @@ DROP TABLE `gene`;
 DROP TABLE `interactome`;
 DROP TABLE `species`;
 
+DROP TABLE `password_recovery`;
+
 DROP TABLE `researcher`;
 DROP TABLE `administrator`;
 DROP TABLE `user`;

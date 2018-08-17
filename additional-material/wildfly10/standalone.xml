@@ -343,9 +343,12 @@
                 <simple name="java:global/evoppi/storage/file/lineSeparator" value="unix" type="java.lang.String"/>
                 
                 <simple name="java:global/evoppi/email/from" value="no-reply@evoppi.sing-group.org" type="java.lang.String"/>
-                <simple name="java:global/evoppi/email/registration/confirmationUrl" value="http://localhost:4200/evoppi/regitration/confirmation?uuid=[UUID]" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/registration/confirmationUrl" value="http://localhost:4200/regitration/confirmation?uuid=[UUID]" type="java.lang.String"/>
                 <simple name="java:global/evoppi/email/registration/subject" value="EvoPPI registration confirmation" type="java.lang.String"/>
                 <simple name="java:global/evoppi/email/registration/message" value="&lt;p&gt;Dear [USER],&lt;/p&gt;&lt;p&gt;In order to complete your EvoPPI registration, please access the follow &lt;a href=&quot;[CONFIRMATION_URL]&quot;&gt;link&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Sincerely,&lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;EvoPPI Team&lt;/p&gt;" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/passwordrecovery/confirmationUrl" value="http://localhost:4200/password/recovery?uuid=[UUID]" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/passwordrecovery/subject" value="EvoPPI password recovery" type="java.lang.String"/>
+                <simple name="java:global/evoppi/email/passwordrecovery/message" value="&lt;p&gt;Dear [USER],&lt;/p&gt;&lt;p&gt;In order to restore your EvoPPI password, please access the follow &lt;a href=&quot;[PASSWORD_RECOVERY_URL]&quot;&gt;link&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Sincerely,&lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;EvoPPI Team&lt;/p&gt;" type="java.lang.String"/>
             </bindings>
             <remote-naming/>
         </subsystem>
