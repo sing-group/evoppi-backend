@@ -117,4 +117,12 @@ public class DefaultUserService implements UserService {
       .replaceAll("\\[USER\\]", registration.getLogin())
       .replaceAll("\\[CONFIRMATION_URL\\]", this.emailConfirmationUrl.replaceAll("\\[UUID\\]", registration.getCode()));
   }
+  
+  @Override
+  public void changeCurrentUserPassword(String password) {
+    final User user = this.getCurrentUser()
+      .orElseThrow(() -> new SecurityException("A logged user is required to change password"));
+    
+    this.userDao.changePassword(user.getLogin(), password);
+  }
 }

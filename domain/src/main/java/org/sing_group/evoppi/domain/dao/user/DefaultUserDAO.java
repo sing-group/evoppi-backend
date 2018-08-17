@@ -77,4 +77,11 @@ public class DefaultUserDAO implements UserDAO {
       return false;
     }
   }
+  
+  @Override
+  public void changePassword(String login, String password) {
+    final User user = this.get(login);
+    
+    user.changePassword(password);
+  }
 }

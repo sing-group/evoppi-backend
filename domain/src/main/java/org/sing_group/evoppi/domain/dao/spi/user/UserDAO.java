@@ -34,4 +34,6 @@ public interface UserDAO {
 
   public boolean existsEmail(String email);
 
+  public void changePassword(String login, String password);
+
 }

@@ -142,6 +142,20 @@ public class DefaultUserResource implements UserResource {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
   }
+
+  @PUT
+  @Path("password")
+  @ApiOperation(
+    value = "Changes the password of the user doing the requires. User authentication is required",
+    code = 200
+  )
+  @Consumes(MediaType.TEXT_PLAIN)
+  @Override
+  public Response changePassword(String password) {
+    this.userService.changeCurrentUserPassword(password);
+    
+    return Response.ok().build();
+  }
   
   @GET
   @Path("interaction/result/different")

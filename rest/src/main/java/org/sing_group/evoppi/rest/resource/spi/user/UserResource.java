@@ -46,5 +46,7 @@ public interface UserResource {
   public Response claimDifferentSpeciesResults(ResultUuids uuids);
   
   public Response claimSameSpeciesResults(ResultUuids uuids);
+  
+  public Response changePassword(String password);
 
 }

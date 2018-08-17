@@ -39,5 +39,7 @@ public interface UserService {
   public void register(Registration registration);
   
   public void confirm(String code);
+
+  public void changeCurrentUserPassword(String password);
   
 }

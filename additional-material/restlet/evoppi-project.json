@@ -5,7 +5,7 @@
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-08-17T12:07:20.637+02:00",
+      "lastModified": "2018-08-17T12:28:24.131+02:00",
       "name": "EvoPPI"
     },
     {
@@ -1868,6 +1868,97 @@
       "lastModified": "2018-07-10T18:58:36.884+02:00",
       "name": "User",
       "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.4",
+        "name": "PUT"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "newpassword"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/password"
+      },
+      "id": "d5a8529b-fd83-4ad9-9026-aa68c3f0e67e",
+      "lastModified": "2018-08-17T12:28:24.131+02:00",
+      "name": "Change Password",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/plain"
+        },
+        {
+          "enabled": true,
+          "name": "Authorization",
+          "value": "Basic cmVzZWFyY2hlcjpyZXNlYXJjaGVycGFzcw=="
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.4",
+        "name": "PUT"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "newpassword"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/user/password"
+      },
+      "id": "1cbcd1a3-c19d-4d2c-8b9c-9fbfe062b8bb",
+      "lastModified": "2018-08-17T12:27:23.139+02:00",
+      "name": "Change Password [ANONYMOUS]",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "text/plain"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "3d914b9c-3c42-4b7a-89d4-696dac1539aa"
     },
     {
       "type": "Request",
