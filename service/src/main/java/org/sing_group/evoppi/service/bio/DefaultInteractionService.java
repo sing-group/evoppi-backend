@@ -43,6 +43,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionGroupResultDAO;
@@ -73,13 +74,16 @@ import org.sing_group.evoppi.service.user.entity.InteractionResultLinkage;
 @Stateless
 @PermitAll
 public class DefaultInteractionService implements InteractionService {
+  @Inject
+  private FastaWriter fastaWriter;
+  
   @Inject GeneDAO geneDao;
   
   @Inject
   private InteractomeDAO interactomeDao;
   
   @Inject
-  private FastaWriter fastaWriter;
+  private InteractionDAO interactionDao;
   
   @Inject
   private SameSpeciesInteractionsResultDAO sameInteractionsResultDao;
@@ -324,6 +328,11 @@ public class DefaultInteractionService implements InteractionService {
   @Override
   public InteractionResultLinkage linkSameSpeciesResultsToCurrentUser(String[] uuids) {
     return this.linkResultsToCurrentUser(uuids, this::getSameSpeciesResult);
+  }
+  
+  @Override
+  public long count() {
+    return this.interactionDao.count();
   }
   
   private InteractionResultLinkage linkResultsToCurrentUser(String[] uuids, Function<String, InteractionsResult> resultGetter) {

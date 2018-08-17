@@ -33,4 +33,6 @@ public interface GeneDAO {
   public Gene getGene(int geneId);
 
   public Stream<Gene> find(GeneQueryOptions queryOptions);
+
+  public long count();
 }

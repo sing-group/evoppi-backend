@@ -48,4 +48,9 @@ public class DefaultGeneService implements GeneService {
   public Stream<Gene> find(GeneQueryOptions queryOptions) {
     return this.dao.find(queryOptions);
   }
+  
+  @Override
+  public long count() {
+    return this.dao.count();
+  }
 }

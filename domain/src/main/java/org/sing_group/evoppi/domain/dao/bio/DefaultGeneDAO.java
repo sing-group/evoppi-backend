@@ -143,4 +143,9 @@ public class DefaultGeneDAO implements GeneDAO {
     return this.dh.get(geneId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown gene: " + geneId));
   }
+  
+  @Override
+  public long count() {
+    return this.dh.count();
+  }
 }

@@ -47,4 +47,9 @@ public class DefaultInteractomeService implements InteractomeService {
   public Interactome getInteractome(int id) {
     return this.dao.getInteractome(id);
   }
+  
+  @Override
+  public long count() {
+    return this.dao.count();
+  }
 }

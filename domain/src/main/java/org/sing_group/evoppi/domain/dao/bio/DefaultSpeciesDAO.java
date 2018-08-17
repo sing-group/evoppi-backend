@@ -67,5 +67,10 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown species: " + id));
   }
+  
+  @Override
+  public long count() {
+    return this.dh.count();
+  }
 
 }

@@ -32,4 +32,6 @@ public interface InteractomeDAO {
 
   public Interactome getInteractome(int id);
 
+  public long count();
+
 }

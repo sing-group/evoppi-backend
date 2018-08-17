@@ -31,4 +31,6 @@ public interface GeneService {
   public Gene get(int id);
   
   public Stream<Gene> find(GeneQueryOptions queryOptions) ;
+
+  public long count();
 }

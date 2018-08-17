@@ -19,10 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.sing_group.evoppi.domain.dao.bio;
-
-import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
@@ -32,42 +29,33 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
-import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
+import org.sing_group.evoppi.domain.entities.bio.Interaction;
+import org.sing_group.evoppi.domain.entities.bio.Interaction.InteractionId;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultInteractomeDAO implements InteractomeDAO {
+public class DefaultInteractionDAO implements InteractionDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<Integer, Interactome> dh;
+  protected DAOHelper<InteractionId, Interaction> dh;
 
-  public DefaultInteractomeDAO() {
+  public DefaultInteractionDAO() {
     super();
   }
 
-  public DefaultInteractomeDAO(EntityManager em) {
+  public DefaultInteractionDAO(EntityManager em) {
     this.em = em;
     createDAOHelper();
   }
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(Integer.class, Interactome.class, this.em);
+    this.dh = DAOHelper.of(InteractionId.class, Interaction.class, this.em);
   }
 
-  @Override
-  public Stream<Interactome> listInteractomes() {
-    return this.dh.list().stream();
-  }
 
-  @Override
-  public Interactome getInteractome(int id) {
-    return this.dh.get(id)
-      .orElseThrow(() -> new IllegalArgumentException("Unknown interactome: " + id));
-  }
-  
   @Override
   public long count() {
     return this.dh.count();

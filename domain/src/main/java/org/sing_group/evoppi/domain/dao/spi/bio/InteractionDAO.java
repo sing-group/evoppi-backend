@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * Domain
  * %%
  * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,37 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.domain.dao.spi.bio;
 
-package org.sing_group.evoppi.service.bio;
-
-import java.util.stream.Stream;
-
-import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
-import org.sing_group.evoppi.domain.entities.bio.Species;
-import org.sing_group.evoppi.service.spi.bio.SpeciesService;
-
-@Stateless
-@PermitAll
-public class DefaultSpeciesService implements SpeciesService {
-  @Inject
-  private SpeciesDAO dao;
-  
-  @Override
-  public Stream<Species> listSpecies() {
-    return this.dao.listSpecies();
-  }
-
-  @Override
-  public Species getSpecies(int id) {
-    return this.dao.getSpecie(id);
-  }
-  
-  @Override
-  public long count() {
-    return this.dao.count();
-  }
+public interface InteractionDAO {
+  public long count();
 }

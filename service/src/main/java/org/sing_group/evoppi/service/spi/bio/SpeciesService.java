@@ -34,5 +34,7 @@ public interface SpeciesService {
   public Stream<Species> listSpecies();
 
   public Species getSpecies(int id);
+
+  public long count();
   
 }

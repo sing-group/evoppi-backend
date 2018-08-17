@@ -32,4 +32,6 @@ public interface SpeciesDAO {
 
   public Species getSpecie(int id);
 
+  public long count();
+
 }

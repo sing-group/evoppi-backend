@@ -32,4 +32,6 @@ public interface InteractomeService {
 
   public Interactome getInteractome(int id);
 
+  public long count();
+
 }

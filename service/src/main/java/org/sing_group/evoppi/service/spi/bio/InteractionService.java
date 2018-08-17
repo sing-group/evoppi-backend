@@ -71,4 +71,6 @@ public interface InteractionService {
   public InteractionResultLinkage linkDifferentSpeciesResultsToCurrentUser(String[] uuids);
   
   public InteractionResultLinkage linkSameSpeciesResultsToCurrentUser(String[] uuids);
+
+  public long count();
 }
