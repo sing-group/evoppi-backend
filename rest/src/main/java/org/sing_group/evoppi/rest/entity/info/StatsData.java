@@ -38,15 +38,15 @@ public class StatsData implements Serializable {
   private long speciesCount;
   private long interactomesCount;
   private long genesCount;
-  private long intercationsCount;
+  private long interactionsCount;
 
   StatsData() {}
   
-  public StatsData(long speciesCount, long interactomesCount, long genesCount, long intercationsCount) {
+  public StatsData(long speciesCount, long interactomesCount, long genesCount, long interactionsCount) {
     this.speciesCount = speciesCount;
     this.interactomesCount = interactomesCount;
     this.genesCount = genesCount;
-    this.intercationsCount = intercationsCount;
+    this.interactionsCount = interactionsCount;
   }
 
   public long getSpeciesCount() {
@@ -73,12 +73,12 @@ public class StatsData implements Serializable {
     this.genesCount = genesCount;
   }
 
-  public long getIntercationsCount() {
-    return intercationsCount;
+  public long getInteractionsCount() {
+    return interactionsCount;
   }
 
-  public void setIntercationsCount(long intercationsCount) {
-    this.intercationsCount = intercationsCount;
+  public void setInteractionsCount(long interactionsCount) {
+    this.interactionsCount = interactionsCount;
   }
 
   @Override
@@ -87,7 +87,7 @@ public class StatsData implements Serializable {
     int result = 1;
     result = prime * result + (int) (genesCount ^ (genesCount >>> 32));
     result = prime * result + (int) (interactomesCount ^ (interactomesCount >>> 32));
-    result = prime * result + (int) (intercationsCount ^ (intercationsCount >>> 32));
+    result = prime * result + (int) (interactionsCount ^ (interactionsCount >>> 32));
     result = prime * result + (int) (speciesCount ^ (speciesCount >>> 32));
     return result;
   }
@@ -105,7 +105,7 @@ public class StatsData implements Serializable {
       return false;
     if (interactomesCount != other.interactomesCount)
       return false;
-    if (intercationsCount != other.intercationsCount)
+    if (interactionsCount != other.interactionsCount)
       return false;
     if (speciesCount != other.speciesCount)
       return false;
