@@ -26,7 +26,7 @@ import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 import com.github.sleroy.fakesmtp.model.EmailModel;
 
 public class EmailDataset {
-  private static String URI_PREFIX = "http://localhost:8080/evoppi/regitration/confirmation?uuid=";
+  private static String URI_PREFIX = "http://localhost:4200/regitration/confirmation?uuid=";
   
   private EmailDataset() {}
 
