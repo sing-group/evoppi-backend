@@ -24,6 +24,7 @@ package org.sing_group.evoppi.service.bio.samespecies.pipeline;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
+import static javax.ejb.TransactionAttributeType.NEVER;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -31,6 +32,7 @@ import java.util.stream.StreamSupport;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -45,6 +47,7 @@ import org.sing_group.evoppi.service.spi.execution.pipeline.AbstractPipeline;
 
 @Stateless
 @PermitAll
+@TransactionAttribute(NEVER)
 public class DefaultSameSpeciesGeneInteractionsPipeline
 extends AbstractPipeline<
   SameSpeciesGeneInteractionsConfiguration,

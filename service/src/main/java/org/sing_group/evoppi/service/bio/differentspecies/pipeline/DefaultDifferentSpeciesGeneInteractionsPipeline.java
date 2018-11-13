@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javax.annotation.security.PermitAll;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -43,6 +45,8 @@ import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.Different
 import org.sing_group.evoppi.service.spi.bio.differentspecies.pipeline.DifferentSpeciesGeneInteractionsStep;
 import org.sing_group.evoppi.service.spi.execution.pipeline.AbstractPipeline;
 
+@Stateless
+@PermitAll
 @TransactionAttribute(NEVER)
 public class DefaultDifferentSpeciesGeneInteractionsPipeline
 extends AbstractPipeline<
@@ -95,7 +99,9 @@ implements DifferentSpeciesGeneInteractionsPipeline {
   public DifferentSpeciesGeneInteractionsContext createContext(
     DifferentSpeciesGeneInteractionsConfiguration configuration
   ) {
-    return this.contextBuilderFactory.createBuilderFor(this, configuration, this.eventManager).build();
+    return this.contextBuilderFactory.createBuilderFor(
+      this, configuration, this.eventManager
+    ).build();
   }
   
   // Methods explicitly override to force @PermitAll on them
