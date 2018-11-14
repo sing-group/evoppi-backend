@@ -24,17 +24,18 @@
 
 package org.sing_group.evoppi.domain.entities.user;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -49,30 +50,38 @@ import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 @Entity
 @Table(name = "user")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING, length = 10)
 public abstract class User implements Serializable {
   private static final long serialVersionUID = 1L;
   
-  public static String getRoleName(User user) {
-    return getRole(user).name();
-  }
-  
-  public static RoleType getRole(User user) {
-    final Class<? extends User> userClass = user.getClass();
-    final DiscriminatorValue dvAnnotation = userClass.getAnnotation(DiscriminatorValue.class);
-    
-    return RoleType.valueOf(dvAnnotation.value());
-  }
-  
-  public static boolean haveSameRole(User user1, User user2) {
-    return getRole(user1).equals(getRole(user2));
-  }
+//  public static String getRoleName(User user) {
+//    return getRole(user).name();
+//  }
+//  
+//  public static RoleType getRole(User user) {
+//    final Class<? extends User> userClass = user.getClass();
+//    final UserRole dvAnnotation = userClass.getAnnotation(UserRole.class);
+//    
+//    if (dvAnnotation == null) {
+//      throw new IllegalArgumentException(
+//        String.format("The provided %s class does not have an UserRole annotation", user.getClass())
+//      );
+//    }
+//    
+//    return dvAnnotation.value();
+//  }
+//  
+//  public static boolean haveSameRole(User user1, User user2) {
+//    return getRole(user1).equals(getRole(user2));
+//  }
 
   @EmbeddedId
   private Login login;
   
   @Embedded
   private UserCredentials credentials;
+  
+  @Enumerated(EnumType.STRING)
+  private RoleType role;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
   private Set<WorkEntity> results;
@@ -80,17 +89,22 @@ public abstract class User implements Serializable {
   // For JPA
   User() {}
   
-  public User(String login, String email, String password) {
-    this(login, email, password, true);
+  public User(RoleType role, String login, String email, String password) {
+    this(role, login, email, password, true);
   }
   
-  public User(String login, String email, String password, boolean encodePassword) {
+  public User(RoleType role, String login, String email, String password, boolean encodePassword) {
+    this.role = requireNonNull(role);
     this.login = new Login(login);
     this.credentials = new UserCredentials(email, password, encodePassword);
     
     this.results = new HashSet<>();
   }
-
+  
+  public RoleType getRole() {
+    return role;
+  }
+  
   public String getLogin() {
     return login.getLogin();
   }

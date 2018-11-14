@@ -82,7 +82,7 @@ public class UsersDataset {
   
   @SuppressWarnings("unchecked")
   private static <U extends User> Stream<U> users(RoleType role) {
-    return (Stream<U>) users().filter(user -> User.getRole(user).equals(role));
+    return (Stream<U>) users().filter(user -> user.getRole().equals(role));
   }
   
   @SuppressWarnings("unchecked")

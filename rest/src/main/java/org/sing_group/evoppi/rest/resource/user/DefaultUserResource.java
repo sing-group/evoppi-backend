@@ -127,11 +127,12 @@ public class DefaultUserResource implements UserResource {
       request.logout();
       request.login(login, password);
       
-      final Optional<User> currentUser = this.userService.getCurrentUser();
+      final String role = this.userService.getCurrentUser()
+        .map(User::getRole)
+        .map(RoleType::name)
+      .orElseThrow(IllegalArgumentException::new);
       
-      return Response.ok(
-        User.getRoleName(currentUser.orElseThrow(IllegalArgumentException::new))
-      ).build();
+      return Response.ok(role).build();
     } catch (IllegalArgumentException iae) {
       LOG.warn("No user in session after login", iae);
       

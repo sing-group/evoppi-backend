@@ -51,7 +51,6 @@ import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
-@DiscriminatorValue("DIFF")
 @Table(name = "different_species_interactions_result")
 public class DifferentSpeciesInteractionsResult extends InteractionsResult implements Serializable {
   private static final long serialVersionUID = 1L;

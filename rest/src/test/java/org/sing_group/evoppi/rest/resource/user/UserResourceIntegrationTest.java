@@ -31,7 +31,6 @@ import static org.sing_group.evoppi.domain.entities.UsersDataset.invalidLogins;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.passwordOf;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.users;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.validLogins;
-import static org.sing_group.evoppi.domain.entities.user.User.getRoleName;
 import static org.sing_group.evoppi.http.util.HasHttpStatus.hasOkStatus;
 import static org.sing_group.evoppi.http.util.HasHttpStatus.hasUnauthorizedStatus;
 
@@ -149,7 +148,7 @@ public class UserResourceIntegrationTest {
       
       final String role = response.readEntity(String.class);
         
-      assertThat(role, is(equalTo(getRoleName(expectedUser))));
+      assertThat(role, is(equalTo(expectedUser.getRole().name())));
     } finally {
       responseRef.ifPresent(Response::close);
     }

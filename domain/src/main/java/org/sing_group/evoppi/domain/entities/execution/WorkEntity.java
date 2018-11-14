@@ -44,13 +44,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
-@Table(name = "work")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class WorkEntity implements Work, Serializable {
   private static final long serialVersionUID = 1L;

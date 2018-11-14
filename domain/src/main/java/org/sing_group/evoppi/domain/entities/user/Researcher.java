@@ -24,7 +24,6 @@
 
 package org.sing_group.evoppi.domain.entities.user;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -35,7 +34,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "researcher")
-@DiscriminatorValue("RESEARCHER")
 public class Researcher extends User {
   private static final long serialVersionUID = 1L;
 
@@ -45,10 +43,10 @@ public class Researcher extends User {
   }
   
   public Researcher(String login, String email, String password) {
-    super(login, email, password);
+    super(RoleType.RESEARCHER, login, email, password);
   }
 
   public Researcher(String login, String email, String password, boolean encodedPassword) {
-    super(login, email, password, encodedPassword);
+    super(RoleType.RESEARCHER, login, email, password, encodedPassword);
   }
 }

@@ -30,7 +30,6 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -45,7 +44,6 @@ import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
-@DiscriminatorValue("SAME")
 @Table(name = "same_species_interactions_result")
 public class SameSpeciesInteractionsResult extends InteractionsResult implements Serializable {
   private static final long serialVersionUID = 1L;

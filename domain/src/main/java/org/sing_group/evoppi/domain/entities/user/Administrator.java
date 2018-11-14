@@ -24,7 +24,6 @@
 
 package org.sing_group.evoppi.domain.entities.user;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -35,7 +34,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "administrator")
-@DiscriminatorValue("ADMIN")
 public class Administrator extends User {
   private static final long serialVersionUID = 1L;
 
@@ -43,11 +41,11 @@ public class Administrator extends User {
   Administrator() {}
   
   public Administrator(String login, String email, String password) {
-    super(login, email, password);
+    super(RoleType.ADMIN, login, email, password);
   }
 
   public Administrator(String login, String email, String password, boolean encodedPassword) {
-    super(login, email, password, encodedPassword);
+    super(RoleType.ADMIN, login, email, password, encodedPassword);
   }
   
 }

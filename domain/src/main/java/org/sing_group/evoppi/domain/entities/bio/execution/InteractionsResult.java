@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -42,7 +41,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -53,9 +51,7 @@ import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "type", length = 4)
-@Table(name = "interactions_result")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class InteractionsResult extends WorkEntity {
   private static final long serialVersionUID = 1L;
   
