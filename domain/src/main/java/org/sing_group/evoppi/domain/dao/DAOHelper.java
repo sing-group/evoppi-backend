@@ -2,7 +2,7 @@
  * #%L
  * Domain
  * %%
- * Copyright (C) 2017 - 2018 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,8 +19,6 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-
 
 package org.sing_group.evoppi.domain.dao;
 
@@ -47,7 +45,7 @@ import javax.persistence.criteria.Root;
 public class DAOHelper<K, T> {
   private final EntityManager em;
   private final Class<T> entityClass;
-  
+
   public static <K, T> DAOHelper<K, T> of(Class<K> keyClass, Class<T> entityClass, EntityManager em) {
     return new DAOHelper<>(keyClass, entityClass, em);
   }
