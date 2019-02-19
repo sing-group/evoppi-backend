@@ -26,4 +26,6 @@ DROP TABLE `researcher`;
 DROP TABLE `administrator`;
 DROP TABLE `user`;
 
+DROP TABLE `registration_linked_work`;
 DROP TABLE `registration`;
+

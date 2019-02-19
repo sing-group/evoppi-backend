@@ -48,6 +48,10 @@ public interface InteractionService {
   public SameSpeciesInteractionsResult getSameSpeciesResult(String id);
 
   public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(String id);
+  
+  public Stream<SameSpeciesInteractionsResult> listSameSpeciesResult(String ... ids);
+  
+  public Stream<DifferentSpeciesInteractionsResult> listDifferentSpeciesResult(String ... ids);
 
   public boolean isSameSpeciesResult(String id);
 

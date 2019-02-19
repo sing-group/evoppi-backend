@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -159,6 +160,36 @@ public class DefaultInteractionService implements InteractionService {
     )
       .throwing(() -> new IllegalArgumentException("Unknown interaction result: " + id))
     .call(() -> get.apply(id));
+  }
+  
+  @Override
+  public Stream<SameSpeciesInteractionsResult> listSameSpeciesResult(String... ids) {
+    return this.listResult(
+      ids, this.sameInteractionsResultDao::exists, this.sameInteractionsResultDao::get
+    );
+  }
+  
+  @Override
+  public Stream<DifferentSpeciesInteractionsResult> listDifferentSpeciesResult(String... ids) {
+    return this.listResult(
+      ids, this.differentInteractionsResultDao::exists, this.differentInteractionsResultDao::get
+    );
+  }
+  
+  private <T extends InteractionsResult> Stream<T> listResult(
+    String[] ids, Predicate<String> exists, Function<String, T> get
+  ) {
+    return Stream.of(ids)
+      .filter(exists)
+      .map(id -> {
+        try {
+          return this.getResult(id, get);
+        } catch (IllegalArgumentException iae) {
+          return null;
+        }
+      })
+      .filter(Objects::nonNull);
+    
   }
   
   @Override

@@ -22,7 +22,6 @@
 
 package org.sing_group.evoppi.rest.resource.bio;
 
-import static java.util.Arrays.stream;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
@@ -177,10 +176,10 @@ public class DefaultInteractionResource implements InteractionResource {
     if (!ids.matches(MULTIPLE_UUID_PATTERN))
       throw new IllegalArgumentException("Invalid 'ids' format");
     
-    final DifferentSpeciesInteractionsResultSummaryData[] results = stream(ids.split(","))
-      .map(this.service::getDifferentSpeciesResult)
-      .map(bioMapper::toInteractionQueryResultSummary)
-    .toArray(DifferentSpeciesInteractionsResultSummaryData[]::new);
+    final DifferentSpeciesInteractionsResultSummaryData[] results = 
+      this.service.listDifferentSpeciesResult(ids.split(","))
+        .map(bioMapper::toInteractionQueryResultSummary)
+      .toArray(DifferentSpeciesInteractionsResultSummaryData[]::new);
     
     return Response.ok(results).build();
   }
@@ -198,10 +197,10 @@ public class DefaultInteractionResource implements InteractionResource {
     if (!ids.matches(MULTIPLE_UUID_PATTERN))
       throw new IllegalArgumentException("Invalid 'ids' format");
     
-    final SameSpeciesInteractionsResultSummaryData[] results = stream(ids.split(","))
-      .map(this.service::getSameSpeciesResult)
-      .map(bioMapper::toInteractionQueryResultSummary)
-    .toArray(SameSpeciesInteractionsResultSummaryData[]::new);
+    final SameSpeciesInteractionsResultSummaryData[] results = 
+      this.service.listSameSpeciesResult(ids.split(","))
+        .map(bioMapper::toInteractionQueryResultSummary)
+      .toArray(SameSpeciesInteractionsResultSummaryData[]::new);
     
     return Response.ok(results).build();
   }
