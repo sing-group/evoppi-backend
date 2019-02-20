@@ -19,15 +19,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.sing_group.evoppi.service.spi.notification;
 
-public interface Mailer {
+import javax.ejb.Local;
 
-  public void sendEmail(String from, String[] tos, String subject, String message);
+import org.sing_group.evoppi.service.notification.entity.Feedback;
 
-  public default void sendEmail(String from, String to, String subject, String message) {
-    this.sendEmail(from, new String[] {to}, subject, message);
-  }
-  
+@Local
+public interface FeedbackService {
+  public void notifyFeedback(Feedback feedback);
 }

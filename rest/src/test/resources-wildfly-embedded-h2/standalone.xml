@@ -366,6 +366,9 @@
                 <simple name="java:global/evoppi/email/passwordrecovery/confirmationUrl" value="http://localhost:4200/password/recovery?uuid=[UUID]" type="java.lang.String"/>
                 <simple name="java:global/evoppi/email/passwordrecovery/subject" value="EvoPPI password recovery" type="java.lang.String"/>
                 <simple name="java:global/evoppi/email/passwordrecovery/message" value="&lt;p&gt;Dear [USER],&lt;/p&gt;&lt;p&gt;In order to restore your EvoPPI password, please access the follow &lt;a href=&quot;[PASSWORD_RECOVERY_URL]&quot;&gt;link&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Sincerely,&lt;br /&gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;EvoPPI Team&lt;/p&gt;" type="java.lang.String"/>
+                <simple name="java:global/evoppi/feedback/targets" value="admin@email" type="java.lang.String"/>
+                <simple name="java:global/evoppi/feedback/subject" value="EvoPPI feedback message" type="java.lang.String"/>
+                <simple name="java:global/evoppi/feedback/message" value="&#x3C;p&#x3E;Dear admin,&#x3C;/p&#x3E;&#x3C;p&#x3E;The user with the email [AUTHOR_EMAIL] has sent the following feedback message from the web contact form:&#x3C;/p&#x3E;&#x3C;hr/&#x3E;&#x3C;p&#x3E;&#x3C;h4&#x3E;Subject: [SUBJECT]&#x3C;/h4&#x3E;[MESSAGE]&#x3C;/p&#x3E;&#x3C;hr/&#x3E;&#x3C;p&#x3E;Please, review this message and answer the user as soon as possible.&#x3C;/p&#x3E;&#x3C;p&#x3E;Sincerely,&#x3C;br/&#x3E;&#x3C;br/&#x3E;The EvoPPI Team&#x3C;/p&#x3E;" type="java.lang.String"/>
             </bindings>
             <remote-naming/>
         </subsystem>

@@ -19,8 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-package org.sing_group.evoppi.rest.resource.info;
+package org.sing_group.evoppi.rest.resource.notification;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -29,63 +28,47 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.sing_group.evoppi.rest.entity.info.StatsData;
+import org.sing_group.evoppi.rest.entity.mapper.spi.notification.FeedbackMapper;
+import org.sing_group.evoppi.rest.entity.notification.FeedbackData;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
-import org.sing_group.evoppi.rest.resource.spi.info.StatsResource;
-import org.sing_group.evoppi.service.spi.bio.GeneService;
-import org.sing_group.evoppi.service.spi.bio.InteractionService;
-import org.sing_group.evoppi.service.spi.bio.InteractomeService;
-import org.sing_group.evoppi.service.spi.bio.SpeciesService;
+import org.sing_group.evoppi.rest.resource.spi.notification.FeedbackResource;
+import org.sing_group.evoppi.service.spi.notification.FeedbackService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Path("stats")
-@Api("stats")
-@Produces({ APPLICATION_JSON, APPLICATION_XML })
+@Path("feedback")
+@Api("feedback")
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
 @Default
 @CrossDomain
-public class DefaultStatsResource implements StatsResource {
+public class DefaultFeedbackResource implements FeedbackResource {
   @Inject
-  private SpeciesService speciesService;
+  private FeedbackMapper mapper;
   
   @Inject
-  private InteractomeService interactomeService;
-  
-  @Inject
-  private GeneService geneService;
-  
-  @Inject
-  private InteractionService interactionService;
+  private FeedbackService service;
 
-  @GET
+  @POST
   @ApiOperation(
-    value = "Provides database statistic information.",
-    response = StatsData.class,
+    value = "Sends feedback to page administrators.",
     code = 200
   )
   @ApiResponses({
     @ApiResponse(code = 200, message = "successful operation"),
   })
   @Override
-  public Response get() {
-    return Response.ok(
-      new StatsData(
-        this.speciesService.count(),
-        this.interactomeService.count(),
-        this.geneService.count(),
-        this.interactionService.count()
-      )
-    ).build();
+  public Response send(FeedbackData feedback) {
+    this.service.notifyFeedback(this.mapper.toFeedback(feedback));
+    
+    return Response.ok().build();
   }
 
 }

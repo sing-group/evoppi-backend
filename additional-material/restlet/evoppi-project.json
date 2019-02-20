@@ -1,11 +1,11 @@
 {
-  "front-version": "2.19.0",
+  "front-version": "2.19.1",
   "version": 3,
   "nodes": [
     {
       "type": "Project",
       "id": "1a041db9-d528-48eb-ae52-3c3c00dc1828",
-      "lastModified": "2018-08-17T13:42:51.660+02:00",
+      "lastModified": "2019-02-19T14:14:04.998+01:00",
       "name": "EvoPPI"
     },
     {
@@ -1860,6 +1860,56 @@
       "headers": [],
       "metaInfo": {},
       "parentId": "7d5ccaa2-337f-4026-8a8d-4be16dfc2133"
+    },
+    {
+      "type": "Service",
+      "id": "5e9dd8c7-3b4c-4899-843c-e9599cf03403",
+      "lastModified": "2019-02-19T14:12:47.957+01:00",
+      "name": "Notifications",
+      "parentId": "1a041db9-d528-48eb-ae52-3c3c00dc1828"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "{\n  \"email\": \"feedback@email.com\",\n  \"subject\": \"EvoPPI is great\",\n  \"message\": \"EvoPPI is very useful for me.\"\n}"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "${restUrl}",
+        "path": "/feedback"
+      },
+      "id": "74818d3f-0e40-4226-be41-9d455d7984a9",
+      "lastModified": "2019-02-19T14:14:04.998+01:00",
+      "name": "Feedback",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "5e9dd8c7-3b4c-4899-843c-e9599cf03403"
     },
     {
       "type": "Service",

@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * REST
  * %%
  * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,15 +19,20 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.rest.entity.mapper.notification;
 
-package org.sing_group.evoppi.service.spi.notification;
+import javax.enterprise.inject.Default;
 
-public interface Mailer {
+import org.sing_group.evoppi.rest.entity.mapper.spi.notification.FeedbackMapper;
+import org.sing_group.evoppi.rest.entity.notification.FeedbackData;
+import org.sing_group.evoppi.service.notification.entity.Feedback;
 
-  public void sendEmail(String from, String[] tos, String subject, String message);
+@Default
+public class DefaultFeedbackMapper implements FeedbackMapper {
 
-  public default void sendEmail(String from, String to, String subject, String message) {
-    this.sendEmail(from, new String[] {to}, subject, message);
+  @Override
+  public Feedback toFeedback(FeedbackData data) {
+    return new Feedback(data.getEmail(), data.getSubject(), data.getMessage());
   }
-  
+
 }

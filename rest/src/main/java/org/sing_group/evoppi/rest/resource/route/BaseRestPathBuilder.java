@@ -111,6 +111,14 @@ public final class BaseRestPathBuilder implements RestPathBuilder {
     return new WorkRestPathBuilder(this.builder, id);
   }
   
+  public StatsRestPathBuilder stats() {
+    return new StatsRestPathBuilder(this.builder);
+  }
+  
+  public FeedbackRestPathBuilder feedback() {
+    return new FeedbackRestPathBuilder(this.builder);
+  }
+  
   public URI build() {
     return this.builder.build();
   }

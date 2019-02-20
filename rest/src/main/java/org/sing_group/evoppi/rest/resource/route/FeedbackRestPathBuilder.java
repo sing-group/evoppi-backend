@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * REST
  * %%
  * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -20,14 +20,21 @@
  * #L%
  */
 
-package org.sing_group.evoppi.service.spi.notification;
+package org.sing_group.evoppi.rest.resource.route;
 
-public interface Mailer {
+import java.net.URI;
 
-  public void sendEmail(String from, String[] tos, String subject, String message);
+import javax.ws.rs.core.UriBuilder;
 
-  public default void sendEmail(String from, String to, String subject, String message) {
-    this.sendEmail(from, new String[] {to}, subject, message);
+public class FeedbackRestPathBuilder implements RestPathBuilder {
+  private UriBuilder builder;
+  
+  public FeedbackRestPathBuilder(UriBuilder builder) {
+    this.builder = builder.clone().path("feedback");
   }
   
+  @Override
+  public URI build() {
+    return this.builder.clone().build();
+  }
 }

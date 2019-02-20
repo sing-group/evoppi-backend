@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Service
+ * REST
  * %%
  * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,15 +19,12 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.rest.resource.spi.notification;
 
-package org.sing_group.evoppi.service.spi.notification;
+import javax.ws.rs.core.Response;
 
-public interface Mailer {
+import org.sing_group.evoppi.rest.entity.notification.FeedbackData;
 
-  public void sendEmail(String from, String[] tos, String subject, String message);
-
-  public default void sendEmail(String from, String to, String subject, String message) {
-    this.sendEmail(from, new String[] {to}, subject, message);
-  }
-  
+public interface FeedbackResource {
+  public Response send(FeedbackData feedback);
 }

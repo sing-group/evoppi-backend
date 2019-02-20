@@ -40,12 +40,14 @@ public class JavaxMailMailer implements Mailer {
   private Session mailSession;
   
   @Override
-  public void sendEmail(String from, String to, String subject, String message) {
+  public void sendEmail(String from, String[] tos, String subject, String message) {
     try {
       final MimeMessage messageBody = new MimeMessage(mailSession);
 
       messageBody.setFrom(new InternetAddress(from));
-      messageBody.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+      for (String to : tos) {
+        messageBody.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+      }
       
       messageBody.setSubject(subject);
       
