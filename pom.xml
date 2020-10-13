@@ -123,7 +123,7 @@
 		<fakesmtp.junit.runner.version>0.1.1</fakesmtp.junit.runner.version>
 		<hamcrest.version>2.0.0.0</hamcrest.version>
 		<jacoco.version>0.8.0</jacoco.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<mysql.connector.java.version>5.1.21</mysql.connector.java.version>
 		<slf4j.version>1.5.11</slf4j.version>
 
