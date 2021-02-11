@@ -34,7 +34,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

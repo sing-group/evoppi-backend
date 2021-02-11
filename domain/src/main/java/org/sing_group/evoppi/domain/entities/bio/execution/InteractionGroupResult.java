@@ -39,6 +39,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -50,7 +51,10 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResul
 import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePair;
 
 @Entity
-@Table(name = "interaction_group_result")
+@Table(
+  name = "interaction_group_result",
+  indexes = @Index(name = "interactionsResultIdIndex", columnList = "interactionsResultId", unique = false)
+)
 @IdClass(InteractionGroupResultId.class)
 public class InteractionGroupResult implements HasGenePair, Serializable {
   private static final long serialVersionUID = 1L;
