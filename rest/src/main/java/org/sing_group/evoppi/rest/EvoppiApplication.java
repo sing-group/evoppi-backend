@@ -26,4 +26,4 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 @ApplicationPath("api")
-public class MTCApplication extends Application {}
+public class EvoppiApplication extends Application {}
