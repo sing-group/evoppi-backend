@@ -24,7 +24,7 @@ package org.sing_group.evoppi.rest.resource.user;
 
 import static javax.ws.rs.client.Entity.json;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.ADMIN_HTTP_BASIC_AUTH;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.countResearchers;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.modifiedResearcher;

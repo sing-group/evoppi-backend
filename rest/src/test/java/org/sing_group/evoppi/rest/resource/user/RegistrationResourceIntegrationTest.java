@@ -25,7 +25,7 @@ package org.sing_group.evoppi.rest.resource.user;
 import static javax.ws.rs.client.Entity.entity;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.newResearcher;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.newResearcherEmail;
 import static org.sing_group.evoppi.domain.entities.UsersDataset.newResearcherLogin;

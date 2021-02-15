@@ -83,6 +83,7 @@ public class TransactionalPipelineExecutor implements PipelineExecutor {
     }
   }
   
+  @SuppressWarnings("unchecked")
   private <
     C extends PipelineConfiguration,
     PC extends PipelineContext<C, PC, PS, P, PE, PEM>,

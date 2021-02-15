@@ -30,7 +30,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.hamcrest.Factory;
 import org.sing_group.evoppi.domain.entities.IsEqualToEntity;
-import org.sing_group.evoppi.rest.entity.IdAndUri;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 
 public class IsEqualToIdAndUri<T> extends IsEqualToEntity<T, IdAndUri> {

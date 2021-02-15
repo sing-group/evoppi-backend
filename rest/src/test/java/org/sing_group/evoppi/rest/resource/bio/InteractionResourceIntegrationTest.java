@@ -25,7 +25,7 @@ package org.sing_group.evoppi.rest.resource.bio;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.groupingBy;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.sing_group.evoppi.rest.entity.bio.IsEqualToInteractionResultData.containsInteractionResultDataInAnyOrder;
 
 import java.io.IOException;

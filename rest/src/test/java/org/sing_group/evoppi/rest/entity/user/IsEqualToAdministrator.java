@@ -28,7 +28,6 @@ import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.sing_group.evoppi.domain.entities.IsEqualToEntity;
 import org.sing_group.evoppi.domain.entities.user.Administrator;
-import org.sing_group.evoppi.rest.entity.user.AdministratorData;
 
 public class IsEqualToAdministrator extends IsEqualToEntity<Administrator, AdministratorData> {
   public IsEqualToAdministrator(Administrator user) {
