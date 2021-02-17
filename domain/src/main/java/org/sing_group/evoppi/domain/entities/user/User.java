@@ -51,27 +51,6 @@ import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 public abstract class User implements Serializable {
   private static final long serialVersionUID = 1L;
   
-//  public static String getRoleName(User user) {
-//    return getRole(user).name();
-//  }
-//  
-//  public static RoleType getRole(User user) {
-//    final Class<? extends User> userClass = user.getClass();
-//    final UserRole dvAnnotation = userClass.getAnnotation(UserRole.class);
-//    
-//    if (dvAnnotation == null) {
-//      throw new IllegalArgumentException(
-//        String.format("The provided %s class does not have an UserRole annotation", user.getClass())
-//      );
-//    }
-//    
-//    return dvAnnotation.value();
-//  }
-//  
-//  public static boolean haveSameRole(User user1, User user2) {
-//    return getRole(user1).equals(getRole(user2));
-//  }
-
   @EmbeddedId
   private Login login;
   

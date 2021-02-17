@@ -33,7 +33,7 @@ import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 public interface WorkService {
   public WorkEntity get(String id);
 
-  public Stream<WorkEntity> list(ListingOptions options);
+  public Stream<WorkEntity> list(ListingOptions<WorkEntity> options);
 
   public long count();
 }

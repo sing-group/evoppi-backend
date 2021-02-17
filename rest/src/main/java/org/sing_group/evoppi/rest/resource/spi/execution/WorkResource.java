@@ -26,10 +26,11 @@ import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntityListingField;
 
 @Local
 public interface WorkResource {
   public Response get(String workId);
   
-  public Response list(Integer start, Integer end, String order, SortDirection sort);
+  public Response list(Integer start, Integer end, WorkEntityListingField order, SortDirection sort);
 }

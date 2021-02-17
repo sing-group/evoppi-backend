@@ -26,6 +26,7 @@ import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.user.AdministratorListingField;
 import org.sing_group.evoppi.rest.entity.user.AdministratorEditionData;
 
 @Local
@@ -33,7 +34,7 @@ public interface AdministratorResource {
 
   public Response get(String login);
 
-  public Response list(Integer start, Integer end, String order, SortDirection sort);
+  public Response list(Integer start, Integer end, AdministratorListingField order, SortDirection sort);
 
   public Response create(AdministratorEditionData data);
 

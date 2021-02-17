@@ -62,7 +62,7 @@ public abstract class AbstractUserManagementDAO<E extends User> implements UserM
   }
 
   @Override
-  public Stream<E> list(ListingOptions listingOptions) {
+  public Stream<E> list(ListingOptions<E> listingOptions) {
     return this.dh.list(listingOptions).stream();
   }
   

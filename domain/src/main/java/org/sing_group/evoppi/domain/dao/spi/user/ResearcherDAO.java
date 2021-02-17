@@ -31,7 +31,7 @@ public interface ResearcherDAO {
   
   public Researcher get(String login);
 
-  public Stream<Researcher> list(ListingOptions options);
+  public Stream<Researcher> list(ListingOptions<Researcher> options);
 
   public long count();
 

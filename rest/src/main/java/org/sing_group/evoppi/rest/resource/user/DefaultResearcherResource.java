@@ -49,6 +49,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
+import org.sing_group.evoppi.domain.entities.user.ResearcherListingField;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.user.ResearcherData;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
@@ -125,10 +126,10 @@ public class DefaultResearcherResource implements ResearcherResource {
   public Response list(
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
-    @QueryParam("order") String sortField,
+    @QueryParam("order") ResearcherListingField sortField,
     @QueryParam("sort") @DefaultValue("NONE") SortDirection sortDirection
   ) {
-    final ListingOptions options = sortedBetween(start, end, sortField, sortDirection);
+    final ListingOptions<Researcher> options = sortedBetween(start, end, sortField, sortDirection);
     
     final ResearcherData[] researchers = this.service.list(options)
       .map(userMapper::toResearcherData)

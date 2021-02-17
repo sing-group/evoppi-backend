@@ -65,7 +65,7 @@ public class DefaultWorkDAO implements WorkDAO {
   }
   
   @Override
-  public Stream<WorkEntity> list(ListingOptions options) {
+  public Stream<WorkEntity> list(ListingOptions<WorkEntity> options) {
     return this.dh.list(options).stream();
   }
   

@@ -33,7 +33,7 @@ import org.sing_group.evoppi.domain.entities.user.Researcher;
 public interface ResearcherService {
   public Researcher get(String login);
 
-  public Stream<Researcher> list(ListingOptions listingOptions);
+  public Stream<Researcher> list(ListingOptions<Researcher> listingOptions);
   
   public long count();
 

@@ -24,14 +24,12 @@ package org.sing_group.evoppi.rest.resource.execution;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
-import static org.sing_group.evoppi.domain.dao.ListingOptions.sortedBetween;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -44,6 +42,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntityListingField;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -111,10 +110,10 @@ public class DefaultWorkResource implements WorkResource {
   public Response list(
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
-    @QueryParam("order") String sortField,
-    @QueryParam("sort") @DefaultValue("NONE") SortDirection sortDirection
+    @QueryParam("order") WorkEntityListingField order,
+    @QueryParam("sort") SortDirection sort
   ) {
-    final ListingOptions options = sortedBetween(start, end, sortField, sortDirection);
+    final ListingOptions<WorkEntity> options = ListingOptions.sortedBetween(start, end, order, sort);
 
     final WorkData[] admins = this.service.list(options)
       .map(mapper::toWorkData)

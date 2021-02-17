@@ -22,9 +22,34 @@
 
 package org.sing_group.evoppi.domain.entities.bio;
 
-public enum InteractomeListingField {
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.sing_group.evoppi.domain.dao.EntityListingField;
+
+public enum InteractomeListingField implements EntityListingField<Interactome> {
   NAME,
   SOURCE_DB,
-  SPECIES,
-  NONE;
+  SPECIES;
+  
+  @Override
+  public <F> Path<F> getField(Root<Interactome> root) {
+    switch(this) {
+      case NAME:
+        return root.get("name");
+      case SOURCE_DB:
+        return root.join("species").get("name");
+      case SPECIES:
+        return root.get("dbSourceIdType");
+      default:
+        throw new IllegalStateException();
+    }
+  }
+
+  @Override
+  public Predicate getFilter(CriteriaBuilder cb, Root<Interactome> root, String value) {
+    return cb.like(this.getField(root), "%" + value + "%");
+  }
 }

@@ -89,12 +89,27 @@ public class DAOHelper<K, T> {
     ).getResultList();
   }
   
-  public List<T> list(ListingOptions options) {
-    return this.list(options, (cb, r) -> new Predicate[0]);
+  public List<T> list(ListingOptions<T> options) {
+    if (!options.hasAnyQueryModifier()) {
+      return this.list();
+    } else {
+      final ListingOptionsQueryBuilder<T> optionsBuilder = new ListingOptionsQueryBuilder<>(options);
+      
+      final CriteriaQuery<T> queryBuilder = createCBQuery();
+      final Root<T> root = queryBuilder.from(getEntityType());
+      
+      CriteriaQuery<T> select = optionsBuilder.addOrder(cb(), queryBuilder.select(root), root);
+      
+      select = optionsBuilder.addFilters(cb(), select, root);
+      
+      final TypedQuery<T> query = optionsBuilder.addLimits(em.createQuery(select));
+      
+      return query.getResultList();
+    }
   }
 
-  public List<T> list(ListingOptions options, BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
-    final ListingOptionsQueryBuilder optionsBuilder = new ListingOptionsQueryBuilder(options);
+  public List<T> list(ListingOptions<T> options, BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
+    final ListingOptionsQueryBuilder<T> optionsBuilder = new ListingOptionsQueryBuilder<>(options);
     
     final CriteriaQuery<T> queryBuilder = createCBQuery();
     final Root<T> root = queryBuilder.from(getEntityType());
@@ -125,7 +140,7 @@ public class DAOHelper<K, T> {
     return this.listBy(fieldName, singleton(values), ListingOptions.noModification());
   }
   
-  public final <F> List<T> listBy(String fieldName, F values, ListingOptions listingOptions) {
+  public final <F> List<T> listBy(String fieldName, F values, ListingOptions<T> listingOptions) {
     return createFieldQuery(fieldName, singleton(values), listingOptions)
       .getResultList();
   }
@@ -134,7 +149,7 @@ public class DAOHelper<K, T> {
     return this.listBy(fieldName, values, ListingOptions.noModification());
   }
   
-  public final <F> List<T> listBy(String fieldName, Set<F> values, ListingOptions listingOptions) {
+  public final <F> List<T> listBy(String fieldName, Set<F> values, ListingOptions<T> listingOptions) {
     return createFieldQuery(fieldName, values, listingOptions)
       .getResultList();
   }
@@ -143,7 +158,7 @@ public class DAOHelper<K, T> {
     return getBy(fieldName, value, ListingOptions.noModification());
   }
   
-  public <F> T getBy(String fieldName, F value, ListingOptions listingOptions) {
+  public <F> T getBy(String fieldName, F value, ListingOptions<T> listingOptions) {
     return createFieldQuery(fieldName, singleton(value), listingOptions)
       .getSingleResult();
   }
@@ -159,7 +174,7 @@ public class DAOHelper<K, T> {
   public final <F> TypedQuery<T> createFieldQuery(
     String fieldName,
     Set<F> values,
-    ListingOptions listingOptions
+    ListingOptions<T> listingOptions
   ) {
     requireNonNull(fieldName, "Fieldname can't be null");
     requireNonNullCollection(values);
@@ -171,7 +186,7 @@ public class DAOHelper<K, T> {
     final Function<F, Predicate> fieldEqualsTo = value -> 
       cb().equal(getField(root, fieldName), value);
 
-    final ListingOptionsQueryBuilder queryBuilder = new ListingOptionsQueryBuilder(listingOptions);
+    final ListingOptionsQueryBuilder<T> queryBuilder = new ListingOptionsQueryBuilder<>(listingOptions);
       
     final Predicate predicate = values.size() == 1 ?
       fieldEqualsTo.apply(values.iterator().next()) :

@@ -26,6 +26,7 @@ import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.user.ResearcherListingField;
 import org.sing_group.evoppi.rest.entity.user.ResearcherEditionData;
 
 @Local
@@ -33,7 +34,7 @@ public interface ResearcherResource {
 
   public Response get(String login);
 
-  public Response list(Integer start, Integer end, String order, SortDirection sort);
+  public Response list(Integer start, Integer end, ResearcherListingField order, SortDirection sort);
 
   public Response create(ResearcherEditionData data);
 

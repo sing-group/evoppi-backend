@@ -30,7 +30,7 @@ import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 public interface WorkDAO {
   public WorkEntity get(String workId);
 
-  public Stream<WorkEntity> list(ListingOptions options);
+  public Stream<WorkEntity> list(ListingOptions<WorkEntity> options);
 
   public long count();
 }

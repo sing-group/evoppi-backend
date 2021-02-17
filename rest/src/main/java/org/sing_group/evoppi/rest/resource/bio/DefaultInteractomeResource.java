@@ -41,10 +41,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
-import org.sing_group.evoppi.domain.entities.bio.InteractomeListingOptions;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
@@ -123,8 +123,7 @@ public class DefaultInteractomeResource implements InteractomeResource {
     @QueryParam("sort") SortDirection sort,
     @QueryParam("species") String species
   ) {
-    final InteractomeListingOptions options =
-      new InteractomeListingOptions(start, end, order, sort, species);
+    final ListingOptions<Interactome> options = ListingOptions.sortedBetween(start, end, order, sort);
 
     final InteractomeData[] interactomeData =
       this.service

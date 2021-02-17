@@ -67,7 +67,7 @@ public class DefaultWorkService implements WorkService {
   }
 
   @Override
-  public Stream<WorkEntity> list(ListingOptions options) {
+  public Stream<WorkEntity> list(ListingOptions<WorkEntity> options) {
     return this.dao.list(options);
   }
   

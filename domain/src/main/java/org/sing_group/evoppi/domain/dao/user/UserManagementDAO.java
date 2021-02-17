@@ -31,7 +31,7 @@ public interface UserManagementDAO<E extends User> {
 
   public E get(String login);
 
-  public Stream<E> list(ListingOptions listingOptions);
+  public Stream<E> list(ListingOptions<E> listingOptions);
   
   public long count();
 

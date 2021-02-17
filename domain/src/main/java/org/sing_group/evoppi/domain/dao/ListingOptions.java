@@ -22,38 +22,43 @@
 
 package org.sing_group.evoppi.domain.dao;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static org.sing_group.fluent.checker.Checks.requireNonNegative;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
-public class ListingOptions implements Serializable {
+public class ListingOptions<T> implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private final Integer start;
   private final Integer end;
-  private final List<SortField> sortFields;
+  private final List<SortField<T>> sortFields;
+  private final List<FilterField<T>> filterFields;
 
-  public static ListingOptions noModification() {
-    return new ListingOptions(null, null);
+  public static <R> ListingOptions<R> noModification() {
+    return new ListingOptions<>(null, null, null, null);
   }
 
-  public static ListingOptions between(int start, int end) {
-    return new ListingOptions(start, end);
-  }
-
-  public static ListingOptions sortedBetween(int start, int end, String sortField, SortDirection sortDirection) {
+  public static <R> ListingOptions<R> sortedBetween(
+    int start, int end, EntityListingField<R> sortField, SortDirection sortDirection
+  ) {
     if (sortField == null || sortDirection == null || sortDirection == SortDirection.NONE) {
-      return new ListingOptions(start, end);
+      return new ListingOptions<R>(start, end, null, null);
     } else {
-      return new ListingOptions(start, end, new SortField(sortField, sortDirection));
+      return new ListingOptions<R>(start, end, singleton(new SortField<R>(sortField, sortDirection)), null);
     }
   }
 
-  public ListingOptions(Integer start, Integer end, SortField... sortFields) {
+  public ListingOptions(
+    Integer start, Integer end, Collection<SortField<T>> sortFields, Collection<FilterField<T>> filterFields
+  ) {
     if (start == null ^ end == null) {
       throw new IllegalArgumentException("start and end must be used together");
     } else if (start != null) {
@@ -67,15 +72,20 @@ public class ListingOptions implements Serializable {
     this.start = start;
     this.end = end;
 
-    this.sortFields = asList(sortFields);
+    this.sortFields = sortFields == null ? emptyList() : new ArrayList<>(sortFields);
+    this.filterFields = filterFields == null ? emptyList() : new ArrayList<>(filterFields);
+  }
+
+  public boolean hasAnyQueryModifier() {
+    return this.hasResultLimits() || this.hasOrder() || this.hasFilters();
   }
 
   public OptionalInt getStart() {
-    return start == null ? OptionalInt.empty() : OptionalInt.of(start);
+    return this.start == null ? OptionalInt.empty() : OptionalInt.of(start);
   }
 
   public OptionalInt getEnd() {
-    return end == null ? OptionalInt.empty() : OptionalInt.of(end);
+    return this.end == null ? OptionalInt.empty() : OptionalInt.of(end);
   }
 
   public boolean hasResultLimits() {
@@ -94,18 +104,21 @@ public class ListingOptions implements Serializable {
     return !this.sortFields.isEmpty();
   }
 
-  public Stream<SortField> getSortFields() {
-    return sortFields.stream();
+  public Stream<SortField<T>> getSortFields() {
+    return this.sortFields.stream();
+  }
+
+  public boolean hasFilters() {
+    return !this.filterFields.isEmpty();
+  }
+
+  public Stream<FilterField<T>> getFilterFields() {
+    return this.filterFields.stream();
   }
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((end == null) ? 0 : end.hashCode());
-    result = prime * result + ((sortFields == null) ? 0 : sortFields.hashCode());
-    result = prime * result + ((start == null) ? 0 : start.hashCode());
-    return result;
+    return Objects.hash(end, filterFields, sortFields, start);
   }
 
   @Override
@@ -116,60 +129,41 @@ public class ListingOptions implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    ListingOptions other = (ListingOptions) obj;
-    if (end == null) {
-      if (other.end != null)
-        return false;
-    } else if (!end.equals(other.end))
-      return false;
-    if (sortFields == null) {
-      if (other.sortFields != null)
-        return false;
-    } else if (!sortFields.equals(other.sortFields))
-      return false;
-    if (start == null) {
-      if (other.start != null)
-        return false;
-    } else if (!start.equals(other.start))
-      return false;
-    return true;
+    ListingOptions<?> other = (ListingOptions<?>) obj;
+    return Objects.equals(end, other.end) && Objects.equals(filterFields, other.filterFields)
+      && Objects.equals(sortFields, other.sortFields) && Objects.equals(start, other.start);
   }
 
-  public static class SortField implements Serializable {
+  public static class SortField<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String sortField;
-    private final SortDirection sortDirection;
+    private final EntityListingField<T> field;
+    private final SortDirection direction;
 
-    public static SortField ascending(String sortField) {
-      return new SortField(sortField, SortDirection.ASCENDING);
+    public static <T> SortField<T> ascending(EntityListingField<T> field) {
+      return new SortField<>(field, SortDirection.ASCENDING);
     }
 
-    public static SortField descending(String sortField) {
-      return new SortField(sortField, SortDirection.DESCENDING);
+    public static <T> SortField<T> descending(EntityListingField<T> field) {
+      return new SortField<>(field, SortDirection.DESCENDING);
     }
 
-    public SortField(String sortField, SortDirection sortDirection) {
-      super();
-      this.sortField = sortField;
-      this.sortDirection = sortDirection;
+    public SortField(EntityListingField<T> field, SortDirection direction) {
+      this.field = field;
+      this.direction = direction;
     }
 
-    public String getSortField() {
-      return sortField;
+    public EntityListingField<T> getField() {
+      return field;
     }
 
-    public SortDirection getSortDirection() {
-      return sortDirection;
+    public SortDirection getDirection() {
+      return direction;
     }
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((sortDirection == null) ? 0 : sortDirection.hashCode());
-      result = prime * result + ((sortField == null) ? 0 : sortField.hashCode());
-      return result;
+      return Objects.hash(direction, field);
     }
 
     @Override
@@ -180,15 +174,45 @@ public class ListingOptions implements Serializable {
         return false;
       if (getClass() != obj.getClass())
         return false;
-      SortField other = (SortField) obj;
-      if (sortDirection != other.sortDirection)
+      SortField<?> other = (SortField<?>) obj;
+      return direction == other.direction && Objects.equals(field, other.field);
+    }
+  }
+
+  public static class FilterField<T> implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private final EntityListingField<T> field;
+    private final String value;
+
+    public FilterField(EntityListingField<T> field, String value) {
+      this.field = field;
+      this.value = value;
+    }
+
+    public EntityListingField<T> getField() {
+      return field;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(field, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
         return false;
-      if (sortField == null) {
-        if (other.sortField != null)
-          return false;
-      } else if (!sortField.equals(other.sortField))
+      if (getClass() != obj.getClass())
         return false;
-      return true;
+      FilterField<?> other = (FilterField<?>) obj;
+      return Objects.equals(field, other.field) && Objects.equals(value, other.value);
     }
   }
 }

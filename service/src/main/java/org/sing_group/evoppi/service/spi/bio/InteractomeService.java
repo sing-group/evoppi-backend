@@ -24,12 +24,12 @@ package org.sing_group.evoppi.service.spi.bio;
 
 import java.util.stream.Stream;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.InteractomeListingOptions;
 
 public interface InteractomeService {
 
-  public Stream<Interactome> listInteractomes(InteractomeListingOptions interactomeListingOptions);
+  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions);
 
   public Interactome getInteractome(int id);
 

@@ -33,7 +33,7 @@ import org.sing_group.evoppi.domain.entities.user.Administrator;
 public interface AdministratorService {
   public Administrator get(String login);
 
-  public Stream<Administrator> list(ListingOptions listingOptions);
+  public Stream<Administrator> list(ListingOptions<Administrator> listingOptions);
   
   public long count();
 

@@ -31,28 +31,28 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class ListingOptionsQueryBuilder {
-  private final ListingOptions options;
+public class ListingOptionsQueryBuilder<T> {
+  private final ListingOptions<T> options;
 
-  public ListingOptionsQueryBuilder(ListingOptions options) {
+  public ListingOptionsQueryBuilder(ListingOptions<T> options) {
     this.options = requireNonNull(options, "options can't be null");
   }
 
-  public <T> CriteriaQuery<T> addOrder(CriteriaBuilder cb, CriteriaQuery<T> query, Root<T> root) {
+  public CriteriaQuery<T> addOrder(CriteriaBuilder cb, CriteriaQuery<T> query, Root<T> root) {
     if (options.hasOrder()) {
       final List<Order> order =
         this.options.getSortFields()
           .map(sortField -> {
-            switch (sortField.getSortDirection()) {
+            switch (sortField.getDirection()) {
               case ASCENDING:
-                return cb.asc(getField(sortField.getSortField(), root));
+                return cb.asc(sortField.getField().getField(root));
               case DESCENDING:
-                return cb.desc(getField(sortField.getSortField(), root));
+                return cb.desc(sortField.getField().getField(root));
               default:
-                throw new IllegalStateException("Invalid sort direction: " + sortField.getSortDirection());
+                throw new IllegalStateException("Invalid sort direction: " + sortField.getDirection());
             }
           })
           .collect(toList());
@@ -62,8 +62,22 @@ public class ListingOptionsQueryBuilder {
       return query;
     }
   }
+  
+  public CriteriaQuery<T> addFilters(CriteriaBuilder cb, CriteriaQuery<T> query, Root<T> root) {
+    if (options.hasFilters()) {
+      final Predicate[] filters = this.options.getFilterFields()
+        .map(field -> field.getField().getFilter(cb, root, field.getValue()))
+      .toArray(Predicate[]::new);
+      
+      final Predicate predicate = filters.length == 1 ? filters[0] : cb.and(filters);
+      
+      return query.where(predicate);
+    } else {
+      return query;
+    }
+  }
 
-  public <T> TypedQuery<T> addLimits(TypedQuery<T> query) {
+  public TypedQuery<T> addLimits(TypedQuery<T> query) {
     if (this.options.hasResultLimits()) {
       return query
         .setFirstResult(options.getStart().getAsInt())
@@ -71,17 +85,5 @@ public class ListingOptionsQueryBuilder {
     } else {
       return query;
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static <T, Y> Path<Y> getField(String fieldName, Root<T> root) {
-    final String[] fields = fieldName.split("\\.");
-
-    Path<?> path = null;
-    for (String field : fields) {
-      path = path == null ? root.get(field) : path.get(field);
-    }
-
-    return (Path<Y>) path;
   }
 }

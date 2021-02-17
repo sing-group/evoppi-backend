@@ -31,7 +31,7 @@ public interface AdministratorDAO {
   
   public Administrator get(String login);
 
-  public Stream<Administrator> list(ListingOptions listingOptions);
+  public Stream<Administrator> list(ListingOptions<Administrator> listingOptions);
   
   public long count();
 

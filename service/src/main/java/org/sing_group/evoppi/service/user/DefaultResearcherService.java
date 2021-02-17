@@ -62,7 +62,7 @@ public class DefaultResearcherService implements ResearcherService {
   }
 
   @Override
-  public Stream<Researcher> list(ListingOptions listingOptions) {
+  public Stream<Researcher> list(ListingOptions<Researcher> listingOptions) {
     return dao.list(listingOptions);
   }
 

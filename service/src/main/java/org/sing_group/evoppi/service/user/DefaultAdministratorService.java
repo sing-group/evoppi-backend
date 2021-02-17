@@ -49,7 +49,7 @@ public class DefaultAdministratorService implements AdministratorService {
   }
 
   @Override
-  public Stream<Administrator> list(ListingOptions listingOptions) {
+  public Stream<Administrator> list(ListingOptions<Administrator> listingOptions) {
     return dao.list(listingOptions);
   }
 

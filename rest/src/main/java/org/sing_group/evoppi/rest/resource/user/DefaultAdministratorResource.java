@@ -49,6 +49,7 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.user.Administrator;
+import org.sing_group.evoppi.domain.entities.user.AdministratorListingField;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.user.AdministratorData;
 import org.sing_group.evoppi.rest.entity.user.AdministratorEditionData;
@@ -125,10 +126,10 @@ public class DefaultAdministratorResource implements AdministratorResource {
   public Response list(
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
-    @QueryParam("order") String sortField,
-    @QueryParam("sort") @DefaultValue("NONE") SortDirection sortDirection
+    @QueryParam("order") AdministratorListingField order,
+    @QueryParam("sort") @DefaultValue("NONE") SortDirection sort
   ) {
-    final ListingOptions options = sortedBetween(start, end, sortField, sortDirection);
+    final ListingOptions<Administrator> options = sortedBetween(start, end, order, sort);
     
     final AdministratorData[] admins = this.service.list(options)
       .map(mapper::toAdministratorData)

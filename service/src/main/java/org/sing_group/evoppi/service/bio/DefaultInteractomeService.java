@@ -28,9 +28,9 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.InteractomeListingOptions;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 
 @Stateless
@@ -40,7 +40,7 @@ public class DefaultInteractomeService implements InteractomeService {
   private InteractomeDAO dao;
 
   @Override
-  public Stream<Interactome> listInteractomes(InteractomeListingOptions interactomeListingOptions) {
+  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions) {
     return this.dao.listInteractomes(interactomeListingOptions);
   }
 
