@@ -23,11 +23,14 @@
 package org.sing_group.evoppi.service.execution;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.user.RoleType;
@@ -37,7 +40,7 @@ import org.sing_group.evoppi.service.security.check.SecurityCheckFactory;
 import org.sing_group.evoppi.service.spi.execution.WorkService;
 
 @Stateless
-@PermitAll
+@RolesAllowed("ADMIN")
 public class DefaultWorkService implements WorkService {
   @Inject
   private WorkDAO dao;
@@ -48,6 +51,7 @@ public class DefaultWorkService implements WorkService {
   @Inject
   private SecurityCheckFactory checkThat;
   
+  @PermitAll
   @Override
   public WorkEntity get(String id) {
     final WorkEntity work = this.dao.get(id);
@@ -60,5 +64,15 @@ public class DefaultWorkService implements WorkService {
     )
       .throwing(() -> new IllegalArgumentException("Unknown work id: " + id))
     .returnValue(work);
+  }
+
+  @Override
+  public Stream<WorkEntity> list(ListingOptions options) {
+    return this.dao.list(options);
+  }
+  
+  @Override
+  public long count() {
+    return this.dao.count();
   }
 }

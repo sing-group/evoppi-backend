@@ -31,6 +31,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 public class ListingOptionsQueryBuilder {
@@ -39,28 +40,29 @@ public class ListingOptionsQueryBuilder {
   public ListingOptionsQueryBuilder(ListingOptions options) {
     this.options = requireNonNull(options, "options can't be null");
   }
-  
+
   public <T> CriteriaQuery<T> addOrder(CriteriaBuilder cb, CriteriaQuery<T> query, Root<T> root) {
     if (options.hasOrder()) {
-      final List<Order> order = this.options.getSortFields()
-        .map(sortField -> {
-          switch (sortField.getSortDirection()) {
-            case ASCENDING:
-              return cb.asc(root.get(sortField.getSortField()));
-            case DESCENDING:
-              return cb.desc(root.get(sortField.getSortField()));
-            default:
-              throw new IllegalStateException("Invalid sort direction: " + sortField.getSortDirection());
-          }
-        })
-      .collect(toList());
-      
+      final List<Order> order =
+        this.options.getSortFields()
+          .map(sortField -> {
+            switch (sortField.getSortDirection()) {
+              case ASCENDING:
+                return cb.asc(getField(sortField.getSortField(), root));
+              case DESCENDING:
+                return cb.desc(getField(sortField.getSortField(), root));
+              default:
+                throw new IllegalStateException("Invalid sort direction: " + sortField.getSortDirection());
+            }
+          })
+          .collect(toList());
+
       return query.orderBy(order);
     } else {
       return query;
     }
   }
-  
+
   public <T> TypedQuery<T> addLimits(TypedQuery<T> query) {
     if (this.options.hasResultLimits()) {
       return query
@@ -69,5 +71,17 @@ public class ListingOptionsQueryBuilder {
     } else {
       return query;
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T, Y> Path<Y> getField(String fieldName, Root<T> root) {
+    final String[] fields = fieldName.split("\\.");
+
+    Path<?> path = null;
+    for (String field : fields) {
+      path = path == null ? root.get(field) : path.get(field);
+    }
+
+    return (Path<Y>) path;
   }
 }

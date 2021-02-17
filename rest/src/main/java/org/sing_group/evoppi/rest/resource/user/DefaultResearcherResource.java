@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.resource.user;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.sing_group.evoppi.domain.dao.ListingOptions.sortedBetween;
 
 import java.net.URI;
 
@@ -46,7 +47,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.dao.ListingOptions.SortField;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
@@ -125,16 +125,10 @@ public class DefaultResearcherResource implements ResearcherResource {
   public Response list(
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
-    @QueryParam("order") String order,
-    @QueryParam("sort") @DefaultValue("NONE") SortDirection sort
+    @QueryParam("order") String sortField,
+    @QueryParam("sort") @DefaultValue("NONE") SortDirection sortDirection
   ) {
-    final ListingOptions options;
-    
-    if (order == null || sort == null || sort == SortDirection.NONE) {
-      options = new ListingOptions(start, end);
-    } else {
-      options = new ListingOptions(start, end, new SortField(order, sort));
-    }
+    final ListingOptions options = sortedBetween(start, end, sortField, sortDirection);
     
     final ResearcherData[] researchers = this.service.list(options)
       .map(userMapper::toResearcherData)

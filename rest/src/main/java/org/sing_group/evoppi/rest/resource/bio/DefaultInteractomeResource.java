@@ -44,8 +44,8 @@ import javax.ws.rs.core.UriInfo;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeListingOptions;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
-import org.sing_group.evoppi.rest.entity.bio.InteractomeFilteringOptionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -59,21 +59,25 @@ import io.swagger.annotations.ApiResponses;
 
 @Path("interactome")
 @Api(value = "interactome")
-@Produces({ APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN })
-@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN })
+@Produces({
+  APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN
+})
+@Consumes({
+  APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN
+})
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = { "X-Total-Count", "Location" }, allowRequestHeaders = true)
 public class DefaultInteractomeResource implements InteractomeResource {
   @Inject
   private InteractomeService service;
-  
+
   @Inject
   private BioMapper mapper;
 
   @Context
   private UriInfo uriInfo;
-  
+
   @PostConstruct
   public void postConstruct() {
     this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
@@ -84,9 +88,7 @@ public class DefaultInteractomeResource implements InteractomeResource {
   @ApiOperation(
     value = "Finds an interactome by identifier. If the query parameter 'includeInteractions' is set to true, the"
       + " 'genes' and 'interactions' fields are returned as part of the result. Otherwise, these fields are not "
-      + "returned.",
-    response = InteractomeWithInteractionsData.class,
-    code = 200
+      + "returned.", response = InteractomeWithInteractionsData.class, code = 200
   )
   @ApiResponses(
     @ApiResponse(code = 400, message = "Unknown interactome: {id}")
@@ -97,52 +99,49 @@ public class DefaultInteractomeResource implements InteractomeResource {
     @DefaultValue("false") @QueryParam("includeInteractions") boolean includeInteractions
   ) {
     final Interactome interactome = this.service.getInteractome(id);
-    
+
     if (includeInteractions) {
       return Response
         .ok(this.mapper.toInteractomeWithInteractionsData(interactome))
-      .build();
+        .build();
     } else {
       return Response
         .ok(this.mapper.toInteractomeData(interactome))
-      .build();
+        .build();
     }
   }
 
   @GET
   @ApiOperation(
-    value = "Returns a list with all the interactome information.",
-    response = InteractomeData.class,
-    responseContainer = "List",
-    code = 200
+    value = "Returns a list with all the interactome information.", response = InteractomeData.class, responseContainer = "List", code = 200
   )
   @Override
   public Response listInteractomes(
-    @QueryParam("page") Integer page,
-    @QueryParam("pageSize") Integer pageSize,
-    @QueryParam("orderField") @DefaultValue("NONE") InteractomeListingField orderField,
-    @QueryParam("sortDirection") @DefaultValue("NONE") SortDirection sortDirection,
+    @QueryParam("start") Integer start,
+    @QueryParam("end") Integer end,
+    @QueryParam("order") InteractomeListingField order,
+    @QueryParam("sort") SortDirection sort,
     @QueryParam("species") String species
   ) {
-    final InteractomeFilteringOptionsData filteringOptions =
-      new InteractomeFilteringOptionsData(page, pageSize, orderField, sortDirection, species);
+    final InteractomeListingOptions options =
+      new InteractomeListingOptions(start, end, order, sort, species);
 
     final InteractomeData[] interactomeData =
       this.service
-        .listInteractomes(filteringOptions.toInteractomeListingOptions())
+        .listInteractomes(options)
         .map(this.mapper::toInteractomeData)
         .toArray(InteractomeData[]::new);
 
-    return Response.ok(interactomeData).build();
+    return Response.ok(interactomeData)
+      .header("X-Total-Count", this.service.count())
+    .build();
   }
 
   @GET
   @Path("{id}/interactions")
   @Produces(TEXT_PLAIN)
   @ApiOperation(
-    value = "Returns the interactome interactions in TSV file.",
-    response = String.class,
-    code = 200
+    value = "Returns the interactome interactions in TSV file.", response = String.class, code = 200
   )
   @ApiResponses(
     @ApiResponse(code = 400, message = "Unknown interactome: {id}")

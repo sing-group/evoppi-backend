@@ -22,6 +22,8 @@
 
 package org.sing_group.evoppi.domain.dao.execution;
 
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -30,6 +32,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.execution.WorkDAO;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 
@@ -59,5 +62,15 @@ public class DefaultWorkDAO implements WorkDAO {
   public WorkEntity get(String workId) {
     return this.dh.get(workId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown work id: " + workId));
+  }
+  
+  @Override
+  public Stream<WorkEntity> list(ListingOptions options) {
+    return this.dh.list(options).stream();
+  }
+  
+  @Override
+  public long count() {
+    return this.dh.count();
   }
 }

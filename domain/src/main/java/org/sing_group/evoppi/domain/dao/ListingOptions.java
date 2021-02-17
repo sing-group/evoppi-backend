@@ -32,20 +32,28 @@ import java.util.stream.Stream;
 
 public class ListingOptions implements Serializable {
   private static final long serialVersionUID = 1L;
-  
+
   private final Integer start;
   private final Integer end;
   private final List<SortField> sortFields;
-  
+
   public static ListingOptions noModification() {
     return new ListingOptions(null, null);
   }
-  
+
   public static ListingOptions between(int start, int end) {
     return new ListingOptions(start, end);
   }
-  
-  public ListingOptions(Integer start, Integer end, SortField ... sortFields) {
+
+  public static ListingOptions sortedBetween(int start, int end, String sortField, SortDirection sortDirection) {
+    if (sortField == null || sortDirection == null || sortDirection == SortDirection.NONE) {
+      return new ListingOptions(start, end);
+    } else {
+      return new ListingOptions(start, end, new SortField(sortField, sortDirection));
+    }
+  }
+
+  public ListingOptions(Integer start, Integer end, SortField... sortFields) {
     if (start == null ^ end == null) {
       throw new IllegalArgumentException("start and end must be used together");
     } else if (start != null) {
@@ -55,10 +63,10 @@ public class ListingOptions implements Serializable {
       if (start > end)
         throw new IllegalArgumentException("start should be lower or equal to end");
     }
-    
+
     this.start = start;
     this.end = end;
-    
+
     this.sortFields = asList(sortFields);
   }
 
@@ -69,11 +77,11 @@ public class ListingOptions implements Serializable {
   public OptionalInt getEnd() {
     return end == null ? OptionalInt.empty() : OptionalInt.of(end);
   }
-  
+
   public boolean hasResultLimits() {
     return this.start != null;
   }
-  
+
   public OptionalInt getMaxResults() {
     if (this.hasResultLimits()) {
       return OptionalInt.of(this.end - this.start + 1);
@@ -81,7 +89,7 @@ public class ListingOptions implements Serializable {
       return OptionalInt.empty();
     }
   }
-  
+
   public boolean hasOrder() {
     return !this.sortFields.isEmpty();
   }
@@ -89,7 +97,7 @@ public class ListingOptions implements Serializable {
   public Stream<SortField> getSortFields() {
     return sortFields.stream();
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -129,18 +137,18 @@ public class ListingOptions implements Serializable {
 
   public static class SortField implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private final String sortField;
     private final SortDirection sortDirection;
-    
+
     public static SortField ascending(String sortField) {
       return new SortField(sortField, SortDirection.ASCENDING);
     }
-    
+
     public static SortField descending(String sortField) {
       return new SortField(sortField, SortDirection.DESCENDING);
     }
-    
+
     public SortField(String sortField, SortDirection sortDirection) {
       super();
       this.sortField = sortField;

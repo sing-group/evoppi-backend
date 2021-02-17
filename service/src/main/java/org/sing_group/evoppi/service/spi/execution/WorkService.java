@@ -22,11 +22,18 @@
 
 package org.sing_group.evoppi.service.spi.execution;
 
+import java.util.stream.Stream;
+
 import javax.ejb.Local;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 
 @Local
 public interface WorkService {
   public WorkEntity get(String id);
+
+  public Stream<WorkEntity> list(ListingOptions options);
+
+  public long count();
 }

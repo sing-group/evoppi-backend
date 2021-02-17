@@ -22,8 +22,15 @@
 
 package org.sing_group.evoppi.domain.dao.spi.execution;
 
+import java.util.stream.Stream;
+
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 
 public interface WorkDAO {
   public WorkEntity get(String workId);
+
+  public Stream<WorkEntity> list(ListingOptions options);
+
+  public long count();
 }

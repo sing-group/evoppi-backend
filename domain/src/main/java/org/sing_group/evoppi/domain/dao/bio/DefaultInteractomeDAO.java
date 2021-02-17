@@ -83,7 +83,7 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
           .orderBy(createOrders(listingOptions, root));
 
       TypedQuery<Interactome> typedQuery = em.createQuery(query);
-      if (listingOptions.hasPagination()) {
+      if (listingOptions.hasResultLimits()) {
         final int start = listingOptions.getStart().getAsInt();
         final int end = listingOptions.getEnd().getAsInt();
 
@@ -112,7 +112,7 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   private Order[] createOrders(final InteractomeListingOptions listingOptions, final Root<Interactome> root) {
     final List<Order> orders = new LinkedList<>();
 
-    if (listingOptions.hasSortField()) {
+    if (listingOptions.hasOrder()) {
       final CriteriaBuilder cb = dh.cb();
       final Function<Expression<?>, Order> order;
 

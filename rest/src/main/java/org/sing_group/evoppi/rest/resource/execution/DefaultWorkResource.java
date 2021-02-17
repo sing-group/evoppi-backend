@@ -24,20 +24,25 @@ package org.sing_group.evoppi.rest.resource.execution;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static org.sing_group.evoppi.domain.dao.ListingOptions.sortedBetween;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
@@ -49,6 +54,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
 
 @Path("work")
 @Api("work")
@@ -56,7 +62,7 @@ import io.swagger.annotations.ApiResponses;
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = { "X-Total-Count", "Location" }, allowRequestHeaders = true)
 public class DefaultWorkResource implements WorkResource {
   @Inject
   private WorkService service;
@@ -93,4 +99,29 @@ public class DefaultWorkResource implements WorkResource {
     .build();
   }
 
+  @Override
+  @GET
+  @ApiOperation(
+    value = "Returns all the works.",
+    response = WorkData.class,
+    responseContainer = "List",
+    code = 200,
+    responseHeaders = @ResponseHeader(name = "X-Total-Count", description = "Total number of works in the database.")
+  )
+  public Response list(
+    @QueryParam("start") Integer start,
+    @QueryParam("end") Integer end,
+    @QueryParam("order") String sortField,
+    @QueryParam("sort") @DefaultValue("NONE") SortDirection sortDirection
+  ) {
+    final ListingOptions options = sortedBetween(start, end, sortField, sortDirection);
+
+    final WorkData[] admins = this.service.list(options)
+      .map(mapper::toWorkData)
+    .toArray(WorkData[]::new);
+    
+    return Response.ok(admins)
+      .header("X-Total-Count", this.service.count())
+    .build();
+  }
 }

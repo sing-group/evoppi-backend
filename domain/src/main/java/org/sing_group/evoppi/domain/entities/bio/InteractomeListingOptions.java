@@ -22,19 +22,32 @@
 
 package org.sing_group.evoppi.domain.entities.bio;
 
-import java.io.Serializable;
-import java.util.OptionalInt;
+import java.util.Objects;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 
-public class InteractomeListingOptions implements Serializable {
+public class InteractomeListingOptions extends ListingOptions {
   private static final long serialVersionUID = 1L;
 
-  private final Integer start;
-  private final Integer end;
-  private final InteractomeListingField sortField;
-  private final SortDirection sortDirection;
   private final String species;
+
+  private static SortField[] buildSortField(
+    InteractomeListingField orderField, SortDirection sortDirection
+  ) {
+
+    if (orderField == null ^ sortDirection == null) {
+      throw new IllegalArgumentException("orderField and sortDirection must be used together");
+    }
+
+    if (orderField == null) {
+      return new SortField[0];
+    } else {
+      return new SortField[] {
+        new SortField(orderField.name(), sortDirection)
+      };
+    }
+  }
 
   public InteractomeListingOptions(
     Integer start, Integer end,
@@ -42,39 +55,13 @@ public class InteractomeListingOptions implements Serializable {
     SortDirection sortDirection,
     String species
   ) {
-    if (start == null ^ end == null) {
-      throw new IllegalArgumentException("start and end must be used together");
-    }
+    super(start, end, buildSortField(orderField, sortDirection));
 
-    if (orderField == null ^ sortDirection == null) {
-      throw new IllegalArgumentException("orderField and sortDirection must be used together");
-    }
-
-    this.start = start;
-    this.end = end;
-    this.sortField = orderField;
-    this.sortDirection = sortDirection;
     this.species = species;
   }
 
   public boolean hasAnyQueryModification() {
-    return this.hasPagination() || this.hasSortField() || this.hasFilters();
-  }
-
-  public boolean hasPagination() {
-    return this.start != null && this.end != null;
-  }
-
-  public OptionalInt getStart() {
-    return start == null ? OptionalInt.empty() : OptionalInt.of(start);
-  }
-
-  public OptionalInt getEnd() {
-    return end == null ? OptionalInt.empty() : OptionalInt.of(end);
-  }
-
-  public boolean hasSortField() {
-    return this.sortField != InteractomeListingField.NONE;
+    return this.hasResultLimits() || this.hasOrder() || this.hasFilters();
   }
 
   public boolean hasFilters() {
@@ -82,11 +69,17 @@ public class InteractomeListingOptions implements Serializable {
   }
 
   public InteractomeListingField getSortField() {
-    return sortField;
+    return this.getSortFields()
+      .findFirst()
+      .map(field -> InteractomeListingField.valueOf(field.getSortField()))
+      .orElse(null);
   }
 
   public SortDirection getSortDirection() {
-    return sortDirection;
+    return this.getSortFields()
+      .findFirst()
+      .map(SortField::getSortDirection)
+      .orElse(null);
   }
 
   public String getSpecies() {
@@ -96,12 +89,8 @@ public class InteractomeListingOptions implements Serializable {
   @Override
   public int hashCode() {
     final int prime = 31;
-    int result = 1;
-    result = prime * result + ((end == null) ? 0 : end.hashCode());
-    result = prime * result + ((sortField == null) ? 0 : sortField.hashCode());
-    result = prime * result + ((sortDirection == null) ? 0 : sortDirection.hashCode());
-    result = prime * result + ((start == null) ? 0 : start.hashCode());
-    result = prime * result + ((species == null) ? 0 : species.hashCode());
+    int result = super.hashCode();
+    result = prime * result + Objects.hash(species);
     return result;
   }
 
@@ -109,30 +98,11 @@ public class InteractomeListingOptions implements Serializable {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
+    if (!super.equals(obj))
       return false;
     if (getClass() != obj.getClass())
       return false;
     InteractomeListingOptions other = (InteractomeListingOptions) obj;
-    if (end == null) {
-      if (other.end != null)
-        return false;
-    } else if (!end.equals(other.end))
-      return false;
-    if (sortField != other.sortField)
-      return false;
-    if (sortDirection != other.sortDirection)
-      return false;
-    if (start == null) {
-      if (other.start != null)
-        return false;
-    } else if (!start.equals(other.start))
-      return false;
-    if (species == null) {
-      if (other.species != null)
-        return false;
-    } else if (!species.equals(other.species))
-      return false;
-    return true;
+    return Objects.equals(species, other.species);
   }
 }

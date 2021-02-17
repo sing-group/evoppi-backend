@@ -25,7 +25,11 @@ package org.sing_group.evoppi.rest.resource.spi.execution;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.evoppi.domain.dao.SortDirection;
+
 @Local
 public interface WorkResource {
   public Response get(String workId);
+  
+  public Response list(Integer start, Integer end, String order, SortDirection sort);
 }
