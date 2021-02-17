@@ -25,10 +25,11 @@ package org.sing_group.evoppi.domain.dao.spi.bio;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeListingOptions;
 
 public interface InteractomeDAO {
 
-  public Stream<Interactome> listInteractomes();
+  public Stream<Interactome> listInteractomes(InteractomeListingOptions interactomeListingOptions);
 
   public Interactome getInteractome(int id);
 

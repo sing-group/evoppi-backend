@@ -173,6 +173,21 @@ public class DefaultBioMapper implements BioMapper {
       interactions
     );
   }
+  
+  @Override
+  public String toInteractomeTsv(Interactome interactome) {
+    StringBuilder sb = new StringBuilder();
+
+    interactome.getInteractions().forEach(i -> {
+      sb
+        .append(i.getGeneA().getId())
+        .append("\t")
+        .append(i.getGeneB().getId())
+        .append("\n");
+    });
+
+    return sb.toString();
+  }
 
   public InteractingGenes toInteractingGenes(Interaction interaction) {
     return new InteractingGenes(

@@ -55,6 +55,8 @@ public interface BioMapper {
   
   public InteractomeWithInteractionsData toInteractomeWithInteractionsData(Interactome interactome);
   
+  public String toInteractomeTsv(Interactome interactome);
+  
   public GeneData toGeneData(Gene gene);
   
   public GeneNamesData toGeneNamesData(Gene gene);

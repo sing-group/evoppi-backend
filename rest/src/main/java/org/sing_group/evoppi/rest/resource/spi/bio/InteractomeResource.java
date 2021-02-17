@@ -25,8 +25,16 @@ package org.sing_group.evoppi.rest.resource.spi.bio;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
+
 @Local
 public interface InteractomeResource {
-  public Response listInteractomes();
+  public Response listInteractomes(
+    Integer page, Integer pageSize, InteractomeListingField orderField, SortDirection sortDirection, String species
+  );
+
   public Response getInteractome(int id, boolean includeInteractions);
+  
+  public Response getInteractomeInteractionsAsTsv(int id);
 }

@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.resource.bio;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -40,8 +41,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
+import org.sing_group.evoppi.rest.entity.bio.InteractomeFilteringOptionsData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -55,8 +59,8 @@ import io.swagger.annotations.ApiResponses;
 
 @Path("interactome")
 @Api(value = "interactome")
-@Produces({ APPLICATION_JSON, APPLICATION_XML })
-@Consumes({ APPLICATION_JSON, APPLICATION_XML })
+@Produces({ APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN })
+@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN })
 @Stateless
 @Default
 @CrossDomain
@@ -113,11 +117,42 @@ public class DefaultInteractomeResource implements InteractomeResource {
     code = 200
   )
   @Override
-  public Response listInteractomes() {
-    final InteractomeData[] interactomeData = this.service.listInteractomes()
-            .map(this.mapper::toInteractomeData)
-            .toArray(InteractomeData[]::new);
+  public Response listInteractomes(
+    @QueryParam("page") Integer page,
+    @QueryParam("pageSize") Integer pageSize,
+    @QueryParam("orderField") @DefaultValue("NONE") InteractomeListingField orderField,
+    @QueryParam("sortDirection") @DefaultValue("NONE") SortDirection sortDirection,
+    @QueryParam("species") String species
+  ) {
+    final InteractomeFilteringOptionsData filteringOptions =
+      new InteractomeFilteringOptionsData(page, pageSize, orderField, sortDirection, species);
+
+    final InteractomeData[] interactomeData =
+      this.service
+        .listInteractomes(filteringOptions.toInteractomeListingOptions())
+        .map(this.mapper::toInteractomeData)
+        .toArray(InteractomeData[]::new);
 
     return Response.ok(interactomeData).build();
+  }
+
+  @GET
+  @Path("{id}/interactions")
+  @Produces(TEXT_PLAIN)
+  @ApiOperation(
+    value = "Returns the interactome interactions in TSV file.",
+    response = String.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown interactome: {id}")
+  )
+  @Override
+  public Response getInteractomeInteractionsAsTsv(@PathParam("id") int id) {
+    final Interactome interactome = this.service.getInteractome(id);
+
+    return Response
+      .ok(this.mapper.toInteractomeTsv(interactome), TEXT_PLAIN)
+      .build();
   }
 }

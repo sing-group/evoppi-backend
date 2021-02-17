@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeListingOptions;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 
 @Stateless
@@ -39,15 +40,15 @@ public class DefaultInteractomeService implements InteractomeService {
   private InteractomeDAO dao;
 
   @Override
-  public Stream<Interactome> listInteractomes() {
-    return this.dao.listInteractomes();
+  public Stream<Interactome> listInteractomes(InteractomeListingOptions interactomeListingOptions) {
+    return this.dao.listInteractomes(interactomeListingOptions);
   }
 
   @Override
   public Interactome getInteractome(int id) {
     return this.dao.getInteractome(id);
   }
-  
+
   @Override
   public long count() {
     return this.dao.count();
