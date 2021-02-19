@@ -22,10 +22,12 @@
 
 package org.sing_group.evoppi.rest.resource.user;
 
+import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -47,6 +49,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
+import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResultListingField;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResultListingField;
 import org.sing_group.evoppi.domain.entities.user.Registration;
 import org.sing_group.evoppi.domain.entities.user.RoleType;
 import org.sing_group.evoppi.domain.entities.user.User;
@@ -78,7 +87,9 @@ import io.swagger.annotations.ApiResponses;
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = {
+  "X-Total-Count", "Location"
+}, allowRequestHeaders = true)
 public class DefaultUserResource implements UserResource {
   private Logger LOG = LoggerFactory.getLogger(DefaultUserResource.class);
   
@@ -197,15 +208,30 @@ public class DefaultUserResource implements UserResource {
     code = 200
   )
   @Override
-  public Response listDifferentSpeciesResults() {
+  public Response listDifferentSpeciesResults(
+    @QueryParam("start") Integer start,
+    @QueryParam("end") Integer end,
+    @QueryParam("order") DifferentSpeciesInteractionsResultListingField order,
+    @QueryParam("sort") SortDirection sort
+  ) {
     final Optional<User> currentUser = this.userService.getCurrentUser();
     
     if (currentUser.isPresent()) {
-      final DifferentSpeciesInteractionsResultSummaryData[] results = currentUser.get().getDifferentSpeciesResults()
-        .map(bioMapper::toInteractionQueryResultSummary)
-      .toArray(DifferentSpeciesInteractionsResultSummaryData[]::new);
+      final List<FilterField<DifferentSpeciesInteractionsResult>> filters =
+        FilterField.buildFromUri(DifferentSpeciesInteractionsResultListingField.values(), this.uriInfo)
+          .collect(toList());
       
-      return Response.ok(results).build();
+      final ListingOptions<DifferentSpeciesInteractionsResult> listingOptions =
+        ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
+
+      final DifferentSpeciesInteractionsResultSummaryData[] results =
+        this.interactionService.listUserDifferentSpeciesResult(currentUser.get(), listingOptions)
+          .map(bioMapper::toInteractionQueryResultSummary)
+        .toArray(DifferentSpeciesInteractionsResultSummaryData[]::new);
+      
+      return Response.ok(results)
+        .header("X-Total-Count", this.interactionService.countDifferentByUser(currentUser.get(), listingOptions))
+      .build();
     } else {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
@@ -220,15 +246,31 @@ public class DefaultUserResource implements UserResource {
     code = 200
   )
   @Override
-  public Response listSameSpeciesResults() {
+  public Response listSameSpeciesResults(
+    @QueryParam("start") Integer start,
+    @QueryParam("end") Integer end,
+    @QueryParam("order") SameSpeciesInteractionsResultListingField order,
+    @QueryParam("sort") SortDirection sort
+  ) {
     final Optional<User> currentUser = this.userService.getCurrentUser();
     
     if (currentUser.isPresent()) {
-      final SameSpeciesInteractionsResultSummaryData[] results = currentUser.get().getSameSpeciesResults()
-        .map(bioMapper::toInteractionQueryResultSummary)
-      .toArray(SameSpeciesInteractionsResultSummaryData[]::new);
+      final List<FilterField<SameSpeciesInteractionsResult>> filters =
+        FilterField.buildFromUri(SameSpeciesInteractionsResultListingField.values(), this.uriInfo)
+          .collect(toList());
       
-      return Response.ok(results).build();
+      final ListingOptions<SameSpeciesInteractionsResult> listingOptions =
+        ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
+      
+      
+      final SameSpeciesInteractionsResultSummaryData[] results =
+        this.interactionService.listUserSameSpeciesResult(currentUser.get(), listingOptions)
+          .map(bioMapper::toInteractionQueryResultSummary)
+        .toArray(SameSpeciesInteractionsResultSummaryData[]::new);
+      
+      return Response.ok(results)
+        .header("X-Total-Count", this.interactionService.countSameByUser(currentUser.get(), listingOptions))
+        .build();
     } else {
       return Response.status(Response.Status.FORBIDDEN).build();
     }

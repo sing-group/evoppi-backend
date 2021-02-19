@@ -22,8 +22,13 @@
 
 package org.sing_group.evoppi.domain.dao.bio.execution;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Collection;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
@@ -33,6 +38,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
@@ -61,12 +67,12 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
   protected void createDAOHelper() {
     this.dh = DAOHelper.of(String.class, DifferentSpeciesInteractionsResult.class, this.em);
   }
-  
+
   @Override
   public boolean exists(String interactionResultId) {
     try {
       this.get(interactionResultId);
-      
+
       return true;
     } catch (IllegalArgumentException iae) {
       return false;
@@ -77,6 +83,32 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
   public DifferentSpeciesInteractionsResult get(String interactionResultId) {
     return this.dh.get(interactionResultId)
       .orElseThrow(() -> new IllegalArgumentException("Unknown interaction result: " + interactionResultId));
+  }
+
+  @Override
+  public Stream<DifferentSpeciesInteractionsResult> listById(
+    String[] ids, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions
+  ) {
+    final Set<String> idsSet = stream(ids).collect(toSet());
+    return this.dh.listBy("id", idsSet, listingOptions).stream();
+  }
+
+  @Override
+  public Stream<DifferentSpeciesInteractionsResult> listUserResults(
+    User user, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions
+  ) {
+    return this.dh.listBy("owner", user, listingOptions).stream();
+  }
+
+  @Override
+  public long coungById(String[] ids, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions) {
+    final Set<String> idsSet = stream(ids).collect(toSet());
+    return this.dh.countBy("id", idsSet, listingOptions);
+  }
+  
+  @Override
+  public long countByUser(User user, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions) {
+    return this.dh.countBy("owner", user, listingOptions);
   }
 
   @Override

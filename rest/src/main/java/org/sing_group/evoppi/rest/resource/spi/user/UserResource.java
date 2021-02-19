@@ -25,6 +25,9 @@ package org.sing_group.evoppi.rest.resource.spi.user;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResultListingField;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResultListingField;
 import org.sing_group.evoppi.rest.entity.bio.ResultUuids;
 import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 
@@ -32,10 +35,6 @@ import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
 public interface UserResource {
 
   public Response role(String login, String password);
-  
-  public Response listDifferentSpeciesResults();
-
-  public Response listSameSpeciesResults();
   
   public Response register(UserRegistrationData registration);
 
@@ -50,5 +49,13 @@ public interface UserResource {
   public Response requestPasswordRecovery(String login);
   
   public Response recoverPassword(String code, String newPassword);
+
+  Response listDifferentSpeciesResults(
+    Integer start, Integer end, DifferentSpeciesInteractionsResultListingField order, SortDirection sort
+  );
+
+  Response listSameSpeciesResults(
+    Integer start, Integer end, SameSpeciesInteractionsResultListingField order, SortDirection sort
+  );
 
 }

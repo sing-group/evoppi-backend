@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.entities.user;
+package org.sing_group.evoppi.domain.entities.bio.execution;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,12 +29,17 @@ import javax.persistence.criteria.Root;
 
 import org.sing_group.evoppi.domain.dao.EntityListingField;
 
-public enum AdministratorListingField implements EntityListingField<Administrator> {
-  LOGIN(true), EMAIL(true), ROLE(true);
+public enum SameSpeciesInteractionsResultListingField
+  implements EntityListingField<SameSpeciesInteractionsResult> {
+  SCHEDULING_DATE_TIME(false),
+  QUERY_GENE(true),
+  MAX_DEGREE(false),
+  INTERACTOMES_COUNT(false),
+  STATUS(true);
 
   private final boolean supportsFiltering;
 
-  private AdministratorListingField(boolean supportsFiltering) {
+  private SameSpeciesInteractionsResultListingField(boolean supportsFiltering) {
     this.supportsFiltering = supportsFiltering;
   }
 
@@ -43,15 +48,22 @@ public enum AdministratorListingField implements EntityListingField<Administrato
     return this.supportsFiltering;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public <T, Q> Expression<T> getField(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<Administrator> root) {
+  public <T, Q> Expression<T> getField(
+    CriteriaBuilder cb, CriteriaQuery<Q> query, Root<SameSpeciesInteractionsResult> root
+  ) {
     switch (this) {
-      case LOGIN:
-        return root.get("login").get("login");
-      case EMAIL:
-        return root.get("credentials").get("email");
-      case ROLE:
-        return root.join("role");
+      case SCHEDULING_DATE_TIME:
+        return root.get("status").get("schedulingDateTime");
+      case QUERY_GENE:
+        return root.join("queryGene").get("defaultName");
+      case MAX_DEGREE:
+        return root.get("queryMaxDegree");
+      case INTERACTOMES_COUNT:
+        return (Expression<T>) cb.size(root.get("queryInteractomes"));
+      case STATUS:
+        return root.get("status").get("status");
       default:
         throw new IllegalStateException();
     }
@@ -59,9 +71,20 @@ public enum AdministratorListingField implements EntityListingField<Administrato
 
   @Override
   public <Q> Predicate getFilter(
-    CriteriaBuilder cb, CriteriaQuery<Q> query, Root<Administrator> root, String value
+    CriteriaBuilder cb, CriteriaQuery<Q> query, Root<SameSpeciesInteractionsResult> root, String value
   ) {
-    return cb.like(this.getField(null, null, root), "%" + value + "%");
+    if (!this.isFilteringSupported()) {
+      throw new UnsupportedOperationException();
+    }
+
+    switch (this) {
+      case QUERY_GENE:
+        return cb.like(this.getField(cb, query, root), "%" + value + "%");
+      case STATUS:
+        return cb.equal(this.getField(cb, query, root).as(String.class), value);
+      default:
+        throw new IllegalStateException();
+    }
   }
 
 }

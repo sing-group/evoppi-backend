@@ -26,6 +26,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -34,23 +36,71 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class ListingOptionsQueryBuilder<T> {
-  private final ListingOptions<T> options;
+import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
 
+public class ListingOptionsQueryBuilder<T> {
+  public static <T, Q> CriteriaQuery<Q> addFilters(
+    ListingOptions<T> options, CriteriaBuilder cb, CriteriaQuery<Q> query, Root<T> root
+  ) {
+    if (options.hasFilters()) {
+      return addFilters(options.getFilterFields(), cb, query, root);
+    } else {
+      return query;
+    }
+  }
+
+  
+  public static <T, Q> CriteriaQuery<Q> addFilters(
+    Stream<FilterField<T>> filterFields, CriteriaBuilder cb, CriteriaQuery<Q> query, Root<T> root
+  ) {
+    return buildFilters(filterFields, cb, query, root)
+      .map(predicate -> query.where(predicate))
+      .orElse(query);
+  }
+  
+  public static <T, Q> Optional<Predicate> buildFilters(
+    ListingOptions<T> options, CriteriaBuilder cb, CriteriaQuery<Q> query, Root<T> root
+  ) {
+    if (options.hasFilters()) {
+      return buildFilters(options.getFilterFields(), cb, query, root);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  public static <T, Q> Optional<Predicate> buildFilters(
+    Stream<FilterField<T>> filterFields, CriteriaBuilder cb, CriteriaQuery<Q> query, Root<T> root
+  ) {
+    final Predicate[] filters = filterFields
+      .map(field -> field.getField().getFilter(cb, query, root, field.getValue()))
+    .toArray(Predicate[]::new);
+    
+    switch(filters.length) {
+      case 0:
+        return Optional.empty();
+      case 1:
+        return Optional.of(filters[0]);
+      default:
+        return Optional.of(cb.and(filters));
+    }
+  }
+  
+  private final ListingOptions<T> options;
+  
   public ListingOptionsQueryBuilder(ListingOptions<T> options) {
     this.options = requireNonNull(options, "options can't be null");
   }
 
-  public CriteriaQuery<T> addOrder(CriteriaBuilder cb, CriteriaQuery<T> query, Root<T> root) {
+  public <Q> CriteriaQuery<Q> addOrder(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<T> root) {
     if (options.hasOrder()) {
       final List<Order> order =
         this.options.getSortFields()
           .map(sortField -> {
             switch (sortField.getDirection()) {
               case ASCENDING:
-                return cb.asc(sortField.getField().getField(root));
+                return cb.asc(sortField.getField().getField(cb, query, root));
               case DESCENDING:
-                return cb.desc(sortField.getField().getField(root));
+                return cb.desc(sortField.getField().getField(cb, query, root));
               default:
                 throw new IllegalStateException("Invalid sort direction: " + sortField.getDirection());
             }
@@ -63,21 +113,17 @@ public class ListingOptionsQueryBuilder<T> {
     }
   }
   
-  public CriteriaQuery<T> addFilters(CriteriaBuilder cb, CriteriaQuery<T> query, Root<T> root) {
-    if (options.hasFilters()) {
-      final Predicate[] filters = this.options.getFilterFields()
-        .map(field -> field.getField().getFilter(cb, root, field.getValue()))
-      .toArray(Predicate[]::new);
-      
-      final Predicate predicate = filters.length == 1 ? filters[0] : cb.and(filters);
-      
-      return query.where(predicate);
-    } else {
-      return query;
-    }
+  public <Q> CriteriaQuery<Q> addFilters(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<T> root) {
+    return this.buildFilters(cb, query, root)
+      .map(predicate -> query.where(predicate))
+      .orElse(query);
+  }
+  
+  public <Q> Optional<Predicate> buildFilters(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<T> root) {
+    return ListingOptionsQueryBuilder.buildFilters(this.options, cb, query, root);
   }
 
-  public TypedQuery<T> addLimits(TypedQuery<T> query) {
+  public <Q> TypedQuery<Q> addLimits(TypedQuery<Q> query) {
     if (this.options.hasResultLimits()) {
       return query
         .setFirstResult(options.getStart().getAsInt())

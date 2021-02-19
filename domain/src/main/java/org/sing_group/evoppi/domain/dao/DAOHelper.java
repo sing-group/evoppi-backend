@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -42,6 +43,8 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
+
 public class DAOHelper<K, T> {
   private final EntityManager em;
   private final Class<T> entityClass;
@@ -49,80 +52,80 @@ public class DAOHelper<K, T> {
   public static <K, T> DAOHelper<K, T> of(Class<K> keyClass, Class<T> entityClass, EntityManager em) {
     return new DAOHelper<>(keyClass, entityClass, em);
   }
-  
+
   private DAOHelper(Class<K> keyClass, Class<T> entityClass, EntityManager em) {
     this.entityClass = entityClass;
     this.em = em;
   }
-  
+
   public Class<T> getEntityType() {
     return this.entityClass;
   }
-  
+
   public Optional<T> get(K key) {
     return Optional.ofNullable(this.em.find(this.getEntityType(), requireNonNull(key)));
   }
-  
+
   public T persist(T entity) {
     try {
       this.em.persist(entity);
       this.em.flush();
-      
+
       return entity;
     } catch (PersistenceException pe) {
       throw new IllegalArgumentException("Entity already exists", pe);
     }
   }
-  
+
   public T update(T entity) {
     final T mergedEntity = this.em.merge(entity);
     this.em.flush();
-    
+
     return mergedEntity;
   }
-  
+
   public List<T> list() {
     final CriteriaQuery<T> query = createCBQuery();
-    
+
     return em.createQuery(
       query.select(query.from(getEntityType()))
     ).getResultList();
   }
-  
+
   public List<T> list(ListingOptions<T> options) {
     if (!options.hasAnyQueryModifier()) {
       return this.list();
     } else {
       final ListingOptionsQueryBuilder<T> optionsBuilder = new ListingOptionsQueryBuilder<>(options);
-      
+
       final CriteriaQuery<T> queryBuilder = createCBQuery();
       final Root<T> root = queryBuilder.from(getEntityType());
-      
+
       CriteriaQuery<T> select = optionsBuilder.addOrder(cb(), queryBuilder.select(root), root);
-      
+
       select = optionsBuilder.addFilters(cb(), select, root);
-      
+
       final TypedQuery<T> query = optionsBuilder.addLimits(em.createQuery(select));
-      
+
       return query.getResultList();
     }
   }
 
   public List<T> list(ListingOptions<T> options, BiFunction<CriteriaBuilder, Root<T>, Predicate[]> predicatesBuilder) {
     final ListingOptionsQueryBuilder<T> optionsBuilder = new ListingOptionsQueryBuilder<>(options);
-    
+
     final CriteriaQuery<T> queryBuilder = createCBQuery();
     final Root<T> root = queryBuilder.from(getEntityType());
-    
+
     CriteriaQuery<T> select = optionsBuilder.addOrder(cb(), queryBuilder.select(root), root);
-    
+
     final Predicate[] predicates = predicatesBuilder.apply(cb(), root);
-    
+
     if (predicates.length > 0)
       select = select.where(predicates);
-    
+
     final TypedQuery<T> query = optionsBuilder.addLimits(em.createQuery(select));
-    
+
     return query.getResultList();
   }
 
@@ -130,16 +133,16 @@ public class DAOHelper<K, T> {
     this.em.remove(get(key).orElseThrow(() -> new IllegalArgumentException("No entity found with id: " + key)));
     this.em.flush();
   }
-  
+
   public void remove(T entity) {
     this.em.remove(entity);
     this.em.flush();
   }
-  
+
   public final <F> List<T> listBy(String fieldName, F values) {
     return this.listBy(fieldName, singleton(values), ListingOptions.noModification());
   }
-  
+
   public final <F> List<T> listBy(String fieldName, F values, ListingOptions<T> listingOptions) {
     return createFieldQuery(fieldName, singleton(values), listingOptions)
       .getResultList();
@@ -148,7 +151,7 @@ public class DAOHelper<K, T> {
   public final <F> List<T> listBy(String fieldName, Set<F> values) {
     return this.listBy(fieldName, values, ListingOptions.noModification());
   }
-  
+
   public final <F> List<T> listBy(String fieldName, Set<F> values, ListingOptions<T> listingOptions) {
     return createFieldQuery(fieldName, values, listingOptions)
       .getResultList();
@@ -157,7 +160,7 @@ public class DAOHelper<K, T> {
   public <F> T getBy(String fieldName, F value) {
     return getBy(fieldName, value, ListingOptions.noModification());
   }
-  
+
   public <F> T getBy(String fieldName, F value, ListingOptions<T> listingOptions) {
     return createFieldQuery(fieldName, singleton(value), listingOptions)
       .getSingleResult();
@@ -165,12 +168,74 @@ public class DAOHelper<K, T> {
 
   public long count() {
     CriteriaQuery<Long> query = cb().createQuery(Long.class);
-    
+
     query = query.select(cb().count(query.from(this.getEntityType())));
+
+    return this.em.createQuery(query).getSingleResult();
+  }
+
+  public <F> long countBy(String fieldName, F value) {
+    return this.countBy(fieldName, singleton(value));
+  }
+
+  public <F> long countBy(String fieldName, Set<F> values) {
+    CriteriaQuery<Long> query = cb().createQuery(Long.class);
+    final Root<T> root = query.from(getEntityType());
+
+    final Predicate predicate = this.createFieldEqualityPredicate(fieldName, values, root);
+
+    query = query.select(cb().count(root)).where(predicate);
+
+    return this.em.createQuery(query).getSingleResult();
+  }
+
+  public long count(ListingOptions<T> listingOptions) {
+    CriteriaQuery<Long> query = cb().createQuery(Long.class);
+
+    query = query.select(cb().count(query.from(this.getEntityType())));
+
+    return this.em.createQuery(query).getSingleResult();
+  }
+
+  public <F> long countBy(String fieldName, F value, ListingOptions<T> listingOptions) {
+    return this.countBy(fieldName, singleton(value), listingOptions.getFilterFields());
+  }
+
+  public <F> long countBy(String fieldName, Set<F> values, ListingOptions<T> listingOptions) {
+    return this.countBy(fieldName, values, listingOptions.getFilterFields());
+  }
+
+  public long count(Stream<FilterField<T>> filters) {
+    CriteriaQuery<Long> query = cb().createQuery(Long.class);
+
+    final Root<T> root = query.from(this.getEntityType());
+    query = query.select(cb().count(root));
+    
+    query = ListingOptionsQueryBuilder.addFilters(filters, cb(), query, root);
+
+    return this.em.createQuery(query).getSingleResult();
+  }
+
+  public <F> long countBy(String fieldName, F value, Stream<FilterField<T>> filters) {
+    return this.countBy(fieldName, singleton(value), filters);
+  }
+
+  public <F> long countBy(String fieldName, Set<F> values, Stream<FilterField<T>> filters) {
+    CriteriaQuery<Long> query = cb().createQuery(Long.class);
+    final Root<T> root = query.from(getEntityType());
+
+    Predicate predicate = this.createFieldEqualityPredicate(fieldName, values, root);
+    
+    final Optional<Predicate> filterPredicate = ListingOptionsQueryBuilder.buildFilters(filters, cb(), query, root);
+
+    if (filterPredicate.isPresent()) {
+      predicate = cb().and(predicate, filterPredicate.get());
+    }
+    query = query.select(cb().count(root)).where(predicate);
     
     return this.em.createQuery(query).getSingleResult();
   }
-  
+
   public final <F> TypedQuery<T> createFieldQuery(
     String fieldName,
     Set<F> values,
@@ -179,61 +244,63 @@ public class DAOHelper<K, T> {
     requireNonNull(fieldName, "Fieldname can't be null");
     requireNonNullCollection(values);
     requireNonEmpty(values, "At least one value must be provided for the field");
-    
+
     CriteriaQuery<T> query = createCBQuery();
     final Root<T> root = query.from(getEntityType());
-    
-    final Function<F, Predicate> fieldEqualsTo = value -> 
-      cb().equal(getField(root, fieldName), value);
 
     final ListingOptionsQueryBuilder<T> queryBuilder = new ListingOptionsQueryBuilder<>(listingOptions);
-      
-    final Predicate predicate = values.size() == 1 ?
-      fieldEqualsTo.apply(values.iterator().next()) :
-      cb().or(values.stream()
-        .map(fieldEqualsTo)
-      .toArray(Predicate[]::new));
-    
-    query = query.select(root).where(predicate);
-    
-    if (listingOptions == null) {
-      return em.createQuery(
-        query.select(root).where(predicate)
-      );
+
+    final Predicate predicate = this.createFieldEqualityPredicate(fieldName, values, root);
+
+    final Optional<Predicate> queryFilters = queryBuilder.buildFilters(cb(), query, root);
+    if (queryFilters.isPresent()) {
+      query = query.select(root).where(cb().and(predicate, queryFilters.get()));
     } else {
-      query = queryBuilder.addOrder(cb(), query, root);
-      
-      return queryBuilder.addLimits(em.createQuery(
-        query.select(root).where(predicate)
-      ));
+      query = query.select(root).where(predicate);
     }
+
+    query = queryBuilder.addOrder(cb(), query, root);
+
+    return queryBuilder.addLimits(em.createQuery(query));
   }
-  
+
+  private <F> Predicate createFieldEqualityPredicate(String fieldName, Set<F> values, final Root<T> root) {
+    final Function<F, Predicate> fieldEqualsTo = value -> cb().equal(getField(root, fieldName), value);
+
+    return values.size() == 1
+      ? fieldEqualsTo.apply(values.iterator().next())
+      : cb().or(
+        values.stream()
+          .map(fieldEqualsTo)
+          .toArray(Predicate[]::new)
+      );
+  }
+
   private Path<T> getField(Root<T> root, String fieldName) {
     if (fieldName.contains(".")) {
       final String[] fieldParts = fieldName.split("[.]");
-      
+
       Path<T> field = root.get(fieldParts[0]);
-      
+
       for (int i = 1; i < fieldParts.length; i++) {
         field = field.get(fieldParts[i]);
       }
-      
+
       return field;
-      
+
     } else {
       return root.get(fieldName);
     }
   }
-  
+
   public EntityManager em() {
     return this.em;
   }
-  
+
   public CriteriaQuery<T> createCBQuery() {
     return cb().createQuery(this.getEntityType());
   }
-  
+
   public CriteriaBuilder cb() {
     return em.getCriteriaBuilder();
   }

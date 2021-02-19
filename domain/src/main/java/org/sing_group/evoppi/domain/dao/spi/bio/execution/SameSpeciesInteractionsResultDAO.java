@@ -24,7 +24,9 @@ package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
 import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
@@ -33,7 +35,7 @@ import org.sing_group.evoppi.domain.entities.user.User;
 public interface SameSpeciesInteractionsResultDAO {
 
   public boolean exists(String interactionResultId);
-  
+
   public SameSpeciesInteractionsResult get(String interactionResultId);
 
   public SameSpeciesInteractionsResult create(
@@ -46,4 +48,15 @@ public interface SameSpeciesInteractionsResultDAO {
     Gene queryGene, int queryMaxDegree, Collection<Interactome> queryInteractomes, User owner
   );
 
+  public Stream<SameSpeciesInteractionsResult> listById(
+    String[] ids, ListingOptions<SameSpeciesInteractionsResult> listingOptions
+  );
+
+  public Stream<SameSpeciesInteractionsResult> listUserResults(
+    User user, ListingOptions<SameSpeciesInteractionsResult> listingOptions
+  );
+
+  public long coungById(String[] ids, ListingOptions<SameSpeciesInteractionsResult> listingOptions);
+  
+  public long countByUser(User user, ListingOptions<SameSpeciesInteractionsResult> listingOptions);
 }

@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static org.sing_group.fluent.checker.Checks.requireNonNegative;
@@ -33,6 +34,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
+
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 
 public class ListingOptions<T> implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -54,6 +58,20 @@ public class ListingOptions<T> implements Serializable {
     } else {
       return new ListingOptions<R>(start, end, singleton(new SortField<R>(sortField, sortDirection)), null);
     }
+  }
+
+  public static <R> ListingOptions<R> sortedAndFilteredBetween(
+    int start, int end, EntityListingField<R> sortField, SortDirection sortDirection, List<FilterField<R>> filterFields
+  ) {
+    Collection<SortField<R>> sortFields;
+    
+    if (sortField == null || sortDirection == null || sortDirection == SortDirection.NONE) {
+      sortFields = null;
+    } else {
+      sortFields = singleton(new SortField<R>(sortField, sortDirection));
+    }
+    
+    return new ListingOptions<R>(start, end, sortFields, filterFields);
   }
 
   public ListingOptions(
@@ -182,6 +200,19 @@ public class ListingOptions<T> implements Serializable {
   public static class FilterField<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    public static <T> Stream<FilterField<T>> buildFromUri(EntityListingField<T>[] fields, UriInfo uriInfo) {
+      return buildFromUri(asList(fields), uriInfo);
+    }
+    
+    public static <T> Stream<FilterField<T>> buildFromUri(Collection<EntityListingField<T>> fields, UriInfo uriInfo) {
+      final MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+      
+      return fields.stream()
+        .filter(EntityListingField::isFilteringSupported)
+        .filter(field -> queryParameters.containsKey(field.name()))
+        .map(field -> new FilterField<>(field, queryParameters.getFirst(field.name())));
+    }
+    
     private final EntityListingField<T> field;
     private final String value;
 

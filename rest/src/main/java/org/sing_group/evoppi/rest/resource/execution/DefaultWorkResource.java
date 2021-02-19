@@ -22,8 +22,11 @@
 
 package org.sing_group.evoppi.rest.resource.execution;
 
+import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -40,6 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntityListingField;
@@ -57,32 +61,36 @@ import io.swagger.annotations.ResponseHeader;
 
 @Path("work")
 @Api("work")
-@Produces({ APPLICATION_JSON, APPLICATION_XML })
-@Consumes({ APPLICATION_JSON, APPLICATION_XML })
+@Produces({
+  APPLICATION_JSON, APPLICATION_XML
+})
+@Consumes({
+  APPLICATION_JSON, APPLICATION_XML
+})
 @Stateless
 @Default
-@CrossDomain(allowedHeaders = { "X-Total-Count", "Location" }, allowRequestHeaders = true)
+@CrossDomain(allowedHeaders = {
+  "X-Total-Count", "Location"
+}, allowRequestHeaders = true)
 public class DefaultWorkResource implements WorkResource {
   @Inject
   private WorkService service;
-  
+
   @Inject
   private ExecutionMapper mapper;
-  
+
   @Context
   private UriInfo uriInfo;
-  
+
   @PostConstruct
   public void postConstruct() {
     this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
   }
-  
+
   @Path("{id: [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}")
   @GET
   @ApiOperation(
-    value = "Finds and returns a work by its identifier.",
-    response = WorkData.class,
-    code = 200
+    value = "Finds and returns a work by its identifier.", response = WorkData.class, code = 200
   )
   @ApiResponses(
     @ApiResponse(code = 400, message = "Unknown work: {id}")
@@ -92,20 +100,18 @@ public class DefaultWorkResource implements WorkResource {
     @PathParam("id") String id
   ) {
     final WorkEntity work = this.service.get(id);
-    
+
     return Response
       .ok(this.mapper.toWorkData(work))
-    .build();
+      .build();
   }
 
   @Override
   @GET
   @ApiOperation(
-    value = "Returns all the works.",
-    response = WorkData.class,
-    responseContainer = "List",
-    code = 200,
-    responseHeaders = @ResponseHeader(name = "X-Total-Count", description = "Total number of works in the database.")
+    value = "Returns all the works.", response = WorkData.class, responseContainer = "List", code = 200, responseHeaders = @ResponseHeader(
+      name = "X-Total-Count", description = "Total number of works in the database."
+    )
   )
   public Response list(
     @QueryParam("start") Integer start,
@@ -113,14 +119,19 @@ public class DefaultWorkResource implements WorkResource {
     @QueryParam("order") WorkEntityListingField order,
     @QueryParam("sort") SortDirection sort
   ) {
-    final ListingOptions<WorkEntity> options = ListingOptions.sortedBetween(start, end, order, sort);
-
-    final WorkData[] admins = this.service.list(options)
-      .map(mapper::toWorkData)
-    .toArray(WorkData[]::new);
+    final List<FilterField<WorkEntity>> filters =
+      FilterField.buildFromUri(WorkEntityListingField.values(), uriInfo).collect(toList());
     
+    final ListingOptions<WorkEntity> options =
+      ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
+
+    final WorkData[] admins =
+      this.service.list(options)
+        .map(mapper::toWorkData)
+        .toArray(WorkData[]::new);
+
     return Response.ok(admins)
       .header("X-Total-Count", this.service.count())
-    .build();
+      .build();
   }
 }

@@ -23,20 +23,30 @@
 package org.sing_group.evoppi.domain.entities.bio;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.sing_group.evoppi.domain.dao.EntityListingField;
 
 public enum InteractomeListingField implements EntityListingField<Interactome> {
-  NAME,
-  SOURCE_DB,
-  SPECIES;
-  
+  NAME(true), SOURCE_DB(true), SPECIES(true);
+
+  private final boolean supportsFiltering;
+
+  private InteractomeListingField(boolean supportsFiltering) {
+    this.supportsFiltering = supportsFiltering;
+  }
+
   @Override
-  public <F> Path<F> getField(Root<Interactome> root) {
-    switch(this) {
+  public boolean isFilteringSupported() {
+    return this.supportsFiltering;
+  }
+
+  @Override
+  public <T, Q> Expression<T> getField(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<Interactome> root) {
+    switch (this) {
       case NAME:
         return root.get("name");
       case SOURCE_DB:
@@ -49,7 +59,9 @@ public enum InteractomeListingField implements EntityListingField<Interactome> {
   }
 
   @Override
-  public Predicate getFilter(CriteriaBuilder cb, Root<Interactome> root, String value) {
-    return cb.like(this.getField(root), "%" + value + "%");
+  public <Q> Predicate getFilter(
+    CriteriaBuilder cb, CriteriaQuery<Q> query, Root<Interactome> root, String value
+  ) {
+    return cb.like(this.getField(null, null, root), "%" + value + "%");
   }
 }

@@ -24,7 +24,9 @@ package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
 import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
@@ -61,4 +63,17 @@ public interface DifferentSpeciesInteractionsResultDAO {
     User owner
   );
 
+  public Stream<DifferentSpeciesInteractionsResult> listById(
+    String[] ids, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions
+  );
+
+  public Stream<DifferentSpeciesInteractionsResult> listUserResults(
+    User user, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions
+  );
+
+  public long coungById(String[] ids, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions);
+  
+  public long countByUser(User user, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions);
+
+  
 }

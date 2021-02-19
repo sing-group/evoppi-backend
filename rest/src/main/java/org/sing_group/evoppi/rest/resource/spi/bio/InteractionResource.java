@@ -25,17 +25,23 @@ package org.sing_group.evoppi.rest.resource.spi.bio;
 import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResultListingField;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultField;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResultListingField;
 
 public interface InteractionResource {
   public Response getInteractions(
     int geneId, int[] interactomes, int[] referenceInteractomes, int[] targetInteractomes, int maxDegree,
     double evalue, int maxTargetSeqs, double minimumIdentity, int minimumAlignmentLength
   );
-  
-  public Response listDifferentSpeciesResults(String ids);
 
-  public Response listSameSpeciesResults(String ids);
+  public Response listDifferentSpeciesResults(
+    String ids, Integer start, Integer end, DifferentSpeciesInteractionsResultListingField order, SortDirection sort
+  );
+
+  public Response listSameSpeciesResults(
+    String ids, Integer start, Integer end, SameSpeciesInteractionsResultListingField order, SortDirection sort
+  );
 
   public Response getInterationResult(
     String resultId,
@@ -48,7 +54,7 @@ public interface InteractionResource {
   );
 
   public Response getInterationResultInteractomeSingleFasta(String resultId, boolean includeVersionSuffix);
-  
+
   public Response getInterationResultInteractomeFasta(String resultId, int interactomeId, boolean includeVersionSuffix);
 
   public Response getInterationResultInteractions(

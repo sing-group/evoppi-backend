@@ -27,12 +27,14 @@ import java.util.stream.Stream;
 
 import javax.ejb.Local;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.user.User;
 import org.sing_group.evoppi.service.user.entity.InteractionResultLinkage;
 
 @Local
@@ -40,18 +42,31 @@ public interface InteractionService {
   public SameSpeciesInteractionsResult findSameSpeciesInteractions(
     int geneId, int[] interactomes, int maxDegree, Function<String, String> resultReferenceBuilder
   );
-  
+
   public DifferentSpeciesInteractionsResult findDifferentSpeciesInteractions(
-    int geneId, int[] referenceInteractomes, int[] targetInteractomes, BlastQueryOptions blastOptions, int maxDegree, Function<String, String> resultReferenceBuilder
+    int geneId, int[] referenceInteractomes, int[] targetInteractomes, BlastQueryOptions blastOptions, int maxDegree,
+    Function<String, String> resultReferenceBuilder
   );
-  
+
   public SameSpeciesInteractionsResult getSameSpeciesResult(String id);
 
   public DifferentSpeciesInteractionsResult getDifferentSpeciesResult(String id);
-  
-  public Stream<SameSpeciesInteractionsResult> listSameSpeciesResult(String ... ids);
-  
-  public Stream<DifferentSpeciesInteractionsResult> listDifferentSpeciesResult(String ... ids);
+
+  public Stream<SameSpeciesInteractionsResult> listSameSpeciesResult(
+    String[] ids, ListingOptions<SameSpeciesInteractionsResult> listingOptions
+  );
+
+  public Stream<SameSpeciesInteractionsResult> listUserSameSpeciesResult(
+    User user, ListingOptions<SameSpeciesInteractionsResult> listingOptions
+  );
+
+  public Stream<DifferentSpeciesInteractionsResult> listDifferentSpeciesResult(
+    String[] ids, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions
+  );
+
+  public Stream<DifferentSpeciesInteractionsResult> listUserDifferentSpeciesResult(
+    User user, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions
+  );
 
   public boolean isSameSpeciesResult(String id);
 
@@ -64,7 +79,7 @@ public interface InteractionService {
   public String getSameSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix);
 
   public String getDifferentSpeciesResultSingleFasta(String resultId, boolean includeVersionSuffix);
-  
+
   public Stream<InteractionGroupResult> getInteractions(
     InteractionsResult result,
     InteractionGroupResultListingOptions filteringOptions
@@ -73,8 +88,16 @@ public interface InteractionService {
   public void deleteResult(String id);
 
   public InteractionResultLinkage linkDifferentSpeciesResultsToCurrentUser(String[] uuids);
-  
+
   public InteractionResultLinkage linkSameSpeciesResultsToCurrentUser(String[] uuids);
 
   public long count();
+
+  public long countSameSpeciesResult(String[] ids, ListingOptions<SameSpeciesInteractionsResult> listingOptions);
+  
+  public long countDifferentSpeciesResult(String[] ids, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions);
+
+  public long countSameByUser(User user, ListingOptions<SameSpeciesInteractionsResult> listingOptions);
+
+  public long countDifferentByUser(User user, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions);
 }

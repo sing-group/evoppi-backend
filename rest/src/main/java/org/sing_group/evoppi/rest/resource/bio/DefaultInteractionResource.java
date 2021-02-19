@@ -22,9 +22,11 @@
 
 package org.sing_group.evoppi.rest.resource.bio;
 
+import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.util.List;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
@@ -44,11 +46,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResultListingField;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultField;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResultListingField;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsData;
@@ -74,7 +80,7 @@ import io.swagger.annotations.ApiResponses;
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = { "X-Total-Count", "Location" }, allowRequestHeaders = true)
 public class DefaultInteractionResource implements InteractionResource {
   private static String MULTIPLE_UUID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(,[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})*";
   
@@ -172,16 +178,32 @@ public class DefaultInteractionResource implements InteractionResource {
     code = 200
   )
   @Override
-  public Response listDifferentSpeciesResults(@QueryParam("ids") String ids) {
+  public Response listDifferentSpeciesResults(
+    @QueryParam("ids") String ids,
+    @QueryParam("start") Integer start,
+    @QueryParam("end") Integer end,
+    @QueryParam("order") DifferentSpeciesInteractionsResultListingField order,
+    @QueryParam("sort") SortDirection sort
+  ) {
     if (!ids.matches(MULTIPLE_UUID_PATTERN))
       throw new IllegalArgumentException("Invalid 'ids' format");
     
+    final List<FilterField<DifferentSpeciesInteractionsResult>> filters =
+      FilterField.buildFromUri(DifferentSpeciesInteractionsResultListingField.values(), this.uriInfo)
+        .collect(toList());
+    
+    final ListingOptions<DifferentSpeciesInteractionsResult> listingOptions =
+      ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
+    
+    final String[] idList = ids.split(",");
     final DifferentSpeciesInteractionsResultSummaryData[] results = 
-      this.service.listDifferentSpeciesResult(ids.split(","))
+      this.service.listDifferentSpeciesResult(idList, listingOptions)
         .map(bioMapper::toInteractionQueryResultSummary)
       .toArray(DifferentSpeciesInteractionsResultSummaryData[]::new);
     
-    return Response.ok(results).build();
+    return Response.ok(results)
+      .header("X-Total-Count", this.service.countDifferentSpeciesResult(idList, listingOptions))
+    .build();
   }
 
   @GET
@@ -193,16 +215,32 @@ public class DefaultInteractionResource implements InteractionResource {
     code = 200
   )
   @Override
-  public Response listSameSpeciesResults(@QueryParam("ids") String ids) {
+  public Response listSameSpeciesResults(
+    @QueryParam("ids") String ids,
+    @QueryParam("start") Integer start,
+    @QueryParam("end") Integer end,
+    @QueryParam("order") SameSpeciesInteractionsResultListingField order,
+    @QueryParam("sort") SortDirection sort
+  ) {
     if (!ids.matches(MULTIPLE_UUID_PATTERN))
       throw new IllegalArgumentException("Invalid 'ids' format");
     
+    final List<FilterField<SameSpeciesInteractionsResult>> filters =
+      FilterField.buildFromUri(SameSpeciesInteractionsResultListingField.values(), this.uriInfo)
+        .collect(toList());
+    
+    final ListingOptions<SameSpeciesInteractionsResult> listingOptions =
+      ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
+    
+    final String[] idList = ids.split(",");
     final SameSpeciesInteractionsResultSummaryData[] results = 
-      this.service.listSameSpeciesResult(ids.split(","))
+      this.service.listSameSpeciesResult(idList, listingOptions)
         .map(bioMapper::toInteractionQueryResultSummary)
       .toArray(SameSpeciesInteractionsResultSummaryData[]::new);
     
-    return Response.ok(results).build();
+    return Response.ok(results)
+      .header("X-Total-Count", this.service.countSameSpeciesResult(idList, listingOptions))
+    .build();
   }
   
   @GET

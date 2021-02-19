@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.entities.execution;
+package org.sing_group.evoppi.domain.entities.bio.execution;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,14 +29,17 @@ import javax.persistence.criteria.Root;
 
 import org.sing_group.evoppi.domain.dao.EntityListingField;
 
-public enum WorkEntityListingField implements EntityListingField<WorkEntity> {
-  NAME(true), STATUS(true), CREATION_DATE_TIME(false), SCHEDULING_DATE_TIME(false), STARTING_DATE_TIME(
-    false
-  ), FINISHING_DATE_TIME(false);
+public enum DifferentSpeciesInteractionsResultListingField
+  implements EntityListingField<DifferentSpeciesInteractionsResult> {
+  SCHEDULING_DATE_TIME(false),
+  QUERY_GENE(true),
+  MAX_DEGREE(false),
+  INTERACTOMES_COUNT(false),
+  STATUS(true);
 
   private final boolean supportsFiltering;
 
-  private WorkEntityListingField(boolean supportsFiltering) {
+  private DifferentSpeciesInteractionsResultListingField(boolean supportsFiltering) {
     this.supportsFiltering = supportsFiltering;
   }
 
@@ -45,32 +48,44 @@ public enum WorkEntityListingField implements EntityListingField<WorkEntity> {
     return this.supportsFiltering;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public <T, Q> Expression<T> getField(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<WorkEntity> root) {
+  public <T, Q> Expression<T> getField(
+    CriteriaBuilder cb, CriteriaQuery<Q> query, Root<DifferentSpeciesInteractionsResult> root
+  ) {
     switch (this) {
-      case NAME:
-        return root.get("name");
-      case STATUS:
-        return root.join("status").get("name");
-      case CREATION_DATE_TIME:
-        return root.join("status").get("creationDateTime");
       case SCHEDULING_DATE_TIME:
-        return root.join("status").get("schedulingDateTime");
-      case STARTING_DATE_TIME:
-        return root.join("status").get("startingDateTime");
-      case FINISHING_DATE_TIME:
-        return root.join("status").get("finishingDateTime");
+        return root.get("status").get("schedulingDateTime");
+      case QUERY_GENE:
+        return root.join("queryGene").get("defaultName");
+      case MAX_DEGREE:
+        return root.get("queryMaxDegree");
+      case INTERACTOMES_COUNT:
+        return (Expression<T>) cb
+          .sum(cb.size(root.get("targetInteractomes")), cb.size(root.get("referenceInteractomes")));
+      case STATUS:
+        return root.get("status").get("status");
       default:
         throw new IllegalStateException();
     }
   }
 
   @Override
-  public <Q> Predicate getFilter(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<WorkEntity> root, String value) {
-    if (this.isFilteringSupported()) {
-      return cb.like(this.getField(null, null, root), "%" + value + "%");
-    } else {
+  public <Q> Predicate getFilter(
+    CriteriaBuilder cb, CriteriaQuery<Q> query, Root<DifferentSpeciesInteractionsResult> root, String value
+  ) {
+    if (!this.isFilteringSupported()) {
       throw new UnsupportedOperationException();
     }
+
+    switch (this) {
+      case QUERY_GENE:
+        return cb.like(this.getField(cb, query, root), "%" + value + "%");
+      case STATUS:
+        return cb.equal(this.getField(cb, query, root).as(String.class), value);
+      default:
+        throw new IllegalStateException();
+    }
   }
+
 }
