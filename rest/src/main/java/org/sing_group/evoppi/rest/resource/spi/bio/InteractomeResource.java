@@ -30,11 +30,9 @@ import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
 
 @Local
 public interface InteractomeResource {
-  public Response listInteractomes(
-    Integer start, Integer end, InteractomeListingField order, SortDirection sort, String species
-  );
+  public Response listInteractomes(Integer start, Integer end, InteractomeListingField order, SortDirection sort);
 
   public Response getInteractome(int id, boolean includeInteractions);
-  
+
   public Response getInteractomeInteractionsAsTsv(int id);
 }

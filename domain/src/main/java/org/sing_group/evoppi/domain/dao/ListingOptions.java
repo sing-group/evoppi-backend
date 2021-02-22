@@ -33,8 +33,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.OptionalInt;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
@@ -51,7 +54,7 @@ public class ListingOptions<T> implements Serializable {
   }
 
   public static <R> ListingOptions<R> sortedBetween(
-    int start, int end, EntityListingField<R> sortField, SortDirection sortDirection
+    Integer start, Integer end, EntityListingField<R> sortField, SortDirection sortDirection
   ) {
     if (sortField == null || sortDirection == null || sortDirection == SortDirection.NONE) {
       return new ListingOptions<R>(start, end, null, null);
@@ -61,7 +64,7 @@ public class ListingOptions<T> implements Serializable {
   }
 
   public static <R> ListingOptions<R> sortedAndFilteredBetween(
-    int start, int end, EntityListingField<R> sortField, SortDirection sortDirection, List<FilterField<R>> filterFields
+    Integer start, Integer end, EntityListingField<R> sortField, SortDirection sortDirection, List<FilterField<R>> filterFields
   ) {
     Collection<SortField<R>> sortFields;
     
@@ -205,14 +208,18 @@ public class ListingOptions<T> implements Serializable {
     }
     
     public static <T> Stream<FilterField<T>> buildFromUri(Collection<EntityListingField<T>> fields, UriInfo uriInfo) {
-      final MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
-      
+      final MultivaluedMap<String, String> lowerCaseQueryParameters = new MultivaluedHashMap<>();
+
+      uriInfo.getQueryParameters().forEach((k, v) -> {
+        lowerCaseQueryParameters.put(k.toLowerCase(), v);
+      });
+
       return fields.stream()
         .filter(EntityListingField::isFilteringSupported)
-        .filter(field -> queryParameters.containsKey(field.name()))
-        .map(field -> new FilterField<>(field, queryParameters.getFirst(field.name())));
+        .filter(field -> lowerCaseQueryParameters.containsKey(field.name().toLowerCase()))
+        .map(field -> new FilterField<>(field, lowerCaseQueryParameters.getFirst(field.name().toLowerCase())));
     }
-    
+
     private final EntityListingField<T> field;
     private final String value;
 

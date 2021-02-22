@@ -50,9 +50,9 @@ public enum InteractomeListingField implements EntityListingField<Interactome> {
       case NAME:
         return root.get("name");
       case SOURCE_DB:
-        return root.join("species").get("name");
-      case SPECIES:
         return root.get("dbSourceIdType");
+      case SPECIES:
+        return root.join("species").get("name");
       default:
         throw new IllegalStateException();
     }
@@ -62,6 +62,6 @@ public enum InteractomeListingField implements EntityListingField<Interactome> {
   public <Q> Predicate getFilter(
     CriteriaBuilder cb, CriteriaQuery<Q> query, Root<Interactome> root, String value
   ) {
-    return cb.like(this.getField(null, null, root), "%" + value + "%");
+    return cb.like(this.getField(cb, query, root), "%" + value + "%");
   }
 }

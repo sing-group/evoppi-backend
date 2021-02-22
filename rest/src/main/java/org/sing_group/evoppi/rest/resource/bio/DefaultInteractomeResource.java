@@ -22,9 +22,12 @@
 
 package org.sing_group.evoppi.rest.resource.bio;
 
+import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -42,6 +45,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
@@ -120,10 +124,14 @@ public class DefaultInteractomeResource implements InteractomeResource {
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
     @QueryParam("order") InteractomeListingField order,
-    @QueryParam("sort") SortDirection sort,
-    @QueryParam("species") String species
+    @QueryParam("sort") SortDirection sort
   ) {
-    final ListingOptions<Interactome> options = ListingOptions.sortedBetween(start, end, order, sort);
+    final List<FilterField<Interactome>> filters =
+      FilterField.buildFromUri(InteractomeListingField.values(), this.uriInfo)
+        .collect(toList());
+
+    final ListingOptions<Interactome> options =
+      ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
 
     final InteractomeData[] interactomeData =
       this.service
