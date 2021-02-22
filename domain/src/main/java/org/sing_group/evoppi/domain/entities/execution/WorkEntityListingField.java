@@ -30,9 +30,12 @@ import javax.persistence.criteria.Root;
 import org.sing_group.evoppi.domain.dao.EntityListingField;
 
 public enum WorkEntityListingField implements EntityListingField<WorkEntity> {
-  NAME(true), STATUS(true), CREATION_DATE_TIME(false), SCHEDULING_DATE_TIME(false), STARTING_DATE_TIME(
-    false
-  ), FINISHING_DATE_TIME(false);
+  NAME(true),
+  STATUS(true),
+  CREATION_DATE_TIME(false),
+  SCHEDULING_DATE_TIME(false),
+  STARTING_DATE_TIME(false),
+  FINISHING_DATE_TIME(false);
 
   private final boolean supportsFiltering;
 
@@ -51,7 +54,7 @@ public enum WorkEntityListingField implements EntityListingField<WorkEntity> {
       case NAME:
         return root.get("name");
       case STATUS:
-        return root.join("status").get("name");
+        return root.join("status").get("status");
       case CREATION_DATE_TIME:
         return root.join("status").get("creationDateTime");
       case SCHEDULING_DATE_TIME:
@@ -68,7 +71,12 @@ public enum WorkEntityListingField implements EntityListingField<WorkEntity> {
   @Override
   public <Q> Predicate getFilter(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<WorkEntity> root, String value) {
     if (this.isFilteringSupported()) {
-      return cb.like(this.getField(null, null, root), "%" + value + "%");
+      switch(this) {
+        case STATUS:
+          return cb.equal(this.getField(cb, query, root).as(String.class), value);
+        default:
+          return cb.like(this.getField(cb, query, root), "%" + value + "%");
+      }
     } else {
       throw new UnsupportedOperationException();
     }

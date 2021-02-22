@@ -61,7 +61,7 @@ public enum AdministratorListingField implements EntityListingField<Administrato
   public <Q> Predicate getFilter(
     CriteriaBuilder cb, CriteriaQuery<Q> query, Root<Administrator> root, String value
   ) {
-    return cb.like(this.getField(null, null, root), "%" + value + "%");
+    return cb.like(this.getField(cb, query, root), "%" + value + "%");
   }
 
 }

@@ -127,7 +127,7 @@ public class DefaultAdministratorResource implements AdministratorResource {
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
     @QueryParam("order") AdministratorListingField order,
-    @QueryParam("sort") @DefaultValue("NONE") SortDirection sort
+    @QueryParam("sort") SortDirection sort
   ) {
     final ListingOptions<Administrator> options = sortedBetween(start, end, order, sort);
     

@@ -34,7 +34,6 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -127,7 +126,7 @@ public class DefaultResearcherResource implements ResearcherResource {
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
     @QueryParam("order") ResearcherListingField sortField,
-    @QueryParam("sort") @DefaultValue("NONE") SortDirection sortDirection
+    @QueryParam("sort") SortDirection sortDirection
   ) {
     final ListingOptions<Researcher> options = sortedBetween(start, end, sortField, sortDirection);
     

@@ -59,7 +59,7 @@ public enum ResearcherListingField implements EntityListingField<Researcher> {
 
   @Override
   public <Q> Predicate getFilter(CriteriaBuilder cb, CriteriaQuery<Q> query, Root<Researcher> root, String value) {
-    return cb.like(this.getField(null, null, root), "%" + value + "%");
+    return cb.like(this.getField(cb, query, root), "%" + value + "%");
   }
 
 }

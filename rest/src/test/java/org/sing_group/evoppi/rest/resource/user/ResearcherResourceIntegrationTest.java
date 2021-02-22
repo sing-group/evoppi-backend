@@ -66,6 +66,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
+import org.sing_group.evoppi.domain.entities.user.ResearcherListingField;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.mapper.user.DefaultUserMapper;
 import org.sing_group.evoppi.rest.entity.user.ResearcherData;
@@ -134,6 +135,8 @@ public class ResearcherResourceIntegrationTest {
     final Stream<Researcher> researchers = researchers();
     
     final Response response = webTarget
+      .queryParam("start", 0)
+      .queryParam("end", 10)
       .request()
       .header("Origin", "localhost")
     .get();
@@ -168,7 +171,7 @@ public class ResearcherResourceIntegrationTest {
     final int start = 1;
     final int end = 3;
     final Function<Researcher, String> getter = Researcher::getLogin;
-    final String order = "login";
+    final ResearcherListingField order = ResearcherListingField.LOGIN;
     final SortDirection sortDirection = SortDirection.ASCENDING;
     
     final Stream<Researcher> researchers = researchers(

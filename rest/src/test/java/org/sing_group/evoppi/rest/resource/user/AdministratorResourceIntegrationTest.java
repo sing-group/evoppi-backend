@@ -66,6 +66,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.user.Administrator;
+import org.sing_group.evoppi.domain.entities.user.AdministratorListingField;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.mapper.user.DefaultUserMapper;
 import org.sing_group.evoppi.rest.entity.user.AdministratorData;
@@ -134,6 +135,8 @@ public class AdministratorResourceIntegrationTest {
     final Stream<Administrator> admins = admins();
     
     final Response response = webTarget
+      .queryParam("start", 0)
+      .queryParam("end", 10)
       .request()
       .header("Origin", "localhost")
     .get();
@@ -168,7 +171,7 @@ public class AdministratorResourceIntegrationTest {
     final int start = 0;
     final int end = 2;
     final Function<Administrator, String> getter = Administrator::getLogin;
-    final String order = "login";
+    final AdministratorListingField order = AdministratorListingField.LOGIN;
     final SortDirection sortDirection = SortDirection.DESCENDING;
     
     final Stream<Administrator> admins = admins(
