@@ -32,5 +32,5 @@ public interface WorkDAO {
 
   public Stream<WorkEntity> list(ListingOptions<WorkEntity> options);
 
-  public long count();
+  public long count(ListingOptions<WorkEntity> options);
 }

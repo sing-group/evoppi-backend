@@ -140,7 +140,7 @@ public class DefaultInteractomeResource implements InteractomeResource {
         .toArray(InteractomeData[]::new);
 
     return Response.ok(interactomeData)
-      .header("X-Total-Count", this.service.count())
+      .header("X-Total-Count", this.service.count(options))
     .build();
   }
 

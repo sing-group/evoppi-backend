@@ -55,7 +55,7 @@ public class DefaultAdministratorService implements AdministratorService {
 
   @Override
   public long count() {
-    return this.dao.count();
+    return this.dao.count(ListingOptions.noModification());
   }
   
   @Override

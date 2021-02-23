@@ -72,7 +72,7 @@ public class DefaultWorkService implements WorkService {
   }
   
   @Override
-  public long count() {
-    return this.dao.count();
+  public long count(ListingOptions<WorkEntity> options) {
+    return this.dao.count(options);
   }
 }

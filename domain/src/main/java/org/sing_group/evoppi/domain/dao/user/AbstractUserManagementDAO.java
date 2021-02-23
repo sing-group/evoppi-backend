@@ -66,8 +66,9 @@ public abstract class AbstractUserManagementDAO<E extends User> implements UserM
     return this.dh.list(listingOptions).stream();
   }
   
-  public long count() {
-    return this.dh.count();
+  @Override
+  public long count(ListingOptions<E> listingOptions) {
+    return this.dh.count(listingOptions);
   }
 
   @Override

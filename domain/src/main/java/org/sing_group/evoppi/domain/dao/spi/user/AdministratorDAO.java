@@ -33,7 +33,7 @@ public interface AdministratorDAO {
 
   public Stream<Administrator> list(ListingOptions<Administrator> listingOptions);
   
-  public long count();
+  public long count(ListingOptions<Administrator> listingOptions);
 
   public Administrator create(Administrator administrator);
 

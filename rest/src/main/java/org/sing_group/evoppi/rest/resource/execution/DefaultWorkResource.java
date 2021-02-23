@@ -131,7 +131,7 @@ public class DefaultWorkResource implements WorkResource {
         .toArray(WorkData[]::new);
 
     return Response.ok(admins)
-      .header("X-Total-Count", this.service.count())
+      .header("X-Total-Count", this.service.count(options))
       .build();
   }
 }

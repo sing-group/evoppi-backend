@@ -33,7 +33,7 @@ public interface UserManagementDAO<E extends User> {
 
   public Stream<E> list(ListingOptions<E> listingOptions);
   
-  public long count();
+  public long count(ListingOptions<E> listingOptions);
 
   public E create(E user);
 

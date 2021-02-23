@@ -33,7 +33,7 @@ public interface ResearcherDAO {
 
   public Stream<Researcher> list(ListingOptions<Researcher> options);
 
-  public long count();
+  public long count(ListingOptions<Researcher> options);
 
   public Researcher create(Researcher researcher);
 

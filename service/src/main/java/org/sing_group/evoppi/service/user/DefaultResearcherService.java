@@ -68,7 +68,7 @@ public class DefaultResearcherService implements ResearcherService {
 
   @Override
   public long count() {
-    return this.dao.count();
+    return this.dao.count(ListingOptions.noModification());
   }
   
   @Override

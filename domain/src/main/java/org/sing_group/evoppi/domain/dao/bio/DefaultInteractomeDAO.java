@@ -70,7 +70,7 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   }
 
   @Override
-  public long count() {
-    return this.dh.count();
+  public long count(ListingOptions<Interactome> interactomeListingOptions) {
+    return this.dh.count(interactomeListingOptions);
   }
 }

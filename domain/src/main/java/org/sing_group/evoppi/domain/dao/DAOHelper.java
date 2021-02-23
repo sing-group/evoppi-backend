@@ -190,11 +190,7 @@ public class DAOHelper<K, T> {
   }
 
   public long count(ListingOptions<T> listingOptions) {
-    CriteriaQuery<Long> query = cb().createQuery(Long.class);
-
-    query = query.select(cb().count(query.from(this.getEntityType())));
-
-    return this.em.createQuery(query).getSingleResult();
+    return this.count(listingOptions.getFilterFields());
   }
 
   public <F> long countBy(String fieldName, F value, ListingOptions<T> listingOptions) {

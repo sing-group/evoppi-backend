@@ -51,6 +51,11 @@ public class DefaultInteractomeService implements InteractomeService {
 
   @Override
   public long count() {
-    return this.dao.count();
+    return this.count(ListingOptions.noModification());
+  }
+
+  @Override
+  public long count(ListingOptions<Interactome> interactomeListingOptions) {
+    return this.dao.count(interactomeListingOptions);
   }
 }

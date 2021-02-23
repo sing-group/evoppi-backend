@@ -70,7 +70,7 @@ public class DefaultWorkDAO implements WorkDAO {
   }
   
   @Override
-  public long count() {
-    return this.dh.count();
+  public long count(ListingOptions<WorkEntity> options) {
+    return this.dh.count(options);
   }
 }
