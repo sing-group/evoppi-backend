@@ -22,6 +22,8 @@
 
 package org.sing_group.evoppi.rest.entity.mapper.spi.bio;
 
+import java.io.File;
+
 import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -50,6 +52,8 @@ public interface BioMapper {
   public void setUriBuilder(UriBuilder uriBuilder);
   
   public SpeciesData toSpeciesData(Species species);
+  
+  public File toSpeciesFasta(Species species);
   
   public InteractomeData toInteractomeData(Interactome interactome);
   

@@ -32,6 +32,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 
@@ -56,10 +57,10 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
   protected void createDAOHelper() {
     this.dh = DAOHelper.of(Integer.class, Species.class, this.em);
   }
-  
+
   @Override
-  public Stream<Species> listSpecies() {
-    return this.dh.list().stream();
+  public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions) {
+    return this.dh.list(speciesListingOptions).stream();
   }
 
   @Override
@@ -67,10 +68,10 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown species: " + id));
   }
-  
+
   @Override
-  public long count() {
-    return this.dh.count();
+  public long count(ListingOptions<Species> speciesListingOptions) {
+    return this.dh.count(speciesListingOptions);
   }
 
 }

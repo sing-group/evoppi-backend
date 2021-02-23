@@ -29,8 +29,11 @@ import java.util.Collection;
 import javax.ejb.Local;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Species;
 
 @Local
 public interface GeneStorageService {
   public Path createFasta(Collection<Gene> genes) throws IOException;
+
+  public Path createFasta(Species species) throws IOException;
 }

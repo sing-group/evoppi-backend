@@ -26,15 +26,18 @@ import java.util.stream.Stream;
 
 import javax.ejb.Local;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 
 @Local
 public interface SpeciesService {
 
-  public Stream<Species> listSpecies();
+  public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions);
 
   public Species getSpecies(int id);
 
   public long count();
+
+  public long count(ListingOptions<Species> speciesListingOptions);
   
 }

@@ -27,7 +27,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 import static javax.transaction.Transactional.TxType.MANDATORY;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
@@ -75,6 +78,7 @@ import org.sing_group.evoppi.service.bio.BlastResultOrthologsManager;
 import org.sing_group.evoppi.service.spi.bio.GeneService;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
 import org.sing_group.evoppi.service.spi.bio.OrthologsManager;
+import org.sing_group.evoppi.service.spi.storage.GeneStorageService;
 
 @Default
 @Transactional(MANDATORY)
@@ -89,6 +93,9 @@ public class DefaultBioMapper implements BioMapper {
   
   @Inject
   private InteractionService interactionService;
+  
+  @Inject
+  private GeneStorageService geneStorageService;
 
   @Override
   public void setUriBuilder(UriBuilder uriBuilder) {
@@ -109,6 +116,18 @@ public class DefaultBioMapper implements BioMapper {
         ))
       .toArray(IdAndUri[]::new)
     );
+  }
+
+  @Override
+  public File toSpeciesFasta(Species species) {
+    Path fasta;
+    try {
+      fasta = this.geneStorageService.createFasta(species);
+
+      return fasta.toFile();
+    } catch (IOException e) {
+      throw new RuntimeException("Error writing FASTA file.");
+    }
   }
 
   public InteractomeData toInteractomeData(Interactome interactome) {

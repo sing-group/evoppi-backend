@@ -25,9 +25,14 @@ package org.sing_group.evoppi.rest.resource.spi.bio;
 import javax.ejb.Local;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.evoppi.domain.dao.SortDirection;
+import org.sing_group.evoppi.domain.entities.bio.SpeciesListingField;
+
 @Local
 public interface SpeciesResource {
-  public Response listSpecies();
-  
+  public Response listSpecies(Integer start, Integer end, SpeciesListingField order, SortDirection sort);
+
   public Response getSpecies(int id);
+  
+  public Response getSpeciesFasta(int id);
 }

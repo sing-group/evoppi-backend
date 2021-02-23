@@ -22,6 +22,8 @@
 
 package org.sing_group.evoppi.service.storage;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +38,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.service.spi.storage.FastaWriter;
 import org.sing_group.evoppi.service.spi.storage.GeneStorageService;
 
@@ -44,32 +47,42 @@ import org.sing_group.evoppi.service.spi.storage.GeneStorageService;
 public class DefaultGeneStorageService implements GeneStorageService {
   @Resource(name = "java:global/evoppi/storage/fasta/path")
   private String genomeStoragePath;
-  
+
   @Inject
   private FastaWriter fastaWriter;
 
   @PostConstruct
   public void initStorage() {
     final Path storagePath = Paths.get(this.genomeStoragePath);
-    
+
     if (!Files.isDirectory(storagePath)) {
       try {
         Files.createDirectories(storagePath);
       } catch (IOException e) {
         throw new RuntimeException(e);
-      }      
+      }
     }
   }
-  
+
   @Override
   public Path createFasta(Collection<Gene> genes) throws IOException {
     final UUID uuid = UUID.randomUUID();
-    
-    final Path path = Paths.get(this.genomeStoragePath, uuid.toString() + ".fasta");
-    
-    this.fastaWriter.createFasta(genes, path);
-    
-    return path;
+
+    return this.createFasta(uuid.toString() + ".fasta", genes);
   }
 
+  @Override
+  public Path createFasta(Species species) throws IOException {
+    return this.createFasta(species.getName() + ".fasta", species.getGenes().collect(toList()));
+  }
+
+  private Path createFasta(String fileName, Collection<Gene> genes) throws IOException {
+    final Path path = Paths.get(this.genomeStoragePath, fileName);
+
+    if (!path.toFile().exists()) {
+      this.fastaWriter.createFasta(genes, path);
+    }
+
+    return path;
+  }
 }

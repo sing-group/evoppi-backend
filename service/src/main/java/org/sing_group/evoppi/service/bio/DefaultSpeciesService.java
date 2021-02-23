@@ -28,6 +28,7 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.service.spi.bio.SpeciesService;
@@ -37,19 +38,24 @@ import org.sing_group.evoppi.service.spi.bio.SpeciesService;
 public class DefaultSpeciesService implements SpeciesService {
   @Inject
   private SpeciesDAO dao;
-  
+
   @Override
-  public Stream<Species> listSpecies() {
-    return this.dao.listSpecies();
+  public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions) {
+    return this.dao.listSpecies(speciesListingOptions);
   }
 
   @Override
   public Species getSpecies(int id) {
     return this.dao.getSpecie(id);
   }
-  
+
   @Override
   public long count() {
-    return this.dao.count();
+    return this.count(ListingOptions.noModification());
+  }
+
+  @Override
+  public long count(ListingOptions<Species> speciesListingOptions) {
+    return this.dao.count(speciesListingOptions);
   }
 }

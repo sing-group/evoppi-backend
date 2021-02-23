@@ -22,8 +22,13 @@
 
 package org.sing_group.evoppi.rest.resource.bio;
 
+import static java.util.stream.Collectors.toList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+
+import java.io.File;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -34,11 +39,17 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
+import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.entities.bio.SpeciesListingField;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -52,11 +63,11 @@ import io.swagger.annotations.ApiResponses;
 
 @Path("species")
 @Api(value = "species")
-@Produces({ APPLICATION_JSON, APPLICATION_XML })
-@Consumes({ APPLICATION_JSON, APPLICATION_XML })
+@Produces({ APPLICATION_JSON, APPLICATION_XML, APPLICATION_OCTET_STREAM })
+@Consumes({ APPLICATION_JSON, APPLICATION_XML, APPLICATION_OCTET_STREAM })
 @Stateless
 @Default
-@CrossDomain
+@CrossDomain(allowedHeaders = { "X-Total-Count", "Location" }, allowRequestHeaders = true)
 public class DefaultSpeciesResource implements SpeciesResource {
   @Inject
   private SpeciesService service;
@@ -80,12 +91,26 @@ public class DefaultSpeciesResource implements SpeciesResource {
     code = 200
   )
   @Override
-  public Response listSpecies() {
-    final SpeciesData[] speciesData = this.service.listSpecies()
+  public Response listSpecies(
+    @QueryParam("start") Integer start,
+    @QueryParam("end") Integer end,
+    @QueryParam("order") SpeciesListingField order,
+    @QueryParam("sort") SortDirection sort  
+  ) {
+    final List<FilterField<Species>> filters =
+      FilterField.buildFromUri(SpeciesListingField.values(), this.uriInfo)
+        .collect(toList());
+
+    final ListingOptions<Species> options =
+      ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
+
+    final SpeciesData[] speciesData = this.service.listSpecies(options)
       .map(this.mapper::toSpeciesData)
     .toArray(SpeciesData[]::new);
     
-    return Response.ok(speciesData).build();
+    return Response.ok(speciesData)
+      .header("X-Total-Count", this.service.count(options))
+    .build();
   }
 
   @GET
@@ -106,5 +131,26 @@ public class DefaultSpeciesResource implements SpeciesResource {
       .ok(this.mapper.toSpeciesData(species))
     .build();
   }
+  
+  @GET
+  @Path("{id}/fasta")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @ApiOperation(
+    value = "Gets the FASTA file with the genes of one species.",
+    response = SpeciesData.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown species: {id}")
+  )
+  @Override
+  public Response getSpeciesFasta(@PathParam("id") int id) {
+    final Species species = this.service.getSpecies(id);
 
+    File fasta = this.mapper.toSpeciesFasta(species);
+
+    return Response.ok(fasta, MediaType.APPLICATION_OCTET_STREAM)
+      .header("Content-Disposition", "attachment; filename=\"" + fasta.getName() + "\"") // optional
+      .build();
+  }
 }
