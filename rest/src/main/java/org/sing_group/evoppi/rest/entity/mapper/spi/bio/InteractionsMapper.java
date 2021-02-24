@@ -22,56 +22,26 @@
 
 package org.sing_group.evoppi.rest.entity.mapper.spi.bio;
 
-import java.io.File;
-
 import javax.ws.rs.core.UriBuilder;
 
-import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.GeneNames;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
-import org.sing_group.evoppi.rest.entity.bio.GeneData;
-import org.sing_group.evoppi.rest.entity.bio.GeneNameData;
-import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
-import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptionsData;
-import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
-import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
-import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
 
-public interface BioMapper {
+public interface InteractionsMapper {
   public void setUriBuilder(UriBuilder uriBuilder);
-  
-  public SpeciesData toSpeciesData(Species species);
-  
-  public File toSpeciesFasta(Species species);
-  
-  public InteractomeData toInteractomeData(Interactome interactome);
-  
-  public InteractomeWithInteractionsData toInteractomeWithInteractionsData(Interactome interactome);
-  
-  public String toInteractomeTsv(Interactome interactome);
-  
-  public GeneData toGeneData(Gene gene);
-  
-  public GeneNamesData toGeneNamesData(Gene gene);
-  
-  public GeneNameData toGeneNameData(GeneNames geneNames);
 
   public SameSpeciesInteractionsResultData toInteractionQueryResult(
     SameSpeciesInteractionsResult result,
     InteractionsResultFilteringOptionsData filteringOptions
   );
-  
+
   public SameSpeciesInteractionsResultSummaryData toInteractionQueryResultSummary(
     SameSpeciesInteractionsResult result
   );
@@ -80,18 +50,16 @@ public interface BioMapper {
     DifferentSpeciesInteractionsResult result,
     InteractionsResultFilteringOptionsData filteringOptions
   );
-  
+
   public DifferentSpeciesInteractionsResultSummaryData toInteractionQueryResultSummary(
     DifferentSpeciesInteractionsResult result
   );
-  
-  public InteractionResultData toInteractionResultData(InteractionGroupResult interaction);
 
   public SameSpeciesInteractionsData toInteractionsResultData(
     SameSpeciesInteractionsResult result,
     InteractionsResultFilteringOptionsData filteringOptions
   );
-  
+
   public DifferentSpeciesInteractionsData toInteractionsResultData(
     DifferentSpeciesInteractionsResult result,
     InteractionsResultFilteringOptionsData filteringOptions

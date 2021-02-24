@@ -62,7 +62,7 @@ import org.sing_group.evoppi.rest.entity.bio.InteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptionsData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.execution.WorkData;
-import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractionsMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
@@ -91,7 +91,7 @@ public class DefaultInteractionResource implements InteractionResource {
   private ExecutionMapper executionMapper;
   
   @Inject
-  private BioMapper bioMapper;
+  private InteractionsMapper interactionsMapper;
 
   @Context
   private UriInfo uriInfo;
@@ -99,7 +99,7 @@ public class DefaultInteractionResource implements InteractionResource {
   @PostConstruct
   public void postConstruct() {
     final UriBuilder uriBuilder = this.uriInfo.getBaseUriBuilder();
-    this.bioMapper.setUriBuilder(uriBuilder);
+    this.interactionsMapper.setUriBuilder(uriBuilder);
     this.executionMapper.setUriBuilder(uriBuilder);
   }
   
@@ -198,7 +198,7 @@ public class DefaultInteractionResource implements InteractionResource {
     final String[] idList = ids.split(",");
     final DifferentSpeciesInteractionsResultSummaryData[] results = 
       this.service.listDifferentSpeciesResult(idList, listingOptions)
-        .map(bioMapper::toInteractionQueryResultSummary)
+        .map(interactionsMapper::toInteractionQueryResultSummary)
       .toArray(DifferentSpeciesInteractionsResultSummaryData[]::new);
     
     return Response.ok(results)
@@ -235,7 +235,7 @@ public class DefaultInteractionResource implements InteractionResource {
     final String[] idList = ids.split(",");
     final SameSpeciesInteractionsResultSummaryData[] results = 
       this.service.listSameSpeciesResult(idList, listingOptions)
-        .map(bioMapper::toInteractionQueryResultSummary)
+        .map(interactionsMapper::toInteractionQueryResultSummary)
       .toArray(SameSpeciesInteractionsResultSummaryData[]::new);
     
     return Response.ok(results)
@@ -268,7 +268,7 @@ public class DefaultInteractionResource implements InteractionResource {
       
       if (summarize) {
         return Response
-          .ok(this.bioMapper.toInteractionQueryResultSummary(result))
+          .ok(this.interactionsMapper.toInteractionQueryResultSummary(result))
         .build();
       } else {
         final InteractionsResultFilteringOptionsData filteringOptions = new InteractionsResultFilteringOptionsData(
@@ -276,7 +276,7 @@ public class DefaultInteractionResource implements InteractionResource {
         );
         
         return Response
-          .ok(this.bioMapper.toInteractionQueryResult(result, filteringOptions))
+          .ok(this.interactionsMapper.toInteractionQueryResult(result, filteringOptions))
         .build();
       }
     } else if (this.service.isDifferentSpeciesResult(id)) {
@@ -284,7 +284,7 @@ public class DefaultInteractionResource implements InteractionResource {
 
       if (summarize) {
         return Response
-          .ok(this.bioMapper.toInteractionQueryResultSummary(result))
+          .ok(this.interactionsMapper.toInteractionQueryResultSummary(result))
         .build();
       } else {
         final InteractionsResultFilteringOptionsData filteringOptions = new InteractionsResultFilteringOptionsData(
@@ -292,7 +292,7 @@ public class DefaultInteractionResource implements InteractionResource {
         );
         
         return Response
-          .ok(this.bioMapper.toInteractionQueryResult(result, filteringOptions))
+          .ok(this.interactionsMapper.toInteractionQueryResult(result, filteringOptions))
         .build();
       }
     } else {
@@ -345,7 +345,7 @@ public class DefaultInteractionResource implements InteractionResource {
       );
       
       return Response
-        .ok(this.bioMapper.toInteractionsResultData(result, filteringOptions))
+        .ok(this.interactionsMapper.toInteractionsResultData(result, filteringOptions))
       .build();
     } else if (this.service.isDifferentSpeciesResult(id)) {
       final DifferentSpeciesInteractionsResult result = this.service.getDifferentSpeciesResult(id);
@@ -355,7 +355,7 @@ public class DefaultInteractionResource implements InteractionResource {
       );
       
       return Response
-        .ok(this.bioMapper.toInteractionsResultData(result, filteringOptions))
+        .ok(this.interactionsMapper.toInteractionsResultData(result, filteringOptions))
       .build();
     } else {
       throw new IllegalArgumentException("Unknown interactions results id: " + id);

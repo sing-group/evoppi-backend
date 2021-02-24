@@ -62,7 +62,7 @@ import org.sing_group.evoppi.domain.entities.user.User;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
 import org.sing_group.evoppi.rest.entity.bio.ResultUuids;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
-import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractionsMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.user.UserMapper;
 import org.sing_group.evoppi.rest.entity.user.InteractionResultLinkageData;
 import org.sing_group.evoppi.rest.entity.user.UserRegistrationData;
@@ -103,7 +103,7 @@ public class DefaultUserResource implements UserResource {
   private InteractionService interactionService;
   
   @Inject
-  private BioMapper bioMapper;
+  private InteractionsMapper bioMapper;
   
   @Inject
   private UserMapper userMapper;

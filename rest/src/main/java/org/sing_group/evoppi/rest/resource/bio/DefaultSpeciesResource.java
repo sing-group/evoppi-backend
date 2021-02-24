@@ -51,7 +51,7 @@ import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.bio.SpeciesListingField;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
-import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.SpeciesMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.SpeciesResource;
 import org.sing_group.evoppi.service.spi.bio.SpeciesService;
@@ -73,7 +73,7 @@ public class DefaultSpeciesResource implements SpeciesResource {
   private SpeciesService service;
   
   @Inject
-  private BioMapper mapper;
+  private SpeciesMapper mapper;
 
   @Context
   private UriInfo uriInfo;

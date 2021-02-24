@@ -49,7 +49,7 @@ import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.query.GeneQueryOptions;
 import org.sing_group.evoppi.rest.entity.bio.GeneData;
 import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
-import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.GeneMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.GeneResource;
 import org.sing_group.evoppi.service.spi.bio.GeneService;
@@ -71,7 +71,7 @@ public class DefaultGeneResource implements GeneResource {
   private GeneService service;
   
   @Inject
-  private BioMapper bioMapper;
+  private GeneMapper mapper;
 
   @Context
   private UriInfo uriInfo;
@@ -79,7 +79,7 @@ public class DefaultGeneResource implements GeneResource {
   @PostConstruct
   public void postConstruct() {
     final UriBuilder uriBuilder = this.uriInfo.getBaseUriBuilder();
-    this.bioMapper.setUriBuilder(uriBuilder);
+    this.mapper.setUriBuilder(uriBuilder);
   }
   
   @Path("{id: \\d+}")
@@ -97,7 +97,7 @@ public class DefaultGeneResource implements GeneResource {
     @PathParam("id") int id
   ) {
     return Response
-      .ok(this.bioMapper.toGeneData(this.service.get(id)))
+      .ok(this.mapper.toGeneData(this.service.get(id)))
     .build();
   }
 
@@ -116,7 +116,7 @@ public class DefaultGeneResource implements GeneResource {
     @PathParam("id") int id
   ) {
     return Response
-      .ok(this.bioMapper.toGeneNamesData(this.service.get(id)))
+      .ok(this.mapper.toGeneNamesData(this.service.get(id)))
     .build();
   }
 
@@ -146,7 +146,7 @@ public class DefaultGeneResource implements GeneResource {
       final GeneData[] genesData = stream(ids.split(","))
         .mapToInt(Integer::valueOf)
         .mapToObj(this.service::get)
-        .map(this.bioMapper::toGeneData)
+        .map(this.mapper::toGeneData)
       .toArray(GeneData[]::new);
       
       return Response.ok(genesData).build();
@@ -155,7 +155,7 @@ public class DefaultGeneResource implements GeneResource {
       final Stream<Gene> genes = this.service.find(queryOptions);
       
       final GeneData[] genesData = genes
-        .map(this.bioMapper::toGeneData)
+        .map(this.mapper::toGeneData)
       .toArray(GeneData[]::new);
       
       return Response.ok(genesData).build();
@@ -183,7 +183,7 @@ public class DefaultGeneResource implements GeneResource {
     final Stream<Gene> genes = this.service.find(queryOptions);
     
     final GeneNamesData[] geneNames = genes
-      .map(this.bioMapper::toGeneNamesData)
+      .map(this.mapper::toGeneNamesData)
     .toArray(GeneNamesData[]::new);
     
     return Response.ok(geneNames).build();

@@ -51,7 +51,7 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
-import org.sing_group.evoppi.rest.entity.mapper.spi.bio.BioMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractomeMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.InteractomeResource;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
@@ -77,7 +77,7 @@ public class DefaultInteractomeResource implements InteractomeResource {
   private InteractomeService service;
 
   @Inject
-  private BioMapper mapper;
+  private InteractomeMapper mapper;
 
   @Context
   private UriInfo uriInfo;
