@@ -93,7 +93,7 @@ public class InteractomeData implements Serializable {
     this.numFinalInteractions = numFinalInteractions;
     this.probFinalInteractions = probFinalInteractions;
     this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
-    this.numRemovedInterSpeciesInteractions = numMultimappedToGeneId;
+    this.numMultimappedToGeneId = numMultimappedToGeneId;
   }
 
   public int getId() {
