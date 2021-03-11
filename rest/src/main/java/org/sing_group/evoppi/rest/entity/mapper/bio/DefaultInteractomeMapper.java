@@ -78,7 +78,7 @@ public class DefaultInteractomeMapper implements InteractomeMapper {
         : null,
       interactome.getNumGenesNotToGeneId().isPresent() ? interactome.getNumGenesNotToGeneId().getAsInt() : null,
       interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
-      interactome.getProbFinalInteractions().isPresent() ? interactome.getProbFinalInteractions().getAsDouble() : null,
+      interactome.getNumFinalGenes().isPresent() ? interactome.getNumFinalGenes().getAsInt() : null,
       interactome.getNumRemovedInterSpeciesInteractions().isPresent()
         ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt()
         : null,
@@ -123,7 +123,7 @@ public class DefaultInteractomeMapper implements InteractomeMapper {
         : null,
       interactome.getNumGenesNotToGeneId().isPresent() ? interactome.getNumGenesNotToGeneId().getAsInt() : null,
       interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
-      interactome.getProbFinalInteractions().isPresent() ? interactome.getProbFinalInteractions().getAsDouble() : null,
+      interactome.getNumFinalGenes().isPresent() ? interactome.getNumFinalGenes().getAsInt() : null,
       interactome.getNumRemovedInterSpeciesInteractions().isPresent()
         ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt()
         : null,

@@ -59,13 +59,13 @@ public class InteractomeWithInteractionsData extends InteractomeData {
     Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
     Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Double probFinalInteractions, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
+    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
     IdAndUri[] genes, InteractingGenes[] interactions
   ) {
     super(
       id, name, species, dbSourceIdType, numOriginalInteractions, numUniqueOriginalInteractions,
       numUniqueOriginalGenes, numInteractionsNotToUniProtKB, numGenesNotToUniProtKB, numInteractionsNotToGeneId,
-      numGenesNotToGeneId, numFinalInteractions, probFinalInteractions, numRemovedInterSpeciesInteractions,
+      numGenesNotToGeneId, numFinalInteractions, numFinalGenes, numRemovedInterSpeciesInteractions,
       numMultimappedToGeneId
     );
 

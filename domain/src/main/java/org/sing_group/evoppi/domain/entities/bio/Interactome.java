@@ -26,7 +26,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -90,8 +89,8 @@ public class Interactome implements Serializable {
   @Column(name = "numFinalInteractions", nullable = true)
   private Integer numFinalInteractions;
 
-  @Column(name = "probFinalInteractions", scale = 1, precision = 2, nullable = true)
-  private Double probFinalInteractions;
+  @Column(name = "numFinalGenes", nullable = true)
+  private Integer numFinalGenes;
 
   @Column(name = "numRemovedInterSpeciesInteractions", nullable = true)
   private Integer numRemovedInterSpeciesInteractions;
@@ -154,8 +153,8 @@ public class Interactome implements Serializable {
     return numFinalInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numFinalInteractions);
   }
 
-  public OptionalDouble getProbFinalInteractions() {
-    return probFinalInteractions == null ? OptionalDouble.empty() : OptionalDouble.of(this.probFinalInteractions);
+  public OptionalInt getNumFinalGenes() {
+    return numFinalGenes == null ? OptionalInt.empty() : OptionalInt.of(this.numFinalGenes);
   }
   
   public OptionalInt getNumRemovedInterSpeciesInteractions() {
