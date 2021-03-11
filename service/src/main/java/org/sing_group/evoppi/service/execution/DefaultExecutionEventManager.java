@@ -45,10 +45,10 @@ public class DefaultExecutionEventManager implements ExecutionEventManager {
   @Override
   public void manageWorkStep(@Observes WorkStepEvent event) {
     final WorkEntity work = this.workService.get(event.getWorkId());
-    
+
     work.addStep(event.getDescription(), event.getProgress());
-    
-    switch(event.getWorkStatus()) {
+
+    switch (event.getWorkStatus()) {
       case SCHEDULED:
         work.setScheduled();
         break;
@@ -59,7 +59,7 @@ public class DefaultExecutionEventManager implements ExecutionEventManager {
         work.setFinished();
         break;
       case FAILED:
-        work.setFailed(null);
+        work.setFailed(event.getDescription());
         break;
       default:
     }
