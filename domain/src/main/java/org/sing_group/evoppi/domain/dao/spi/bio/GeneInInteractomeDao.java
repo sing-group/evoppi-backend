@@ -2,7 +2,7 @@
  * #%L
  * Domain
  * %%
- * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2021 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,20 +19,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 package org.sing_group.evoppi.domain.dao.spi.bio;
 
-import java.util.stream.Stream;
-
-import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 
-public interface SpeciesDAO {
-
-  public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions);
-
-  public Species getSpecies(int id);
-
-  public long count(ListingOptions<Species> speciesListingOptions);
-
+public interface GeneInInteractomeDao {
+  public GeneInInteractome create(Species species, Interactome interactome, Gene gene);
 }

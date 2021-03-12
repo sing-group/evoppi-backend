@@ -138,6 +138,7 @@ public class DefaultGeneDAO implements GeneDAO {
     .stream();
   }
 
+  @Transactional(dontRollbackOn=IllegalArgumentException.class)
   @Override
   public Gene getGene(int geneId) {
     return this.dh.get(geneId)

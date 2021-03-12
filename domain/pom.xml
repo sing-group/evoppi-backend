@@ -25,6 +25,10 @@
 			<groupId>org.sing_group</groupId>
 			<artifactId>fluent-commons</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.sing_group</groupId>
+			<artifactId>interactomes-parser</artifactId>
+		</dependency>
 
 		<!-- Testing -->
 		<dependency>

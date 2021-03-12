@@ -20,24 +20,22 @@
  * #L%
  */
 
-package org.sing_group.evoppi.service.spi.bio;
+package org.sing_group.evoppi.service.spi.bio.interactome.pipeline;
 
-import java.util.stream.Stream;
+import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationConfiguration;
+import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContext;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.event.InteractomeCreationEvent;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.event.InteractomeCreationEventManager;
+import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineStep;
 
-import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+public interface InteractomeCreationStep
+extends PipelineStep<
+  InteractomeCreationConfiguration,
+  InteractomeCreationContext,
+  InteractomeCreationStep,
+  InteractomeCreationPipeline,
+  InteractomeCreationEvent,
+  InteractomeCreationEventManager
+> {
 
-public interface InteractomeService {
-
-  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions);
-
-  public Interactome getInteractome(int id);
-
-  public long count();
-  
-  public long count(ListingOptions<Interactome> interactomeListingOptions);
-
-  public InteractomeCreationWork createInteractome(InteractomeCreationData data);
 }

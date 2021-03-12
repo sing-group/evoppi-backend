@@ -20,24 +20,14 @@
  * #L%
  */
 
-package org.sing_group.evoppi.service.spi.bio;
+package org.sing_group.evoppi.service.spi.bio.interactome;
 
-import java.util.stream.Stream;
-
-import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
 import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineConfiguration;
 
-public interface InteractomeService {
+public interface InteractomeCreationConfiguration extends PipelineConfiguration {
 
-  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions);
+  public InteractomeCreationData getData();
 
-  public Interactome getInteractome(int id);
-
-  public long count();
-  
-  public long count(ListingOptions<Interactome> interactomeListingOptions);
-
-  public InteractomeCreationWork createInteractome(InteractomeCreationData data);
+  public String getWorkId();
 }

@@ -2,7 +2,7 @@
  * #%L
  * Domain
  * %%
- * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2021 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,20 +19,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.domain.entities.execution;
 
-package org.sing_group.evoppi.domain.dao.spi.bio;
+import java.io.Serializable;
 
-import java.util.stream.Stream;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.entities.bio.Species;
+@Entity
+@Table(name = "work_interactome_creation")
+public class InteractomeCreationWork extends WorkEntity implements Serializable {
+  private static final long serialVersionUID = 1L;
 
-public interface SpeciesDAO {
+  InteractomeCreationWork() {}
 
-  public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions);
-
-  public Species getSpecies(int id);
-
-  public long count(ListingOptions<Species> speciesListingOptions);
-
+  public InteractomeCreationWork(String name) {
+    super(name);
+  }
 }

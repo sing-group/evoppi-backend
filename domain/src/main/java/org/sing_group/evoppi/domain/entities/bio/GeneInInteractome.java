@@ -55,6 +55,14 @@ public class GeneInInteractome implements Serializable {
   @JoinColumn(name = "gene", referencedColumnName = "id", nullable = false)
   private Gene gene;
 
+  GeneInInteractome() {}
+
+  public GeneInInteractome(Species species, Interactome interactome, Gene gene) {
+    this.species = species;
+    this.interactome = interactome;
+    this.gene = gene;
+  }
+  
   public Species getSpecies() {
     return species;
   }

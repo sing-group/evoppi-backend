@@ -22,7 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao.bio;
 
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
@@ -32,46 +32,43 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
-import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDao;
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
+import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome.GeneInInteractomeId;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultSpeciesDAO implements SpeciesDAO {
+public class DefaultGeneInInteractomeDAO implements GeneInInteractomeDao {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<Integer, Species> dh;
+  protected DAOHelper<GeneInInteractomeId, GeneInInteractome> dh;
 
-  public DefaultSpeciesDAO() {
+  public DefaultGeneInInteractomeDAO() {
     super();
   }
 
-  public DefaultSpeciesDAO(EntityManager em) {
+  public DefaultGeneInInteractomeDAO(EntityManager em) {
     this.em = em;
     createDAOHelper();
   }
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(Integer.class, Species.class, this.em);
+    this.dh = DAOHelper.of(GeneInInteractomeId.class, GeneInInteractome.class, this.em);
   }
 
   @Override
-  public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions) {
-    return this.dh.list(speciesListingOptions).stream();
+  public GeneInInteractome create(Species species, Interactome interactome, Gene gene) {
+    Optional<GeneInInteractome> db =
+      this.dh.get(new GeneInInteractomeId(species.getId(), interactome.getId(), gene.getId()));
+    if (db.isPresent()) {
+      return db.get();
+    } else {
+      return this.dh.persist(new GeneInInteractome(species, interactome, gene));
+    }
   }
-
-  @Override
-  public Species getSpecies(int id) {
-    return this.dh.get(id)
-      .orElseThrow(() -> new IllegalArgumentException("Unknown species: " + id));
-  }
-
-  @Override
-  public long count(ListingOptions<Species> speciesListingOptions) {
-    return this.dh.count(speciesListingOptions);
-  }
-
 }

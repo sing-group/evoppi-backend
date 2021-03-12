@@ -46,7 +46,7 @@ public class DefaultSpeciesService implements SpeciesService {
 
   @Override
   public Species getSpecies(int id) {
-    return this.dao.getSpecie(id);
+    return this.dao.getSpecies(id);
   }
 
   @Override

@@ -20,9 +20,7 @@
  * #L%
  */
 
-package org.sing_group.evoppi.domain.dao.bio;
-
-import java.util.stream.Stream;
+package org.sing_group.evoppi.domain.dao.bio.execution;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
@@ -32,46 +30,44 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
-import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
-import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractomeCreationWorkDAO;
+import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultSpeciesDAO implements SpeciesDAO {
+public class DefaultInteractomeCreationWorkDAO implements InteractomeCreationWorkDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<Integer, Species> dh;
+  protected DAOHelper<String, InteractomeCreationWork> dh;
 
-  public DefaultSpeciesDAO() {
+  public DefaultInteractomeCreationWorkDAO() {
     super();
   }
 
-  public DefaultSpeciesDAO(EntityManager em) {
+  public DefaultInteractomeCreationWorkDAO(EntityManager em) {
     this.em = em;
     createDAOHelper();
   }
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(Integer.class, Species.class, this.em);
+    this.dh = DAOHelper.of(String.class, InteractomeCreationWork.class, this.em);
   }
 
   @Override
-  public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions) {
-    return this.dh.list(speciesListingOptions).stream();
+  public InteractomeCreationWork get(String uuid) {
+    return this.dh.get(uuid)
+      .orElseThrow(() -> new IllegalArgumentException("No result found with id: " + uuid));
   }
 
   @Override
-  public Species getSpecies(int id) {
-    return this.dh.get(id)
-      .orElseThrow(() -> new IllegalArgumentException("Unknown species: " + id));
+  public void delete(String uuid) {
+    this.dh.removeByKey(uuid);
   }
 
   @Override
-  public long count(ListingOptions<Species> speciesListingOptions) {
-    return this.dh.count(speciesListingOptions);
+  public InteractomeCreationWork create(String name) {
+    return this.dh.persist(new InteractomeCreationWork(name));
   }
-
 }

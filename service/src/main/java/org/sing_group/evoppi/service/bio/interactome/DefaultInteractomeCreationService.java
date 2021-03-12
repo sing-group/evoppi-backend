@@ -2,7 +2,7 @@
  * #%L
  * Service
  * %%
- * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2021 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,8 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-package org.sing_group.evoppi.service.bio.samespecies;
+package org.sing_group.evoppi.service.bio.interactome;
 
 import static javax.ejb.TransactionAttributeType.NEVER;
 import static javax.ejb.TransactionManagementType.BEAN;
@@ -34,33 +33,31 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
-import org.sing_group.evoppi.service.bio.samespecies.event.SameSpeciesInteractionsRequestEvent;
-import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesGeneInteractionsConfiguration;
-import org.sing_group.evoppi.service.spi.bio.samespecies.SameSpeciesInteractionService;
-import org.sing_group.evoppi.service.spi.bio.samespecies.pipeline.SameSpeciesGeneInteractionsPipeline;
+import org.sing_group.evoppi.service.bio.interactome.event.InteractomeCreationRequestEvent;
+import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationConfiguration;
+import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationService;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.InteractomeCreationPipeline;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineExecutor;
 
 @Stateless
 @PermitAll
 @TransactionManagement(BEAN)
 @TransactionAttribute(NEVER)
-public class DefaultSameSpeciesInteractionService implements SameSpeciesInteractionService {
+public class DefaultInteractomeCreationService implements InteractomeCreationService {
   @Inject
   private PipelineExecutor executor;
 
   @Inject
-  private SameSpeciesGeneInteractionsPipeline pipeline;
+  private InteractomeCreationPipeline pipeline;
 
   @Override
   @Asynchronous
-  public void calculateSameSpeciesInteractions(
+  public void createInteractome(
     @Observes(during = TransactionPhase.AFTER_SUCCESS)
-    SameSpeciesInteractionsRequestEvent event
+    InteractomeCreationRequestEvent event
   ) {
-    final SameSpeciesGeneInteractionsConfiguration configuration =
-      new DefaultSameSpeciesGeneInteractionsConfiguration(
-        event.getGeneId(), event.getInteractomes().toArray(), event.getMaxDegree(), event.getWorkId(), event.getWorkId()
-      );
+    final InteractomeCreationConfiguration configuration =
+      new DefaultInteractomeCreationConfiguration(event.getData(), event.getWorkId());
 
     this.executor.execute(pipeline, configuration);
   }

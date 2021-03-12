@@ -1,6 +1,6 @@
 /*-
  * #%L
- * REST
+ * Service
  * %%
  * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -20,22 +20,24 @@
  * #L%
  */
 
-package org.sing_group.evoppi.rest.resource.spi.bio;
+package org.sing_group.evoppi.service.spi.bio.interactome.pipeline.event;
 
 import javax.ejb.Local;
-import javax.ws.rs.core.Response;
 
-import org.sing_group.evoppi.domain.dao.SortDirection;
-import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
-import org.sing_group.evoppi.rest.entity.bio.RestInteractomeCreationData;
+import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationConfiguration;
+import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContext;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.InteractomeCreationPipeline;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.InteractomeCreationStep;
+import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineEventManager;
 
 @Local
-public interface InteractomeResource {
-  public Response listInteractomes(Integer start, Integer end, InteractomeListingField order, SortDirection sort);
-
-  public Response getInteractome(int id, boolean includeInteractions);
-
-  public Response getInteractomeInteractionsAsTsv(int id);
-
-  public Response create(RestInteractomeCreationData data);
+public interface InteractomeCreationEventManager
+extends PipelineEventManager<
+  InteractomeCreationConfiguration,
+  InteractomeCreationContext,
+  InteractomeCreationStep,
+  InteractomeCreationPipeline,
+  InteractomeCreationEvent,
+  InteractomeCreationEventManager
+> {
 }

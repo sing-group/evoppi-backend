@@ -27,6 +27,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -36,11 +37,13 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -51,7 +54,10 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
+import org.sing_group.evoppi.rest.entity.bio.RestInteractomeCreationData;
+import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractomeMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.InteractomeResource;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
@@ -78,6 +84,9 @@ public class DefaultInteractomeResource implements InteractomeResource {
 
   @Inject
   private InteractomeMapper mapper;
+  
+  @Inject
+  private ExecutionMapper executionMapper;
 
   @Context
   private UriInfo uriInfo;
@@ -85,6 +94,7 @@ public class DefaultInteractomeResource implements InteractomeResource {
   @PostConstruct
   public void postConstruct() {
     this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
+    this.executionMapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
   }
 
   @GET
@@ -160,5 +170,34 @@ public class DefaultInteractomeResource implements InteractomeResource {
     return Response
       .ok(this.mapper.toInteractomeTsv(interactome), TEXT_PLAIN)
       .build();
+  }
+  
+
+  @POST
+  @ApiOperation(
+    value = "Creates a new interactome. "
+      + "The processing is done asynchronously, thus this method returns a work-data instance with information about "
+      + "the asynchronous task doing the calculations.",
+    response = WorkData.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Interactome name already exists")
+  )
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response create(RestInteractomeCreationData data) {
+    this.checkInteractomeNameExists(data.getName());
+
+    return Response.ok(this.executionMapper.toWorkData(this.service.createInteractome(data))).build();
+  }
+
+  private void checkInteractomeNameExists(String name) {
+    final List<FilterField<Interactome>> filters = new LinkedList<ListingOptions.FilterField<Interactome>>();
+    filters.add(new FilterField<Interactome>(InteractomeListingField.NAME, name));
+    long count = this.service.count(ListingOptions.filtered(filters));
+
+    if (count > 0) {
+      throw new IllegalArgumentException("Interactome name already exists");
+    }
   }
 }

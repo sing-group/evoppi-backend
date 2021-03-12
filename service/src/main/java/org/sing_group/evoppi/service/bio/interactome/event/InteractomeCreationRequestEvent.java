@@ -2,7 +2,7 @@
  * #%L
  * Service
  * %%
- * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2021 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,25 +19,28 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.service.bio.interactome.event;
 
-package org.sing_group.evoppi.service.spi.bio;
+import java.io.Serializable;
 
-import java.util.stream.Stream;
-
-import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
 import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
 
-public interface InteractomeService {
+public class InteractomeCreationRequestEvent implements Serializable {
+  private static final long serialVersionUID = 1L;
 
-  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions);
+  private InteractomeCreationData data;
+  private String workId;
 
-  public Interactome getInteractome(int id);
-
-  public long count();
+  public InteractomeCreationRequestEvent(InteractomeCreationData data, String workId) {
+    this.data = data;
+    this.workId = workId;
+  }
   
-  public long count(ListingOptions<Interactome> interactomeListingOptions);
-
-  public InteractomeCreationWork createInteractome(InteractomeCreationData data);
+  public InteractomeCreationData getData() {
+    return data;
+  }
+  
+  public String getWorkId() {
+    return workId;
+  }
 }

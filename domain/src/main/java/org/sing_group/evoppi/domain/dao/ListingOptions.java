@@ -74,6 +74,10 @@ public class ListingOptions<T> implements Serializable {
     
     return new ListingOptions<R>(start, end, sortFields, filterFields);
   }
+  
+  public static <R> ListingOptions<R> filtered(List<FilterField<R>> filterFields) {
+    return new ListingOptions<R>(null, null, null, filterFields);
+  }
 
   public ListingOptions(
     Integer start, Integer end, Collection<SortField<T>> sortFields, Collection<FilterField<T>> filterFields

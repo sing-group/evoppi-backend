@@ -78,6 +78,17 @@ public class Interaction implements HasGeneInteraction, Serializable {
   })
   private GeneInInteractome geneInInteractomeB;
 
+  Interaction() {}
+
+  public Interaction(Species species, Interactome interactome, Gene geneA, Gene geneB) {
+    this.species = species;
+    this.interactome = interactome;
+    this.geneA = geneA;
+    this.geneB = geneB;
+    this.geneInInteractomeA = new GeneInInteractome(species, interactome, geneA);
+    this.geneInInteractomeB = new GeneInInteractome(species, interactome, geneB);
+  }
+
   @Override
   public Interactome getInteractome() {
     return interactome;
