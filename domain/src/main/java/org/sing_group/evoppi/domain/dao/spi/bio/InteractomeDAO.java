@@ -44,4 +44,6 @@ public interface InteractomeDAO {
     Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
     Species species, GeneInteractions interactions
   );
+
+  public Interactome getInteractomeByName(String name);
 }

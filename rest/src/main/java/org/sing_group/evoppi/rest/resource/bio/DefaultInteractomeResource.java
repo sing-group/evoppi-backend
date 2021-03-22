@@ -27,7 +27,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -186,18 +185,6 @@ public class DefaultInteractomeResource implements InteractomeResource {
   )
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response create(RestInteractomeCreationData data) {
-    this.checkInteractomeNameExists(data.getName());
-
     return Response.ok(this.executionMapper.toWorkData(this.service.createInteractome(data))).build();
-  }
-
-  private void checkInteractomeNameExists(String name) {
-    final List<FilterField<Interactome>> filters = new LinkedList<ListingOptions.FilterField<Interactome>>();
-    filters.add(new FilterField<Interactome>(InteractomeListingField.NAME, name));
-    long count = this.service.count(ListingOptions.filtered(filters));
-
-    if (count > 0) {
-      throw new IllegalArgumentException("Interactome name already exists");
-    }
   }
 }

@@ -30,6 +30,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -81,6 +82,16 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   public Interactome getInteractome(int id) {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown interactome: " + id));
+  }
+
+  @Override
+  @Transactional(dontRollbackOn = IllegalArgumentException.class)
+  public Interactome getInteractomeByName(String name) {
+    try {
+      return this.dh.getBy("name", name);
+    } catch (NoResultException e) {
+      throw new IllegalArgumentException("Unknown interactome: " + name, e);
+    }
   }
 
   @Override

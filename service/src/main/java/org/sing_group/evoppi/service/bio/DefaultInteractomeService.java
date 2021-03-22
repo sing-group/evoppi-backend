@@ -75,13 +75,27 @@ public class DefaultInteractomeService implements InteractomeService {
   @Override
   @RolesAllowed("ADMIN")
   public InteractomeCreationWork createInteractome(InteractomeCreationData data) {
-    final InteractomeCreationWork work = this.workDao.create(data.getName());
+    boolean exists = existsInteractomeWithName(data.getName());
+    
+    if (exists) {
+      throw new IllegalArgumentException("Interactome name already exists");
+    } else {
+      final InteractomeCreationWork work = this.workDao.create(data.getName());
 
-    this.events
-      .fire(new InteractomeCreationRequestEvent(data, work.getId()));
+      this.events.fire(new InteractomeCreationRequestEvent(data, work.getId()));
 
-    work.setScheduled();
+      work.setScheduled();
+      
+      return work;
+    }
+  }
 
-    return work;
+  private boolean existsInteractomeWithName(String name) {
+    try {
+      this.dao.getInteractomeByName(name);
+      return true;
+    } catch (IllegalArgumentException iae) {
+      return false;
+    }
   }
 }
