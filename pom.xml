@@ -156,7 +156,9 @@
 		<wildfly.arquillian.container.version>2.1.1.Final</wildfly.arquillian.container.version>
 		<wildfly.version>10.1.0.Final</wildfly.version>
 		<interactomes-parser.version>0.1.0-SNAPSHOT</interactomes-parser.version>
+		<gbff-parser.version>0.1.0-SNAPSHOT</gbff-parser.version>
 		<commons-fileupload.version>1.3.3</commons-fileupload.version>
+		<seda.version>1.3.0</seda.version>
 
 		<!-- Resteasy specific version required, as it fixes ResourceInfo injection bug -->
 		<resteasy.version>3.0.24.Final</resteasy.version>
@@ -276,9 +278,19 @@
 				<version>${interactomes-parser.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.sing_group</groupId>
+				<artifactId>gbff-parser</artifactId>
+				<version>${gbff-parser.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
 				<version>${commons-fileupload.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sing_group</groupId>
+				<artifactId>seda</artifactId>
+				<version>${seda.version}</version>
 			</dependency>
 
 			<!-- Testing -->
@@ -423,6 +435,9 @@
 					<configuration>
 						<!-- Avoids the execution of the wildfly:* goals in the subproject unless the plugin is activated in the subproject. -->
 						<skip>true</skip>
+						<java-opts>
+						  <java-opt>-Xmx8G</java-opt>
+						</java-opts>
 					</configuration>
 				</plugin>
 				<plugin>

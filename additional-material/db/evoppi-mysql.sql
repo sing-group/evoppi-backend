@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `evoppi` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `evoppi`;
--- MySQL dump 10.13  Distrib 5.5.61, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.33, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: evoppi
+-- Host: localhost    Database: evoppi
 -- ------------------------------------------------------
--- Server version	5.5.61-0ubuntu0.14.04.1
+-- Server version	5.7.33-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,6 +14,16 @@ USE `evoppi`;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Current Database: `evoppi`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `evoppi` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+ALTER DATABASE evoppi CHARACTER SET = utf8;
+
+USE `evoppi`;
 
 --
 -- Table structure for table `administrator`
@@ -106,8 +114,8 @@ CREATE TABLE `different_species_interactions_result_reference_interactomes` (
   `referenceInteractomeId` int(11) NOT NULL,
   PRIMARY KEY (`resultId`,`referenceInteractomeId`),
   KEY `FKln6lvc23kfx8vxthanwlr60tc` (`referenceInteractomeId`),
-  CONSTRAINT `FKln6lvc23kfx8vxthanwlr60tc` FOREIGN KEY (`referenceInteractomeId`) REFERENCES `interactome` (`id`),
-  CONSTRAINT `FK_different_species_interactions_result_reference_interactomes` FOREIGN KEY (`resultId`) REFERENCES `different_species_interactions_result` (`id`)
+  CONSTRAINT `FK_different_species_interactions_result_reference_interactomes` FOREIGN KEY (`resultId`) REFERENCES `different_species_interactions_result` (`id`),
+  CONSTRAINT `FKln6lvc23kfx8vxthanwlr60tc` FOREIGN KEY (`referenceInteractomeId`) REFERENCES `interactome` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -123,8 +131,8 @@ CREATE TABLE `different_species_interactions_result_target_interactomes` (
   `targetInteractomeId` int(11) NOT NULL,
   PRIMARY KEY (`resultId`,`targetInteractomeId`),
   KEY `FKmjooibj4syiguo4vd6we3qxaw` (`targetInteractomeId`),
-  CONSTRAINT `FKmjooibj4syiguo4vd6we3qxaw` FOREIGN KEY (`targetInteractomeId`) REFERENCES `interactome` (`id`),
-  CONSTRAINT `FK_different_species_interactions_result_target_interactomes` FOREIGN KEY (`resultId`) REFERENCES `different_species_interactions_result` (`id`)
+  CONSTRAINT `FK_different_species_interactions_result_target_interactomes` FOREIGN KEY (`resultId`) REFERENCES `different_species_interactions_result` (`id`),
+  CONSTRAINT `FKmjooibj4syiguo4vd6we3qxaw` FOREIGN KEY (`targetInteractomeId`) REFERENCES `interactome` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -137,12 +145,11 @@ DROP TABLE IF EXISTS `gene`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gene` (
   `id` int(11) NOT NULL,
-  `species` int(11) NOT NULL,
   `defaultName` varchar(255) NOT NULL,
+  `species` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDXnkshoslla6kq08gqh38grefke` (`id`,`species`),
   KEY `FKg5uaph3wq3eu765ch9lkq6qi1` (`species`),
-  KEY `UK_nkshoslla6kq08gqh38grefke` (`id`,`species`),
   CONSTRAINT `FKg5uaph3wq3eu765ch9lkq6qi1` FOREIGN KEY (`species`) REFERENCES `species` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -252,6 +259,7 @@ CREATE TABLE `interaction_group_result` (
   `geneB` int(11) NOT NULL,
   `interactionsResultId` varchar(255) NOT NULL,
   PRIMARY KEY (`geneA`,`geneB`,`interactionsResultId`),
+  KEY `interactionsResultIdIndex` (`interactionsResultId`),
   KEY `FKirn6ve0wwqeo4tlsj9gffwjr3` (`geneB`),
   CONSTRAINT `FKgs914csec0vv06ex5u68rtida` FOREIGN KEY (`geneA`) REFERENCES `gene` (`id`),
   CONSTRAINT `FKirn6ve0wwqeo4tlsj9gffwjr3` FOREIGN KEY (`geneB`) REFERENCES `gene` (`id`)
@@ -290,28 +298,26 @@ DROP TABLE IF EXISTS `interactome`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `interactome` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `species` int(11) NOT NULL,
   `dbSourceIdType` varchar(100) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `numFinalGenes` int(11) DEFAULT NULL,
   `numFinalInteractions` int(11) DEFAULT NULL,
   `numGenesNotToGeneId` int(11) DEFAULT NULL,
   `numGenesNotToUniProtKB` int(11) DEFAULT NULL,
   `numInteractionsNotToGeneId` int(11) DEFAULT NULL,
   `numInteractionsNotToUniProtKB` int(11) DEFAULT NULL,
+  `numMultimappedToGeneId` int(11) DEFAULT NULL,
   `numOriginalInteractions` int(11) DEFAULT NULL,
+  `numRemovedInterSpeciesInteractions` int(11) DEFAULT NULL,
   `numUniqueOriginalGenes` int(11) DEFAULT NULL,
   `numUniqueOriginalInteractions` int(11) DEFAULT NULL,
-  `numFinalGenes` int(11) DEFAULT NULL,
-  `numMultimappedToGeneId` int(11) DEFAULT NULL,
-  `numRemovedInterSpeciesInteractions` int(11) DEFAULT NULL,
+  `species` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UKp5x9ydinmkxbuy09ha9unypf7` (`name`,`species`),
-  UNIQUE KEY `UK_p5x9ydinmkxbuy09ha9unypf7` (`name`,`species`),
   KEY `IDXauoiyeswmacye8t54i4uf98x0` (`id`,`species`),
   KEY `FK9tl8gsonmm6ksaxy4wt4xs8mr` (`species`),
-  KEY `UK_auoiyeswmacye8t54i4uf98x0` (`id`,`species`),
   CONSTRAINT `FK9tl8gsonmm6ksaxy4wt4xs8mr` FOREIGN KEY (`species`) REFERENCES `species` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -344,23 +350,8 @@ CREATE TABLE `registration` (
   `password` char(32) NOT NULL,
   `registrationDateTime` datetime NOT NULL,
   PRIMARY KEY (`login`),
+  UNIQUE KEY `UK_mwjjl8530nsph5lshrjv6dthm` (`code`),
   UNIQUE KEY `UK_pqp6404l2ndskpsr1xx8eaa68` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `registration_linked_work`
---
-
-DROP TABLE IF EXISTS `registration_linked_work`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `registration_linked_work` (
-  `registration` varchar(100) NOT NULL,
-  `workId` char(36) NOT NULL,
-  PRIMARY KEY (`registration`,`workId`),
-  UNIQUE KEY `UK_edlo010wrmlgc9f3ppf4he15s` (`workId`),
-  CONSTRAINT `FK_registration_registration_linked_work` FOREIGN KEY (`registration`) REFERENCES `registration` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -419,8 +410,8 @@ CREATE TABLE `same_species_interactions_result_query_interactome` (
   `queryInteractomesId` int(11) NOT NULL,
   PRIMARY KEY (`resultId`,`queryInteractomesId`),
   KEY `FKlrtx0d2g1he5hme5plmlu38lq` (`queryInteractomesId`),
-  CONSTRAINT `FKlrtx0d2g1he5hme5plmlu38lq` FOREIGN KEY (`queryInteractomesId`) REFERENCES `interactome` (`id`),
-  CONSTRAINT `FK_same_species_interactions_result_query_interactome` FOREIGN KEY (`resultId`) REFERENCES `same_species_interactions_result` (`id`)
+  CONSTRAINT `FK_same_species_interactions_result_query_interactome` FOREIGN KEY (`resultId`) REFERENCES `same_species_interactions_result` (`id`),
+  CONSTRAINT `FKlrtx0d2g1he5hme5plmlu38lq` FOREIGN KEY (`queryInteractomesId`) REFERENCES `interactome` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -434,9 +425,10 @@ DROP TABLE IF EXISTS `species`;
 CREATE TABLE `species` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
+  `taxonomyId` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_29ixq8ot8e88rk6v7jpkisgr3` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -447,12 +439,62 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `role` varchar(10) NOT NULL,
   `login` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` char(32) NOT NULL,
+  `role` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`login`),
   UNIQUE KEY `UK_ob8kqyqqgmefl0aco34akdtpe` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `work_interactome_creation`
+--
+
+DROP TABLE IF EXISTS `work_interactome_creation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `work_interactome_creation` (
+  `id` char(36) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `resultReference` varchar(1023) DEFAULT NULL,
+  `creationDateTime` datetime NOT NULL,
+  `failureCause` varchar(255) DEFAULT NULL,
+  `finishingDateTime` datetime DEFAULT NULL,
+  `schedulingDateTime` datetime DEFAULT NULL,
+  `startDateTime` datetime DEFAULT NULL,
+  `status` varchar(9) NOT NULL,
+  `owner` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_d0tbrbpqboshjjqudta738thi` (`owner`),
+  CONSTRAINT `FK_d0tbrbpqboshjjqudta738thi` FOREIGN KEY (`owner`) REFERENCES `user` (`login`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `work_species_creation`
+--
+
+DROP TABLE IF EXISTS `work_species_creation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `work_species_creation` (
+  `id` char(36) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `resultReference` varchar(1023) DEFAULT NULL,
+  `creationDateTime` datetime NOT NULL,
+  `failureCause` varchar(255) DEFAULT NULL,
+  `finishingDateTime` datetime DEFAULT NULL,
+  `schedulingDateTime` datetime DEFAULT NULL,
+  `startDateTime` datetime DEFAULT NULL,
+  `status` varchar(9) NOT NULL,
+  `owner` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_n461r772b1m0t6f46pime3r9n` (`owner`),
+  CONSTRAINT `FK_n461r772b1m0t6f46pime3r9n` FOREIGN KEY (`owner`) REFERENCES `user` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -481,4 +523,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-17 13:38:29
+-- Dump completed on 2021-03-30  9:19:23

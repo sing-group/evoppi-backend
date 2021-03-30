@@ -27,6 +27,7 @@ import static java.util.Objects.requireNonNull;
 import static org.sing_group.fluent.checker.Checks.requireNonEmpty;
 import static org.sing_group.fluent.checker.Checks.requireNonNullCollection;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -38,6 +39,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -136,6 +138,30 @@ public class DAOHelper<K, T> {
 
   public void remove(T entity) {
     this.em.remove(entity);
+    this.em.flush();
+  }
+
+  public void removeByField(String field, Object value) {
+    final CriteriaBuilder cb = this.cb();
+    
+    final CriteriaDelete<T> query = cb.createCriteriaDelete(this.entityClass);
+    final Root<T> root = query.from(this.entityClass);
+
+    query.where(cb.equal(root.get(field), value));
+
+    this.em.createQuery(query).executeUpdate();
+    this.em.flush();
+  }
+
+  public void removeMultipleByField(String field, Collection<?> values) {
+    final CriteriaBuilder cb = this.cb();
+    
+    final CriteriaDelete<T> query = cb.createCriteriaDelete(this.entityClass);
+    final Root<T> root = query.from(this.entityClass);
+
+    query.where(root.get(field).in(values));
+
+    this.em.createQuery(query).executeUpdate();
     this.em.flush();
   }
 

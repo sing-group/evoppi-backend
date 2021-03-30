@@ -23,7 +23,7 @@ package org.sing_group.evoppi.service.bio.interactome.event;
 
 import java.io.Serializable;
 
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 
 public class InteractomeCreationRequestEvent implements Serializable {
   private static final long serialVersionUID = 1L;

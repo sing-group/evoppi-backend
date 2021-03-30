@@ -1,4 +1,6 @@
 DROP TABLE `work_step`;
+DROP TABLE `work_species_creation`;
+DROP TABLE `work_interactome_creation`;
 
 DROP TABLE `blast_result`;
 
@@ -26,6 +28,5 @@ DROP TABLE `researcher`;
 DROP TABLE `administrator`;
 DROP TABLE `user`;
 
-DROP TABLE `registration_linked_work`;
 DROP TABLE `registration`;
 

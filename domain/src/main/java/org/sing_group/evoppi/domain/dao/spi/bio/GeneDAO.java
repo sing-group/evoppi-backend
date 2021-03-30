@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao.spi.bio;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -35,4 +36,8 @@ public interface GeneDAO {
   public Stream<Gene> find(GeneQueryOptions queryOptions);
 
   public long count();
+  
+  public void removeGene(Gene gene);
+  
+  public void removeMultipleById(Collection<Integer> geneIds);
 }

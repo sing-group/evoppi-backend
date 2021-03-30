@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao.bio;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -38,7 +39,7 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDao;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
@@ -57,7 +58,7 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   private GeneDAO geneDao;
 
   @Inject
-  private GeneInInteractomeDao geneInInteractomeDao;
+  private GeneInInteractomeDAO geneInInteractomeDao;
 
   public DefaultInteractomeDAO() {
     super();
@@ -139,5 +140,15 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
     geneMap.clear();
 
     return interactome;
+  }
+  
+  @Override
+  public void removeInteractome(Interactome interactome) {
+    this.dh.remove(interactome);
+  }
+  
+  @Override
+  public void removeMultipleById(Collection<Integer> interactomeIds) {
+    this.dh.removeMultipleByField("id", interactomeIds);
   }
 }

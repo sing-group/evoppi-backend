@@ -60,5 +60,15 @@ public class DefaultInteractionDAO implements InteractionDAO {
   public long count() {
     return this.dh.count();
   }
+  
+  @Override
+  public void removeInteraction(Interaction interaction) {
+    this.dh.remove(interaction);
+  }
+  
+  @Override
+  public void removeInteractionsBySpecies(int speciesId) {
+    this.dh.removeByField("species", speciesId);
+  }
 
 }

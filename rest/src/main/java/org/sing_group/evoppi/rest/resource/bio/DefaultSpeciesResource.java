@@ -35,7 +35,9 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -50,8 +52,11 @@ import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.bio.SpeciesListingField;
+import org.sing_group.evoppi.rest.entity.bio.RestSpeciesCreationData;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
+import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.SpeciesMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.SpeciesResource;
 import org.sing_group.evoppi.service.spi.bio.SpeciesService;
@@ -69,18 +74,23 @@ import io.swagger.annotations.ApiResponses;
 @Default
 @CrossDomain(allowedHeaders = { "X-Total-Count", "Location" }, allowRequestHeaders = true)
 public class DefaultSpeciesResource implements SpeciesResource {
+
   @Inject
   private SpeciesService service;
   
   @Inject
   private SpeciesMapper mapper;
 
+  @Inject
+  private ExecutionMapper executionMapper;
+  
   @Context
   private UriInfo uriInfo;
   
   @PostConstruct
   public void postConstruct() {
     this.mapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
+    this.executionMapper.setUriBuilder(this.uriInfo.getBaseUriBuilder());
   }
 
   @GET
@@ -152,5 +162,41 @@ public class DefaultSpeciesResource implements SpeciesResource {
     return Response.ok(fasta, MediaType.APPLICATION_OCTET_STREAM)
       .header("Content-Disposition", "attachment; filename=\"" + fasta.getName() + "\"") // optional
       .build();
+  }
+
+  @POST
+  @ApiOperation(
+    value = "Creates a new species. "
+      + "The processing is done asynchronously, thus this method returns a work-data instance with information about "
+      + "the asynchronous task doing the calculations.",
+    response = WorkData.class,
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Species name already exists")
+  )
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response createSpecies(RestSpeciesCreationData data) {
+    return Response.ok(this.executionMapper.toWorkData(this.service.createSpecies(data))).build();
+  }
+  
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Removes the specified species.",
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown species: {id}")
+  )
+  @Override
+  public Response removeSpecies(@PathParam("id") int id) {
+    try {
+      this.service.removeSpecies(id);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Unknown species: " + id);
+    }
+
+    return Response.ok().build();
   }
 }

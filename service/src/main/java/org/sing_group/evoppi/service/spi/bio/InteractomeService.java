@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 
 public interface InteractomeService {
 

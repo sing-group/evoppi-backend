@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao.spi.bio;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
@@ -46,4 +47,8 @@ public interface InteractomeDAO {
   );
 
   public Interactome getInteractomeByName(String name);
+  
+  public void removeInteractome(Interactome interactome);
+
+  public void removeMultipleById(Collection<Integer> interactomeIds);
 }

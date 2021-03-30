@@ -27,12 +27,17 @@ import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.SpeciesListingField;
+import org.sing_group.evoppi.rest.entity.bio.RestSpeciesCreationData;
 
 @Local
 public interface SpeciesResource {
   public Response listSpecies(Integer start, Integer end, SpeciesListingField order, SortDirection sort);
 
   public Response getSpecies(int id);
-  
+
   public Response getSpeciesFasta(int id);
+
+  public Response createSpecies(RestSpeciesCreationData data);
+  
+  public Response removeSpecies(int id);
 }

@@ -24,7 +24,7 @@ package org.sing_group.evoppi.rest.entity.bio;
 import java.io.File;
 import java.io.Serializable;
 
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 import org.sing_group.interactomesparser.UniProtDb;
 
 import io.swagger.annotations.ApiModel;

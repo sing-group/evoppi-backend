@@ -48,8 +48,14 @@ import org.sing_group.evoppi.service.spi.execution.pipeline.AbstractPipeline;
 @PermitAll
 @TransactionAttribute(NEVER)
 public class DefaultInteractomeCreationPipeline
-  extends
-  AbstractPipeline<InteractomeCreationConfiguration, InteractomeCreationContext, InteractomeCreationStep, InteractomeCreationPipeline, InteractomeCreationEvent, InteractomeCreationEventManager>
+extends AbstractPipeline<
+  InteractomeCreationConfiguration,
+  InteractomeCreationContext,
+  InteractomeCreationStep,
+  InteractomeCreationPipeline,
+  InteractomeCreationEvent,
+  InteractomeCreationEventManager
+>
   implements InteractomeCreationPipeline {
   private InteractomeCreationContextBuilderFactory contextBuilderFactory;
 

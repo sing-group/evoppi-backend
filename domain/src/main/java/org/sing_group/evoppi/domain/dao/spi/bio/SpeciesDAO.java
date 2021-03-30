@@ -22,10 +22,13 @@
 
 package org.sing_group.evoppi.domain.dao.spi.bio;
 
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.seda.datatype.SequencesGroup;
 
 public interface SpeciesDAO {
 
@@ -33,6 +36,13 @@ public interface SpeciesDAO {
 
   public Species getSpecies(int id);
 
+  public void removeSpecies(int id);
+
   public long count(ListingOptions<Species> speciesListingOptions);
 
+  public Species getSpeciesByName(String name);
+
+  public void createSpecies(
+    String name, SequencesGroup sequencesGroup, Map<Integer, List<String>> map, Integer integer
+  );
 }

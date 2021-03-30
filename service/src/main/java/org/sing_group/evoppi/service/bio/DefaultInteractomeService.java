@@ -35,8 +35,8 @@ import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractomeCreationWorkDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
+import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 import org.sing_group.evoppi.service.bio.interactome.event.InteractomeCreationRequestEvent;
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 
 @Stateless

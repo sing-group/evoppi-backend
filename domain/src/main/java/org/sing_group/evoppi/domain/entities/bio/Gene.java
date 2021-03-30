@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.domain.entities.bio;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -67,6 +68,18 @@ public class Gene implements Serializable {
   @OneToMany(mappedBy = "geneB", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactsB;
 
+  Gene() {}
+  
+  public Gene(Species species, int id, String defaultName, Set<GeneNames> names) {
+    this.id = id;
+    this.species = species;
+    this.defaultName = defaultName;
+    this.names = names;
+    this.interactsA = new HashSet<>();
+    this.interactsB = new HashSet<>();
+    this.geneSequence = new HashSet<>();
+  }
+  
   public int getId() {
     return id;
   }
@@ -116,6 +129,10 @@ public class Gene implements Serializable {
   
   public Species getSpecies() {
     return species;
+  }
+  
+  public void addGeneSequence(String sequence) {
+    this.geneSequence.add(new GeneSequence(this, this.geneSequence.size()+1, sequence));
   }
 
   @Override

@@ -22,9 +22,11 @@
 
 package org.sing_group.evoppi.domain.entities.bio;
 
+import static java.util.stream.Collectors.toSet;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -48,6 +50,9 @@ public class Species implements Serializable {
 
   @Column(name = "name", length = 100, nullable = false, unique = true)
   private String name;
+  
+  @Column(name = "taxonomyId", nullable = false)
+  private int taxonomyId;
 
   @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interactome> interactomes;
@@ -55,12 +60,24 @@ public class Species implements Serializable {
   @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Gene> genes;
   
+  Species() {}
+  
+  public Species(String name, int taxonomyId) {
+    this.name = name;
+    this.genes = new HashSet<>();
+    this.taxonomyId = taxonomyId;
+  }
+
   public Integer getId() {
     return id;
   }
 
   public String getName() {
     return name;
+  }
+  
+  public int getTaxonomyId() {
+    return taxonomyId;
   }
 
   public Stream<Interactome> getInteractomes() {
@@ -74,7 +91,16 @@ public class Species implements Serializable {
   public Stream<Gene> getGenes() {
     return genes.stream();
   }
-  
+
+  public Gene addGene(int id, String defaultName, GeneNames... names) {
+    Set<GeneNames> geneNames = Stream.of(names).collect(toSet());
+    Gene gene = new Gene(this, id, defaultName, geneNames);
+
+    this.genes.add(gene);
+
+    return gene;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

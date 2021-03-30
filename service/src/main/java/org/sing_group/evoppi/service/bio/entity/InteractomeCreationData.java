@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.service.entity.bio;
+package org.sing_group.evoppi.service.bio.entity;
 
 import java.io.File;
 import java.util.Objects;
@@ -32,14 +32,6 @@ public class InteractomeCreationData {
   private String name;
 
   private Integer speciesDbId;
-
-  /**
-   * Species file ID: es necesario porque cuando se crea el
-   * InteractomeFileFormat, en la especie debemos indicarle el formato
-   * "<species_name>:id=<speciesFileId>". Esto se hará cuando organismColumn1 y
-   * organismColumn2 estén presentes y por lo tanto el speciesFileId también
-   * debe estar presente
-   */
   private Integer speciesFileId;
 
   private UniProtDb dbSource;
@@ -150,6 +142,7 @@ public class InteractomeCreationData {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("InteractomeCreationData:");
+
     sb.append("\n\tfile = ").append(file.getName())
       .append("\n\tname = ").append(name)
       .append("\n\tspeciesDbId = ").append(speciesDbId)

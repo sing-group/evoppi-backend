@@ -28,6 +28,8 @@ import javax.ejb.Local;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.entities.execution.SpeciesCreationWork;
+import org.sing_group.evoppi.service.bio.entity.SpeciesCreationData;
 
 @Local
 public interface SpeciesService {
@@ -39,5 +41,8 @@ public interface SpeciesService {
   public long count();
 
   public long count(ListingOptions<Species> speciesListingOptions);
-  
+
+  public SpeciesCreationWork createSpecies(SpeciesCreationData data);
+
+  public void removeSpecies(int id);
 }

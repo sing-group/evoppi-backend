@@ -25,19 +25,32 @@ package org.sing_group.evoppi.service.bio;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.SpeciesCreationWorkDAO;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.entities.execution.SpeciesCreationWork;
+import org.sing_group.evoppi.service.bio.entity.SpeciesCreationData;
+import org.sing_group.evoppi.service.bio.species.event.SpeciesCreationRequestEvent;
 import org.sing_group.evoppi.service.spi.bio.SpeciesService;
 
 @Stateless
 @PermitAll
 public class DefaultSpeciesService implements SpeciesService {
+
   @Inject
   private SpeciesDAO dao;
+
+  @Inject
+  private SpeciesCreationWorkDAO workDao;
+
+  @Inject
+  private Event<SpeciesCreationRequestEvent> events;
 
   @Override
   public Stream<Species> listSpecies(ListingOptions<Species> speciesListingOptions) {
@@ -57,5 +70,38 @@ public class DefaultSpeciesService implements SpeciesService {
   @Override
   public long count(ListingOptions<Species> speciesListingOptions) {
     return this.dao.count(speciesListingOptions);
+  }
+
+  @Override
+  @RolesAllowed("ADMIN")
+  public SpeciesCreationWork createSpecies(SpeciesCreationData data) {
+    boolean exists = existsSpeciesWithName(data.getName());
+
+    if (exists) {
+      throw new IllegalArgumentException("Species name already exists");
+    } else {
+      final SpeciesCreationWork work = this.workDao.create(data.getName());
+
+      this.events.fire(new SpeciesCreationRequestEvent(data, work.getId()));
+
+      work.setScheduled();
+
+      return work;
+    }
+  }
+
+  private boolean existsSpeciesWithName(String name) {
+    try {
+      this.dao.getSpeciesByName(name);
+      return true;
+    } catch (IllegalArgumentException iae) {
+      return false;
+    }
+  }
+
+  @Override
+  @RolesAllowed("ADMIN")
+  public void removeSpecies(int id) {
+    this.dao.removeSpecies(id);
   }
 }

@@ -70,7 +70,7 @@ public class GeneNames implements Serializable {
   
   GeneNames() {}
   
-  GeneNames(int geneId, String source, Collection<String> names) {
+  public GeneNames(int geneId, String source, Collection<String> names) {
     requireNonEmpty(source, "source should be a non empty String");
     requireNonEmpty(names, "names should be a non empty collection");
     
@@ -79,6 +79,10 @@ public class GeneNames implements Serializable {
     this.names = new HashSet<>(names);
   }
 
+  public int getGeneId() {
+    return geneId;
+  }
+  
   public String getSource() {
     return source;
   }

@@ -24,6 +24,7 @@ package org.sing_group.evoppi.domain.entities.bio;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -62,7 +63,7 @@ public class Interaction implements HasGeneInteraction, Serializable {
   @JoinColumn(name = "geneB", referencedColumnName = "id", nullable = false)
   private Gene geneB;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
   @JoinColumns({
     @JoinColumn(name = "species", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "interactome", referencedColumnName = "interactome", nullable = false, insertable = false, updatable = false),
@@ -70,7 +71,7 @@ public class Interaction implements HasGeneInteraction, Serializable {
   })
   private GeneInInteractome geneInInteractomeA;
   
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
   @JoinColumns({
     @JoinColumn(name = "species", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "interactome", referencedColumnName = "interactome", nullable = false, insertable = false, updatable = false),

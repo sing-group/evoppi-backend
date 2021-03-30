@@ -22,23 +22,58 @@
 
 package org.sing_group.evoppi.domain.dao.bio;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneNamesDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneSequenceDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
+import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.GeneNames;
+import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.seda.datatype.SequencesGroup;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
 public class DefaultSpeciesDAO implements SpeciesDAO {
+
+  @Inject
+  private GeneDAO geneDao;
+  
+  @Inject
+  private GeneNamesDAO geneNamesDao;
+  
+  @Inject
+  private GeneSequenceDAO geneSequenceDao;
+  
+  @Inject
+  private GeneInInteractomeDAO geneInInteractomeDao;
+
+  @Inject
+  private InteractomeDAO interactomeDao;
+  
+  @Inject
+  private InteractionDAO interactionDao;
 
   @PersistenceContext
   protected EntityManager em;
@@ -70,8 +105,80 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
   }
 
   @Override
+  public void removeSpecies(int id) {
+    final Species species = this.getSpecies(id);
+    final List<Integer> geneIds = species.getGenes()
+      .map(Gene::getId)
+    .collect(toList());
+    
+    final List<Integer> interactomeIds = species.getInteractomes()
+      .map(Interactome::getId)
+    .collect(toList());
+    
+    this.interactionDao.removeInteractionsBySpecies(id);
+    this.geneInInteractomeDao.removeGeneInInteractomeBySpecies(id);
+    this.interactomeDao.removeMultipleById(interactomeIds);
+    this.geneNamesDao.removeMultipleByGeneId(geneIds);
+    this.geneSequenceDao.removeMultipleByGeneId(geneIds);
+    this.geneDao.removeMultipleById(geneIds);
+    
+    this.dh.removeByField("id", id);
+  }
+  
+  @Override
+  @Transactional(dontRollbackOn = IllegalArgumentException.class)
+  public Species getSpeciesByName(String name) {
+    try {
+      return this.dh.getBy("name", name);
+    } catch (NoResultException e) {
+      throw new IllegalArgumentException("Unknown species: " + name, e);
+    }
+  }
+
+  @Override
   public long count(ListingOptions<Species> speciesListingOptions) {
     return this.dh.count(speciesListingOptions);
   }
 
+  @Override
+  public void createSpecies(
+    String name, SequencesGroup sequencesGroup, Map<Integer, List<String>> dictionary, Integer taxonomyId
+  ) {
+    Species species = new Species(name, taxonomyId);
+
+    this.dh.persist(species);
+
+    this.addGenes(dictionary, species);
+    this.addGeneSequences(sequencesGroup, dictionary);
+  }
+
+  private void addGenes(Map<Integer, List<String>> dictionary, Species species) {
+    dictionary.entrySet().stream().forEach(entry -> {
+      int geneId = entry.getKey();
+      List<String> names = entry.getValue();
+      String defaultName = defaultName(names);
+
+      species.addGene(geneId, defaultName, new GeneNames(geneId, "GeneBank", names));
+    });
+
+    this.dh.update(species);
+  }
+  
+  private static String defaultName(List<String> names) {
+    Optional<String> defaultName = names.stream().filter(s -> s.matches("^[a-zA-Z].*")).findFirst();
+    
+    return defaultName.orElseGet(() -> names.get(0));
+  }
+
+  private void addGeneSequences(SequencesGroup sequencesGroup, Map<Integer, List<String>> dictionary) {
+    sequencesGroup.getSequences().forEach(sequence -> {
+      int geneId = Integer.valueOf(sequence.getName());
+      try {
+        if (dictionary.keySet().contains(geneId)) {
+          Gene gene = geneDao.getGene(geneId);
+          gene.addGeneSequence(sequence.getChain());
+        }
+      } catch (IllegalArgumentException e) {}
+    });
+  }
 }

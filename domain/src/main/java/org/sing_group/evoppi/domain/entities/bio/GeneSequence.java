@@ -54,10 +54,18 @@ public class GeneSequence implements Serializable {
   @Column(name = "sequence", nullable = false)
   private String sequence;
 
+  GeneSequence() {}
+
+  public GeneSequence(Gene gene, int version, String sequence) {
+    this.gene = gene;
+    this.version = version;
+    this.sequence = sequence;
+  }
+
   public Gene getGene() {
     return gene;
   }
-  
+
   public int getGeneId() {
     return this.gene.getId();
   }

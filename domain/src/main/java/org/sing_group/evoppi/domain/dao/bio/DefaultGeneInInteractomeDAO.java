@@ -32,7 +32,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
-import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDao;
+import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
 import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome.GeneInInteractomeId;
@@ -41,7 +41,7 @@ import org.sing_group.evoppi.domain.entities.bio.Species;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultGeneInInteractomeDAO implements GeneInInteractomeDao {
+public class DefaultGeneInInteractomeDAO implements GeneInInteractomeDAO {
 
   @PersistenceContext
   protected EntityManager em;
@@ -70,5 +70,10 @@ public class DefaultGeneInInteractomeDAO implements GeneInInteractomeDao {
     } else {
       return this.dh.persist(new GeneInInteractome(species, interactome, gene));
     }
+  }
+  
+  @Override
+  public void removeGeneInInteractomeBySpecies(int speciesId) {
+    this.dh.removeByField("species", speciesId);
   }
 }

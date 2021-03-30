@@ -35,7 +35,7 @@ import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContext;
 import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationPersistenceManager;
 import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.InteractomeCreationPipeline;

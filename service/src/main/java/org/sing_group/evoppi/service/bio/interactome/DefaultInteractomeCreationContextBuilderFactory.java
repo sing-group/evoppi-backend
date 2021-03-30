@@ -46,5 +46,4 @@ public class DefaultInteractomeCreationContextBuilderFactory
   ) {
     return new DefaultInteractomeCreationContextBuilder(pipeline, configuration, eventManager);
   }
-
 }

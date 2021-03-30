@@ -22,6 +22,7 @@
 package org.sing_group.evoppi.service.bio.interactome.pipeline;
 
 import static javax.transaction.Transactional.TxType.REQUIRED;
+import static org.sing_group.evoppi.service.FileUtils.sanitize;
 import static org.sing_group.interactomesparser.InteractomeFileFormat.DEFAULT_FIELD_DELIMITER;
 import static org.sing_group.interactomesparser.InteractomeFileFormat.DEFAULT_FIELD_ORGANISM_1_COLUMN;
 import static org.sing_group.interactomesparser.InteractomeFileFormat.DEFAULT_FIELD_ORGANISM_2_COLUMN;
@@ -38,7 +39,7 @@ import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.interactome.GeneInteraction;
 import org.sing_group.evoppi.domain.interactome.GeneInteractions;
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContext;
 import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContextBuilder;
 import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContextBuilderFactory;
@@ -92,7 +93,7 @@ public class InteractomeProcessingStep
       );
 
     File temporaryDir;
-    String interactomeFileName = creationData.getName().replaceAll("[^a-zA-Z0-9\\._]+", "_");
+    String interactomeFileName = sanitize(creationData.getName());
     try {
       temporaryDir = Files.createTempDirectory("evoppi_tmp_" + interactomeFileName).toFile();
     } catch (IOException e) {

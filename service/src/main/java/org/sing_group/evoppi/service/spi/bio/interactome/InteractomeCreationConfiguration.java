@@ -22,7 +22,7 @@
 
 package org.sing_group.evoppi.service.spi.bio.interactome;
 
-import org.sing_group.evoppi.service.entity.bio.InteractomeCreationData;
+import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 import org.sing_group.evoppi.service.spi.execution.pipeline.PipelineConfiguration;
 
 public interface InteractomeCreationConfiguration extends PipelineConfiguration {

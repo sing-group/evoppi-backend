@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Domain
+ * Service
  * %%
  * Copyright (C) 2017 - 2021 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,13 +19,22 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.dao.spi.bio;
+package org.sing_group.evoppi.service.spi.bio.species;
 
-import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
-import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.Species;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
-public interface GeneInInteractomeDao {
-  public GeneInInteractome create(Species species, Interactome interactome, Gene gene);
+import org.sing_group.seda.datatype.SequencesGroup;
+
+public interface SpeciesCreationContextBuilder {
+  SpeciesCreationContext build();
+
+  SpeciesCreationContextBuilder addGenomeFile(File file);
+
+  SpeciesCreationContextBuilder addTaxonomyId(Integer taxonomyId);
+
+  SpeciesCreationContextBuilder addFasta(SequencesGroup fasta);
+
+  SpeciesCreationContextBuilder addDictionary(Map<Integer, List<String>> dictionary);
 }
