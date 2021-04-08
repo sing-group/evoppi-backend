@@ -71,9 +71,14 @@ public class DefaultGeneInInteractomeDAO implements GeneInInteractomeDAO {
       return this.dh.persist(new GeneInInteractome(species, interactome, gene));
     }
   }
-  
+
   @Override
   public void removeGeneInInteractomeBySpecies(int speciesId) {
     this.dh.removeByField("species", speciesId);
+  }
+
+  @Override
+  public void removeGeneInInteractomeByInteractome(int interactomeId) {
+    this.dh.removeByField("interactome", interactomeId);
   }
 }

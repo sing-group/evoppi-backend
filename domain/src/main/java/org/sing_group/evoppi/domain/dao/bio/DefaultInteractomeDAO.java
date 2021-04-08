@@ -40,6 +40,7 @@ import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
@@ -59,6 +60,9 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
 
   @Inject
   private GeneInInteractomeDAO geneInInteractomeDao;
+  
+  @Inject
+  private InteractionDAO interactionDao;
 
   public DefaultInteractomeDAO() {
     super();
@@ -144,6 +148,9 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   
   @Override
   public void removeInteractome(Interactome interactome) {
+    this.interactionDao.removeInteractionsByInteractome(interactome.getId());
+    this.geneInInteractomeDao.removeGeneInInteractomeByInteractome(interactome.getId());
+
     this.dh.remove(interactome);
   }
   

@@ -26,6 +26,10 @@ import org.sing_group.evoppi.domain.entities.bio.Interaction;
 
 public interface InteractionDAO {
   public long count();
+
   public void removeInteraction(Interaction interaction);
+
   public void removeInteractionsBySpecies(int speciesId);
+
+  public void removeInteractionsByInteractome(int interactomeId);
 }

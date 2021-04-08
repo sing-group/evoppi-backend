@@ -30,4 +30,6 @@ public interface GeneInInteractomeDAO {
   public GeneInInteractome create(Species species, Interactome interactome, Gene gene);
 
   public void removeGeneInInteractomeBySpecies(int speciesId);
+
+  public void removeGeneInInteractomeByInteractome(int interactomeId);
 }

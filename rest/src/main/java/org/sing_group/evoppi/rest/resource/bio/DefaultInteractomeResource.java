@@ -34,6 +34,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -186,5 +187,25 @@ public class DefaultInteractomeResource implements InteractomeResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response create(RestInteractomeCreationData data) {
     return Response.ok(this.executionMapper.toWorkData(this.service.createInteractome(data))).build();
+  }
+
+  @DELETE
+  @Path("{id}")
+  @ApiOperation(
+    value = "Removes the specified interactome.",
+    code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown interactome: {id}")
+  )
+  @Override
+  public Response removeInteractome(@PathParam("id") int id) {
+    try {
+      this.service.removeInteractome(id);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Unknown interactome: " + id);
+    }
+
+    return Response.ok().build();
   }
 }

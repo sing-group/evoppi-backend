@@ -40,4 +40,6 @@ public interface InteractomeService {
   public long count(ListingOptions<Interactome> interactomeListingOptions);
 
   public InteractomeCreationWork createInteractome(InteractomeCreationData data);
+  
+  public void removeInteractome(int id);
 }
