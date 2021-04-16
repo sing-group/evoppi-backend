@@ -41,10 +41,8 @@ import javax.transaction.Transactional.TxType;
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneNamesDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneSequenceDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
@@ -65,16 +63,10 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
   
   @Inject
   private GeneSequenceDAO geneSequenceDao;
-  
-  @Inject
-  private GeneInInteractomeDAO geneInInteractomeDao;
 
   @Inject
   private InteractomeDAO interactomeDao;
   
-  @Inject
-  private InteractionDAO interactionDao;
-
   @PersistenceContext
   protected EntityManager em;
   protected DAOHelper<Integer, Species> dh;
@@ -115,8 +107,6 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
       .map(Interactome::getId)
     .collect(toList());
     
-    this.interactionDao.removeInteractionsBySpecies(id);
-    this.geneInInteractomeDao.removeGeneInInteractomeBySpecies(id);
     this.interactomeDao.removeMultipleById(interactomeIds);
     this.geneNamesDao.removeMultipleByGeneId(geneIds);
     this.geneSequenceDao.removeMultipleByGeneId(geneIds);

@@ -48,7 +48,7 @@ public interface InteractomeDAO {
 
   public Interactome getInteractomeByName(String name);
   
-  public void removeInteractome(Interactome interactome);
+  public void removeInteractome(int interactomeId);
 
   public void removeMultipleById(Collection<Integer> interactomeIds);
 }
