@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
@@ -42,11 +43,11 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionGroupResultDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionGroupResultInteractomeDegreesDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
-import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultInteractomeDegree;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.user.User;
@@ -54,6 +55,11 @@ import org.sing_group.evoppi.domain.entities.user.User;
 @Default
 @Transactional(value = TxType.MANDATORY)
 public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInteractionsResultDAO {
+  @Inject
+  private InteractionGroupResultDAO igrDao;
+  
+  @Inject
+  private InteractionGroupResultInteractomeDegreesDAO igridDao;
 
   @PersistenceContext
   protected EntityManager em;
@@ -137,14 +143,14 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
     ));
   }
   
-  public void removeMultipleByInteractomeIds(Collection<Integer> ids) {
+  public void deleteResultsByInteractomes(Collection<Integer> ids) {
     final Set<SameSpeciesInteractionsResult> results = this.findByInteractomeId(ids)
     .collect(toSet());
     
     if (!results.isEmpty()) {
-      this.removeInteractionGroupResultInteractomeDegrees(results);
-      this.dh.removeMultipleByField("id", results.stream().map(WorkEntity::getId).collect(toSet()));
-      this.removeInteractionGroupResults(results);
+      this.igridDao.deleteInteractionGroupResultInteractomeDegreesByInteractionsResult(results);
+      this.dh.deleteBy("id", results.stream().map(WorkEntity::getId).collect(toSet()));
+      this.igrDao.deleteInteractionGroupResultsByInteractionsResult(results);
     }
   }
   
@@ -156,17 +162,5 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
     query.where(join.get("id").in(ids));
     
     return this.em.createQuery(query).getResultList().stream();
-  }
-
-  private void removeInteractionGroupResults(final Set<SameSpeciesInteractionsResult> results) {
-    final DAOHelper<String, InteractionGroupResult> dao =
-      DAOHelper.of(String.class, InteractionGroupResult.class, this.em);
-    dao.removeMultipleByField("interactionsResult", results);
-  }
-  
-  private void removeInteractionGroupResultInteractomeDegrees(Collection<SameSpeciesInteractionsResult> results) {
-    final DAOHelper<String, InteractionGroupResultInteractomeDegree> dao =
-      DAOHelper.of(String.class, InteractionGroupResultInteractomeDegree.class, this.em);
-    dao.removeMultipleByField("interactionsResult", results);
   }
 }

@@ -157,16 +157,16 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   }
   
   @Override
-  public void removeInteractome(int interactomeId) {
-    this.removeMultipleById(singleton(interactomeId));
+  public void deleteInteractome(int interactomeId) {
+    this.deleteInteractomes(singleton(interactomeId));
   }
 
   @Override
-  public void removeMultipleById(Collection<Integer> interactomeIds) {
-    this.sameSpeciesInteractionsResultDao.removeMultipleByInteractomeIds(interactomeIds);
-    this.differentSpeciesInteractionsResultDao.removeMultipleByInteractomeIds(interactomeIds);
-    this.interactionDao.removeInteractionsByInteractomeIds(interactomeIds);
-    this.geneInInteractomeDao.removeGeneInInteractomeByInteractomeIds(interactomeIds);
-    this.dh.removeMultipleByField("id", interactomeIds);
+  public void deleteInteractomes(Collection<Integer> interactomeIds) {
+    this.sameSpeciesInteractionsResultDao.deleteResultsByInteractomes(interactomeIds);
+    this.differentSpeciesInteractionsResultDao.deleteResultsByInteractomes(interactomeIds);
+    this.interactionDao.deleteInteractionsByInteractomes(interactomeIds);
+    this.geneInInteractomeDao.deleteGeneInInteractomesByInteractomes(interactomeIds);
+    this.dh.deleteBy("id", interactomeIds);
   }
 }

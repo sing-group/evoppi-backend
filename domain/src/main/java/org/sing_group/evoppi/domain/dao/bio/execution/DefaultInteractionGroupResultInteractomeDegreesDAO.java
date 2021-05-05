@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.dao.bio;
+package org.sing_group.evoppi.domain.dao.bio.execution;
 
 import java.util.Collection;
 
@@ -31,35 +31,34 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
-import org.sing_group.evoppi.domain.dao.spi.bio.GeneSequenceDAO;
-import org.sing_group.evoppi.domain.entities.bio.GeneSequence;
-import org.sing_group.evoppi.domain.entities.bio.GeneSequence.GeneSequenceId;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractionGroupResultInteractomeDegreesDAO;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultInteractomeDegree;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultGeneSequenceDAO implements GeneSequenceDAO {
+public class DefaultInteractionGroupResultInteractomeDegreesDAO implements InteractionGroupResultInteractomeDegreesDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<GeneSequenceId, GeneSequence> dh;
+  protected DAOHelper<Integer, InteractionGroupResultInteractomeDegree> dh;
 
-  public DefaultGeneSequenceDAO() {
+  public DefaultInteractionGroupResultInteractomeDegreesDAO() {
     super();
   }
 
-  public DefaultGeneSequenceDAO(EntityManager em) {
+  public DefaultInteractionGroupResultInteractomeDegreesDAO(EntityManager em) {
     this.em = em;
     createDAOHelper();
   }
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(GeneSequenceId.class, GeneSequence.class, this.em);
+    this.dh = DAOHelper.of(Integer.class, InteractionGroupResultInteractomeDegree.class, this.em);
   }
 
   @Override
-  public void deleteGeneSequencesByGenes(Collection<Integer> geneIds) {
-    this.dh.deleteBy("gene", geneIds);
+  public void deleteInteractionGroupResultInteractomeDegreesByInteractionsResult(Collection<? extends InteractionsResult> results) {
+    this.dh.deleteBy("interactionsResult", results);
   }
-
 }

@@ -39,5 +39,5 @@ public interface GeneDAO {
   
   public void removeGene(Gene gene);
   
-  public void removeMultipleById(Collection<Integer> geneIds);
+  public void deleteGenes(Collection<Integer> geneIds);
 }

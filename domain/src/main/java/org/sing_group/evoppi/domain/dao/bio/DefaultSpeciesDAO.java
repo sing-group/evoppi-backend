@@ -97,7 +97,7 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
   }
 
   @Override
-  public void removeSpecies(int id) {
+  public void deleteSpecies(int id) {
     final Species species = this.getSpecies(id);
     final List<Integer> geneIds = species.getGenes()
       .map(Gene::getId)
@@ -107,12 +107,12 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
       .map(Interactome::getId)
     .collect(toList());
     
-    this.interactomeDao.removeMultipleById(interactomeIds);
-    this.geneNamesDao.removeMultipleByGeneId(geneIds);
-    this.geneSequenceDao.removeMultipleByGeneId(geneIds);
-    this.geneDao.removeMultipleById(geneIds);
+    this.interactomeDao.deleteInteractomes(interactomeIds);
+    this.geneNamesDao.deleteGeneNamesByGenes(geneIds);
+    this.geneSequenceDao.deleteGeneSequencesByGenes(geneIds);
+    this.geneDao.deleteGenes(geneIds);
     
-    this.dh.removeByField("id", id);
+    this.dh.deleteBy("id", id);
   }
   
   @Override

@@ -19,9 +19,12 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.dao.bio;
+package org.sing_group.evoppi.domain.dao.bio.execution;
+
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
@@ -31,35 +34,40 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
-import org.sing_group.evoppi.domain.dao.spi.bio.GeneSequenceDAO;
-import org.sing_group.evoppi.domain.entities.bio.GeneSequence;
-import org.sing_group.evoppi.domain.entities.bio.GeneSequence.GeneSequenceId;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.BlastResultDAO;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
-public class DefaultGeneSequenceDAO implements GeneSequenceDAO {
+public class DefaultBlastResultDAO implements BlastResultDAO {
 
   @PersistenceContext
   protected EntityManager em;
-  protected DAOHelper<GeneSequenceId, GeneSequence> dh;
+  protected DAOHelper<Integer, BlastResult> dh;
 
-  public DefaultGeneSequenceDAO() {
+  public DefaultBlastResultDAO() {
     super();
   }
 
-  public DefaultGeneSequenceDAO(EntityManager em) {
+  public DefaultBlastResultDAO(EntityManager em) {
     this.em = em;
     createDAOHelper();
   }
 
   @PostConstruct
   protected void createDAOHelper() {
-    this.dh = DAOHelper.of(GeneSequenceId.class, GeneSequence.class, this.em);
+    this.dh = DAOHelper.of(Integer.class, BlastResult.class, this.em);
   }
-
+  
   @Override
-  public void deleteGeneSequencesByGenes(Collection<Integer> geneIds) {
-    this.dh.deleteBy("gene", geneIds);
+  public void deleteBlastResultsByInteractionsResults(Collection<DifferentSpeciesInteractionsResult> results) {
+    final Set<Integer> blastResultIds = results.stream()
+      .flatMap(DifferentSpeciesInteractionsResult::getBlastResults)
+      .map(BlastResult::getId)
+    .collect(toSet());
+    
+    this.dh.deleteBy("id", blastResultIds);
   }
 
 }

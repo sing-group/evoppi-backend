@@ -36,7 +36,7 @@ public interface SpeciesDAO {
 
   public Species getSpecies(int id);
 
-  public void removeSpecies(int id);
+  public void deleteSpecies(int id);
 
   public long count(ListingOptions<Species> speciesListingOptions);
 

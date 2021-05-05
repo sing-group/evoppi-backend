@@ -31,7 +31,7 @@ import org.sing_group.evoppi.domain.entities.bio.Species;
 public interface GeneInInteractomeDAO {
   public GeneInInteractome create(Species species, Interactome interactome, Gene gene);
 
-  public void removeGeneInInteractomeBySpecies(int speciesId);
+  public void deleteGeneInInteractomeBySpecies(int speciesId);
 
-  public void removeGeneInInteractomeByInteractomeIds(Collection<Integer> interactomeId);
+  public void deleteGeneInInteractomesByInteractomes(Collection<Integer> interactomeId);
 }

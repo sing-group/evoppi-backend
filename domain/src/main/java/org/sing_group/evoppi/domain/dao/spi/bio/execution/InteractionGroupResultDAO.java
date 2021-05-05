@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
@@ -32,4 +33,6 @@ public interface InteractionGroupResultDAO {
   public Stream<InteractionGroupResult> getInteractions(
     InteractionsResult result, InteractionGroupResultListingOptions listingOptions
   );
+
+  public void deleteInteractionGroupResultsByInteractionsResult(Collection<? extends InteractionsResult> results);
 }

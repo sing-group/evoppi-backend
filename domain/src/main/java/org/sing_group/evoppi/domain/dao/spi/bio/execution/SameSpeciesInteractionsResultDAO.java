@@ -60,5 +60,5 @@ public interface SameSpeciesInteractionsResultDAO {
   
   public long countByUser(User user, ListingOptions<SameSpeciesInteractionsResult> listingOptions);
 
-  public void removeMultipleByInteractomeIds(Collection<Integer> ids);
+  public void deleteResultsByInteractomes(Collection<Integer> ids);
 }

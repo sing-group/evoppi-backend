@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao.bio.execution;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -156,5 +157,10 @@ public class DefaultInteractionGroupResultDAO implements InteractionGroupResultD
       
       return typedQuery.getResultList().stream();
     }
+  }
+
+  @Override
+  public void deleteInteractionGroupResultsByInteractionsResult(Collection<? extends InteractionsResult> results) {
+    this.dh.deleteBy("interactionsResult", results);
   }
 }

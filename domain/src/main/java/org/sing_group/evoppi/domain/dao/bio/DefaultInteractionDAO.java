@@ -69,12 +69,12 @@ public class DefaultInteractionDAO implements InteractionDAO {
   }
   
   @Override
-  public void removeInteractionsBySpecies(int speciesId) {
-    this.dh.removeByField("species", speciesId);
+  public void deleteInteractionsBySpecies(int speciesId) {
+    this.dh.deleteBy("species", speciesId);
   }
 
   @Override
-  public void removeInteractionsByInteractomeIds(Collection<Integer> interactomeIds) {
-    this.dh.removeMultipleByField("interactome", interactomeIds);
+  public void deleteInteractionsByInteractomes(Collection<Integer> interactomeIds) {
+    this.dh.deleteBy("interactome", interactomeIds);
   }
 }

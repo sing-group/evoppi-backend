@@ -158,8 +158,8 @@ public class DefaultGeneDAO implements GeneDAO {
   }
   
   @Override
-  public void removeMultipleById(Collection<Integer> geneIds) {
-    this.dh.removeMultipleByField("id", geneIds);
+  public void deleteGenes(Collection<Integer> geneIds) {
+    this.dh.deleteBy("id", geneIds);
   }
 
 }

@@ -102,6 +102,6 @@ public class DefaultInteractomeService implements InteractomeService {
   @Override
   @RolesAllowed("ADMIN")
   public void removeInteractome(int id) {
-    this.dao.removeInteractome(id);
+    this.dao.deleteInteractome(id);
   }
 }

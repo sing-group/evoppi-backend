@@ -74,12 +74,12 @@ public class DefaultGeneInInteractomeDAO implements GeneInInteractomeDAO {
   }
 
   @Override
-  public void removeGeneInInteractomeBySpecies(int speciesId) {
-    this.dh.removeByField("species", speciesId);
+  public void deleteGeneInInteractomeBySpecies(int speciesId) {
+    this.dh.deleteBy("species", speciesId);
   }
 
   @Override
-  public void removeGeneInInteractomeByInteractomeIds(Collection<Integer> interactomeIds) {
-    this.dh.removeMultipleByField("interactome", interactomeIds);
+  public void deleteGeneInInteractomesByInteractomes(Collection<Integer> interactomeIds) {
+    this.dh.deleteBy("interactome", interactomeIds);
   }
 }

@@ -102,6 +102,6 @@ public class DefaultSpeciesService implements SpeciesService {
   @Override
   @RolesAllowed("ADMIN")
   public void removeSpecies(int id) {
-    this.dao.removeSpecies(id);
+    this.dao.deleteSpecies(id);
   }
 }

@@ -2,7 +2,7 @@
  * #%L
  * Domain
  * %%
- * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2021 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,19 +19,14 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
-package org.sing_group.evoppi.domain.dao.spi.bio;
+package org.sing_group.evoppi.domain.dao.spi.bio.execution;
 
 import java.util.Collection;
 
-import org.sing_group.evoppi.domain.entities.bio.Interaction;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionsResult;
 
-public interface InteractionDAO {
-  public long count();
-
-  public void removeInteraction(Interaction interaction);
-
-  public void deleteInteractionsBySpecies(int speciesId);
-
-  public void deleteInteractionsByInteractomes(Collection<Integer> interactomeIds);
+public interface InteractionGroupResultInteractomeDegreesDAO {
+  public void deleteInteractionGroupResultInteractomeDegreesByInteractionsResult(
+    Collection<? extends InteractionsResult> results
+  );
 }

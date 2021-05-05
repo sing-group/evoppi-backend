@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -141,28 +142,25 @@ public class DAOHelper<K, T> {
     this.em.flush();
   }
 
-  public void removeByField(String field, Object value) {
-    final CriteriaBuilder cb = this.cb();
-    
-    final CriteriaDelete<T> query = cb.createCriteriaDelete(this.entityClass);
-    final Root<T> root = query.from(this.entityClass);
-
-    query.where(cb.equal(root.get(field), value));
-
-    this.em.createQuery(query).executeUpdate();
-    this.em.flush();
+  public <F> void deleteBy(String field, F value) {
+    this.deleteBy((query, root) -> query.where(cb().equal(root.get(field), value)));
   }
 
-  public void removeMultipleByField(String field, Collection<?> values) {
+  public <F> void deleteBy(String field, Collection<F> values) {
+    this.deleteBy((query, root) -> query.where(root.get(field).in(values)));
+  }
+  
+  private <F> void deleteBy(BiConsumer<CriteriaDelete<T>, Root<T>> whereBuilder) {
     final CriteriaBuilder cb = this.cb();
     
     final CriteriaDelete<T> query = cb.createCriteriaDelete(this.entityClass);
     final Root<T> root = query.from(this.entityClass);
 
-    query.where(root.get(field).in(values));
+    whereBuilder.accept(query, root);
 
     this.em.createQuery(query).executeUpdate();
     this.em.flush();
+    
   }
 
   public final <F> List<T> listBy(String fieldName, F values) {
