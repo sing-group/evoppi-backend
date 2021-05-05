@@ -59,4 +59,6 @@ public interface SameSpeciesInteractionsResultDAO {
   public long coungById(String[] ids, ListingOptions<SameSpeciesInteractionsResult> listingOptions);
   
   public long countByUser(User user, ListingOptions<SameSpeciesInteractionsResult> listingOptions);
+
+  public void removeMultipleByInteractomeIds(Collection<Integer> ids);
 }

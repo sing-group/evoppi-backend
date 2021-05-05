@@ -22,6 +22,7 @@
 
 package org.sing_group.evoppi.domain.dao.bio;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -78,7 +79,7 @@ public class DefaultGeneInInteractomeDAO implements GeneInInteractomeDAO {
   }
 
   @Override
-  public void removeGeneInInteractomeByInteractome(int interactomeId) {
-    this.dh.removeByField("interactome", interactomeId);
+  public void removeGeneInInteractomeByInteractomeIds(Collection<Integer> interactomeIds) {
+    this.dh.removeMultipleByField("interactome", interactomeIds);
   }
 }

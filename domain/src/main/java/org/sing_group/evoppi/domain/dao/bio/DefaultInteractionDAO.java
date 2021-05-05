@@ -22,6 +22,8 @@
 
 package org.sing_group.evoppi.domain.dao.bio;
 
+import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
@@ -72,7 +74,7 @@ public class DefaultInteractionDAO implements InteractionDAO {
   }
 
   @Override
-  public void removeInteractionsByInteractome(int interactomeId) {
-    this.dh.removeByField("interactome", interactomeId);
+  public void removeInteractionsByInteractomeIds(Collection<Integer> interactomeIds) {
+    this.dh.removeMultipleByField("interactome", interactomeIds);
   }
 }

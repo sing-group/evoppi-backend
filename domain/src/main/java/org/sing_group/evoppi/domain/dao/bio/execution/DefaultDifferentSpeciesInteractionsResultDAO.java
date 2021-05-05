@@ -34,6 +34,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -43,7 +47,11 @@ import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesIntera
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultInteractomeDegree;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Default
@@ -151,5 +159,54 @@ public class DefaultDifferentSpeciesInteractionsResultDAO implements DifferentSp
         blastOptions, queryMaxDegree, owner
       )
     );
+  }
+  
+  @Override
+  public void removeMultipleByInteractomeIds(Collection<Integer> ids) {
+    final Set<DifferentSpeciesInteractionsResult> results = this.findByInteractomeId(ids)
+      .collect(toSet());
+    
+    if (!results.isEmpty()) {
+      this.removeInteractionGroupResultInteractomeDegrees(results);
+      this.removeBlastResult(results);
+      this.dh.removeMultipleByField("id", results.stream().map(WorkEntity::getId).collect(toSet()));
+      this.removeInteractionGroupResults(results);
+    }
+    
+  }
+  
+  private Stream<DifferentSpeciesInteractionsResult> findByInteractomeId(Collection<Integer> ids) {
+    final CriteriaQuery<DifferentSpeciesInteractionsResult> query = this.dh.createCBQuery();
+    final Root<DifferentSpeciesInteractionsResult> root = query.from(DifferentSpeciesInteractionsResult.class);
+    final Join<DifferentSpeciesInteractionsResult, Interactome> joinReference = root.join("referenceInteractomes");
+    final Join<DifferentSpeciesInteractionsResult, Interactome> joinTarget = root.join("targetInteractomes");
+    
+    final CriteriaBuilder cb = this.dh.cb();
+    query.where(cb.or(joinReference.get("id").in(ids), joinTarget.get("id").in(ids)));
+    
+    return this.em.createQuery(query).getResultList().stream();
+  }
+  
+  private void removeBlastResult(final Set<DifferentSpeciesInteractionsResult> results) {
+    final DAOHelper<Integer, BlastResult> dao = DAOHelper.of(Integer.class, BlastResult.class, this.em);
+    
+    final Set<Integer> blastResultIds = results.stream()
+      .flatMap(DifferentSpeciesInteractionsResult::getBlastResults)
+      .map(BlastResult::getId)
+    .collect(toSet());
+    
+    dao.removeMultipleByField("id", blastResultIds);
+  }
+
+  private void removeInteractionGroupResults(final Set<DifferentSpeciesInteractionsResult> results) {
+    final DAOHelper<String, InteractionGroupResult> dao =
+      DAOHelper.of(String.class, InteractionGroupResult.class, this.em);
+    dao.removeMultipleByField("interactionsResult", results);
+  }
+  
+  private void removeInteractionGroupResultInteractomeDegrees(Collection<DifferentSpeciesInteractionsResult> results) {
+    final DAOHelper<String, InteractionGroupResultInteractomeDegree> dao =
+      DAOHelper.of(String.class, InteractionGroupResultInteractomeDegree.class, this.em);
+    dao.removeMultipleByField("interactionsResult", results);
   }
 }

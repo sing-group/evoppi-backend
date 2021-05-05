@@ -22,6 +22,8 @@
 
 package org.sing_group.evoppi.domain.dao.bio;
 
+import static java.util.Collections.singleton;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +44,8 @@ import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
@@ -63,6 +67,12 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   
   @Inject
   private InteractionDAO interactionDao;
+  
+  @Inject
+  private SameSpeciesInteractionsResultDAO sameSpeciesInteractionsResultDao;
+  
+  @Inject
+  private DifferentSpeciesInteractionsResultDAO differentSpeciesInteractionsResultDao;
 
   public DefaultInteractomeDAO() {
     super();
@@ -148,19 +158,15 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   
   @Override
   public void removeInteractome(int interactomeId) {
-//    this.sameSpeciesResultsDao.list()
-//      .filter(result -> result.getQueryInteractomeIds().anyMatch(id -> id == interactomeId))
-//      .map(result -> result.getId())
-//      .forEach(id -> interactionsResultDao.delete(id));
-
-    this.interactionDao.removeInteractionsByInteractome(interactomeId);
-    this.geneInInteractomeDao.removeGeneInInteractomeByInteractome(interactomeId);
-
-    this.dh.removeByKey(interactomeId);
+    this.removeMultipleById(singleton(interactomeId));
   }
 
   @Override
   public void removeMultipleById(Collection<Integer> interactomeIds) {
-    interactomeIds.forEach(id -> this.removeInteractome(id));
+    this.sameSpeciesInteractionsResultDao.removeMultipleByInteractomeIds(interactomeIds);
+    this.differentSpeciesInteractionsResultDao.removeMultipleByInteractomeIds(interactomeIds);
+    this.interactionDao.removeInteractionsByInteractomeIds(interactomeIds);
+    this.geneInInteractomeDao.removeGeneInInteractomeByInteractomeIds(interactomeIds);
+    this.dh.removeMultipleByField("id", interactomeIds);
   }
 }

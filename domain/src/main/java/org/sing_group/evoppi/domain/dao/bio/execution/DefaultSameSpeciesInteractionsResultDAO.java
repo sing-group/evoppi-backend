@@ -34,6 +34,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -42,7 +45,10 @@ import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
+import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResultInteractomeDegree;
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
+import org.sing_group.evoppi.domain.entities.execution.WorkEntity;
 import org.sing_group.evoppi.domain.entities.user.User;
 
 @Default
@@ -129,5 +135,38 @@ public class DefaultSameSpeciesInteractionsResultDAO implements SameSpeciesInter
     return this.dh.persist(new SameSpeciesInteractionsResult(
       name, description, resultReferenceBuilder, queryGene, queryMaxDegree, queryInteractomes, owner
     ));
+  }
+  
+  public void removeMultipleByInteractomeIds(Collection<Integer> ids) {
+    final Set<SameSpeciesInteractionsResult> results = this.findByInteractomeId(ids)
+    .collect(toSet());
+    
+    if (!results.isEmpty()) {
+      this.removeInteractionGroupResultInteractomeDegrees(results);
+      this.dh.removeMultipleByField("id", results.stream().map(WorkEntity::getId).collect(toSet()));
+      this.removeInteractionGroupResults(results);
+    }
+  }
+  
+  private Stream<SameSpeciesInteractionsResult> findByInteractomeId(Collection<Integer> ids) {
+    final CriteriaQuery<SameSpeciesInteractionsResult> query = this.dh.createCBQuery();
+    final Root<SameSpeciesInteractionsResult> root = query.from(SameSpeciesInteractionsResult.class);
+    final Join<SameSpeciesInteractionsResult, Interactome> join = root.join("queryInteractomes");
+    
+    query.where(join.get("id").in(ids));
+    
+    return this.em.createQuery(query).getResultList().stream();
+  }
+
+  private void removeInteractionGroupResults(final Set<SameSpeciesInteractionsResult> results) {
+    final DAOHelper<String, InteractionGroupResult> dao =
+      DAOHelper.of(String.class, InteractionGroupResult.class, this.em);
+    dao.removeMultipleByField("interactionsResult", results);
+  }
+  
+  private void removeInteractionGroupResultInteractomeDegrees(Collection<SameSpeciesInteractionsResult> results) {
+    final DAOHelper<String, InteractionGroupResultInteractomeDegree> dao =
+      DAOHelper.of(String.class, InteractionGroupResultInteractomeDegree.class, this.em);
+    dao.removeMultipleByField("interactionsResult", results);
   }
 }

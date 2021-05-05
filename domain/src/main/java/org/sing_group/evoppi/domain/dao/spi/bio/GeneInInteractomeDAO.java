@@ -21,6 +21,8 @@
  */
 package org.sing_group.evoppi.domain.dao.spi.bio;
 
+import java.util.Collection;
+
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
@@ -31,5 +33,5 @@ public interface GeneInInteractomeDAO {
 
   public void removeGeneInInteractomeBySpecies(int speciesId);
 
-  public void removeGeneInInteractomeByInteractome(int interactomeId);
+  public void removeGeneInInteractomeByInteractomeIds(Collection<Integer> interactomeId);
 }

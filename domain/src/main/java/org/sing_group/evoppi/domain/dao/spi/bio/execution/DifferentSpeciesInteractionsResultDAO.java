@@ -75,5 +75,6 @@ public interface DifferentSpeciesInteractionsResultDAO {
   
   public long countByUser(User user, ListingOptions<DifferentSpeciesInteractionsResult> listingOptions);
 
+  public void removeMultipleByInteractomeIds(Collection<Integer> ids);
   
 }
