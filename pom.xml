@@ -112,7 +112,7 @@
 		<wildfly.version>10.1.0.Final</wildfly.version>
 
 		<!-- Resteasy specific version required, as it fixes ResourceInfo injection bug -->
-		<resteasy.version>3.0.24.Final</resteasy.version>
+		<resteasy.version>4.5.7.Final</resteasy.version>
 
 		<!-- Testing dependecies versions -->
 		<arquillian.jacoco.version>1.0.0.Alpha9</arquillian.jacoco.version>
