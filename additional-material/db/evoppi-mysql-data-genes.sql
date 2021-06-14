@@ -9,11 +9,11 @@ DELETE FROM `gene`;
 DELETE FROM `interactome`;
 DELETE FROM `species`;
 
-INSERT INTO `species` VALUES (1,'Species A'),(2,'Species B');
+INSERT INTO `species` VALUES (1,'Species A',1),(2,'Species B',2);
 
-INSERT INTO `interactome` VALUES (1,'Interactome A1',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,'Interactome B1',1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `interactome` VALUES (1,NULL,'Interactome A1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),(2,NULL,'Interactome A2',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1);
 
-INSERT INTO `gene` VALUES (100,1,'A'),(101,1,'B'),(102,1,'C'),(103,1,'D'),(104,1,'E'),(105,1,'F'),(106,1,'G'),(107,1,'H'),(108,1,'I'),(109,1,'J'),(110,1,'K'),(111,1,'L'),(112,1,'M'),(113,1,'N'),(114,1,'O');
+INSERT INTO `gene` (id, species, defaultName) VALUES (100,1,'A'),(101,1,'B'),(102,1,'C'),(103,1,'D'),(104,1,'E'),(105,1,'F'),(106,1,'G'),(107,1,'H'),(108,1,'I'),(109,1,'J'),(110,1,'K'),(111,1,'L'),(112,1,'M'),(113,1,'N'),(114,1,'O');
 
 INSERT INTO `gene_name` VALUES (100,'Gene Source'),(101,'Gene Source'),(102,'Gene Source'),(103,'Gene Source'),(104,'Gene Source'),(105,'Gene Source'),(106,'Gene Source'),(107,'Gene Source'),(108,'Gene Source'),(109,'Gene Source'),(110,'Gene Source'),(111,'Gene Source'),(112,'Gene Source'),(113,'Gene Source'),(114,'Gene Source');
 

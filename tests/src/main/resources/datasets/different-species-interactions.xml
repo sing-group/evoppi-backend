@@ -21,8 +21,8 @@
   -->
 
 <dataset>
-  <species id="1" name="Species A"/>
-  <species id="2" name="Species B"/>
+  <species id="1" name="Species A" taxonomyId="1"/>
+  <species id="2" name="Species B" taxonomyId="2"/>
   <interactome id="1" name="Interactome A1" species="1"/>
   <interactome id="2" name="Interactome B1" species="1"/>
   <interactome id="3" name="Interactome A2" species="2"/>
