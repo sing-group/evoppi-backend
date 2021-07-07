@@ -34,12 +34,12 @@ public class RestInteractomeCreationData extends InteractomeCreationData impleme
   private static final long serialVersionUID = 1L;
 
   public RestInteractomeCreationData(
-    File file, String name, Integer speciesDbId, Integer speciesFileId, UniProtDb dbSource, Integer geneColumn1,
+    File file, String name, Integer speciesDbId, UniProtDb dbSource, Integer geneColumn1,
     Integer geneColumn2, Integer headerLinesCount, String genePrefix, String geneSuffix, Integer organismColumn1,
     Integer organismColumn2, String organismPrefix, String organismSuffix
   ) {
     super(
-      file, name, speciesDbId, speciesFileId, dbSource, geneColumn1, geneColumn2, headerLinesCount, genePrefix,
+      file, name, speciesDbId, dbSource, geneColumn1, geneColumn2, headerLinesCount, genePrefix,
       geneSuffix, organismColumn1, organismColumn2, organismPrefix, organismSuffix
     );
   }

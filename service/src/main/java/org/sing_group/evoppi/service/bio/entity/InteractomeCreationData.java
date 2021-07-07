@@ -32,7 +32,6 @@ public class InteractomeCreationData {
   private String name;
 
   private Integer speciesDbId;
-  private Integer speciesFileId;
 
   private UniProtDb dbSource;
   private Integer geneColumn1;
@@ -46,14 +45,13 @@ public class InteractomeCreationData {
   private String organismSuffix;
 
   public InteractomeCreationData(
-    File file, String name, Integer speciesDbId, Integer speciesFileId, UniProtDb dbSource, Integer geneColumn1,
-    Integer geneColumn2, Integer headerLinesCount, String genePrefix, String geneSuffix, Integer organismColumn1,
-    Integer organismColumn2, String organismPrefix, String organismSuffix
+    File file, String name, Integer speciesDbId, UniProtDb dbSource, Integer geneColumn1, Integer geneColumn2,
+    Integer headerLinesCount, String genePrefix, String geneSuffix, Integer organismColumn1, Integer organismColumn2,
+    String organismPrefix, String organismSuffix
   ) {
     this.file = Objects.requireNonNull(file, "The interactome file is mandatory");
     this.name = Objects.requireNonNull(name, "The interactome name is mandatory");
     this.speciesDbId = Objects.requireNonNull(speciesDbId, "The species ID is mandatory");
-    this.speciesFileId = speciesFileId;
     this.dbSource = Objects.requireNonNull(dbSource, "The DB source ID is mandatory");
     this.geneColumn1 = Objects.requireNonNull(geneColumn1, "The gene column 1 is mandatory");
     this.geneColumn2 = Objects.requireNonNull(geneColumn2, "The gene column 2 is mandatory");
@@ -75,12 +73,6 @@ public class InteractomeCreationData {
     if ((organismColumn1 != null && organismColumn2 == null) || (organismColumn1 == null && organismColumn2 != null)) {
       throw new IllegalArgumentException("organismColumn1 and organismColumn2 must be used together");
     }
-
-    if (organismColumn1 != null && organismColumn2 != null && speciesFileId == null) {
-      throw new IllegalArgumentException(
-        "speciesFileId must be non null when organismColumn1 and organismColumn2 are present"
-      );
-    }
   }
 
   public File getFile() {
@@ -93,10 +85,6 @@ public class InteractomeCreationData {
 
   public Integer getSpeciesDbId() {
     return speciesDbId;
-  }
-
-  public Integer getSpeciesFileId() {
-    return speciesFileId;
   }
 
   public UniProtDb getDbSource() {
@@ -146,7 +134,6 @@ public class InteractomeCreationData {
     sb.append("\n\tfile = ").append(file.getName())
       .append("\n\tname = ").append(name)
       .append("\n\tspeciesDbId = ").append(speciesDbId)
-      .append("\n\tspeciesFileId = ").append(speciesFileId)
       .append("\n\tdbSource = ").append(dbSource)
       .append("\n\tgeneColumn1 = ").append(geneColumn1)
       .append("\n\tgeneColumn2 = ").append(geneColumn2)
@@ -158,6 +145,6 @@ public class InteractomeCreationData {
       .append("\n\torganismPrefix = ").append(organismPrefix)
       .append("\n\torganismSuffix = ").append(organismSuffix);
 
-      return sb.toString();
+    return sb.toString();
   }
 }

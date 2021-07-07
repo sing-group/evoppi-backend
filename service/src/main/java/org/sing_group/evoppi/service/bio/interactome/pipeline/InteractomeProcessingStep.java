@@ -89,7 +89,7 @@ public class InteractomeProcessingStep
     final EvoPpiInteractomeProcessing processing =
       new EvoPpiInteractomeProcessing(
         creationData.getFile(),
-        toInteractomeFileFormat(creationData, species.getName())
+        toInteractomeFileFormat(creationData, species)
       );
 
     File temporaryDir;
@@ -120,13 +120,14 @@ public class InteractomeProcessingStep
     }
   }
 
-  private static InteractomeFileFormat toInteractomeFileFormat(InteractomeCreationData data, String species) {
+  private static InteractomeFileFormat toInteractomeFileFormat(InteractomeCreationData data, Species species) {
+    System.err.println(data.toString());
     return new InteractomeFileFormat(
       data.getDbSource().getName(),
       data.getGeneColumn1(),
       data.getGeneColumn2(),
       data.getHeaderLinesCount() == null ? 0 : data.getHeaderLinesCount(),
-      toSpeciesMetadata(species, data.getSpeciesFileId()),
+      toSpeciesMetadata(species.getName(), species.getTaxonomyId()),
       data.getGenePrefix() == null ? "" : data.getGenePrefix(),
       data.getGeneSuffix() == null ? "" : data.getGeneSuffix(),
       data.getOrganismColumn1() == null ? DEFAULT_FIELD_ORGANISM_1_COLUMN : data.getOrganismColumn1(),
