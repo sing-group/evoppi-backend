@@ -31,6 +31,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.UriBuilder;
 
+import org.sing_group.evoppi.domain.entities.bio.DatabaseInteractome;
 import org.sing_group.evoppi.domain.entities.bio.Interaction;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.rest.entity.IdAndUri;
@@ -57,77 +58,81 @@ public class DefaultInteractomeMapper implements InteractomeMapper {
   public InteractomeData toInteractomeData(Interactome interactome) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
 
+    DatabaseInteractome dbInt = ((DatabaseInteractome) interactome);
+    
     return new InteractomeData(
-      interactome.getId(),
-      interactome.getName(),
+      dbInt.getId(),
+      dbInt.getName(),
       new IdAndUri(
-        interactome.getSpecies().getId(),
-        pathBuilder.species(interactome.getSpecies()).build()
+        dbInt.getSpecies().getId(),
+        pathBuilder.species(dbInt.getSpecies()).build()
       ),
-      interactome.getDbSourceIdType().orElse(null),
-      interactome.getNumOriginalInteractions().isPresent() ? interactome.getNumOriginalInteractions().getAsInt() : null,
-      interactome.getNumUniqueOriginalInteractions().isPresent()
-        ? interactome.getNumUniqueOriginalInteractions().getAsInt()
+      dbInt.getDbSourceIdType().orElse(null),
+      dbInt.getNumOriginalInteractions().isPresent() ? dbInt.getNumOriginalInteractions().getAsInt() : null,
+      dbInt.getNumUniqueOriginalInteractions().isPresent()
+        ? dbInt.getNumUniqueOriginalInteractions().getAsInt()
         : null,
-      interactome.getNumUniqueOriginalGenes().isPresent() ? interactome.getNumUniqueOriginalGenes().getAsInt() : null,
-      interactome.getNumInteractionsNotToUniProtKB().isPresent()
-        ? interactome.getNumInteractionsNotToUniProtKB().getAsInt()
+      dbInt.getNumUniqueOriginalGenes().isPresent() ? dbInt.getNumUniqueOriginalGenes().getAsInt() : null,
+      dbInt.getNumInteractionsNotToUniProtKB().isPresent()
+        ? dbInt.getNumInteractionsNotToUniProtKB().getAsInt()
         : null,
-      interactome.getNumGenesNotToUniProtKB().isPresent() ? interactome.getNumGenesNotToUniProtKB().getAsInt() : null,
-      interactome.getNumInteractionsNotToGeneId().isPresent() ? interactome.getNumInteractionsNotToGeneId().getAsInt()
+      dbInt.getNumGenesNotToUniProtKB().isPresent() ? dbInt.getNumGenesNotToUniProtKB().getAsInt() : null,
+      dbInt.getNumInteractionsNotToGeneId().isPresent() ? dbInt.getNumInteractionsNotToGeneId().getAsInt()
         : null,
-      interactome.getNumGenesNotToGeneId().isPresent() ? interactome.getNumGenesNotToGeneId().getAsInt() : null,
-      interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
-      interactome.getNumFinalGenes().isPresent() ? interactome.getNumFinalGenes().getAsInt() : null,
-      interactome.getNumRemovedInterSpeciesInteractions().isPresent()
-        ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt()
+      dbInt.getNumGenesNotToGeneId().isPresent() ? dbInt.getNumGenesNotToGeneId().getAsInt() : null,
+      dbInt.getNumFinalInteractions().isPresent() ? dbInt.getNumFinalInteractions().getAsInt() : null,
+      dbInt.getNumFinalGenes().isPresent() ? dbInt.getNumFinalGenes().getAsInt() : null,
+      dbInt.getNumRemovedInterSpeciesInteractions().isPresent()
+        ? dbInt.getNumRemovedInterSpeciesInteractions().getAsInt()
         : null,
-      interactome.getNumMultimappedToGeneId().isPresent() ? interactome.getNumMultimappedToGeneId().getAsInt() : null
+      dbInt.getNumMultimappedToGeneId().isPresent() ? dbInt.getNumMultimappedToGeneId().getAsInt() : null
     );
   }
 
   @Override
   public InteractomeWithInteractionsData toInteractomeWithInteractionsData(Interactome interactome) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
+    
+    DatabaseInteractome dbInt = ((DatabaseInteractome) interactome);
 
     final IdAndUri[] genes =
-      interactome.getInteractions()
+      dbInt.getInteractions()
         .flatMap(Interaction::getGenes)
         .distinct()
         .map(gene -> new IdAndUri(gene.getId(), pathBuilder.gene(gene).build()))
         .toArray(IdAndUri[]::new);
 
     final InteractingGenes[] interactions =
-      interactome.getInteractions()
+      dbInt.getInteractions()
         .map(interaction -> new InteractingGenes(interaction.getGeneAId(), interaction.getGeneBId()))
         .toArray(InteractingGenes[]::new);
 
     return new InteractomeWithInteractionsData(
-      interactome.getId(),
-      interactome.getName(),
+      dbInt.getId(),
+      dbInt.getName(),
       new IdAndUri(
-        interactome.getSpecies().getId(),
-        pathBuilder.species(interactome.getSpecies()).build()
+        dbInt.getSpecies().getId(),
+        pathBuilder.species(dbInt.getSpecies()).build()
       ),
-      interactome.getDbSourceIdType().orElse(null),
-      interactome.getNumOriginalInteractions().isPresent() ? interactome.getNumOriginalInteractions().getAsInt() : null,
-      interactome.getNumUniqueOriginalInteractions().isPresent()
-        ? interactome.getNumUniqueOriginalInteractions().getAsInt()
+      dbInt.getDbSourceIdType().orElse(null),
+      dbInt.getNumOriginalInteractions().isPresent() ? dbInt.getNumOriginalInteractions().getAsInt() : null,
+      dbInt.getNumUniqueOriginalInteractions().isPresent()
+        ? dbInt.getNumUniqueOriginalInteractions().getAsInt()
         : null,
-      interactome.getNumUniqueOriginalGenes().isPresent() ? interactome.getNumUniqueOriginalGenes().getAsInt() : null,
-      interactome.getNumInteractionsNotToUniProtKB().isPresent()
-        ? interactome.getNumInteractionsNotToUniProtKB().getAsInt()
+      dbInt.getNumUniqueOriginalGenes().isPresent() ? dbInt.getNumUniqueOriginalGenes().getAsInt() : null,
+      dbInt.getNumInteractionsNotToUniProtKB().isPresent()
+        ? dbInt.getNumInteractionsNotToUniProtKB().getAsInt()
         : null,
-      interactome.getNumGenesNotToUniProtKB().isPresent() ? interactome.getNumGenesNotToUniProtKB().getAsInt() : null,
-      interactome.getNumInteractionsNotToGeneId().isPresent() ? interactome.getNumInteractionsNotToGeneId().getAsInt()
+      dbInt.getNumGenesNotToUniProtKB().isPresent() ? dbInt.getNumGenesNotToUniProtKB().getAsInt() : null,
+      dbInt.getNumInteractionsNotToGeneId().isPresent() ? dbInt.getNumInteractionsNotToGeneId().getAsInt()
         : null,
-      interactome.getNumGenesNotToGeneId().isPresent() ? interactome.getNumGenesNotToGeneId().getAsInt() : null,
-      interactome.getNumFinalInteractions().isPresent() ? interactome.getNumFinalInteractions().getAsInt() : null,
-      interactome.getNumFinalGenes().isPresent() ? interactome.getNumFinalGenes().getAsInt() : null,
-      interactome.getNumRemovedInterSpeciesInteractions().isPresent()
-        ? interactome.getNumRemovedInterSpeciesInteractions().getAsInt()
+      dbInt.getNumGenesNotToGeneId().isPresent() ? dbInt.getNumGenesNotToGeneId().getAsInt() : null,
+      dbInt.getNumFinalInteractions().isPresent() ? dbInt.getNumFinalInteractions().getAsInt() : null,
+      dbInt.getNumFinalGenes().isPresent() ? dbInt.getNumFinalGenes().getAsInt() : null,
+      dbInt.getNumRemovedInterSpeciesInteractions().isPresent()
+        ? dbInt.getNumRemovedInterSpeciesInteractions().getAsInt()
         : null,
-      interactome.getNumMultimappedToGeneId().isPresent() ? interactome.getNumMultimappedToGeneId().getAsInt() : null,
+      dbInt.getNumMultimappedToGeneId().isPresent() ? dbInt.getNumMultimappedToGeneId().getAsInt() : null,
       genes,
       interactions
     );

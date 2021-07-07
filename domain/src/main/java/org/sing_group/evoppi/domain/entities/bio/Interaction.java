@@ -45,8 +45,13 @@ public class Interaction implements HasGeneInteraction, Serializable {
   
   @Id
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
-  private Species species;
+  @JoinColumn(name = "speciesA", referencedColumnName = "id", nullable = false)
+  private Species speciesA;
+  
+  @Id
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "speciesB", referencedColumnName = "id", nullable = false)
+  private Species speciesB;
 
   @Id
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -65,7 +70,7 @@ public class Interaction implements HasGeneInteraction, Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
   @JoinColumns({
-    @JoinColumn(name = "species", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
+    @JoinColumn(name = "speciesA", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "interactome", referencedColumnName = "interactome", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "geneA", referencedColumnName = "gene", nullable = false, insertable = false, updatable = false)
   })
@@ -73,7 +78,7 @@ public class Interaction implements HasGeneInteraction, Serializable {
   
   @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
   @JoinColumns({
-    @JoinColumn(name = "species", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
+    @JoinColumn(name = "speciesB", referencedColumnName = "species", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "interactome", referencedColumnName = "interactome", nullable = false, insertable = false, updatable = false),
     @JoinColumn(name = "geneB", referencedColumnName = "gene", nullable = false, insertable = false, updatable = false)
   })
@@ -81,13 +86,17 @@ public class Interaction implements HasGeneInteraction, Serializable {
 
   Interaction() {}
 
-  public Interaction(Species species, Interactome interactome, Gene geneA, Gene geneB) {
-    this.species = species;
+  public Interaction(
+    Species speciesA, Species speciesB, Interactome interactome, Gene geneA, Gene geneB,
+    GeneInInteractome geneAInInteractome, GeneInInteractome geneBInInteractome
+  ) {
+    this.speciesA = speciesA;
+    this.speciesB = speciesB;
     this.interactome = interactome;
     this.geneA = geneA;
     this.geneB = geneB;
-    this.geneInInteractomeA = new GeneInInteractome(species, interactome, geneA);
-    this.geneInInteractomeB = new GeneInInteractome(species, interactome, geneB);
+    this.geneInInteractomeA = geneAInInteractome;
+    this.geneInInteractomeB = geneBInInteractome;
   }
 
   @Override
@@ -112,7 +121,8 @@ public class Interaction implements HasGeneInteraction, Serializable {
     result = prime * result + ((geneA == null) ? 0 : geneA.hashCode());
     result = prime * result + ((geneB == null) ? 0 : geneB.hashCode());
     result = prime * result + ((interactome == null) ? 0 : interactome.hashCode());
-    result = prime * result + ((species == null) ? 0 : species.hashCode());
+    result = prime * result + ((speciesA == null) ? 0 : speciesA.hashCode());
+    result = prime * result + ((speciesB == null) ? 0 : speciesB.hashCode());
     return result;
   }
 
@@ -140,10 +150,15 @@ public class Interaction implements HasGeneInteraction, Serializable {
         return false;
     } else if (!interactome.equals(other.interactome))
       return false;
-    if (species == null) {
-      if (other.species != null)
+    if (speciesA == null) {
+      if (other.speciesA != null)
         return false;
-    } else if (!species.equals(other.species))
+    } else if (!speciesA.equals(other.speciesA))
+      return false;
+    if (speciesB == null) {
+      if (other.speciesB != null)
+        return false;
+    } else if (!speciesB.equals(other.speciesB))
       return false;
     return true;
   }
@@ -151,22 +166,28 @@ public class Interaction implements HasGeneInteraction, Serializable {
   public static class InteractionId implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    private int species;
+    private int speciesA;
+    private int speciesB;
     private int interactome;
     private int geneA;
     private int geneB;
     
-    InteractionId() {}
+    public InteractionId() {}
     
-    public InteractionId(int species, int interactome, int geneA, int geneB) {
-      this.species = species;
+    public InteractionId(int speciesA, int speciesB, int interactome, int geneA, int geneB) {
+      this.speciesA = speciesA;
+      this.speciesA = speciesB;
       this.interactome = interactome;
       this.geneA = geneA;
       this.geneB = geneB;
     }
     
-    public int getSpecies() {
-      return species;
+    public int getSpeciesA() {
+      return speciesA;
+    }
+    
+    public int getSpeciesB() {
+      return speciesB;
     }
 
     public int getInteractome() {
@@ -188,7 +209,8 @@ public class Interaction implements HasGeneInteraction, Serializable {
       result = prime * result + geneA;
       result = prime * result + geneB;
       result = prime * result + interactome;
-      result = prime * result + species;
+      result = prime * result + speciesA;
+      result = prime * result + speciesB;
       return result;
     }
 
@@ -207,7 +229,9 @@ public class Interaction implements HasGeneInteraction, Serializable {
         return false;
       if (interactome != other.interactome)
         return false;
-      if (species != other.species)
+      if (speciesA != other.speciesA)
+        return false;
+      if (speciesB != other.speciesB)
         return false;
       return true;
     }

@@ -21,6 +21,8 @@ TRUNCATE TABLE `gene_name_value`;
 TRUNCATE TABLE `gene_name`;
 TRUNCATE TABLE `gene_sequence`;
 TRUNCATE TABLE `gene`;
+TRUNCATE TABLE `predictome`;
+TRUNCATE TABLE `interactome_database`;
 TRUNCATE TABLE `interactome`;
 TRUNCATE TABLE `species`;
 

@@ -23,8 +23,8 @@
 <dataset>
   <species id="1" name="Species 1" taxonomyId="1"/>
   <species id="2" name="Species 2" taxonomyId="2"/>
-  <interactome id="1" name="Interactome 1" species="1"/>
-  <interactome id="2" name="Interactome 2" species="2"/>
+  <interactome id="1" name="Interactome 1" speciesA="1" speciesB="1"/>
+  <interactome id="2" name="Interactome 2" speciesA="2" speciesB="2"/>
   <gene id="100" species="1" defaultName="A11"/>
   <gene id="101" species="1" defaultName="B11"/>
   <gene id="102" species="1" defaultName="C11"/>
@@ -85,16 +85,16 @@
   <gene_in_interactome gene="201" interactome="2" species="2"/>
   <gene_in_interactome gene="202" interactome="2" species="2"/>
   <gene_in_interactome gene="203" interactome="2" species="2"/>
-  <interaction geneA="100" geneB="101" interactome="1" species="1"/>
-  <interaction geneA="101" geneB="102" interactome="1" species="1"/>
-  <interaction geneA="102" geneB="103" interactome="1" species="1"/>
-  <interaction geneA="110" geneB="111" interactome="1" species="1"/>
-  <interaction geneA="111" geneB="112" interactome="1" species="1"/>
-  <interaction geneA="112" geneB="113" interactome="1" species="1"/>
-  <interaction geneA="100" geneB="110" interactome="1" species="1"/>
-  <interaction geneA="101" geneB="111" interactome="1" species="1"/>
-  <interaction geneA="102" geneB="112" interactome="1" species="1"/>
-  <interaction geneA="200" geneB="201" interactome="2" species="2"/>
-  <interaction geneA="201" geneB="202" interactome="2" species="2"/>
-  <interaction geneA="202" geneB="203" interactome="2" species="2"/>
+  <interaction geneA="100" geneB="101" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="101" geneB="102" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="102" geneB="103" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="110" geneB="111" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="111" geneB="112" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="112" geneB="113" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="100" geneB="110" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="101" geneB="111" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="102" geneB="112" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="200" geneB="201" interactome="2" speciesA="2" speciesB="2"/>
+  <interaction geneA="201" geneB="202" interactome="2" speciesA="2" speciesB="2"/>
+  <interaction geneA="202" geneB="203" interactome="2" speciesA="2" speciesB="2"/>
 </dataset>

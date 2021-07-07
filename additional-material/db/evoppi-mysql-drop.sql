@@ -19,6 +19,8 @@ DROP TABLE `gene_name_value`;
 DROP TABLE `gene_name`;
 DROP TABLE `gene_sequence`;
 DROP TABLE `gene`;
+DROP TABLE `interactome_database`;
+DROP TABLE `predictome`;
 DROP TABLE `interactome`;
 DROP TABLE `species`;
 

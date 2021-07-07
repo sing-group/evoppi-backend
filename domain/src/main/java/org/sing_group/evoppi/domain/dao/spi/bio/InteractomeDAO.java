@@ -38,7 +38,7 @@ public interface InteractomeDAO {
 
   public long count(ListingOptions<Interactome> interactomeListingOptions);
 
-  public Interactome createInteractome(
+  public Interactome createDatabaseInteractome(
     String name, String dbSourceIdType, Integer numOriginalInteractions, Integer numUniqueOriginalInteractions,
     Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,

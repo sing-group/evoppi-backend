@@ -46,7 +46,9 @@ import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
+import org.sing_group.evoppi.domain.entities.bio.DatabaseInteractome;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
+import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.interactome.GeneInteractions;
@@ -115,7 +117,7 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   }
 
   @Override
-  public Interactome createInteractome(
+  public Interactome createDatabaseInteractome(
     String name, String dbSourceIdType, Integer numOriginalInteractions, Integer numUniqueOriginalInteractions,
     Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
@@ -124,21 +126,24 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   ) {
     Interactome interactome =
       this.dh.persist(
-        new Interactome(
+        new DatabaseInteractome(
           name, dbSourceIdType, numOriginalInteractions, numUniqueOriginalInteractions, numUniqueOriginalGenes,
           numInteractionsNotToUniProtKB, numGenesNotToUniProtKB, numInteractionsNotToGeneId, numGenesNotToGeneId,
           numFinalInteractions, numFinalGenes, numRemovedInterSpeciesInteractions, numMultimappedToGeneId,
-          species
+          species, species
         )
       );
 
     Map<Integer, Gene> geneMap = new HashMap<>();
+    Map<Gene, GeneInInteractome> geneInInteractomeMap = new HashMap<>();
 
     interactions.getGenes().forEach(gene -> {
       try {
         Gene geneEntity = geneDao.getGene(gene);
+        GeneInInteractome gi = this.geneInInteractomeDao.create(species, interactome, geneEntity);
+
         geneMap.put(gene, geneEntity);
-        this.geneInInteractomeDao.create(species, interactome, geneEntity);
+        geneInInteractomeMap.put(geneEntity, gi);
       } catch (IllegalArgumentException e) {}
     });
 
@@ -147,7 +152,7 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
       Gene geneB = geneMap.get(interaction.getB());
 
       if (geneA != null && geneB != null) {
-        interactome.addInteraction(species, geneA, geneB);
+        interactome.addInteraction(species, species, geneA, geneB, geneInInteractomeMap.get(geneA), geneInInteractomeMap.get(geneB));
       }
     });
 

@@ -23,10 +23,10 @@
 <dataset>
   <species id="1" name="Species A" taxonomyId="1"/>
   <species id="2" name="Species B" taxonomyId="2"/>
-  <interactome id="1" name="Interactome A1" species="1"/>
-  <interactome id="2" name="Interactome B1" species="1"/>
-  <interactome id="3" name="Interactome A2" species="2"/>
-  <interactome id="4" name="Interactome B2" species="2"/>
+  <interactome id="1" name="Interactome A1" speciesA="1" speciesB="1"/>
+  <interactome id="2" name="Interactome B1" speciesA="1" speciesB="1"/>
+  <interactome id="3" name="Interactome A2" speciesA="2" speciesB="2"/>
+  <interactome id="4" name="Interactome B2" speciesA="2" speciesB="2"/>
   <gene id="100" species="1" defaultName="A1"/>
   <gene id="101" species="1" defaultName="B1"/>
   <gene id="102" species="1" defaultName="C1"/>
@@ -207,52 +207,52 @@
   <gene_in_interactome gene="212" interactome="4" species="2"/>
   <gene_in_interactome gene="213" interactome="4" species="2"/>
   <gene_in_interactome gene="214" interactome="4" species="2"/>
-  <interaction geneA="100" geneB="101" interactome="1" species="1"/>
-  <interaction geneA="100" geneB="105" interactome="1" species="1"/>
-  <interaction geneA="100" geneB="109" interactome="1" species="1"/>
-  <interaction geneA="100" geneB="112" interactome="1" species="1"/>
-  <interaction geneA="101" geneB="103" interactome="1" species="1"/>
-  <interaction geneA="103" geneB="104" interactome="1" species="1"/>
-  <interaction geneA="105" geneB="107" interactome="1" species="1"/>
-  <interaction geneA="107" geneB="108" interactome="1" species="1"/>
-  <interaction geneA="109" geneB="110" interactome="1" species="1"/>
-  <interaction geneA="110" geneB="111" interactome="1" species="1"/>
-  <interaction geneA="112" geneB="113" interactome="1" species="1"/>
-  <interaction geneA="113" geneB="114" interactome="1" species="1"/>
-  <interaction geneA="100" geneB="102" interactome="2" species="1"/>
-  <interaction geneA="100" geneB="106" interactome="2" species="1"/>
-  <interaction geneA="100" geneB="112" interactome="2" species="1"/>
-  <interaction geneA="102" geneB="103" interactome="2" species="1"/>
-  <interaction geneA="103" geneB="104" interactome="2" species="1"/>
-  <interaction geneA="105" geneB="106" interactome="2" species="1"/>
-  <interaction geneA="105" geneB="107" interactome="2" species="1"/>
-  <interaction geneA="107" geneB="108" interactome="2" species="1"/>
-  <interaction geneA="109" geneB="110" interactome="2" species="1"/>
-  <interaction geneA="110" geneB="111" interactome="2" species="1"/>
-  <interaction geneA="112" geneB="113" interactome="2" species="1"/>
-  <interaction geneA="113" geneB="114" interactome="2" species="1"/>
-  <interaction geneA="200" geneB="201" interactome="3" species="2"/>
-  <interaction geneA="200" geneB="205" interactome="3" species="2"/>
-  <interaction geneA="200" geneB="209" interactome="3" species="2"/>
-  <interaction geneA="200" geneB="212" interactome="3" species="2"/>
-  <interaction geneA="201" geneB="203" interactome="3" species="2"/>
-  <interaction geneA="203" geneB="204" interactome="3" species="2"/>
-  <interaction geneA="205" geneB="207" interactome="3" species="2"/>
-  <interaction geneA="207" geneB="208" interactome="3" species="2"/>
-  <interaction geneA="209" geneB="210" interactome="3" species="2"/>
-  <interaction geneA="210" geneB="211" interactome="3" species="2"/>
-  <interaction geneA="212" geneB="213" interactome="3" species="2"/>
-  <interaction geneA="213" geneB="214" interactome="3" species="2"/>
-  <interaction geneA="200" geneB="202" interactome="4" species="2"/>
-  <interaction geneA="200" geneB="206" interactome="4" species="2"/>
-  <interaction geneA="200" geneB="212" interactome="4" species="2"/>
-  <interaction geneA="202" geneB="203" interactome="4" species="2"/>
-  <interaction geneA="203" geneB="204" interactome="4" species="2"/>
-  <interaction geneA="205" geneB="206" interactome="4" species="2"/>
-  <interaction geneA="205" geneB="207" interactome="4" species="2"/>
-  <interaction geneA="207" geneB="208" interactome="4" species="2"/>
-  <interaction geneA="209" geneB="210" interactome="4" species="2"/>
-  <interaction geneA="210" geneB="211" interactome="4" species="2"/>
-  <interaction geneA="212" geneB="213" interactome="4" species="2"/>
-  <interaction geneA="213" geneB="214" interactome="4" species="2"/>
+  <interaction geneA="100" geneB="101" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="100" geneB="105" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="100" geneB="109" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="100" geneB="112" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="101" geneB="103" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="103" geneB="104" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="105" geneB="107" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="107" geneB="108" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="109" geneB="110" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="110" geneB="111" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="112" geneB="113" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="113" geneB="114" interactome="1" speciesA="1" speciesB="1"/>
+  <interaction geneA="100" geneB="102" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="100" geneB="106" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="100" geneB="112" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="102" geneB="103" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="103" geneB="104" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="105" geneB="106" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="105" geneB="107" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="107" geneB="108" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="109" geneB="110" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="110" geneB="111" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="112" geneB="113" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="113" geneB="114" interactome="2" speciesA="1" speciesB="1"/>
+  <interaction geneA="200" geneB="201" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="200" geneB="205" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="200" geneB="209" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="200" geneB="212" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="201" geneB="203" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="203" geneB="204" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="205" geneB="207" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="207" geneB="208" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="209" geneB="210" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="210" geneB="211" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="212" geneB="213" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="213" geneB="214" interactome="3" speciesA="2" speciesB="2"/>
+  <interaction geneA="200" geneB="202" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="200" geneB="206" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="200" geneB="212" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="202" geneB="203" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="203" geneB="204" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="205" geneB="206" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="205" geneB="207" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="207" geneB="208" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="209" geneB="210" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="210" geneB="211" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="212" geneB="213" interactome="4" speciesA="2" speciesB="2"/>
+  <interaction geneA="213" geneB="214" interactome="4" speciesA="2" speciesB="2"/>
 </dataset>

@@ -54,7 +54,7 @@ public class Species implements Serializable {
   @Column(name = "taxonomyId", nullable = false)
   private int taxonomyId;
 
-  @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "speciesA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interactome> interactomes;
   
   @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

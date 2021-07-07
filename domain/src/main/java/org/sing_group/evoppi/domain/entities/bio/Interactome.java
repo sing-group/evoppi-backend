@@ -27,7 +27,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Stream;
@@ -39,6 +38,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -52,58 +53,27 @@ import org.sing_group.evoppi.domain.entities.spi.bio.HasGenePairIds;
 @Entity
 @Table(
   name = "interactome", uniqueConstraints = @UniqueConstraint(columnNames = {
-    "name", "species"
-  }), indexes = @Index(columnList = "id, species")
+    "name", "speciesA", "speciesB"
+  }), indexes = @Index(columnList = "id, speciesA, speciesB")
 )
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Interactome implements Serializable {
   private static final long serialVersionUID = 1L;
+
+  @Column(name = "name", length = 100, nullable = false)
+  private String name;
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
   private Integer id;
 
-  @Column(name = "name", length = 100, nullable = false)
-  private String name;
-
-  @Column(name = "dbSourceIdType", length = 100, nullable = true)
-  private String dbSourceIdType;
-
-  @Column(name = "numOriginalInteractions", nullable = true)
-  private Integer numOriginalInteractions;
-
-  @Column(name = "numUniqueOriginalInteractions", nullable = true)
-  private Integer numUniqueOriginalInteractions;
-
-  @Column(name = "numUniqueOriginalGenes", nullable = true)
-  private Integer numUniqueOriginalGenes;
-
-  @Column(name = "numInteractionsNotToUniProtKB", nullable = true)
-  private Integer numInteractionsNotToUniProtKB;
-
-  @Column(name = "numGenesNotToUniProtKB", nullable = true)
-  private Integer numGenesNotToUniProtKB;
-
-  @Column(name = "numInteractionsNotToGeneId", nullable = true)
-  private Integer numInteractionsNotToGeneId;
-
-  @Column(name = "numGenesNotToGeneId", nullable = true)
-  private Integer numGenesNotToGeneId;
-
-  @Column(name = "numFinalInteractions", nullable = true)
-  private Integer numFinalInteractions;
-
-  @Column(name = "numFinalGenes", nullable = true)
-  private Integer numFinalGenes;
-
-  @Column(name = "numRemovedInterSpeciesInteractions", nullable = true)
-  private Integer numRemovedInterSpeciesInteractions;
-
-  @Column(name = "numMultimappedToGeneId", nullable = true)
-  private Integer numMultimappedToGeneId;
-
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "species", referencedColumnName = "id", nullable = false)
-  private Species species;
+  @JoinColumn(name = "speciesA", referencedColumnName = "id", nullable = false)
+  private Species speciesA;
+  
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "speciesB", referencedColumnName = "id", nullable = false)
+  private Species speciesB;
 
   @OneToMany(mappedBy = "interactome", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactions;
@@ -115,27 +85,10 @@ public class Interactome implements Serializable {
     this.interactionsLock = new ReentrantReadWriteLock();
   }
 
-  public Interactome(
-    String name, String dbSourceIdType, Integer numOriginalInteractions, Integer numUniqueOriginalInteractions,
-    Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
-    Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
-    Species species
-  ) {
+  protected Interactome(String name, Species speciesA, Species speciesB) {
     this.name = name;
-    this.dbSourceIdType = dbSourceIdType;
-    this.numOriginalInteractions = numOriginalInteractions;
-    this.numUniqueOriginalInteractions = numUniqueOriginalInteractions;
-    this.numUniqueOriginalGenes = numUniqueOriginalGenes;
-    this.numInteractionsNotToUniProtKB = numInteractionsNotToUniProtKB;
-    this.numGenesNotToUniProtKB = numGenesNotToUniProtKB;
-    this.numInteractionsNotToGeneId = numInteractionsNotToGeneId;
-    this.numGenesNotToGeneId = numGenesNotToGeneId;
-    this.numFinalInteractions = numFinalInteractions;
-    this.numFinalGenes = numFinalGenes;
-    this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
-    this.numMultimappedToGeneId = numMultimappedToGeneId;
-    this.species = species;
+    this.speciesA = speciesA;
+    this.speciesB = speciesB;
     this.interactions = new HashSet<>();
     this.interactionsLock = new ReentrantReadWriteLock();
   }
@@ -149,59 +102,9 @@ public class Interactome implements Serializable {
   }
 
   public Species getSpecies() {
-    return species;
+    return speciesA;
   }
 
-  public Optional<String> getDbSourceIdType() {
-    return Optional.ofNullable(dbSourceIdType);
-  }
-
-  public OptionalInt getNumOriginalInteractions() {
-    return numOriginalInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numOriginalInteractions);
-  }
-
-  public OptionalInt getNumUniqueOriginalInteractions() {
-    return numUniqueOriginalInteractions == null ? OptionalInt.empty()
-      : OptionalInt.of(this.numUniqueOriginalInteractions);
-  }
-
-  public OptionalInt getNumUniqueOriginalGenes() {
-    return numUniqueOriginalGenes == null ? OptionalInt.empty() : OptionalInt.of(this.numUniqueOriginalGenes);
-  }
-
-  public OptionalInt getNumInteractionsNotToUniProtKB() {
-    return numInteractionsNotToUniProtKB == null ? OptionalInt.empty()
-      : OptionalInt.of(this.numInteractionsNotToUniProtKB);
-  }
-
-  public OptionalInt getNumGenesNotToUniProtKB() {
-    return numGenesNotToUniProtKB == null ? OptionalInt.empty() : OptionalInt.of(this.numGenesNotToUniProtKB);
-  }
-
-  public OptionalInt getNumInteractionsNotToGeneId() {
-    return numInteractionsNotToGeneId == null ? OptionalInt.empty() : OptionalInt.of(this.numInteractionsNotToGeneId);
-  }
-
-  public OptionalInt getNumGenesNotToGeneId() {
-    return numGenesNotToGeneId == null ? OptionalInt.empty() : OptionalInt.of(this.numGenesNotToGeneId);
-  }
-
-  public OptionalInt getNumFinalInteractions() {
-    return numFinalInteractions == null ? OptionalInt.empty() : OptionalInt.of(this.numFinalInteractions);
-  }
-
-  public OptionalInt getNumFinalGenes() {
-    return numFinalGenes == null ? OptionalInt.empty() : OptionalInt.of(this.numFinalGenes);
-  }
-
-  public OptionalInt getNumRemovedInterSpeciesInteractions() {
-    return numRemovedInterSpeciesInteractions == null ? OptionalInt.empty()
-      : OptionalInt.of(this.numRemovedInterSpeciesInteractions);
-  }
-
-  public OptionalInt getNumMultimappedToGeneId() {
-    return numMultimappedToGeneId == null ? OptionalInt.empty() : OptionalInt.of(this.numMultimappedToGeneId);
-  }
 
   public Stream<Interaction> getInteractions() {
     return this.interactions.stream();
@@ -229,11 +132,14 @@ public class Interactome implements Serializable {
       .anyMatch(interaction -> interaction.hasGenes(genePairIds));
   }
 
-  public Interaction addInteraction(Species species, Gene geneA, Gene geneB) {
+  public Interaction addInteraction(
+    Species speciesA, Species speciesB, Gene geneA, Gene geneB, GeneInInteractome geneAInInteractome, GeneInInteractome geneBInInteractome
+  ) {
     this.interactionsLock.writeLock().lock();
 
     try {
-      final Interaction interaction = new Interaction(species, this, geneA, geneB);
+      final Interaction interaction =
+        new Interaction(speciesA, speciesB, this, geneA, geneB, geneAInInteractome, geneBInInteractome);
       this.interactions.add(interaction);
 
       return interaction;
