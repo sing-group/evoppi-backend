@@ -81,11 +81,12 @@ implements SingleDifferentSpeciesGeneInteractionsStep {
       final DifferentSpeciesGeneInteractionsConfiguration configuration = context.getConfiguration();
       
       final Interactome targetInteractome = configuration.getTargetInteractomes()
-        .mapToObj(this.interactomeDao::getInteractome)
+        .mapToObj(this.interactomeDao::get)
+        .filter(i -> i.getSpeciesA().equals(i.getSpeciesB()))
         .findAny()
         .orElseThrow(IllegalStateException::new);
       
-      final Path targetFastaPath = this.genomeStorageService.getGenomePath(targetInteractome.getSpecies());
+      final Path targetFastaPath = this.genomeStorageService.getGenomePath(targetInteractome.getSpeciesA());
       
       return this.contextBuilderFactory.createBuilderFor(context)
         .setTargetFastaPath(targetFastaPath)

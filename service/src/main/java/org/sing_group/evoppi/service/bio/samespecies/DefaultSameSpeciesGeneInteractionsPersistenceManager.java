@@ -102,6 +102,6 @@ implements SameSpeciesGeneInteractionsPersistenceManager {
   }
   
   private Function<HasGeneInteractionIds, HasGeneInteraction> getGeneInteractionMapper() {
-    return interactionIds -> HasGeneInteraction.from(interactionIds, geneService::get, interactomeService::getInteractome);
+    return interactionIds -> HasGeneInteraction.from(interactionIds, geneService::get, interactomeService::get);
   }
 }

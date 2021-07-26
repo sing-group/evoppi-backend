@@ -27,28 +27,18 @@ import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.Species;
-import org.sing_group.evoppi.domain.interactome.GeneInteractions;
 
 public interface InteractomeDAO {
 
-  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions);
+  public Stream<Interactome> list(ListingOptions<Interactome> listingOptions);
 
-  public Interactome getInteractome(int id);
+  public long count(ListingOptions<Interactome> listingOptions);
 
-  public long count(ListingOptions<Interactome> interactomeListingOptions);
+  public Interactome get(int id);
 
-  public Interactome createDatabaseInteractome(
-    String name, String dbSourceIdType, Integer numOriginalInteractions, Integer numUniqueOriginalInteractions,
-    Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
-    Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
-    Species species, GeneInteractions interactions
-  );
+  public Interactome getByName(String name);
 
-  public Interactome getInteractomeByName(String name);
-  
-  public void deleteInteractome(int interactomeId);
+  public void delete(int id);
 
-  public void deleteInteractomes(Collection<Integer> interactomeIds);
+  public void deleteAll(Collection<Integer> ids);
 }

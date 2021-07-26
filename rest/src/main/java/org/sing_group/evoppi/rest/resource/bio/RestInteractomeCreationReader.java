@@ -26,11 +26,11 @@ import java.io.File;
 import javax.ws.rs.ext.Provider;
 
 import org.sing_group.evoppi.rest.MultipartMessageBodyReader;
-import org.sing_group.evoppi.rest.entity.bio.RestInteractomeCreationData;
+import org.sing_group.evoppi.rest.entity.bio.RestDatabaseInteractomeCreationData;
 import org.sing_group.interactomesparser.UniProtDb;
 
 @Provider
-public class RestInteractomeCreationReader extends MultipartMessageBodyReader<RestInteractomeCreationData> {
+public class RestInteractomeCreationReader extends MultipartMessageBodyReader<RestDatabaseInteractomeCreationData> {
 
   private File file;
   private String name;
@@ -98,8 +98,8 @@ public class RestInteractomeCreationReader extends MultipartMessageBodyReader<Re
   }
 
   @Override
-  protected RestInteractomeCreationData build() {
-    return new RestInteractomeCreationData(
+  protected RestDatabaseInteractomeCreationData build() {
+    return new RestDatabaseInteractomeCreationData(
       file, name, speciesDbId, dbSource, geneColumn1, geneColumn2, headerLinesCount, genePrefix,
       geneSuffix, organismColumn1, organismColumn2, organismPrefix, organismSuffix
     );

@@ -80,7 +80,7 @@ public class SameSpeciesInteractionsResult extends InteractionsResult implements
   public Species getQuerySpecies() {
     return this.getQueryInteractomes()
       .findAny()
-      .map(Interactome::getSpecies)
+      .map(Interactome::getSpeciesA)
     .orElseThrow(() -> new IllegalStateException("Species could not retrieved because there is not any query interactome"));
   }
 

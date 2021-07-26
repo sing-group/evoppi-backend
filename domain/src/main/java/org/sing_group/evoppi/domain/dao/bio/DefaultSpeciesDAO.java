@@ -107,7 +107,7 @@ public class DefaultSpeciesDAO implements SpeciesDAO {
       .map(Interactome::getId)
     .collect(toList());
     
-    this.interactomeDao.deleteInteractomes(interactomeIds);
+    this.interactomeDao.deleteAll(interactomeIds);
     this.geneNamesDao.deleteGeneNamesByGenes(geneIds);
     this.geneSequenceDao.deleteGeneSequencesByGenes(geneIds);
     this.geneDao.deleteGenes(geneIds);

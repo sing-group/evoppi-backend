@@ -240,7 +240,7 @@ public class DefaultInteractionService implements InteractionService {
     final Gene gene = this.geneDao.getGene(geneId);
     final Collection<Interactome> interactomes =
       IntStream.of(interactomeIds)
-        .mapToObj(this.interactomeDao::getInteractome)
+        .mapToObj(this.interactomeDao::get)
         .collect(toSet());
 
     final SameSpeciesInteractionsResult result =
@@ -280,12 +280,12 @@ public class DefaultInteractionService implements InteractionService {
 
     final Collection<Interactome> referenceInteractomes =
       IntStream.of(referenceInteractomeIds)
-        .mapToObj(this.interactomeDao::getInteractome)
+        .mapToObj(this.interactomeDao::get)
         .collect(toSet());
 
     final Collection<Interactome> targetInteractomes =
       IntStream.of(targetInteractomeIds)
-        .mapToObj(this.interactomeDao::getInteractome)
+        .mapToObj(this.interactomeDao::get)
         .collect(toSet());
 
     final DifferentSpeciesInteractionsResult result =
@@ -500,8 +500,9 @@ public class DefaultInteractionService implements InteractionService {
 
   private boolean haveSameSpecies(int... interactomes) {
     return IntStream.of(interactomes)
-      .mapToObj(this.interactomeDao::getInteractome)
-      .map(Interactome::getSpecies)
+      .mapToObj(this.interactomeDao::get)
+      .filter(i -> i.getSpeciesA().equals(i.getSpeciesB()))
+      .map(Interactome::getSpeciesA)
       .distinct()
       .count() == 1;
   }
@@ -526,8 +527,8 @@ public class DefaultInteractionService implements InteractionService {
       throw new IllegalArgumentException("Target interactomes should belong to the same species");
     }
 
-    final Species referenceSpecies = this.interactomeDao.getInteractome(referenceInteractomes[0]).getSpecies();
-    final Species targetSpecies = this.interactomeDao.getInteractome(targetInteractomes[0]).getSpecies();
+    final Species referenceSpecies = this.interactomeDao.get(referenceInteractomes[0]).getSpeciesA();
+    final Species targetSpecies = this.interactomeDao.get(targetInteractomes[0]).getSpeciesA();
 
     if (referenceSpecies.equals(targetSpecies)) {
       throw new IllegalArgumentException("Reference and target interactomes should belong to differentSpecies");

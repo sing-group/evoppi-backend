@@ -25,8 +25,6 @@ package org.sing_group.evoppi.domain.dao.bio;
 import static java.util.Collections.singleton;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -40,18 +38,12 @@ import javax.transaction.Transactional.TxType;
 
 import org.sing_group.evoppi.domain.dao.DAOHelper;
 import org.sing_group.evoppi.domain.dao.ListingOptions;
-import org.sing_group.evoppi.domain.dao.spi.bio.GeneDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.DifferentSpeciesInteractionsResultDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.execution.SameSpeciesInteractionsResultDAO;
-import org.sing_group.evoppi.domain.entities.bio.DatabaseInteractome;
-import org.sing_group.evoppi.domain.entities.bio.Gene;
-import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.bio.Species;
-import org.sing_group.evoppi.domain.interactome.GeneInteractions;
 
 @Default
 @Transactional(value = TxType.MANDATORY)
@@ -60,9 +52,6 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   @PersistenceContext
   protected EntityManager em;
   protected DAOHelper<Integer, Interactome> dh;
-
-  @Inject
-  private GeneDAO geneDao;
 
   @Inject
   private GeneInInteractomeDAO geneInInteractomeDao;
@@ -91,19 +80,24 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   }
 
   @Override
-  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> listingOptions) {
+  public Stream<Interactome> list(ListingOptions<Interactome> listingOptions) {
     return this.dh.list(listingOptions).stream();
   }
 
   @Override
-  public Interactome getInteractome(int id) {
+  public long count(ListingOptions<Interactome> listingOptions) {
+    return this.dh.count(listingOptions);
+  }
+
+  @Override
+  public Interactome get(int id) {
     return this.dh.get(id)
       .orElseThrow(() -> new IllegalArgumentException("Unknown interactome: " + id));
   }
 
   @Override
   @Transactional(dontRollbackOn = IllegalArgumentException.class)
-  public Interactome getInteractomeByName(String name) {
+  public Interactome getByName(String name) {
     try {
       return this.dh.getBy("name", name);
     } catch (NoResultException e) {
@@ -112,66 +106,16 @@ public class DefaultInteractomeDAO implements InteractomeDAO {
   }
 
   @Override
-  public long count(ListingOptions<Interactome> interactomeListingOptions) {
-    return this.dh.count(interactomeListingOptions);
+  public void delete(int id) {
+    this.deleteAll(singleton(id));
   }
 
   @Override
-  public Interactome createDatabaseInteractome(
-    String name, String dbSourceIdType, Integer numOriginalInteractions, Integer numUniqueOriginalInteractions,
-    Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
-    Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
-    Species species, GeneInteractions interactions
-  ) {
-    Interactome interactome =
-      this.dh.persist(
-        new DatabaseInteractome(
-          name, dbSourceIdType, numOriginalInteractions, numUniqueOriginalInteractions, numUniqueOriginalGenes,
-          numInteractionsNotToUniProtKB, numGenesNotToUniProtKB, numInteractionsNotToGeneId, numGenesNotToGeneId,
-          numFinalInteractions, numFinalGenes, numRemovedInterSpeciesInteractions, numMultimappedToGeneId,
-          species, species
-        )
-      );
-
-    Map<Integer, Gene> geneMap = new HashMap<>();
-    Map<Gene, GeneInInteractome> geneInInteractomeMap = new HashMap<>();
-
-    interactions.getGenes().forEach(gene -> {
-      try {
-        Gene geneEntity = geneDao.getGene(gene);
-        GeneInInteractome gi = this.geneInInteractomeDao.create(species, interactome, geneEntity);
-
-        geneMap.put(gene, geneEntity);
-        geneInInteractomeMap.put(geneEntity, gi);
-      } catch (IllegalArgumentException e) {}
-    });
-
-    interactions.forEach(interaction -> {
-      Gene geneA = geneMap.get(interaction.getA());
-      Gene geneB = geneMap.get(interaction.getB());
-
-      if (geneA != null && geneB != null) {
-        interactome.addInteraction(species, species, geneA, geneB, geneInInteractomeMap.get(geneA), geneInInteractomeMap.get(geneB));
-      }
-    });
-
-    geneMap.clear();
-
-    return interactome;
-  }
-  
-  @Override
-  public void deleteInteractome(int interactomeId) {
-    this.deleteInteractomes(singleton(interactomeId));
-  }
-
-  @Override
-  public void deleteInteractomes(Collection<Integer> interactomeIds) {
-    this.sameSpeciesInteractionsResultDao.deleteResultsByInteractomes(interactomeIds);
-    this.differentSpeciesInteractionsResultDao.deleteResultsByInteractomes(interactomeIds);
-    this.interactionDao.deleteInteractionsByInteractomes(interactomeIds);
-    this.geneInInteractomeDao.deleteGeneInInteractomesByInteractomes(interactomeIds);
-    this.dh.deleteBy("id", interactomeIds);
+  public void deleteAll(Collection<Integer> ids) {
+    this.sameSpeciesInteractionsResultDao.deleteResultsByInteractomes(ids);
+    this.differentSpeciesInteractionsResultDao.deleteResultsByInteractomes(ids);
+    this.interactionDao.deleteInteractionsByInteractomes(ids);
+    this.geneInInteractomeDao.deleteGeneInInteractomesByInteractomes(ids);
+    this.dh.deleteBy("id", ids);
   }
 }

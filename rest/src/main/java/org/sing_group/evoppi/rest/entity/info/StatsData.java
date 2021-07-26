@@ -35,17 +35,21 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(value = "stats-data", description = "Statistic information about the database.")
 public class StatsData implements Serializable {
   private static final long serialVersionUID = 1L;
-  
+
   private long speciesCount;
-  private long interactomesCount;
+  private long databaseInteractomesCount;
+  private long predictomesCount;
   private long genesCount;
   private long interactionsCount;
 
   StatsData() {}
-  
-  public StatsData(long speciesCount, long interactomesCount, long genesCount, long interactionsCount) {
+
+  public StatsData(
+    long speciesCount, long databaseInteractomesCount, long predictomesCount, long genesCount, long interactionsCount
+  ) {
     this.speciesCount = speciesCount;
-    this.interactomesCount = interactomesCount;
+    this.databaseInteractomesCount = databaseInteractomesCount;
+    this.predictomesCount = predictomesCount;
     this.genesCount = genesCount;
     this.interactionsCount = interactionsCount;
   }
@@ -58,12 +62,20 @@ public class StatsData implements Serializable {
     this.speciesCount = speciesCount;
   }
 
-  public long getInteractomesCount() {
-    return interactomesCount;
+  public long getDatabaseInteractomesCount() {
+    return databaseInteractomesCount;
   }
 
-  public void setInteractomesCount(long interactomesCount) {
-    this.interactomesCount = interactomesCount;
+  public void setDatabaseInteractomesCount(long interactomesCount) {
+    this.databaseInteractomesCount = interactomesCount;
+  }
+
+  public long getPredictomesCount() {
+    return predictomesCount;
+  }
+
+  public void setPredictomesCount(long predictomesCount) {
+    this.predictomesCount = predictomesCount;
   }
 
   public long getGenesCount() {
@@ -87,7 +99,8 @@ public class StatsData implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + (int) (genesCount ^ (genesCount >>> 32));
-    result = prime * result + (int) (interactomesCount ^ (interactomesCount >>> 32));
+    result = prime * result + (int) (databaseInteractomesCount ^ (databaseInteractomesCount >>> 32));
+    result = prime * result + (int) (predictomesCount ^ (predictomesCount >>> 32));
     result = prime * result + (int) (interactionsCount ^ (interactionsCount >>> 32));
     result = prime * result + (int) (speciesCount ^ (speciesCount >>> 32));
     return result;
@@ -104,7 +117,9 @@ public class StatsData implements Serializable {
     StatsData other = (StatsData) obj;
     if (genesCount != other.genesCount)
       return false;
-    if (interactomesCount != other.interactomesCount)
+    if (databaseInteractomesCount != other.databaseInteractomesCount)
+      return false;
+    if (predictomesCount != other.predictomesCount)
       return false;
     if (interactionsCount != other.interactionsCount)
       return false;

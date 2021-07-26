@@ -57,4 +57,9 @@ public class Predictome extends Interactome {
   public PredictomeConversionDatabase getConversionDatabase() {
     return conversionDatabase;
   }
+  
+  @Override
+  public InteractomeType getInteractomeType() {
+    return InteractomeType.PREDICTOME;
+  }
 }

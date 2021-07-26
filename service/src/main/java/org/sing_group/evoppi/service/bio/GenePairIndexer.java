@@ -63,7 +63,7 @@ public class GenePairIndexer {
   }
   
   public GenePairIndex createForInteractome(int interactomeId) {
-    final Interactome interactome = this.interactomeDao.getInteractome(interactomeId);
+    final Interactome interactome = this.interactomeDao.get(interactomeId);
     
     return this.createForInteractome(interactome);
   }

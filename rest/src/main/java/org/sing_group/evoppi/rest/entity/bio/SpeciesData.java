@@ -47,12 +47,16 @@ public class SpeciesData implements Serializable {
   @XmlElementWrapper(name = "interactomes", nillable = false, required = true)
   private IdAndUri[] interactomes;
   
+  @XmlElementWrapper(name = "predictomes", nillable = false, required = true)
+  private IdAndUri[] predictomes;
+  
   SpeciesData() {}
 
-  public SpeciesData(int id, String name, IdAndUri[] interactomes) {
+  public SpeciesData(int id, String name, IdAndUri[] interactomes, IdAndUri[] predictomes) {
     this.id = id;
     this.name = name;
     this.interactomes = interactomes;
+    this.predictomes = predictomes;
   }
 
   public int getId() {
@@ -78,6 +82,14 @@ public class SpeciesData implements Serializable {
   public void setInteractomes(IdAndUri[] interactomes) {
     this.interactomes = interactomes;
   }
+  
+  public IdAndUri[] getPredictomes() {
+    return predictomes;
+  }
+  
+  public void setPredictomes(IdAndUri[] predictomes) {
+    this.predictomes = predictomes;
+  }
 
   @Override
   public int hashCode() {
@@ -85,6 +97,7 @@ public class SpeciesData implements Serializable {
     int result = 1;
     result = prime * result + id;
     result = prime * result + Arrays.hashCode(interactomes);
+    result = prime * result + Arrays.hashCode(predictomes);
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     return result;
   }
@@ -101,6 +114,8 @@ public class SpeciesData implements Serializable {
     if (id != other.id)
       return false;
     if (!Arrays.equals(interactomes, other.interactomes))
+      return false;
+    if (!Arrays.equals(predictomes, other.predictomes))
       return false;
     if (name == null) {
       if (other.name != null)

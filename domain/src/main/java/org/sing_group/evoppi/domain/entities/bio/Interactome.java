@@ -101,10 +101,13 @@ public class Interactome implements Serializable {
     return name;
   }
 
-  public Species getSpecies() {
+  public Species getSpeciesA() {
     return speciesA;
   }
 
+  public Species getSpeciesB() {
+    return speciesB;
+  }
 
   public Stream<Interaction> getInteractions() {
     return this.interactions.stream();
@@ -146,6 +149,10 @@ public class Interactome implements Serializable {
     } finally {
       this.interactionsLock.writeLock().unlock();
     }
+  }
+  
+  public InteractomeType getInteractomeType() {
+    throw new RuntimeException("This method must be called on subclasses");
   }
 
   @Override

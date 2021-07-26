@@ -2,7 +2,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE `work_step`;
 TRUNCATE TABLE `work_species_creation`;
-TRUNCATE TABLE `work_interactome_creation`;
+TRUNCATE TABLE `work_database_interactome_creation`;
 
 TRUNCATE TABLE `blast_result`;
 

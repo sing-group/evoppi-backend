@@ -27,16 +27,11 @@ import java.util.stream.Stream;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
-import org.sing_group.evoppi.domain.dao.spi.bio.execution.InteractomeCreationWorkDAO;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
-import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
-import org.sing_group.evoppi.service.bio.interactome.event.InteractomeCreationRequestEvent;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 
 @Stateless
@@ -46,20 +41,14 @@ public class DefaultInteractomeService implements InteractomeService {
   @Inject
   private InteractomeDAO dao;
 
-  @Inject
-  private InteractomeCreationWorkDAO workDao;
-
-  @Inject
-  private Event<InteractomeCreationRequestEvent> events;
-
   @Override
-  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions) {
-    return this.dao.listInteractomes(interactomeListingOptions);
+  public Interactome get(int id) {
+    return this.dao.get(id);
   }
-
+  
   @Override
-  public Interactome getInteractome(int id) {
-    return this.dao.getInteractome(id);
+  public Stream<Interactome> list(ListingOptions<Interactome> listingOptions) {
+    return this.dao.list(listingOptions);
   }
 
   @Override
@@ -68,40 +57,12 @@ public class DefaultInteractomeService implements InteractomeService {
   }
 
   @Override
-  public long count(ListingOptions<Interactome> interactomeListingOptions) {
-    return this.dao.count(interactomeListingOptions);
+  public long count(ListingOptions<Interactome> listingOptions) {
+    return this.dao.count(listingOptions);
   }
 
-  @Override
   @RolesAllowed("ADMIN")
-  public InteractomeCreationWork createInteractome(InteractomeCreationData data) {
-    boolean exists = existsInteractomeWithName(data.getName());
-    
-    if (exists) {
-      throw new IllegalArgumentException("Interactome name already exists");
-    } else {
-      final InteractomeCreationWork work = this.workDao.create(data.getName());
-
-      this.events.fire(new InteractomeCreationRequestEvent(data, work.getId()));
-
-      work.setScheduled();
-      
-      return work;
-    }
-  }
-
-  private boolean existsInteractomeWithName(String name) {
-    try {
-      this.dao.getInteractomeByName(name);
-      return true;
-    } catch (IllegalArgumentException iae) {
-      return false;
-    }
-  }
-
-  @Override
-  @RolesAllowed("ADMIN")
-  public void removeInteractome(int id) {
-    this.dao.deleteInteractome(id);
+  public void remove(int id) {
+    this.dao.delete(id);
   }
 }

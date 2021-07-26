@@ -36,6 +36,9 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.UriBuilder;
 
+import org.sing_group.evoppi.domain.entities.bio.DatabaseInteractome;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeType;
+import org.sing_group.evoppi.domain.entities.bio.Predictome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.rest.entity.IdAndUri;
 import org.sing_group.evoppi.rest.entity.bio.SpeciesData;
@@ -63,17 +66,29 @@ public class DefaultSpeciesMapper implements SpeciesMapper {
   public SpeciesData toSpeciesData(Species species) {
     final BaseRestPathBuilder pathBuilder = new BaseRestPathBuilder(this.uriBuilder);
 
+    IdAndUri[] databaseInteractomes =
+      species.getInteractomes().filter(i -> i.getInteractomeType().equals(InteractomeType.DATABASE)).map(
+        interactome -> new IdAndUri(
+          interactome.getId(),
+          pathBuilder.interactome((DatabaseInteractome) interactome).build()
+        )
+      )
+        .toArray(IdAndUri[]::new);
+
+    IdAndUri[] predictomes =
+      species.getInteractomes().filter(i -> i.getInteractomeType().equals(InteractomeType.PREDICTOME)).map(
+        interactome -> new IdAndUri(
+          interactome.getId(),
+          pathBuilder.predictome((Predictome) interactome).build()
+        )
+      )
+        .toArray(IdAndUri[]::new);
+    
     return new SpeciesData(
       species.getId(),
       species.getName(),
-      species.getInteractomes()
-        .map(
-          interactome -> new IdAndUri(
-            interactome.getId(),
-            pathBuilder.interactome(interactome).build()
-          )
-        )
-        .toArray(IdAndUri[]::new)
+      databaseInteractomes,
+      predictomes
     );
   }
 

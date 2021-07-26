@@ -26,20 +26,16 @@ import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
-import org.sing_group.evoppi.domain.entities.execution.InteractomeCreationWork;
-import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
 
 public interface InteractomeService {
 
-  public Stream<Interactome> listInteractomes(ListingOptions<Interactome> interactomeListingOptions);
-
-  public Interactome getInteractome(int id);
+  public Stream<Interactome> list(ListingOptions<Interactome> listingOptions);
 
   public long count();
-  
-  public long count(ListingOptions<Interactome> interactomeListingOptions);
 
-  public InteractomeCreationWork createInteractome(InteractomeCreationData data);
-  
-  public void removeInteractome(int id);
+  public long count(ListingOptions<Interactome> listingOptions);
+
+  public Interactome get(int id);
+
+  public void remove(int id);
 }

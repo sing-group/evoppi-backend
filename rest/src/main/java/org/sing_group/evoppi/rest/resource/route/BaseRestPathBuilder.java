@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
+import org.sing_group.evoppi.domain.entities.bio.Predictome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.user.Administrator;
 import org.sing_group.evoppi.domain.entities.user.Researcher;
@@ -79,16 +80,26 @@ public final class BaseRestPathBuilder implements RestPathBuilder {
     return species(species.getId());
   }
   
-  public InteractomeRestPathBuilder interactome() {
-    return new InteractomeRestPathBuilder(this.builder);
-  }
-  
   public InteractomeRestPathBuilder interactome(int id) {
     return new InteractomeRestPathBuilder(this.builder, id);
   }
   
+  /**
+   * TODO Lo quería poner como DatabaseInteractome, pero así falla el
+   * DefaultInteractionsMapper. Hay que revisar eso, porque en los resultados
+   * seguramente pueda haber interactomas de los dos tipos.
+   * 
+   */
   public InteractomeRestPathBuilder interactome(Interactome interactome) {
     return interactome(interactome.getId());
+  }
+  
+  public PredictomeRestPathBuilder predictome(Predictome predictome) {
+    return predictome(predictome.getId());
+  }
+  
+  public PredictomeRestPathBuilder predictome(int id) {
+    return new PredictomeRestPathBuilder(this.builder, id);
   }
   
   public InteractionWithoutIdRestPathBuilder interaction() {

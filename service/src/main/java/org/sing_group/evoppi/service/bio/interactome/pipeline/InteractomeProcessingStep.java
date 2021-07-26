@@ -39,11 +39,11 @@ import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.interactome.GeneInteraction;
 import org.sing_group.evoppi.domain.interactome.GeneInteractions;
-import org.sing_group.evoppi.service.bio.entity.InteractomeCreationData;
-import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContext;
-import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContextBuilder;
-import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContextBuilderFactory;
-import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.InteractomeCreationPipeline;
+import org.sing_group.evoppi.service.bio.entity.DatabaseInteractomeCreationData;
+import org.sing_group.evoppi.service.spi.bio.interactome.DatabaseInteractomeCreationContext;
+import org.sing_group.evoppi.service.spi.bio.interactome.DatabaseInteractomeCreationContextBuilder;
+import org.sing_group.evoppi.service.spi.bio.interactome.DatabaseInteractomeCreationContextBuilderFactory;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.DatabaseInteractomeCreationPipeline;
 import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.SingleInteractomeCreationStep;
 import org.sing_group.interactomesparser.InteractomeFileFormat;
 import org.sing_group.interactomesparser.InteractomeFileFormatException;
@@ -58,11 +58,11 @@ public class InteractomeProcessingStep
   private SpeciesDAO speciesDao;
 
   @Inject
-  private InteractomeCreationContextBuilderFactory contextBuilderFactory;
+  private DatabaseInteractomeCreationContextBuilderFactory contextBuilderFactory;
 
   @Override
   public String getStepId() {
-    return InteractomeCreationPipeline.SINGLE_PROCESS_INTERACTOME;
+    return DatabaseInteractomeCreationPipeline.SINGLE_PROCESS_INTERACTOME;
   }
 
   @Override
@@ -76,14 +76,14 @@ public class InteractomeProcessingStep
   }
 
   @Override
-  public boolean isComplete(InteractomeCreationContext context) {
+  public boolean isComplete(DatabaseInteractomeCreationContext context) {
     return context.getStatistics().isPresent() && context.getInteractions().isPresent();
   }
 
   @Transactional(REQUIRED)
   @Override
-  public InteractomeCreationContext execute(InteractomeCreationContext context) {
-    final InteractomeCreationData creationData = context.getConfiguration().getData();
+  public DatabaseInteractomeCreationContext execute(DatabaseInteractomeCreationContext context) {
+    final DatabaseInteractomeCreationData creationData = context.getConfiguration().getData();
     final Species species = this.speciesDao.getSpecies(creationData.getSpeciesDbId());
 
     final EvoPpiInteractomeProcessing processing =
@@ -108,7 +108,7 @@ public class InteractomeProcessingStep
 
       GeneInteractions interactions = parseInteractions(temporaryInteractome);
 
-      final InteractomeCreationContextBuilder builder = this.contextBuilderFactory.createBuilderFor(context);
+      final DatabaseInteractomeCreationContextBuilder builder = this.contextBuilderFactory.createBuilderFor(context);
 
       return builder
         .addStatistics(stats)
@@ -120,7 +120,7 @@ public class InteractomeProcessingStep
     }
   }
 
-  private static InteractomeFileFormat toInteractomeFileFormat(InteractomeCreationData data, Species species) {
+  private static InteractomeFileFormat toInteractomeFileFormat(DatabaseInteractomeCreationData data, Species species) {
     System.err.println(data.toString());
     return new InteractomeFileFormat(
       data.getDbSource().getName(),

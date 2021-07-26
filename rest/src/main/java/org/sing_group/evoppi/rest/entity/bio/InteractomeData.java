@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.sing_group.evoppi.domain.entities.bio.InteractomeType;
 import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
@@ -43,57 +44,24 @@ public class InteractomeData implements Serializable {
 
   private String name;
 
-  private String dbSourceIdType;
+  @XmlElement(name = "speciesA", required = true)
+  private IdAndUri speciesA;
 
-  private Integer numOriginalInteractions;
+  @XmlElement(name = "speciesB", required = true)
+  private IdAndUri speciesB;
 
-  private Integer numUniqueOriginalInteractions;
-
-  private Integer numUniqueOriginalGenes;
-
-  private Integer numInteractionsNotToUniProtKB;
-
-  private Integer numGenesNotToUniProtKB;
-
-  private Integer numInteractionsNotToGeneId;
-
-  private Integer numGenesNotToGeneId;
-
-  private Integer numFinalInteractions;
-
-  private Integer numFinalGenes;
-
-  private Integer numRemovedInterSpeciesInteractions;
-
-  private Integer numMultimappedToGeneId;
-
-  @XmlElement(name = "species", required = true)
-  private IdAndUri species;
+  private InteractomeType interactomeType;
 
   InteractomeData() {}
 
   public InteractomeData(
-    int id, String name, IdAndUri species, String dbSourceIdType, Integer numOriginalInteractions,
-    Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
-    Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
-    Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId
+    int id, String name, IdAndUri speciesA, IdAndUri speciesB, InteractomeType interactomeType
   ) {
     this.id = id;
     this.name = name;
-    this.species = species;
-    this.dbSourceIdType = dbSourceIdType;
-    this.numOriginalInteractions = numOriginalInteractions;
-    this.numUniqueOriginalInteractions = numUniqueOriginalInteractions;
-    this.numUniqueOriginalGenes = numUniqueOriginalGenes;
-    this.numInteractionsNotToUniProtKB = numInteractionsNotToUniProtKB;
-    this.numGenesNotToUniProtKB = numGenesNotToUniProtKB;
-    this.numInteractionsNotToGeneId = numInteractionsNotToGeneId;
-    this.numGenesNotToGeneId = numGenesNotToGeneId;
-    this.numFinalInteractions = numFinalInteractions;
-    this.numFinalGenes = numFinalGenes;
-    this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
-    this.numMultimappedToGeneId = numMultimappedToGeneId;
+    this.speciesA = speciesA;
+    this.speciesB = speciesB;
+    this.interactomeType = interactomeType;
   }
 
   public int getId() {
@@ -112,131 +80,35 @@ public class InteractomeData implements Serializable {
     this.name = name;
   }
 
-  public String getDbSourceIdType() {
-    return dbSourceIdType;
+  public IdAndUri getSpeciesA() {
+    return speciesA;
   }
 
-  public void setDbSourceIdType(String dbSourceIdType) {
-    this.dbSourceIdType = dbSourceIdType;
+  public void setSpeciesA(IdAndUri speciesA) {
+    this.speciesA = speciesA;
   }
 
-  public Integer getNumOriginalInteractions() {
-    return numOriginalInteractions;
+  public IdAndUri getSpeciesB() {
+    return speciesB;
   }
 
-  public void setNumOriginalInteractions(Integer numOriginalInteractions) {
-    this.numOriginalInteractions = numOriginalInteractions;
+  public void setSpeciesB(IdAndUri speciesB) {
+    this.speciesB = speciesB;
   }
 
-  public Integer getNumUniqueOriginalInteractions() {
-    return numUniqueOriginalInteractions;
+  public InteractomeType getInteractomeType() {
+    return interactomeType;
   }
 
-  public void setNumUniqueOriginalInteractions(Integer numUniqueOriginalInteractions) {
-    this.numUniqueOriginalInteractions = numUniqueOriginalInteractions;
-  }
-
-  public Integer getNumUniqueOriginalGenes() {
-    return numUniqueOriginalGenes;
-  }
-
-  public void setNumUniqueOriginalGenes(Integer numUniqueOriginalGenes) {
-    this.numUniqueOriginalGenes = numUniqueOriginalGenes;
-  }
-
-  public Integer getNumInteractionsNotToUniProtKB() {
-    return numInteractionsNotToUniProtKB;
-  }
-
-  public void setNumInteractionsNotToUniProtKB(Integer numInteractionsNotToUniProtKB) {
-    this.numInteractionsNotToUniProtKB = numInteractionsNotToUniProtKB;
-  }
-
-  public Integer getNumGenesNotToUniProtKB() {
-    return numGenesNotToUniProtKB;
-  }
-
-  public void setNumGenesNotToUniProtKB(Integer numGenesNotToUniProtKB) {
-    this.numGenesNotToUniProtKB = numGenesNotToUniProtKB;
-  }
-
-  public Integer getNumInteractionsNotToGeneId() {
-    return numInteractionsNotToGeneId;
-  }
-
-  public void setNumInteractionsNotToGeneId(Integer numInteractionsNotToGeneId) {
-    this.numInteractionsNotToGeneId = numInteractionsNotToGeneId;
-  }
-
-  public Integer getNumGenesNotToGeneId() {
-    return numGenesNotToGeneId;
-  }
-
-  public void setNumGenesNotToGeneId(Integer numGenesNotToGeneId) {
-    this.numGenesNotToGeneId = numGenesNotToGeneId;
-  }
-
-  public Integer getNumFinalInteractions() {
-    return numFinalInteractions;
-  }
-
-  public void setNumFinalInteractions(Integer numFinalInteractions) {
-    this.numFinalInteractions = numFinalInteractions;
-  }
-
-  public Integer getNumFinalGenes() {
-    return numFinalGenes;
-  }
-
-  public void setNumFinalGenes(Integer numFinalGenes) {
-    this.numFinalGenes = numFinalGenes;
-  }
-
-  public Integer getNumRemovedInterSpeciesInteractions() {
-    return numRemovedInterSpeciesInteractions;
-  }
-
-  public void setNumRemovedInterSpeciesInteractions(Integer numRemovedInterSpeciesInteractions) {
-    this.numRemovedInterSpeciesInteractions = numRemovedInterSpeciesInteractions;
-  }
-
-  public Integer getNumMultimappedToGeneId() {
-    return numMultimappedToGeneId;
-  }
-
-  public void setNumMultimappedToGeneId(Integer numMultimappedToGeneId) {
-    this.numMultimappedToGeneId = numMultimappedToGeneId;
-  }
-
-  public IdAndUri getSpecies() {
-    return species;
-  }
-
-  public void setSpecies(IdAndUri species) {
-    this.species = species;
+  public void setInteractomeType(InteractomeType interactomeType) {
+    this.interactomeType = interactomeType;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((dbSourceIdType == null) ? 0 : dbSourceIdType.hashCode());
     result = prime * result + id;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((numFinalInteractions == null) ? 0 : numFinalInteractions.hashCode());
-    result = prime * result + ((numGenesNotToGeneId == null) ? 0 : numGenesNotToGeneId.hashCode());
-    result = prime * result + ((numGenesNotToUniProtKB == null) ? 0 : numGenesNotToUniProtKB.hashCode());
-    result = prime * result + ((numInteractionsNotToGeneId == null) ? 0 : numInteractionsNotToGeneId.hashCode());
-    result = prime * result + ((numInteractionsNotToUniProtKB == null) ? 0 : numInteractionsNotToUniProtKB.hashCode());
-    result = prime * result + ((numMultimappedToGeneId == null) ? 0 : numMultimappedToGeneId.hashCode());
-    result = prime * result + ((numOriginalInteractions == null) ? 0 : numOriginalInteractions.hashCode());
-    result =
-      prime * result
-        + ((numRemovedInterSpeciesInteractions == null) ? 0 : numRemovedInterSpeciesInteractions.hashCode());
-    result = prime * result + ((numUniqueOriginalGenes == null) ? 0 : numUniqueOriginalGenes.hashCode());
-    result = prime * result + ((numUniqueOriginalInteractions == null) ? 0 : numUniqueOriginalInteractions.hashCode());
-    result = prime * result + ((numFinalGenes == null) ? 0 : numFinalGenes.hashCode());
-    result = prime * result + ((species == null) ? 0 : species.hashCode());
     return result;
   }
 
@@ -249,77 +121,7 @@ public class InteractomeData implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     InteractomeData other = (InteractomeData) obj;
-    if (dbSourceIdType == null) {
-      if (other.dbSourceIdType != null)
-        return false;
-    } else if (!dbSourceIdType.equals(other.dbSourceIdType))
-      return false;
     if (id != other.id)
-      return false;
-    if (name == null) {
-      if (other.name != null)
-        return false;
-    } else if (!name.equals(other.name))
-      return false;
-    if (numFinalInteractions == null) {
-      if (other.numFinalInteractions != null)
-        return false;
-    } else if (!numFinalInteractions.equals(other.numFinalInteractions))
-      return false;
-    if (numGenesNotToGeneId == null) {
-      if (other.numGenesNotToGeneId != null)
-        return false;
-    } else if (!numGenesNotToGeneId.equals(other.numGenesNotToGeneId))
-      return false;
-    if (numGenesNotToUniProtKB == null) {
-      if (other.numGenesNotToUniProtKB != null)
-        return false;
-    } else if (!numGenesNotToUniProtKB.equals(other.numGenesNotToUniProtKB))
-      return false;
-    if (numInteractionsNotToGeneId == null) {
-      if (other.numInteractionsNotToGeneId != null)
-        return false;
-    } else if (!numInteractionsNotToGeneId.equals(other.numInteractionsNotToGeneId))
-      return false;
-    if (numInteractionsNotToUniProtKB == null) {
-      if (other.numInteractionsNotToUniProtKB != null)
-        return false;
-    } else if (!numInteractionsNotToUniProtKB.equals(other.numInteractionsNotToUniProtKB))
-      return false;
-    if (numMultimappedToGeneId == null) {
-      if (other.numMultimappedToGeneId != null)
-        return false;
-    } else if (!numMultimappedToGeneId.equals(other.numMultimappedToGeneId))
-      return false;
-    if (numOriginalInteractions == null) {
-      if (other.numOriginalInteractions != null)
-        return false;
-    } else if (!numOriginalInteractions.equals(other.numOriginalInteractions))
-      return false;
-    if (numRemovedInterSpeciesInteractions == null) {
-      if (other.numRemovedInterSpeciesInteractions != null)
-        return false;
-    } else if (!numRemovedInterSpeciesInteractions.equals(other.numRemovedInterSpeciesInteractions))
-      return false;
-    if (numUniqueOriginalGenes == null) {
-      if (other.numUniqueOriginalGenes != null)
-        return false;
-    } else if (!numUniqueOriginalGenes.equals(other.numUniqueOriginalGenes))
-      return false;
-    if (numUniqueOriginalInteractions == null) {
-      if (other.numUniqueOriginalInteractions != null)
-        return false;
-    } else if (!numUniqueOriginalInteractions.equals(other.numUniqueOriginalInteractions))
-      return false;
-    if (numFinalGenes == null) {
-      if (other.numFinalGenes != null)
-        return false;
-    } else if (!numFinalGenes.equals(other.numFinalGenes))
-      return false;
-    if (species == null) {
-      if (other.species != null)
-        return false;
-    } else if (!species.equals(other.species))
       return false;
     return true;
   }

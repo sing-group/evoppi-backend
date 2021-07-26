@@ -128,14 +128,14 @@ public class DifferentSpeciesInteractionsResult extends InteractionsResult imple
   public Species getReferenceSpecies() {
     return getReferenceInteractomes()
       .findAny()
-      .map(Interactome::getSpecies)
+      .map(Interactome::getSpeciesA)
     .orElseThrow(() -> new IllegalStateException("Species could not retrieved because there is not any reference interactome"));
   }
   
   public Species getTargetSpecies() {
     return getTargetInteractomes()
       .findAny()
-      .map(Interactome::getSpecies)
+      .map(Interactome::getSpeciesA)
     .orElseThrow(() -> new IllegalStateException("Species could not retrieved because there is not any target interactome"));
   }
 

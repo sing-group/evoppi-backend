@@ -23,20 +23,20 @@ package org.sing_group.evoppi.service.spi.bio.interactome.pipeline;
 
 import javax.ejb.Local;
 
-import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationConfiguration;
-import org.sing_group.evoppi.service.spi.bio.interactome.InteractomeCreationContext;
-import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.event.InteractomeCreationEvent;
-import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.event.InteractomeCreationEventManager;
+import org.sing_group.evoppi.service.spi.bio.interactome.DatabaseInteractomeCreationConfiguration;
+import org.sing_group.evoppi.service.spi.bio.interactome.DatabaseInteractomeCreationContext;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.event.DatabaseInteractomeCreationEvent;
+import org.sing_group.evoppi.service.spi.bio.interactome.pipeline.event.DatabaseInteractomeCreationEventManager;
 import org.sing_group.evoppi.service.spi.execution.pipeline.SinglePipelineStep;
 
 @Local
 public interface SingleInteractomeCreationStep
-extends InteractomeCreationStep, SinglePipelineStep<
-  InteractomeCreationConfiguration,
-  InteractomeCreationContext,
-  InteractomeCreationStep,
-  InteractomeCreationPipeline,
-  InteractomeCreationEvent,
-  InteractomeCreationEventManager
+extends DatabaseInteractomeCreationStep, SinglePipelineStep<
+  DatabaseInteractomeCreationConfiguration,
+  DatabaseInteractomeCreationContext,
+  DatabaseInteractomeCreationStep,
+  DatabaseInteractomeCreationPipeline,
+  DatabaseInteractomeCreationEvent,
+  DatabaseInteractomeCreationEventManager
 > {
 }

@@ -37,13 +37,11 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -54,8 +52,6 @@ import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
-import org.sing_group.evoppi.rest.entity.bio.RestInteractomeCreationData;
-import org.sing_group.evoppi.rest.entity.execution.WorkData;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractomeMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
@@ -98,39 +94,12 @@ public class DefaultInteractomeResource implements InteractomeResource {
   }
 
   @GET
-  @Path("{id}")
   @ApiOperation(
-    value = "Finds an interactome by identifier. If the query parameter 'includeInteractions' is set to true, the"
-      + " 'genes' and 'interactions' fields are returned as part of the result. Otherwise, these fields are not "
-      + "returned.", response = InteractomeWithInteractionsData.class, code = 200
-  )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Unknown interactome: {id}")
+    value = "Returns a list with all the interactome information.",
+    response = InteractomeData.class, responseContainer = "List", code = 200
   )
   @Override
-  public Response getInteractome(
-    @PathParam("id") int id,
-    @DefaultValue("false") @QueryParam("includeInteractions") boolean includeInteractions
-  ) {
-    final Interactome interactome = this.service.getInteractome(id);
-
-    if (includeInteractions) {
-      return Response
-        .ok(this.mapper.toInteractomeWithInteractionsData(interactome))
-        .build();
-    } else {
-      return Response
-        .ok(this.mapper.toInteractomeData(interactome))
-        .build();
-    }
-  }
-
-  @GET
-  @ApiOperation(
-    value = "Returns a list with all the interactome information.", response = InteractomeData.class, responseContainer = "List", code = 200
-  )
-  @Override
-  public Response listInteractomes(
+  public Response list(
     @QueryParam("start") Integer start,
     @QueryParam("end") Integer end,
     @QueryParam("order") InteractomeListingField order,
@@ -145,13 +114,41 @@ public class DefaultInteractomeResource implements InteractomeResource {
 
     final InteractomeData[] interactomeData =
       this.service
-        .listInteractomes(options)
+        .list(options)
         .map(this.mapper::toInteractomeData)
         .toArray(InteractomeData[]::new);
 
     return Response.ok(interactomeData)
       .header("X-Total-Count", this.service.count(options))
-    .build();
+      .build();
+  }
+  
+  @GET
+  @Path("{id}")
+  @ApiOperation(
+    value = "Finds an interactome by identifier. If the query parameter 'includeInteractions' is set to true, the"
+      + " 'genes' and 'interactions' fields are returned as part of the result. Otherwise, these fields are not "
+      + "returned.", response = InteractomeWithInteractionsData.class, code = 200
+  )
+  @ApiResponses(
+    @ApiResponse(code = 400, message = "Unknown interactome: {id}")
+  )
+  @Override
+  public Response get(
+    @PathParam("id") int id,
+    @DefaultValue("false") @QueryParam("includeInteractions") boolean includeInteractions
+  ) {
+    final Interactome interactome = this.service.get(id);
+
+    if (includeInteractions) {
+      return Response
+        .ok(this.mapper.toInteractomeWithInteractionsData(interactome))
+        .build();
+    } else {
+      return Response
+        .ok(this.mapper.toInteractomeData(interactome))
+        .build();
+    }
   }
 
   @GET
@@ -164,30 +161,14 @@ public class DefaultInteractomeResource implements InteractomeResource {
     @ApiResponse(code = 400, message = "Unknown interactome: {id}")
   )
   @Override
-  public Response getInteractomeInteractionsAsTsv(@PathParam("id") int id) {
-    final Interactome interactome = this.service.getInteractome(id);
+  public Response getInteractionsAsTsv(@PathParam("id") int id) {
+    final Interactome interactome = this.service.get(id);
 
     return Response
       .ok(this.mapper.toInteractomeTsv(interactome), TEXT_PLAIN)
       .build();
   }
   
-
-  @POST
-  @ApiOperation(
-    value = "Creates a new interactome. "
-      + "The processing is done asynchronously, thus this method returns a work-data instance with information about "
-      + "the asynchronous task doing the calculations.",
-    response = WorkData.class,
-    code = 200
-  )
-  @ApiResponses(
-    @ApiResponse(code = 400, message = "Interactome name already exists")
-  )
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response create(RestInteractomeCreationData data) {
-    return Response.ok(this.executionMapper.toWorkData(this.service.createInteractome(data))).build();
-  }
 
   @DELETE
   @Path("{id}")
@@ -199,9 +180,9 @@ public class DefaultInteractomeResource implements InteractomeResource {
     @ApiResponse(code = 400, message = "Unknown interactome: {id}")
   )
   @Override
-  public Response removeInteractome(@PathParam("id") int id) {
+  public Response remove(@PathParam("id") int id) {
     try {
-      this.service.removeInteractome(id);
+      this.service.remove(id);
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("Unknown interactome: " + id);
     }

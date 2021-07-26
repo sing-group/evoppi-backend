@@ -23,7 +23,6 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,6 +31,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.sing_group.evoppi.domain.entities.bio.InteractomeType;
 import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
@@ -55,19 +55,10 @@ public class InteractomeWithInteractionsData extends InteractomeData {
   private InteractingGenes[] interactions;
 
   public InteractomeWithInteractionsData(
-    int id, String name, IdAndUri species, String dbSourceIdType, Integer numOriginalInteractions,
-    Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
-    Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
-    Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
+    int id, String name, IdAndUri speciesA, IdAndUri speciesB, InteractomeType interactomeType,
     IdAndUri[] genes, InteractingGenes[] interactions
   ) {
-    super(
-      id, name, species, dbSourceIdType, numOriginalInteractions, numUniqueOriginalInteractions,
-      numUniqueOriginalGenes, numInteractionsNotToUniProtKB, numGenesNotToUniProtKB, numInteractionsNotToGeneId,
-      numGenesNotToGeneId, numFinalInteractions, numFinalGenes, numRemovedInterSpeciesInteractions,
-      numMultimappedToGeneId
-    );
+    super(id, name, speciesA, speciesB, interactomeType);
 
     this.genes = genes;
     this.interactions = interactions;
@@ -87,31 +78,6 @@ public class InteractomeWithInteractionsData extends InteractomeData {
 
   public void setInteractions(InteractingGenes[] interactions) {
     this.interactions = interactions;
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = super.hashCode();
-    result = prime * result + Arrays.hashCode(genes);
-    result = prime * result + Arrays.hashCode(interactions);
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (!super.equals(obj))
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    InteractomeWithInteractionsData other = (InteractomeWithInteractionsData) obj;
-    if (!Arrays.equals(genes, other.genes))
-      return false;
-    if (!Arrays.equals(interactions, other.interactions))
-      return false;
-    return true;
   }
 
   @XmlRootElement(name = "interacting-genes", namespace = "http://entity.resource.rest.evoppi.sing-group.org")

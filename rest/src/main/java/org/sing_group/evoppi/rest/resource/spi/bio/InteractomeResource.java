@@ -27,17 +27,15 @@ import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
-import org.sing_group.evoppi.rest.entity.bio.RestInteractomeCreationData;
 
 @Local
 public interface InteractomeResource {
-  public Response listInteractomes(Integer start, Integer end, InteractomeListingField order, SortDirection sort);
 
-  public Response getInteractome(int id, boolean includeInteractions);
+  public Response list(Integer start, Integer end, InteractomeListingField order, SortDirection sort);
 
-  public Response getInteractomeInteractionsAsTsv(int id);
+  public Response get(int id, boolean includeInteractions);
 
-  public Response create(RestInteractomeCreationData data);
-  
-  public Response removeInteractome(int id);
+  public Response getInteractionsAsTsv(int id);
+
+  public Response remove(int id);
 }

@@ -37,9 +37,10 @@ import javax.ws.rs.core.Response;
 import org.sing_group.evoppi.rest.entity.info.StatsData;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.info.StatsResource;
+import org.sing_group.evoppi.service.spi.bio.DatabaseInteractomeService;
 import org.sing_group.evoppi.service.spi.bio.GeneService;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
-import org.sing_group.evoppi.service.spi.bio.InteractomeService;
+import org.sing_group.evoppi.service.spi.bio.PredictomeService;
 import org.sing_group.evoppi.service.spi.bio.SpeciesService;
 
 import io.swagger.annotations.Api;
@@ -59,7 +60,10 @@ public class DefaultStatsResource implements StatsResource {
   private SpeciesService speciesService;
   
   @Inject
-  private InteractomeService interactomeService;
+  private DatabaseInteractomeService dbInteractomeService;
+  
+  @Inject
+  private PredictomeService predictomeService;
   
   @Inject
   private GeneService geneService;
@@ -81,7 +85,8 @@ public class DefaultStatsResource implements StatsResource {
     return Response.ok(
       new StatsData(
         this.speciesService.count(),
-        this.interactomeService.count(),
+        this.dbInteractomeService.count(),
+        this.predictomeService.count(),
         this.geneService.count(),
         this.interactionService.count()
       )

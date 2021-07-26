@@ -31,7 +31,7 @@ import javax.persistence.criteria.Root;
 import org.sing_group.evoppi.domain.dao.EntityListingField;
 
 public enum InteractomeListingField implements EntityListingField<Interactome> {
-  NAME(true), SOURCE_DB(true), SPECIES(true);
+  NAME(true), SPECIESA(true), SPECIESB(true);
 
   private final boolean supportsFiltering;
 
@@ -49,10 +49,10 @@ public enum InteractomeListingField implements EntityListingField<Interactome> {
     switch (this) {
       case NAME:
         return root.get("name");
-      case SOURCE_DB:
-        return root.get("dbSourceIdType");
-      case SPECIES:
-        return root.join("species").get("name");
+      case SPECIESA:
+        return root.join("speciesA").get("name");
+      case SPECIESB:
+        return root.join("speciesB").get("name");
       default:
         throw new IllegalStateException();
     }

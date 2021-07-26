@@ -144,4 +144,9 @@ public class DatabaseInteractome extends Interactome {
   public OptionalInt getNumMultimappedToGeneId() {
     return numMultimappedToGeneId == null ? OptionalInt.empty() : OptionalInt.of(this.numMultimappedToGeneId);
   }
+  
+  @Override
+  public InteractomeType getInteractomeType() {
+    return InteractomeType.DATABASE;
+  }
 }

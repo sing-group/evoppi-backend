@@ -1,6 +1,6 @@
 DROP TABLE `work_step`;
 DROP TABLE `work_species_creation`;
-DROP TABLE `work_interactome_creation`;
+DROP TABLE `work_database_interactome_creation`;
 
 DROP TABLE `blast_result`;
 
