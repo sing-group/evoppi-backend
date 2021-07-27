@@ -68,7 +68,7 @@ public class DefaultDatabaseInteractomeDAO implements DatabaseInteractomeDAO {
   }
   
   @Override
-  public DatabaseInteractome createDatabaseInteractome(
+  public DatabaseInteractome create(
     String name, String dbSourceIdType, Integer numOriginalInteractions, Integer numUniqueOriginalInteractions,
     Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,

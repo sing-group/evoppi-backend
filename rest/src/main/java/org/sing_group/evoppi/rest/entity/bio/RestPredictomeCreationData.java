@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Domain
+ * REST
  * %%
  * Copyright (C) 2017 - 2021 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
@@ -19,8 +19,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.entities.bio;
+package org.sing_group.evoppi.rest.entity.bio;
 
-public enum PredictomeConversionDatabase {
-  DIOPT, ENSEMBL
+import java.io.File;
+import java.io.Serializable;
+
+import org.sing_group.evoppi.service.bio.entity.PredictomeCreationData;
+
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(value = "predictome-upload-data", description = "Upload data of a predictome.")
+public class RestPredictomeCreationData extends PredictomeCreationData implements Serializable {
+  private static final long serialVersionUID = 1L;
+
+  public RestPredictomeCreationData(
+    File file, int speciesADbId, int speciesBDbId, String sourceInteractome, String conversionDatabase
+  ) {
+    super(
+      file, speciesADbId, speciesBDbId, sourceInteractome, conversionDatabase
+    );
+  }
 }

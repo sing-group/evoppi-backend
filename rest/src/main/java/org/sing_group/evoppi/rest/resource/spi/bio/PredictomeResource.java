@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.PredictomeListingField;
+import org.sing_group.evoppi.rest.entity.bio.RestPredictomeCreationData;
 
 @Local
 public interface PredictomeResource {
@@ -35,5 +36,5 @@ public interface PredictomeResource {
 
   public Response get(int id);
 
-  // public Response create(RestInteractomeCreationData data);
+  public Response create(RestPredictomeCreationData data);
 }

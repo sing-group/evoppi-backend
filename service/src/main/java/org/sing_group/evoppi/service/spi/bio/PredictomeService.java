@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Predictome;
+import org.sing_group.evoppi.service.bio.entity.PredictomeCreationData;
 
 public interface PredictomeService {
 
@@ -37,8 +38,5 @@ public interface PredictomeService {
 
   public long count(ListingOptions<Predictome> listingOptions);
 
-  /*
-   * TODO: implement predictome creation
-   */
-  // public InteractomeCreationWork createInteractome(InteractomeCreationData data);
+  public Predictome create(PredictomeCreationData data);
 }

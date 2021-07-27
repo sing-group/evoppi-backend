@@ -23,8 +23,6 @@ package org.sing_group.evoppi.domain.entities.bio;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity
@@ -35,14 +33,14 @@ public class Predictome extends Interactome {
   @Column(name = "sourceInteractome", length = 120, nullable = false)
   private String sourceInteractome;
 
-  @Enumerated(EnumType.STRING)
-  private PredictomeConversionDatabase conversionDatabase;
+  @Column(name = "conversionDatabase", nullable = false)
+  private String conversionDatabase;
 
   Predictome() {}
 
   public Predictome(
     String name, Species speciesA, Species speciesB, String sourceInteractome,
-    PredictomeConversionDatabase conversionDatabase
+    String conversionDatabase
   ) {
     super(name, speciesA, speciesB);
 
@@ -54,10 +52,10 @@ public class Predictome extends Interactome {
     return sourceInteractome;
   }
 
-  public PredictomeConversionDatabase getConversionDatabase() {
+  public String getConversionDatabase() {
     return conversionDatabase;
   }
-  
+
   @Override
   public InteractomeType getInteractomeType() {
     return InteractomeType.PREDICTOME;

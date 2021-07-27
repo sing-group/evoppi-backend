@@ -32,4 +32,12 @@ public class GeneInteractions extends HashSet<GeneInteraction> {
       s.getA(), s.getB()
     }).flatMapToInt(IntStream::of).distinct();
   }
+
+  public IntStream getAGenes() {
+    return this.stream().map(s -> s.getA()).flatMapToInt(IntStream::of).distinct();
+  }
+
+  public IntStream getBGenes() {
+    return this.stream().map(s -> s.getB()).flatMapToInt(IntStream::of).distinct();
+  }
 }

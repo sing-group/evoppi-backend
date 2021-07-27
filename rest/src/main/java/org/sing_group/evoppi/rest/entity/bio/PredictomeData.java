@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.sing_group.evoppi.domain.entities.bio.InteractomeType;
-import org.sing_group.evoppi.domain.entities.bio.PredictomeConversionDatabase;
 import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
@@ -22,11 +21,11 @@ public class PredictomeData extends InteractomeData {
 
   private String sourceInteractome;
 
-  private PredictomeConversionDatabase conversionDatabase;
+  private String conversionDatabase;
 
   public PredictomeData(
     int id, String name, IdAndUri speciesA, IdAndUri speciesB,
-    String sourceInteractome, PredictomeConversionDatabase conversionDatabase
+    String sourceInteractome, String conversionDatabase
   ) {
     super(id, name, speciesA, speciesB, InteractomeType.PREDICTOME);
 
@@ -42,11 +41,11 @@ public class PredictomeData extends InteractomeData {
     this.sourceInteractome = sourceInteractome;
   }
 
-  public PredictomeConversionDatabase getConversionDatabase() {
+  public String getConversionDatabase() {
     return conversionDatabase;
   }
 
-  public void setConversionDatabase(PredictomeConversionDatabase conversionDatabase) {
+  public void setConversionDatabase(String conversionDatabase) {
     this.conversionDatabase = conversionDatabase;
   }
 }

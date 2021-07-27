@@ -83,7 +83,7 @@ public class DefaultDatabaseInteractomeCreationPersistenceManager
     EvoPpiInteractomeProcessingStatistics stats = context.getStatistics().get();
     Species species = this.speciesDao.getSpecies(configuration.getSpeciesDbId());
 
-    this.databaseInteractomeDao.createDatabaseInteractome(
+    this.databaseInteractomeDao.create(
       configuration.getName(),
       configuration.getDbSource().getName(),
       stats.getOriginalInteractionsCount().orElse(null),

@@ -75,7 +75,6 @@ public enum PredictomeListingField implements EntityListingField<Predictome> {
       case SPECIESA:
       case SPECIESB:
       case SOURCE_INTERACTOME:
-        return cb.like(this.getField(cb, query, root), "%" + value + "%");
       case CONVERSION_DATABASE:
         return cb.equal(this.getField(cb, query, root).as(String.class), value);
       default:

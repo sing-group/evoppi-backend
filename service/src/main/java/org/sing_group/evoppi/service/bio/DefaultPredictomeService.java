@@ -22,15 +22,28 @@
 
 package org.sing_group.evoppi.service.bio;
 
+import static java.lang.Integer.parseInt;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.PredictomeDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
 import org.sing_group.evoppi.domain.entities.bio.Predictome;
+import org.sing_group.evoppi.domain.interactome.GeneInteraction;
+import org.sing_group.evoppi.domain.interactome.GeneInteractions;
+import org.sing_group.evoppi.service.bio.entity.PredictomeCreationData;
 import org.sing_group.evoppi.service.spi.bio.PredictomeService;
 
 @Stateless
@@ -40,11 +53,11 @@ public class DefaultPredictomeService implements PredictomeService {
   @Inject
   private PredictomeDAO dao;
 
-//  @Inject
-//  private InteractomeCreationWorkDAO workDao;
-//
-//  @Inject
-//  private Event<InteractomeCreationRequestEvent> events;
+  @Inject
+  private InteractomeDAO interactomeDao;
+
+  @Inject
+  private SpeciesDAO speciesDao;
 
   @Override
   public Stream<Predictome> list(ListingOptions<Predictome> listingOptions) {
@@ -66,30 +79,62 @@ public class DefaultPredictomeService implements PredictomeService {
     return this.dao.count(listingOptions);
   }
 
-//  @Override
-//  @RolesAllowed("ADMIN")
-//  public InteractomeCreationWork createInteractome(InteractomeCreationData data) {
-//    boolean exists = existsInteractomeWithName(data.getName());
-//
-//    if (exists) {
-//      throw new IllegalArgumentException("Interactome name already exists");
-//    } else {
-//      final InteractomeCreationWork work = this.workDao.create(data.getName());
-//
-//      this.events.fire(new InteractomeCreationRequestEvent(data, work.getId()));
-//
-//      work.setScheduled();
-//
-//      return work;
-//    }
-//  }
+  @Override
+  @RolesAllowed("ADMIN")
+  public Predictome create(PredictomeCreationData data) {
+    boolean exists = existsInteractomeWithName(data.getName());
 
-//  private boolean existsInteractomeWithName(String name) {
-//    try {
-//      this.dao.getInteractomeByName(name);
-//      return true;
-//    } catch (IllegalArgumentException iae) {
-//      return false;
-//    }
-//  }
+    if (exists) {
+      throw new IllegalArgumentException("Predictome name already exists");
+    } else {
+
+      GeneInteractions interactions;
+      try {
+        interactions = loadInteractions(data.getFile());
+      } catch (IOException e) {
+        throw new IllegalArgumentException("The interactions file can't be read: " + e.toString());
+      }
+      
+      return this.dao.create(
+        data.getName(),
+        speciesDao.getSpecies(data.getSpeciesADbId()),
+        speciesDao.getSpecies(data.getSpeciesBDbId()),
+        data.getSourceInteractome(),
+        data.getConversionDatabase(),
+        interactions
+      );
+    }
+  }
+
+  private boolean existsInteractomeWithName(String name) {
+    try {
+      this.interactomeDao.getByName(name);
+      return true;
+    } catch (IllegalArgumentException iae) {
+      return false;
+    }
+  }
+
+  private static GeneInteractions loadInteractions(File file) throws FileNotFoundException, IOException {
+    GeneInteractions toret = new GeneInteractions();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        String[] lineSplit = line.split("\t| ");
+        if (lineSplit.length != 2) {
+          System.err.println("Predictome creation: ignore interaction line withouth two fields");
+          System.err.println(line);
+          continue;
+        }
+        try {
+          toret.add(new GeneInteraction(parseInt(lineSplit[0]), parseInt(lineSplit[1])));
+        } catch (NumberFormatException nfe) {
+          throw new IOException(nfe);
+        }
+      }
+    }
+
+    return toret;
+  }
 }

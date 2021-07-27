@@ -26,6 +26,8 @@ import java.util.stream.Stream;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.Predictome;
+import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.interactome.GeneInteractions;
 
 public interface PredictomeDAO {
 
@@ -35,17 +37,8 @@ public interface PredictomeDAO {
 
   public long count(ListingOptions<Predictome> predictomeListingOptions);
 
-//  public Interactome createDatabaseInteractome(
-//    String name, String dbSourceIdType, Integer numOriginalInteractions, Integer numUniqueOriginalInteractions,
-//    Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
-//    Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-//    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
-//    Species species, GeneInteractions interactions
-//  );
-
-//  public Interactome getInteractomeByName(String name);
-  
-//  public void deleteInteractome(int interactomeId);
-
-//  public void deleteInteractomes(Collection<Integer> interactomeIds);
+  public Predictome create(
+    String name, Species speciesA, Species speciesB, String sourceInteractome, String conversionDatabase,
+    GeneInteractions interactions
+  );
 }
