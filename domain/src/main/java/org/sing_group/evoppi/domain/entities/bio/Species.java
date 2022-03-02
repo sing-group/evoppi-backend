@@ -50,18 +50,18 @@ public class Species implements Serializable {
 
   @Column(name = "name", length = 100, nullable = false, unique = true)
   private String name;
-  
+
   @Column(name = "taxonomyId", nullable = false)
   private int taxonomyId;
 
   @OneToMany(mappedBy = "speciesA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interactome> interactomes;
-  
+
   @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Gene> genes;
-  
+
   Species() {}
-  
+
   public Species(String name, int taxonomyId) {
     this.name = name;
     this.genes = new HashSet<>();
@@ -75,7 +75,7 @@ public class Species implements Serializable {
   public String getName() {
     return name;
   }
-  
+
   public int getTaxonomyId() {
     return taxonomyId;
   }
@@ -83,11 +83,11 @@ public class Species implements Serializable {
   public Stream<Interactome> getInteractomes() {
     return this.interactomes.stream();
   }
-  
+
   public boolean hasInteractome(Interactome interactome) {
     return this.interactomes.contains(interactome);
   }
-  
+
   public Stream<Gene> getGenes() {
     return genes.stream();
   }
@@ -115,14 +115,16 @@ public class Species implements Serializable {
       return true;
     if (obj == null)
       return false;
-    if (getClass() != obj.getClass())
+    if (!Species.class.isAssignableFrom(obj.getClass()))
       return false;
-    Species other = (Species) obj;
+
+    Species other = Species.class.cast(obj);
     if (id == null) {
-      if (other.id != null)
+      if (other.getId() != null)
         return false;
-    } else if (!id.equals(other.id))
+    } else if (!id.equals(other.getId()))
       return false;
+
     return true;
   }
 }
