@@ -169,9 +169,10 @@ public class Interactome implements Serializable {
       return true;
     if (obj == null)
       return false;
-    if (!getClass().isAssignableFrom(obj.getClass()))
+    if (!Interactome.class.isAssignableFrom(obj.getClass()))
       return false;
-    Interactome other = (Interactome) obj;
+
+    Interactome other = Interactome.class.cast(obj);
     if (getId() == null) {
       if (other.getId() != null)
         return false;
