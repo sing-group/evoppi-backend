@@ -38,43 +38,19 @@ import io.swagger.annotations.ApiModel;
 public class DifferentSpeciesInteractionsData extends InteractionsData {
   private static final long serialVersionUID = 1L;
 
-  private GeneNamesData[] referenceGenes;
-  
-  private GeneNamesData[] targetGenes;
-  
   private BlastResultData[] blastResults;
 
   protected DifferentSpeciesInteractionsData() {}
   
   public DifferentSpeciesInteractionsData(
     UuidAndUri result,
-    GeneNamesData[] referenceGenes,
-    GeneNamesData[] targetGenes,
     InteractionsResultFilteringOptionsData filteringOptions,
     BlastResultData[] blastResults,
     InteractionResultData[] interactions
   ) {
     super(result, filteringOptions, interactions);
-    
-    this.referenceGenes = referenceGenes;
-    this.targetGenes = targetGenes;
+
     this.blastResults = blastResults;
-  }
-
-  public GeneNamesData[] getReferenceGenes() {
-    return referenceGenes;
-  }
-
-  public void setReferenceGenes(GeneNamesData[] referenceGenes) {
-    this.referenceGenes = referenceGenes;
-  }
-
-  public GeneNamesData[] getTargetGenes() {
-    return targetGenes;
-  }
-
-  public void setTargetGenes(GeneNamesData[] targetGenes) {
-    this.targetGenes = targetGenes;
   }
 
   public BlastResultData[] getBlastResults() {
@@ -90,8 +66,6 @@ public class DifferentSpeciesInteractionsData extends InteractionsData {
     final int prime = 31;
     int result = super.hashCode();
     result = prime * result + Arrays.hashCode(blastResults);
-    result = prime * result + Arrays.hashCode(referenceGenes);
-    result = prime * result + Arrays.hashCode(targetGenes);
     return result;
   }
 
@@ -106,11 +80,6 @@ public class DifferentSpeciesInteractionsData extends InteractionsData {
     DifferentSpeciesInteractionsData other = (DifferentSpeciesInteractionsData) obj;
     if (!Arrays.equals(blastResults, other.blastResults))
       return false;
-    if (!Arrays.equals(referenceGenes, other.referenceGenes))
-      return false;
-    if (!Arrays.equals(targetGenes, other.targetGenes))
-      return false;
     return true;
   }
-
 }

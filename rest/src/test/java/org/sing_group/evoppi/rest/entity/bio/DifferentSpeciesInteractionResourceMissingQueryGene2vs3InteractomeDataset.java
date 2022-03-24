@@ -27,9 +27,9 @@ import java.util.stream.Stream;
 public class DifferentSpeciesInteractionResourceMissingQueryGene2vs3InteractomeDataset extends InteractionsDataset {
   protected Stream<InteractionResultData> interactionsMaxDegree1() {
     return Stream.of(
-      new InteractionResultData(100, 102, degrees(2, 1)),
-      new InteractionResultData(100, 106, degrees(2, 1)),
-      new InteractionResultData(100, 112, degrees(2, 1))
+      new InteractionResultData(100, "100", 102, "102", degrees(2, 1)),
+      new InteractionResultData(100, "100", 106, "106", degrees(2, 1)),
+      new InteractionResultData(100, "100", 112, "112", degrees(2, 1))
     );
   }
 
@@ -37,9 +37,9 @@ public class DifferentSpeciesInteractionResourceMissingQueryGene2vs3InteractomeD
     return Stream.concat(
       interactionsMaxDegree1(),
       Stream.of(
-        new InteractionResultData(102, 103, degrees(2, 2)),
-        new InteractionResultData(105, 106, degrees(2, 2)),
-        new InteractionResultData(112, 113, degrees(2, 2, 3, -1))
+        new InteractionResultData(102, "102", 103, "103", degrees(2, 2)),
+        new InteractionResultData(105, "105", 106, "106", degrees(2, 2)),
+        new InteractionResultData(112, "112", 113, "113", degrees(2, 2, 3, -1))
       )
     );
   }
@@ -48,9 +48,9 @@ public class DifferentSpeciesInteractionResourceMissingQueryGene2vs3InteractomeD
     return Stream.concat(
       interactionsMaxDegree2(),
       Stream.of(
-        new InteractionResultData(105, 107, degrees(2, 3, 3, -1)),
-        new InteractionResultData(103, 104, degrees(2, 3, 3, -1)),
-        new InteractionResultData(113, 114, degrees(2, 3, 3, -1))
+        new InteractionResultData(105, "105", 107, "107", degrees(2, 3, 3, -1)),
+        new InteractionResultData(103, "103", 104, "104", degrees(2, 3, 3, -1)),
+        new InteractionResultData(113, "113", 114, "114", degrees(2, 3, 3, -1))
       )
     );
   }

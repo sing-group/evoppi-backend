@@ -43,18 +43,28 @@ public class InteractionResultData implements Serializable {
 
   @XmlElement(name = "geneA", required = true)
   private int geneA;
+  
+  @XmlElement(name = "geneAName", required = true)
+  private String geneAName;
 
   @XmlElement(name = "geneB", required = true)
   private int geneB;
+  
+  @XmlElement(name = "geneBName", required = true)
+  private String geneBName;
 
   @XmlJavaTypeAdapter(InteractomeDegreeAdapter.class)
   private Map<Integer, Integer> interactomeDegrees;
   
   InteractionResultData() {}
 
-  public InteractionResultData(int geneA, int geneB, Map<Integer, Integer> interactomeDegrees) {
+  public InteractionResultData(
+    int geneA, String geneAName, int geneB, String geneBName, Map<Integer, Integer> interactomeDegrees
+  ) {
     this.geneA = geneA;
+    this.geneAName = geneAName;
     this.geneB = geneB;
+    this.geneBName = geneBName;
     this.interactomeDegrees = new HashMap<>(interactomeDegrees);
   }
 
@@ -65,6 +75,14 @@ public class InteractionResultData implements Serializable {
   public void setGeneA(int geneA) {
     this.geneA = geneA;
   }
+  
+  public String getGeneAName() {
+    return geneAName;
+  }
+  
+  public void setGeneAName(String geneAName) {
+    this.geneAName = geneAName;
+  }
 
   public int getGeneB() {
     return geneB;
@@ -74,6 +92,14 @@ public class InteractionResultData implements Serializable {
     this.geneB = geneB;
   }
   
+  public String getGeneBName() {
+    return geneBName;
+  }
+
+  public void setGeneBName(String geneBName) {
+    this.geneBName = geneBName;
+  }
+
   public IntStream getGenes() {
     return IntStream.of(this.geneA, this.geneB);
   }

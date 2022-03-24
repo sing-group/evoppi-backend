@@ -27,12 +27,12 @@ import java.util.stream.Stream;
 public class SameSpeciesInteractionsDataset extends InteractionsDataset {
   protected Stream<InteractionResultData> interactionsMaxDegree1() {
     return Stream.of(
-      new InteractionResultData(100, 101, degrees(1, 1)),
-      new InteractionResultData(100, 102, degrees(2, 1)),
-      new InteractionResultData(100, 105, degrees(1, 1)),
-      new InteractionResultData(100, 106, degrees(2, 1)),
-      new InteractionResultData(100, 109, degrees(1, 1)),
-      new InteractionResultData(100, 112, degrees(1, 1, 2, 1))
+      new InteractionResultData(100, "100",  101, "101",  degrees(1, 1)),
+      new InteractionResultData(100, "100",  102, "102",  degrees(2, 1)),
+      new InteractionResultData(100, "100",  105, "105",  degrees(1, 1)),
+      new InteractionResultData(100, "100",  106, "106",  degrees(2, 1)),
+      new InteractionResultData(100, "100",  109, "109",  degrees(1, 1)),
+      new InteractionResultData(100, "100",  112, "112",  degrees(1, 1, 2, 1))
     );
   }
 
@@ -40,12 +40,12 @@ public class SameSpeciesInteractionsDataset extends InteractionsDataset {
     return Stream.concat(
       interactionsMaxDegree1(),
       Stream.of(
-        new InteractionResultData(101, 103, degrees(1, 2)),
-        new InteractionResultData(102, 103, degrees(2, 2)),
-        new InteractionResultData(105, 106, degrees(2, 2)),
-        new InteractionResultData(105, 107, degrees(1, 2)),
-        new InteractionResultData(109, 110, degrees(1, 2, 2, -1)),
-        new InteractionResultData(112, 113, degrees(1, 2, 2, 2))
+        new InteractionResultData(101, "101",  103, "103",  degrees(1, 2)),
+        new InteractionResultData(102, "102",  103, "103",  degrees(2, 2)),
+        new InteractionResultData(105, "105",  106, "106",  degrees(2, 2)),
+        new InteractionResultData(105, "105",  107, "107",  degrees(1, 2)),
+        new InteractionResultData(109, "109",  110, "110",  degrees(1, 2, 2, -1)),
+        new InteractionResultData(112, "112",  113, "113",  degrees(1, 2, 2, 2))
       )
     );
   }
@@ -54,17 +54,17 @@ public class SameSpeciesInteractionsDataset extends InteractionsDataset {
     return Stream.concat(
       interactionsMaxDegree1(),
       Stream.of(
-        new InteractionResultData(101, 103, degrees(1, 2)),
-        new InteractionResultData(102, 103, degrees(2, 2)),
-        new InteractionResultData(105, 106, degrees(2, 2)),
-        new InteractionResultData(105, 107, degrees(1, 2, 2, 3)),
-        new InteractionResultData(109, 110, degrees(1, 2, 2, -1)),
-        new InteractionResultData(112, 113, degrees(1, 2, 2, 2)),
+        new InteractionResultData(101, "101",  103, "103",  degrees(1, 2)),
+        new InteractionResultData(102, "102",  103, "103",  degrees(2, 2)),
+        new InteractionResultData(105, "105",  106, "106",  degrees(2, 2)),
+        new InteractionResultData(105, "105",  107, "107",  degrees(1, 2, 2, 3)),
+        new InteractionResultData(109, "109",  110, "110",  degrees(1, 2, 2, -1)),
+        new InteractionResultData(112, "112",  113, "113",  degrees(1, 2, 2, 2)),
 
-        new InteractionResultData(103, 104, degrees(1, 3, 2, 3)),
-        new InteractionResultData(107, 108, degrees(1, 3)),
-        new InteractionResultData(110, 111, degrees(1, 3, 2, -1)),
-        new InteractionResultData(113, 114, degrees(1, 3, 2, 3))
+        new InteractionResultData(103, "103",  104, "104",  degrees(1, 3, 2, 3)),
+        new InteractionResultData(107, "107",  108, "108",  degrees(1, 3)),
+        new InteractionResultData(110, "110",  111, "111",  degrees(1, 3, 2, -1)),
+        new InteractionResultData(113, "113",  114, "114",  degrees(1, 3, 2, 3))
       )
     );
   }

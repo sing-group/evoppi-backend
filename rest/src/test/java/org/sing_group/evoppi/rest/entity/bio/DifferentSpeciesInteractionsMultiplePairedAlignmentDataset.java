@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 public final class DifferentSpeciesInteractionsMultiplePairedAlignmentDataset extends InteractionsDataset {
   protected Stream<InteractionResultData> interactionsMaxDegree1() {
     return Stream.of(
-      new InteractionResultData(100, 101, degrees(1, 1, 2, 1)),
-      new InteractionResultData(100, 110, degrees(1, 1))
+      new InteractionResultData(100, "100", 101, "101", degrees(1, 1, 2, 1)),
+      new InteractionResultData(100, "100", 110, "110", degrees(1, 1))
     );
   }
 
@@ -36,11 +36,11 @@ public final class DifferentSpeciesInteractionsMultiplePairedAlignmentDataset ex
     return Stream.concat(
       interactionsMaxDegree1(),
       Stream.of(
-        new InteractionResultData(100, 111, degrees(2, 1)),
-        new InteractionResultData(101, 102, degrees(1, 2, 2, 2)),
-        new InteractionResultData(101, 111, degrees(1, 2)),
-        new InteractionResultData(102, 111, degrees(2, 2)),
-        new InteractionResultData(110, 111, degrees(1, 2))
+        new InteractionResultData(100, "100", 111, "111", degrees(2, 1)),
+        new InteractionResultData(101, "101", 102, "102", degrees(1, 2, 2, 2)),
+        new InteractionResultData(101, "101", 111, "111", degrees(1, 2)),
+        new InteractionResultData(102, "102", 111, "111", degrees(2, 2)),
+        new InteractionResultData(110, "110", 111, "111", degrees(1, 2))
       )
     );
   }
@@ -49,11 +49,11 @@ public final class DifferentSpeciesInteractionsMultiplePairedAlignmentDataset ex
     return Stream.concat(
       interactionsMaxDegree2(),
       Stream.of(
-        new InteractionResultData(101, 112, degrees(2, 2)),
-        new InteractionResultData(102, 103, degrees(1, 3, 2, 3)),
-        new InteractionResultData(102, 112, degrees(1, 3)),
-        new InteractionResultData(103, 112, degrees(2, 3)),
-        new InteractionResultData(111, 112, degrees(1, 3, 2, 2))
+        new InteractionResultData(101, "101", 112, "112", degrees(2, 2)),
+        new InteractionResultData(102, "102", 103, "103", degrees(1, 3, 2, 3)),
+        new InteractionResultData(102, "102", 112, "112", degrees(1, 3)),
+        new InteractionResultData(103, "103", 112, "112", degrees(2, 3)),
+        new InteractionResultData(111, "111", 112, "112", degrees(1, 3, 2, 2))
       )
     );
   }

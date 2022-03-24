@@ -105,5 +105,4 @@ public abstract class InteractionsData implements Serializable {
       return false;
     return true;
   }
-  
 }

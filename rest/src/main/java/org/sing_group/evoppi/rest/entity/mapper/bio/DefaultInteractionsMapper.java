@@ -51,20 +51,16 @@ import org.sing_group.evoppi.rest.entity.bio.BlastResultData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultSummaryData;
-import org.sing_group.evoppi.rest.entity.bio.GeneNamesData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionResultData;
 import org.sing_group.evoppi.rest.entity.bio.InteractionsResultFilteringOptionsData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultData;
 import org.sing_group.evoppi.rest.entity.bio.SameSpeciesInteractionsResultSummaryData;
-import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractionsMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.GeneMapper;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractionsMapper;
 import org.sing_group.evoppi.rest.resource.route.BaseRestPathBuilder;
 import org.sing_group.evoppi.rest.resource.route.ResultRestPathBuilder;
-import org.sing_group.evoppi.service.bio.BlastResultOrthologsManager;
-import org.sing_group.evoppi.service.spi.bio.GeneService;
 import org.sing_group.evoppi.service.spi.bio.InteractionService;
-import org.sing_group.evoppi.service.spi.bio.OrthologsManager;
 
 @Default
 @Transactional(MANDATORY)
@@ -76,9 +72,6 @@ public class DefaultInteractionsMapper implements InteractionsMapper {
 
   @Inject
   private GeneMapper geneMapper;
-
-  @Inject
-  private GeneService geneService;
 
   @Inject
   private InteractionService interactionService;
@@ -304,7 +297,9 @@ public class DefaultInteractionsMapper implements InteractionsMapper {
   private InteractionResultData toInteractionResultData(InteractionGroupResult interaction) {
     return new InteractionResultData(
       interaction.getGeneAId(),
+      interaction.getGeneA().getDefaultName(),
       interaction.getGeneBId(),
+      interaction.getGeneB().getDefaultName(),
       interaction.getInteractomeDegreesById()
     );
   }
@@ -329,19 +324,10 @@ public class DefaultInteractionsMapper implements InteractionsMapper {
           .map(this::toInteractionResultData)
           .toArray(InteractionResultData[]::new);
 
-      final GeneNamesData[] genes =
-        Stream.of(interactionData)
-          .flatMapToInt(InteractionResultData::getGenes)
-          .distinct()
-          .mapToObj(this.geneService::get)
-          .map(gene -> this.geneMapper.toGeneNamesData(gene, result::hasInteractome))
-          .toArray(GeneNamesData[]::new);
-
       return new SameSpeciesInteractionsData(
         resultId,
         filteringOptions,
-        interactionData,
-        genes
+        interactionData
       );
     } finally {
       this.em.clear(); // Avoids unnecessary persistence check
@@ -381,26 +367,8 @@ public class DefaultInteractionsMapper implements InteractionsMapper {
           .filter(blastResult -> genes.contains(blastResult.getQseqid()))
           .toArray(BlastResult[]::new);
 
-      final GeneNamesData[] referenceGenes =
-        genes.stream()
-          .sorted()
-          .map(this.geneService::get)
-          .map(gene -> this.geneMapper.toGeneNamesData(gene, result::hasInteractome))
-          .toArray(GeneNamesData[]::new);
-
-      final OrthologsManager orthologsManager = new BlastResultOrthologsManager(stream(blastResults));
-      final GeneNamesData[] targetGenes =
-        genes.stream()
-          .flatMapToInt(orthologsManager::getOrthologsForReferenceGene)
-          .sorted()
-          .mapToObj(this.geneService::get)
-          .map(gene -> this.geneMapper.toGeneNamesData(gene, result::hasInteractome))
-          .toArray(GeneNamesData[]::new);
-
       return new DifferentSpeciesInteractionsData(
         resultId,
-        referenceGenes,
-        targetGenes,
         filteringOptions,
         stream(blastResults).map(this::toBlastResultData).toArray(BlastResultData[]::new),
         interactionData

@@ -27,10 +27,10 @@ import java.util.stream.Stream;
 public class DifferentSpeciesInteractionResourceMissingQueryGene1vs4InteractomeDataset extends InteractionsDataset {
   protected Stream<InteractionResultData> interactionsMaxDegree1() {
     return Stream.of(
-      new InteractionResultData(100, 101, degrees(1, 1)),
-      new InteractionResultData(100, 105, degrees(1, 1)),
-      new InteractionResultData(100, 109, degrees(1, 1)),
-      new InteractionResultData(100, 112, degrees(1, 1))
+      new InteractionResultData(100, "100", 101, "101", degrees(1, 1)),
+      new InteractionResultData(100, "100", 105, "105", degrees(1, 1)),
+      new InteractionResultData(100, "100", 109, "109", degrees(1, 1)),
+      new InteractionResultData(100, "100", 112, "112", degrees(1, 1))
     );
   }
 
@@ -38,10 +38,10 @@ public class DifferentSpeciesInteractionResourceMissingQueryGene1vs4InteractomeD
     return Stream.concat(
       interactionsMaxDegree1(),
       Stream.of(
-        new InteractionResultData(101, 103, degrees(1, 2)),
-        new InteractionResultData(105, 107, degrees(1, 2, 4, -1)),
-        new InteractionResultData(109, 110, degrees(1, 2, 4, -1)),
-        new InteractionResultData(112, 113, degrees(1, 2, 4, -1))
+        new InteractionResultData(101, "101", 103, "103", degrees(1, 2)),
+        new InteractionResultData(105, "105", 107, "107", degrees(1, 2, 4, -1)),
+        new InteractionResultData(109, "109", 110, "110", degrees(1, 2, 4, -1)),
+        new InteractionResultData(112, "112", 113, "113", degrees(1, 2, 4, -1))
       )
     );
   }
@@ -50,10 +50,10 @@ public class DifferentSpeciesInteractionResourceMissingQueryGene1vs4InteractomeD
     return Stream.concat(
       interactionsMaxDegree2(),
       Stream.of(
-        new InteractionResultData(103, 104, degrees(1, 3, 4, -1)),
-        new InteractionResultData(107, 108, degrees(1, 3, 4, -1)),
-        new InteractionResultData(110, 111, degrees(1, 3, 4, -1)),
-        new InteractionResultData(113, 114, degrees(1, 3, 4, -1))
+        new InteractionResultData(103, "103", 104, "104", degrees(1, 3, 4, -1)),
+        new InteractionResultData(107, "107", 108, "108", degrees(1, 3, 4, -1)),
+        new InteractionResultData(110, "110", 111, "111", degrees(1, 3, 4, -1)),
+        new InteractionResultData(113, "113", 114, "114", degrees(1, 3, 4, -1))
       )
     );
   }
