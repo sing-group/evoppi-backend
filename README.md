@@ -128,3 +128,16 @@ Source code of this and **EvoPPI Frontend** projects can be found at:
 
 * [EvoPPI Frontend](https://github.com/sing-group/evoppi-frontend)
 * [EvoPPI Backend](https://github.com/sing-group/evoppi-backend)
+
+## Troubleshooting and debugging
+
+Some tips for troubleshooting and debugging issues with the database:
+
+1. [This post](https://stackoverflow.com/a/678310/1821422) shows how to set MySQL to show the last queries being executed.
+2. When loading the complete DB, the following error may arise: `The total number of locks exceeds the lock table size`. Following some of the suggestions of [this post](https://stackoverflow.com/questions/6901108/the-total-number-of-locks-exceeds-the-lock-table-size), it usually works editing the `my.cnf` file to set the following settings:
+
+```[mysqld]                                                                                                                          
+wait_timeout = 31536000
+interactive_timeout = 31536000
+max_allowed_packet = 1G
+innodb_buffer_pool_size = 1G 
