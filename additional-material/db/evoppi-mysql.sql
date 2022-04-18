@@ -66,7 +66,21 @@ CREATE TABLE `blast_result` (
   PRIMARY KEY (`id`),
   KEY `FK_different_species_interactions_result_blast_result` (`interactionsResultId`),
   CONSTRAINT `FK_different_species_interactions_result_blast_result` FOREIGN KEY (`interactionsResultId`) REFERENCES `different_species_interactions_result` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=206 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `database_information`
+--
+
+DROP TABLE IF EXISTS `database_information`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `database_information` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `version` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -311,7 +325,7 @@ CREATE TABLE `interactome` (
   KEY `FKkodh5muq79qlhosgxvbqiunvc` (`speciesB`),
   CONSTRAINT `FKkodh5muq79qlhosgxvbqiunvc` FOREIGN KEY (`speciesB`) REFERENCES `species` (`id`),
   CONSTRAINT `FKky6stm10j6m13yy91ylogu42y` FOREIGN KEY (`speciesA`) REFERENCES `species` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=275 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=564 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -559,4 +573,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-04 12:48:37
+-- Dump completed on 2022-04-05 16:34:15

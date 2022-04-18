@@ -1,8 +1,8 @@
 /*-
  * #%L
- * REST
+ * Service
  * %%
- * Copyright (C) 2017 - 2019 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
+ * Copyright (C) 2017 - 2022 Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,15 +19,22 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.sing_group.evoppi.service.spi.info;
 
-package org.sing_group.evoppi.rest.resource.spi.info;
+import java.util.Optional;
 
-import javax.ejb.Local;
-import javax.ws.rs.core.Response;
+import org.sing_group.evoppi.domain.entities.DatabaseInformation;
 
-@Local
-public interface StatsResource {
-  public Response get();
-  
-  public Response getCurrentDatabaseVersion();
+public interface DatabaseInformationService {
+  public Optional<DatabaseInformation> getDbVersion();
+
+  public long getSpeciesCount();
+
+  public long getDatabaseInteractomesCount();
+
+  public long getPredictomesCount();
+
+  public long getGenesCount();
+
+  public long getInteractionsCount();
 }

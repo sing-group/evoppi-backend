@@ -25,6 +25,8 @@ package org.sing_group.evoppi.rest.resource.info;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -34,44 +36,31 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.sing_group.evoppi.domain.entities.DatabaseInformation;
 import org.sing_group.evoppi.rest.entity.info.StatsData;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.info.StatsResource;
-import org.sing_group.evoppi.service.spi.bio.DatabaseInteractomeService;
-import org.sing_group.evoppi.service.spi.bio.GeneService;
-import org.sing_group.evoppi.service.spi.bio.InteractionService;
-import org.sing_group.evoppi.service.spi.bio.PredictomeService;
-import org.sing_group.evoppi.service.spi.bio.SpeciesService;
+import org.sing_group.evoppi.service.spi.info.DatabaseInformationService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Path("stats")
-@Api("stats")
+@Path("database")
+@Api("database")
 @Produces({ APPLICATION_JSON, APPLICATION_XML })
 @Consumes({ APPLICATION_JSON, APPLICATION_XML })
 @Stateless
 @Default
 @CrossDomain
 public class DefaultStatsResource implements StatsResource {
+
   @Inject
-  private SpeciesService speciesService;
-  
-  @Inject
-  private DatabaseInteractomeService dbInteractomeService;
-  
-  @Inject
-  private PredictomeService predictomeService;
-  
-  @Inject
-  private GeneService geneService;
-  
-  @Inject
-  private InteractionService interactionService;
+  private DatabaseInformationService databaseInformationService;
 
   @GET
+  @Path("stats")
   @ApiOperation(
     value = "Provides database statistic information.",
     response = StatsData.class,
@@ -84,13 +73,35 @@ public class DefaultStatsResource implements StatsResource {
   public Response get() {
     return Response.ok(
       new StatsData(
-        this.speciesService.count(),
-        this.dbInteractomeService.count(),
-        this.predictomeService.count(),
-        this.geneService.count(),
-        this.interactionService.count()
+        this.databaseInformationService.getSpeciesCount(),
+        this.databaseInformationService.getDatabaseInteractomesCount(),
+        this.databaseInformationService.getPredictomesCount(),
+        this.databaseInformationService.getGenesCount(),
+        this.databaseInformationService.getInteractionsCount()
       )
     ).build();
   }
-
+  
+  @GET
+  @Path("version")
+  @ApiOperation(
+    value = "Provides the current database version.",
+    response = String.class,
+    code = 200
+    )
+  @ApiResponses({
+    @ApiResponse(code = 200, message = "successful operation"),
+    @ApiResponse(code = 400, message = "The database version is not available")
+  })
+  @Override
+  public Response getCurrentDatabaseVersion() {
+    Optional<DatabaseInformation> info = this.databaseInformationService.getDbVersion();
+    if (info.isPresent()) {
+      return Response.ok(
+        info.get().getVersion()
+      ).build();
+    } else {
+      throw new RuntimeException("The database version is not available");
+    }
+  }
 }
