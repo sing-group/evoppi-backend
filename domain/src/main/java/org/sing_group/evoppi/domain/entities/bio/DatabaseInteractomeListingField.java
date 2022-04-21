@@ -64,6 +64,18 @@ public enum DatabaseInteractomeListingField implements EntityListingField<Databa
   public <Q> Predicate getFilter(
     CriteriaBuilder cb, CriteriaQuery<Q> query, Root<DatabaseInteractome> root, String value
   ) {
-    return cb.like(this.getField(cb, query, root), "%" + value + "%");
+    if (!this.isFilteringSupported()) {
+      throw new UnsupportedOperationException();
+    }
+
+    switch (this) {
+      case NAME:
+      case SOURCE_DB:
+      case SPECIESA:
+      case SPECIESB:
+        return cb.like(this.getField(cb, query, root).as(String.class), "%" + value + "%");
+      default:
+        throw new IllegalStateException();
+    }
   }
 }
