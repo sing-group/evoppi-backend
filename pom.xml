@@ -141,7 +141,8 @@
 
 		<!-- license-maven-plugin configuration -->
 		<license.licenseName>gpl_v3</license.licenseName>
-		<license.copyrightOwners>Jorge Vieira, Miguel Reboiro-Jato and Noé Vázquez González</license.copyrightOwners>
+		<license.copyrightOwners>Noé Vázquez González, Miguel Reboiro-Jato, Jorge Vieira, Hugo López-Fernández, 
+		and Cristina Vieira</license.copyrightOwners>
 		<license.organizationName>SING Group (University of Vigo)</license.organizationName>
 		<license.addJavaLicenseAfterPackage>false</license.addJavaLicenseAfterPackage>
 
