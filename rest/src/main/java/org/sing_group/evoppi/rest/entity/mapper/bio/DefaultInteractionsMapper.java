@@ -40,6 +40,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.Species;
+import org.sing_group.evoppi.domain.entities.bio.execution.BlastQueryOptions;
 import org.sing_group.evoppi.domain.entities.bio.execution.BlastResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.DifferentSpeciesInteractionsResult;
 import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResult;
@@ -47,6 +48,7 @@ import org.sing_group.evoppi.domain.entities.bio.execution.InteractionGroupResul
 import org.sing_group.evoppi.domain.entities.bio.execution.SameSpeciesInteractionsResult;
 import org.sing_group.evoppi.rest.entity.IdNameAndUri;
 import org.sing_group.evoppi.rest.entity.UuidAndUri;
+import org.sing_group.evoppi.rest.entity.bio.BlastQueryOptionsData;
 import org.sing_group.evoppi.rest.entity.bio.BlastResultData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsData;
 import org.sing_group.evoppi.rest.entity.bio.DifferentSpeciesInteractionsResultData;
@@ -227,7 +229,8 @@ public class DefaultInteractionsMapper implements InteractionsMapper {
         targetInteractomeIds,
         this.toInteractionsResultData(result, filteringOptions),
         (int) result.getInteractions().count(),
-        result.getStatus()
+        result.getStatus(),
+        this.toBlastQueryOptionsData(result.getBlastQueryOptions())
       );
     } finally {
       this.em.clear(); // Avoids unnecessary persistence check
@@ -290,7 +293,8 @@ public class DefaultInteractionsMapper implements InteractionsMapper {
       targetInteractomeIds,
       interactions,
       (int) result.getInteractions().count(),
-      result.getStatus()
+      result.getStatus(),
+      this.toBlastQueryOptionsData(result.getBlastQueryOptions())
     );
   }
 
@@ -301,6 +305,15 @@ public class DefaultInteractionsMapper implements InteractionsMapper {
       interaction.getGeneBId(),
       interaction.getGeneB().getDefaultName(),
       interaction.getInteractomeDegreesById()
+    );
+  }
+  
+  private BlastQueryOptionsData toBlastQueryOptionsData(BlastQueryOptions blastQueryOptions) {
+    return new BlastQueryOptionsData(
+      blastQueryOptions.getEvalue(),
+      blastQueryOptions.getMaxTargetSeqs(),
+      blastQueryOptions.getMinimumIdentity(),
+      blastQueryOptions.getMinimumAlignmentLength()
     );
   }
 

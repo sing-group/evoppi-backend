@@ -23,6 +23,7 @@
 package org.sing_group.evoppi.rest.entity.bio;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -44,6 +45,8 @@ public class DifferentSpeciesInteractionsResultData extends AbstractDifferentSpe
   private static final long serialVersionUID = 1L;
 
   private DifferentSpeciesInteractionsData interactions;
+  
+  private BlastQueryOptionsData blastQueryOptions;
 
   DifferentSpeciesInteractionsResultData() {}
 
@@ -56,11 +59,13 @@ public class DifferentSpeciesInteractionsResultData extends AbstractDifferentSpe
     IdNameAndUri[] referenceInteractomes, IdNameAndUri[] targetInteractomes,
     DifferentSpeciesInteractionsData interactions,
     int totalInteractions,
-    ExecutionStatus status
+    ExecutionStatus status,
+    BlastQueryOptionsData blastQueryOptions
   ) {
     super(id, queryGene, queryMaxDegree, totalInteractions, status, referenceSpecies, targetSpecies, referenceInteractomes, targetInteractomes);
     
     this.interactions = interactions;
+    this.blastQueryOptions = blastQueryOptions;
   }
 
   public DifferentSpeciesInteractionsData getInteractions() {
@@ -71,11 +76,19 @@ public class DifferentSpeciesInteractionsResultData extends AbstractDifferentSpe
     this.interactions = interactions;
   }
 
+  public BlastQueryOptionsData getBlastQueryOptions() {
+    return blastQueryOptions;
+  }
+
+  public void setBlastQueryOptions(BlastQueryOptionsData blastQueryOptions) {
+    this.blastQueryOptions = blastQueryOptions;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + ((interactions == null) ? 0 : interactions.hashCode());
+    result = prime * result + Objects.hash(blastQueryOptions, interactions);
     return result;
   }
 
@@ -88,11 +101,7 @@ public class DifferentSpeciesInteractionsResultData extends AbstractDifferentSpe
     if (getClass() != obj.getClass())
       return false;
     DifferentSpeciesInteractionsResultData other = (DifferentSpeciesInteractionsResultData) obj;
-    if (interactions == null) {
-      if (other.interactions != null)
-        return false;
-    } else if (!interactions.equals(other.interactions))
-      return false;
-    return true;
+    return Objects.equals(blastQueryOptions, other.blastQueryOptions)
+      && Objects.equals(interactions, other.interactions);
   }
 }

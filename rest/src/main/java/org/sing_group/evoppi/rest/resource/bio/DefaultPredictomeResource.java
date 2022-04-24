@@ -130,13 +130,13 @@ public class DefaultPredictomeResource implements PredictomeResource {
     final ListingOptions<Predictome> options =
       ListingOptions.sortedAndFilteredBetween(start, end, order, sort, filters);
 
-    final PredictomeData[] interactomeData =
+    final PredictomeData[] predictomeData =
       this.service
         .list(options)
         .map(this.mapper::toPredictomeData)
         .toArray(PredictomeData[]::new);
 
-    return Response.ok(interactomeData)
+    return Response.ok(predictomeData)
       .header("X-Total-Count", this.service.count(options))
       .build();
   }
