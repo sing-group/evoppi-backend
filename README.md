@@ -88,36 +88,27 @@ required by the application.
 
 ### 2. Create the database
 
-A SQL script for MySQL to create the structure of the database required can be
-downloaded from
-[here](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/evoppi-mysql.sql).
+A SQL script for MySQL to create the structure of the database required can be is
+available at `additional-material/db/evoppi-mysql.sql`.
 
 ### 3. Populate database (optional)
 
-If you want to add the data of all the species currently supported by EvoPPI,
+The `additional-material/db/` directory contains several files to test EvoPPI:
+
+- `evoppi-mysql-data.sql`: users and database version.
+- `evoppi-mysql-data-genes.sql`: species, genes, interactomes, and predicted interactomes.
+
+
+Alternatively, if you want to add the data of all the species currently supported by EvoPPI,
 you can also download and import
-[this SQL file](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/evoppi.sql.gz).
-
-However, if you only want to add the data of some specific species, you can
-download and import these SQL files:
-
-* *[Bos taurus](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Bos_taurus.sql.gz)*
-* *[Caenorhabditis elegans](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Caenorhabditis_elegans.sql.gz)*
-* *[Danio rerio](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Danio_rerio.sql.gz)*
-* *[Drosophila melanogaster](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Drosophila_melanogaster.sql.gz)*
-* *[Gallus gallus](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Gallus_gallus.sql.gz)*
-* *[Homo sapiens](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Homo_sapiens.sql.gz)*
-* *[Mus musculus](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Mus_musculus.sql.gz)*
-* *[Oryctolagus cuniculus](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Oryctolagus_cuniculus.sql.gz)*
-* *[Rattus norvegicus](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Rattus_norvegicus.sql.gz)*
-* *[Xenopus laevis](http://static.sing-group.org/EvoPPI/db/sql/1.0.0/Xenopus_laevis.sql.gz)*
+[this SQL file](http://static.sing-group.org/EvoPPI/db/sql/2022.04/evoppi.sql.gz).
 
 ### 4. Deploy the application
 
 The last step is to deploy the EvoPPI application in the WildFly server.
 
 Packaged application can be downloaded from
-[here](https://maven.sing-group.org/repository/maven-releases/org/sing_group/evoppi-ear/1.0.0/evoppi-ear-1.0.0.ear).
+[here](https://maven.sing-group.org/repository/maven-releases/org/sing_group/evoppi-ear/2.1.0/evoppi-ear-2.1.ear).
 
 This file can be directly deployed in the WildFly server, for example, using the
 administration web interface.
