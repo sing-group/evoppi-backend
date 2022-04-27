@@ -22,12 +22,8 @@
  */
 package org.sing_group.evoppi.service.spi.info;
 
-import java.util.Optional;
-
-import org.sing_group.evoppi.domain.entities.DatabaseInformation;
-
 public interface DatabaseInformationService {
-  public Optional<DatabaseInformation> getDbVersion();
+  public String getDbVersion();
 
   public long getSpeciesCount();
 

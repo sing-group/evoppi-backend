@@ -26,6 +26,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -39,6 +40,21 @@ public class DatabaseInformation implements Serializable {
   @Id
   @GeneratedValue(strategy = IDENTITY)
   private int id;
+  
+  @Column
+  private long speciesCount;
+  
+  @Column
+  private long databaseInteractomesCount;
+  
+  @Column
+  private long predictomesCount;
+  
+  @Column
+  private long genesCount;
+  
+  @Column
+  private long interactionsCount;
 
   private String version;
 
@@ -50,6 +66,26 @@ public class DatabaseInformation implements Serializable {
 
   public String getVersion() {
     return version;
+  }
+  
+  public long getSpeciesCount() {
+    return speciesCount;
+  }
+  
+  public long getDatabaseInteractomesCount() {
+    return databaseInteractomesCount;
+  }
+  
+  public long getPredictomesCount() {
+    return predictomesCount;
+  }
+  
+  public long getInteractionsCount() {
+    return interactionsCount;
+  }
+  
+  public long getGenesCount() {
+    return genesCount;
   }
 
   @Override

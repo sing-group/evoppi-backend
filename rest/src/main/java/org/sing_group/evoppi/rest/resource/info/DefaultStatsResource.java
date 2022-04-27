@@ -25,8 +25,6 @@ package org.sing_group.evoppi.rest.resource.info;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -36,7 +34,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.sing_group.evoppi.domain.entities.DatabaseInformation;
 import org.sing_group.evoppi.rest.entity.info.StatsData;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.info.StatsResource;
@@ -95,13 +92,8 @@ public class DefaultStatsResource implements StatsResource {
   })
   @Override
   public Response getCurrentDatabaseVersion() {
-    Optional<DatabaseInformation> info = this.databaseInformationService.getDbVersion();
-    if (info.isPresent()) {
-      return Response.ok(
-        info.get().getVersion()
-      ).build();
-    } else {
-      throw new RuntimeException("The database version is not available");
-    }
+    return Response.ok(
+      this.databaseInformationService.getDbVersion()
+    ).build();
   }
 }

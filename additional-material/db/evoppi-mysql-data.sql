@@ -1,4 +1,4 @@
-INSERT INTO `database_information` values(1, 'development');
+INSERT INTO `database_information` values(1, 'development', 3, 3, 3, 3, 3);
 
 INSERT INTO `user` (`login`, `role`, `email`, `password`)
 VALUES ('admin', 'ADMIN', 'admin@email.com', '25E4EE4E9229397B6B17776BFCEAF8E7');

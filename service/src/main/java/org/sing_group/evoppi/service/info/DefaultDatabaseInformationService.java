@@ -22,21 +22,12 @@
  */
 package org.sing_group.evoppi.service.info;
 
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.spi.info.DatabaseInformationDao;
-import org.sing_group.evoppi.domain.entities.DatabaseInformation;
-import org.sing_group.evoppi.service.spi.bio.DatabaseInteractomeService;
-import org.sing_group.evoppi.service.spi.bio.GeneService;
-import org.sing_group.evoppi.service.spi.bio.InteractionService;
-import org.sing_group.evoppi.service.spi.bio.PredictomeService;
-import org.sing_group.evoppi.service.spi.bio.SpeciesService;
 import org.sing_group.evoppi.service.spi.info.DatabaseInformationService;
 
 @Startup
@@ -47,76 +38,33 @@ public class DefaultDatabaseInformationService implements DatabaseInformationSer
   @Inject
   private DatabaseInformationDao databaseInformationDao;
 
-  @Inject
-  private SpeciesService speciesService;
-
-  @Inject
-  private DatabaseInteractomeService dbInteractomeService;
-
-  @Inject
-  private PredictomeService predictomeService;
-
-  @Inject
-  private GeneService geneService;
-
-  @Inject
-  private InteractionService interactionService;
-
-  private long speciesCount;
-  private long databaseInteractomesCount;
-  private long predictomesCount;
-  private long genesCount;
-  private long interactionsCount;
-
-  @PostConstruct
-  private void postConstruct() {
-    this.updateStatistics();
-  }
-
-  private void updateStatistics() {
-    System.out.println("Initializing database statistics");
-
-    this.speciesCount = this.speciesService.count();
-    this.databaseInteractomesCount = this.dbInteractomeService.count();
-    this.predictomesCount = this.predictomeService.count();
-    this.genesCount = this.geneService.count();
-    this.interactionsCount = this.interactionService.count();
-
-    System.out.println("Database statistics ready:");
-    System.out.println("Species count: " + this.getSpeciesCount());
-    System.out.println("Database interactomes count: " + this.getDatabaseInteractomesCount());
-    System.out.println("Predictomes count: " + this.getPredictomesCount());
-    System.out.println("Genes count: " + this.getGenesCount());
-    System.out.println("Interactions count: " + this.getInteractionsCount());
-  }
-
   @Override
-  public Optional<DatabaseInformation> getDbVersion() {
-    return this.databaseInformationDao.get();
+  public String getDbVersion() {
+    return this.databaseInformationDao.get().get().getVersion();
   }
 
   @Override
   public long getSpeciesCount() {
-    return speciesCount;
+    return this.databaseInformationDao.get().get().getSpeciesCount();
   }
 
   @Override
   public long getDatabaseInteractomesCount() {
-    return databaseInteractomesCount;
+    return this.databaseInformationDao.get().get().getDatabaseInteractomesCount();
   }
 
   @Override
   public long getPredictomesCount() {
-    return predictomesCount;
+    return this.databaseInformationDao.get().get().getPredictomesCount();
   }
 
   @Override
   public long getGenesCount() {
-    return genesCount;
+    return this.databaseInformationDao.get().get().getGenesCount();
   }
 
   @Override
   public long getInteractionsCount() {
-    return interactionsCount;
+    return this.databaseInformationDao.get().get().getInteractionsCount();
   }
 }

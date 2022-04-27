@@ -66,7 +66,7 @@ CREATE TABLE `blast_result` (
   PRIMARY KEY (`id`),
   KEY `FK_different_species_interactions_result_blast_result` (`interactionsResultId`),
   CONSTRAINT `FK_different_species_interactions_result_blast_result` FOREIGN KEY (`interactionsResultId`) REFERENCES `different_species_interactions_result` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=206 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=270 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,6 +79,11 @@ DROP TABLE IF EXISTS `database_information`;
 CREATE TABLE `database_information` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `version` varchar(255) DEFAULT NULL,
+  `databaseInteractomesCount` bigint(20) DEFAULT NULL,
+  `genesCount` bigint(20) DEFAULT NULL,
+  `interactionsCount` bigint(20) DEFAULT NULL,
+  `predictomesCount` bigint(20) DEFAULT NULL,
+  `speciesCount` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -573,4 +578,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-05 16:34:15
+-- Dump completed on 2022-04-26 23:11:01
