@@ -35,13 +35,13 @@ public class RestDatabaseInteractomeCreationData extends DatabaseInteractomeCrea
   private static final long serialVersionUID = 1L;
 
   public RestDatabaseInteractomeCreationData(
-    File file, String name, Integer speciesDbId, UniProtDb dbSource, Integer geneColumn1,
-    Integer geneColumn2, Integer headerLinesCount, String genePrefix, String geneSuffix, Integer organismColumn1,
-    Integer organismColumn2, String organismPrefix, String organismSuffix
+    File file, String name, Integer speciesDbId, Integer interactomeCollectionId, UniProtDb dbSource,
+    Integer geneColumn1, Integer geneColumn2, Integer headerLinesCount, String genePrefix, String geneSuffix,
+    Integer organismColumn1, Integer organismColumn2, String organismPrefix, String organismSuffix
   ) {
     super(
-      file, name, speciesDbId, dbSource, geneColumn1, geneColumn2, headerLinesCount, genePrefix,
-      geneSuffix, organismColumn1, organismColumn2, organismPrefix, organismSuffix
+      file, name, speciesDbId, interactomeCollectionId, dbSource, geneColumn1, geneColumn2, headerLinesCount,
+      genePrefix, geneSuffix, organismColumn1, organismColumn2, organismPrefix, organismSuffix
     );
   }
 }

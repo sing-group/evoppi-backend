@@ -36,6 +36,7 @@ public class RestInteractomeCreationReader extends MultipartMessageBodyReader<Re
   private File file;
   private String name;
   private Integer speciesDbId;
+  private Integer interactomeCollectionId;
   private UniProtDb dbSource;
   private Integer geneColumn1;
   private Integer geneColumn2;
@@ -55,6 +56,9 @@ public class RestInteractomeCreationReader extends MultipartMessageBodyReader<Re
         break;
       case "speciesDbId":
         this.speciesDbId = Integer.valueOf(value);
+        break;
+      case "interactomeCollectionId":
+        this.interactomeCollectionId = Integer.valueOf(value);
         break;
       case "dbSource":
         this.dbSource = UniProtDb.get(value).orElseThrow(() -> new RuntimeException("dbSource not valid"));
@@ -101,7 +105,7 @@ public class RestInteractomeCreationReader extends MultipartMessageBodyReader<Re
   @Override
   protected RestDatabaseInteractomeCreationData build() {
     return new RestDatabaseInteractomeCreationData(
-      file, name, speciesDbId, dbSource, geneColumn1, geneColumn2, headerLinesCount, genePrefix,
+      file, name, speciesDbId, interactomeCollectionId, dbSource, geneColumn1, geneColumn2, headerLinesCount, genePrefix,
       geneSuffix, organismColumn1, organismColumn2, organismPrefix, organismSuffix
     );
   }
@@ -111,6 +115,7 @@ public class RestInteractomeCreationReader extends MultipartMessageBodyReader<Re
     this.file = null;
     this.name = null;
     this.speciesDbId = null;
+    this.interactomeCollectionId = null;
     this.dbSource = null;
     this.geneColumn1 = null;
     this.geneColumn2 = null;

@@ -1,5 +1,6 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
+TRUNCATE TABLE `database_information`;
 TRUNCATE TABLE `work_step`;
 TRUNCATE TABLE `work_species_creation`;
 TRUNCATE TABLE `work_database_interactome_creation`;
@@ -24,6 +25,7 @@ TRUNCATE TABLE `gene`;
 TRUNCATE TABLE `predictome`;
 TRUNCATE TABLE `interactome_database`;
 TRUNCATE TABLE `interactome`;
+TRUNCATE TABLE `interactome_collection`;
 TRUNCATE TABLE `species`;
 
 TRUNCATE TABLE `password_recovery`;

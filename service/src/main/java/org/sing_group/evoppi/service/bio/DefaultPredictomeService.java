@@ -37,6 +37,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.sing_group.evoppi.domain.dao.ListingOptions;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeCollectionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.PredictomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
@@ -58,6 +59,9 @@ public class DefaultPredictomeService implements PredictomeService {
 
   @Inject
   private SpeciesDAO speciesDao;
+  
+  @Inject
+  private InteractomeCollectionDAO interactomeCollectionDAO;
 
   @Override
   public Stream<Predictome> list(ListingOptions<Predictome> listingOptions) {
@@ -101,7 +105,8 @@ public class DefaultPredictomeService implements PredictomeService {
         speciesDao.getSpecies(data.getSpeciesBDbId()),
         data.getSourceInteractome(),
         data.getConversionDatabase(),
-        interactions
+        interactions,
+        interactomeCollectionDAO.get(data.getInteractomeCollectionId())
       );
     }
   }

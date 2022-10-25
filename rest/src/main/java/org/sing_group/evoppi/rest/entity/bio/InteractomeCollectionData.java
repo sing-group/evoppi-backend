@@ -26,45 +26,29 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.sing_group.evoppi.domain.entities.bio.InteractomeType;
-import org.sing_group.evoppi.rest.entity.IdAndUri;
 
 import io.swagger.annotations.ApiModel;
 
-@XmlRootElement(name = "interactome-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
+@XmlRootElement(name = "interactome-collection-data", namespace = "http://entity.resource.rest.evoppi.sing-group.org")
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "interactome-data", description = "Data of an interactome entity.")
-public class InteractomeData implements Serializable {
+@ApiModel(value = "interactome-collection-data", description = "Data of an interactome collection entity.")
+public class InteractomeCollectionData implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private int id;
-
   private String name;
+  private long databaseInteractomeCount;
+  private long predictomeCount;
 
-  @XmlElement(name = "speciesA", required = true)
-  private IdAndUri speciesA;
+  InteractomeCollectionData() {}
 
-  @XmlElement(name = "speciesB", required = true)
-  private IdAndUri speciesB;
-
-  private InteractomeType interactomeType;
-  
-  private String interactomeCollection;
-
-  InteractomeData() {}
-
-  public InteractomeData(
-    int id, String name, IdAndUri speciesA, IdAndUri speciesB, InteractomeType interactomeType, String interactomeCollection
-  ) {
+  public InteractomeCollectionData(int id, String name, long databaseInteractomeCount, long predictomeCount) {
+    super();
     this.id = id;
     this.name = name;
-    this.speciesA = speciesA;
-    this.speciesB = speciesB;
-    this.interactomeType = interactomeType;
-    this.interactomeCollection = interactomeCollection;
+    this.databaseInteractomeCount = databaseInteractomeCount;
+    this.predictomeCount = predictomeCount;
   }
 
   public int getId() {
@@ -83,36 +67,20 @@ public class InteractomeData implements Serializable {
     this.name = name;
   }
 
-  public IdAndUri getSpeciesA() {
-    return speciesA;
+  public long getDatabaseInteractomeCount() {
+    return databaseInteractomeCount;
   }
 
-  public void setSpeciesA(IdAndUri speciesA) {
-    this.speciesA = speciesA;
+  public void setDatabaseInteractomeCount(long databaseInteractomeCount) {
+    this.databaseInteractomeCount = databaseInteractomeCount;
   }
 
-  public IdAndUri getSpeciesB() {
-    return speciesB;
+  public long getPredictomeCount() {
+    return predictomeCount;
   }
 
-  public void setSpeciesB(IdAndUri speciesB) {
-    this.speciesB = speciesB;
-  }
-
-  public InteractomeType getInteractomeType() {
-    return interactomeType;
-  }
-
-  public void setInteractomeType(InteractomeType interactomeType) {
-    this.interactomeType = interactomeType;
-  }
-  
-  public String getInteractomeCollection() {
-    return interactomeCollection;
-  }
-  
-  public void setInteractomeCollection(String interactomeCollection) {
-    this.interactomeCollection = interactomeCollection;
+  public void setPredictomeCount(long predictomeCount) {
+    this.predictomeCount = predictomeCount;
   }
 
   @Override
@@ -131,7 +99,7 @@ public class InteractomeData implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    InteractomeData other = (InteractomeData) obj;
+    InteractomeCollectionData other = (InteractomeCollectionData) obj;
     if (id != other.id)
       return false;
     return true;

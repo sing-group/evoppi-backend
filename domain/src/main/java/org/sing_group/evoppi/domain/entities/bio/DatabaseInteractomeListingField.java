@@ -31,7 +31,7 @@ import javax.persistence.criteria.Root;
 import org.sing_group.evoppi.domain.dao.EntityListingField;
 
 public enum DatabaseInteractomeListingField implements EntityListingField<DatabaseInteractome> {
-  NAME(true), SOURCE_DB(true), SPECIESA(true), SPECIESB(true);
+  NAME(true), SOURCE_DB(true), SPECIESA(true), SPECIESB(true), COLLECTION(true);
 
   private final boolean supportsFiltering;
 
@@ -49,6 +49,8 @@ public enum DatabaseInteractomeListingField implements EntityListingField<Databa
     switch (this) {
       case NAME:
         return root.get("name");
+      case COLLECTION:
+        return root.join("collection").get("name");
       case SOURCE_DB:
         return root.get("dbSourceIdType");
       case SPECIESA:
@@ -73,6 +75,7 @@ public enum DatabaseInteractomeListingField implements EntityListingField<Databa
       case SOURCE_DB:
       case SPECIESA:
       case SPECIESB:
+      case COLLECTION:
         return cb.like(this.getField(cb, query, root).as(String.class), "%" + value + "%");
       default:
         throw new IllegalStateException();

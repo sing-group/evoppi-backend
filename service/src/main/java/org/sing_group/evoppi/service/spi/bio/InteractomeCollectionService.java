@@ -1,6 +1,6 @@
 /*-
  * #%L
- * Domain
+ * Service
  * %%
  * Copyright (C) 2017 - 2022 Noé Vázquez González, Miguel Reboiro-Jato, Jorge Vieira, Hugo López-Fernández, 
  * 		and Cristina Vieira
@@ -20,26 +20,15 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.sing_group.evoppi.domain.dao.spi.bio;
+package org.sing_group.evoppi.service.spi.bio;
 
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeCollection;
-import org.sing_group.evoppi.domain.entities.bio.Predictome;
-import org.sing_group.evoppi.domain.entities.bio.Species;
-import org.sing_group.evoppi.domain.interactome.GeneInteractions;
 
-public interface PredictomeDAO {
+public interface InteractomeCollectionService {
 
-  public Stream<Predictome> list(ListingOptions<Predictome> predictomeListingOptions);
+  public Stream<InteractomeCollection> list();
 
-  public Predictome get(int id);
-
-  public long count(ListingOptions<Predictome> predictomeListingOptions);
-
-  public Predictome create(
-    String name, Species speciesA, Species speciesB, String sourceInteractome, String conversionDatabase,
-    GeneInteractions interactions, InteractomeCollection collection
-  );
+  public long count();
 }

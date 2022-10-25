@@ -24,22 +24,12 @@ package org.sing_group.evoppi.domain.dao.spi.bio;
 
 import java.util.stream.Stream;
 
-import org.sing_group.evoppi.domain.dao.ListingOptions;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeCollection;
-import org.sing_group.evoppi.domain.entities.bio.Predictome;
-import org.sing_group.evoppi.domain.entities.bio.Species;
-import org.sing_group.evoppi.domain.interactome.GeneInteractions;
 
-public interface PredictomeDAO {
+public interface InteractomeCollectionDAO {
+  public InteractomeCollection get(int interactomeCollectionId);
 
-  public Stream<Predictome> list(ListingOptions<Predictome> predictomeListingOptions);
-
-  public Predictome get(int id);
-
-  public long count(ListingOptions<Predictome> predictomeListingOptions);
-
-  public Predictome create(
-    String name, Species speciesA, Species speciesB, String sourceInteractome, String conversionDatabase,
-    GeneInteractions interactions, InteractomeCollection collection
-  );
+  public long count();
+  
+  public Stream<InteractomeCollection> list();
 }

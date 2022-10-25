@@ -41,6 +41,7 @@ import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.PredictomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeCollection;
 import org.sing_group.evoppi.domain.entities.bio.Predictome;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.interactome.GeneInteractions;
@@ -92,11 +93,11 @@ public class DefaultPredictomeDAO implements PredictomeDAO {
   @Override
   public Predictome create(
     String name, Species speciesA, Species speciesB, String sourceInteractome, String conversionDatabase,
-    GeneInteractions interactions
+    GeneInteractions interactions, InteractomeCollection collection
   ) {
     Predictome predictome =
       this.dh.persist(
-        new Predictome(name, speciesA, speciesB, sourceInteractome, conversionDatabase)
+        new Predictome(name, speciesA, speciesB, sourceInteractome, conversionDatabase, collection)
       );
 
     Map<Integer, Gene> geneMap = new HashMap<>();

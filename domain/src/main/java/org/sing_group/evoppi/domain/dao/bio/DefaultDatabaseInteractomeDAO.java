@@ -42,6 +42,7 @@ import org.sing_group.evoppi.domain.dao.spi.bio.GeneInInteractomeDAO;
 import org.sing_group.evoppi.domain.entities.bio.DatabaseInteractome;
 import org.sing_group.evoppi.domain.entities.bio.Gene;
 import org.sing_group.evoppi.domain.entities.bio.GeneInInteractome;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeCollection;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.interactome.GeneInteractions;
 
@@ -95,7 +96,7 @@ public class DefaultDatabaseInteractomeDAO implements DatabaseInteractomeDAO {
     Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
     Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
-    Species species, GeneInteractions interactions
+    Species species, GeneInteractions interactions, InteractomeCollection collection
   ) {
     DatabaseInteractome interactome =
       this.dh.persist(
@@ -103,7 +104,7 @@ public class DefaultDatabaseInteractomeDAO implements DatabaseInteractomeDAO {
           name, dbSourceIdType, numOriginalInteractions, numUniqueOriginalInteractions, numUniqueOriginalGenes,
           numInteractionsNotToUniProtKB, numGenesNotToUniProtKB, numInteractionsNotToGeneId, numGenesNotToGeneId,
           numFinalInteractions, numFinalGenes, numRemovedInterSpeciesInteractions, numMultimappedToGeneId,
-          species, species
+          species, species, collection
         )
       );
 

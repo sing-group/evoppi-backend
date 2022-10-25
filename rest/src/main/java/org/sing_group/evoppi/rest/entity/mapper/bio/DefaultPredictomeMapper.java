@@ -66,7 +66,8 @@ public class DefaultPredictomeMapper implements PredictomeMapper {
         pathBuilder.species(predictome.getSpeciesA()).build()
       ),
       predictome.getSourceInteractome(),
-      predictome.getConversionDatabase()
+      predictome.getConversionDatabase(),
+      predictome.getCollection().getName()
     );
   }
 }

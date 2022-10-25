@@ -33,7 +33,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.sing_group.evoppi.domain.dao.spi.bio.DatabaseInteractomeDAO;
+import org.sing_group.evoppi.domain.dao.spi.bio.InteractomeCollectionDAO;
 import org.sing_group.evoppi.domain.dao.spi.bio.SpeciesDAO;
+import org.sing_group.evoppi.domain.entities.bio.InteractomeCollection;
 import org.sing_group.evoppi.domain.entities.bio.Species;
 import org.sing_group.evoppi.domain.entities.execution.StepExecutionStatus;
 import org.sing_group.evoppi.service.bio.entity.DatabaseInteractomeCreationData;
@@ -54,6 +56,9 @@ public class DefaultDatabaseInteractomeCreationPersistenceManager
 
   @Inject
   private SpeciesDAO speciesDao;
+  
+  @Inject
+  private InteractomeCollectionDAO interactomeCollectionDao;
 
   @Override
   public void manageEvent(@Observes
@@ -83,6 +88,9 @@ public class DefaultDatabaseInteractomeCreationPersistenceManager
 
     EvoPpiInteractomeProcessingStatistics stats = context.getStatistics().get();
     Species species = this.speciesDao.getSpecies(configuration.getSpeciesDbId());
+    
+    InteractomeCollection collection =
+      this.interactomeCollectionDao.get(configuration.getInteractomeCollectionId());
 
     this.databaseInteractomeDao.create(
       configuration.getName(),
@@ -99,7 +107,8 @@ public class DefaultDatabaseInteractomeCreationPersistenceManager
       stats.getRemovedInterSpeciesInteractionsCount().orElse(null),
       stats.getMultimappedToGeneIdGenesCount().orElse(null),
       species,
-      context.getInteractions().get()
+      context.getInteractions().get(),
+      collection
     );
   }
 }

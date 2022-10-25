@@ -56,9 +56,9 @@ public class InteractomeWithInteractionsData extends InteractomeData {
 
   public InteractomeWithInteractionsData(
     int id, String name, IdAndUri speciesA, IdAndUri speciesB, InteractomeType interactomeType,
-    IdAndUri[] genes, InteractingGenes[] interactions
+    IdAndUri[] genes, InteractingGenes[] interactions, String interactomeCollection
   ) {
-    super(id, name, speciesA, speciesB, interactomeType);
+    super(id, name, speciesA, speciesB, interactomeType, interactomeCollection);
 
     this.genes = genes;
     this.interactions = interactions;

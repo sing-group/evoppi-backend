@@ -41,9 +41,9 @@ public class Predictome extends Interactome {
 
   public Predictome(
     String name, Species speciesA, Species speciesB, String sourceInteractome,
-    String conversionDatabase
+    String conversionDatabase, InteractomeCollection collection
   ) {
-    super(name, speciesA, speciesB);
+    super(name, speciesA, speciesB, collection);
 
     this.sourceInteractome = sourceInteractome;
     this.conversionDatabase = conversionDatabase;

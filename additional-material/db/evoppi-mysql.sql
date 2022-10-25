@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.37, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.40, for Linux (x86_64)
 --
 -- Host: localhost    Database: evoppi
 -- ------------------------------------------------------
--- Server version	5.7.37-0ubuntu0.18.04.1
+-- Server version	5.7.40-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -323,14 +323,32 @@ CREATE TABLE `interactome` (
   `name` varchar(100) NOT NULL,
   `speciesA` int(11) NOT NULL,
   `speciesB` int(11) NOT NULL,
+  `collection` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UKqj2s3v16ikuv51n1nlk3h9dds` (`name`,`speciesA`,`speciesB`),
   KEY `IDXbyaau8x4u7js6tcnvhdtbv351` (`id`,`speciesA`,`speciesB`),
   KEY `FKky6stm10j6m13yy91ylogu42y` (`speciesA`),
   KEY `FKkodh5muq79qlhosgxvbqiunvc` (`speciesB`),
+  KEY `FKr4rmyfr7pfxyr1s488d6hr9jn` (`collection`),
   CONSTRAINT `FKkodh5muq79qlhosgxvbqiunvc` FOREIGN KEY (`speciesB`) REFERENCES `species` (`id`),
-  CONSTRAINT `FKky6stm10j6m13yy91ylogu42y` FOREIGN KEY (`speciesA`) REFERENCES `species` (`id`)
+  CONSTRAINT `FKky6stm10j6m13yy91ylogu42y` FOREIGN KEY (`speciesA`) REFERENCES `species` (`id`),
+  CONSTRAINT `FKr4rmyfr7pfxyr1s488d6hr9jn` FOREIGN KEY (`collection`) REFERENCES `interactome_collection` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=564 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `interactome_collection`
+--
+
+DROP TABLE IF EXISTS `interactome_collection`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `interactome_collection` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UKblcx97ddvl9tq853j2xx3msb6` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -578,4 +596,4 @@ CREATE TABLE `work_step` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-26 23:11:01
+-- Dump completed on 2022-10-25 12:06:30

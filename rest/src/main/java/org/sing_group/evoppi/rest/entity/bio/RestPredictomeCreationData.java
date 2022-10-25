@@ -34,10 +34,9 @@ public class RestPredictomeCreationData extends PredictomeCreationData implement
   private static final long serialVersionUID = 1L;
 
   public RestPredictomeCreationData(
-    File file, int speciesADbId, int speciesBDbId, String sourceInteractome, String conversionDatabase
+    File file, int speciesADbId, int speciesBDbId, String sourceInteractome, String conversionDatabase,
+    int interactomeCollectionId
   ) {
-    super(
-      file, speciesADbId, speciesBDbId, sourceInteractome, conversionDatabase
-    );
+    super(file, speciesADbId, speciesBDbId, sourceInteractome, conversionDatabase, interactomeCollectionId);
   }
 }

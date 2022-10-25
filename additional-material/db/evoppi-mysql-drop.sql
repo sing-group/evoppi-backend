@@ -1,3 +1,4 @@
+DROP TABLE `database_information`;
 DROP TABLE `work_step`;
 DROP TABLE `work_species_creation`;
 DROP TABLE `work_database_interactome_creation`;
@@ -22,6 +23,7 @@ DROP TABLE `gene`;
 DROP TABLE `interactome_database`;
 DROP TABLE `predictome`;
 DROP TABLE `interactome`;
+DROP TABLE `interactome_collection`;
 DROP TABLE `species`;
 
 DROP TABLE `password_recovery`;

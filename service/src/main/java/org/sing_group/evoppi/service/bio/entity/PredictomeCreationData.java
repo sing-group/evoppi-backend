@@ -32,15 +32,17 @@ public class PredictomeCreationData {
   private Integer speciesBDbId;
   private String sourceInteractome;
   private String conversionDatabase;
+  private Integer interactomeCollectionId;
 
   public PredictomeCreationData(
-    File file, int speciesADbId, int speciesBDbId, String sourceInteractome, String conversionDatabase
+    File file, int speciesADbId, int speciesBDbId, String sourceInteractome, String conversionDatabase, int interactomeCollectionId
   ) {
     this.file = Objects.requireNonNull(file, "The interactome file is mandatory");
     this.sourceInteractome = Objects.requireNonNull(sourceInteractome, "The source interactome is mandatory");
     this.conversionDatabase = Objects.requireNonNull(conversionDatabase, "The conversion database is mandatory");
     this.speciesADbId = Objects.requireNonNull(speciesADbId, "The species A ID is mandatory");
     this.speciesBDbId = Objects.requireNonNull(speciesBDbId, "The species B ID is mandatory");
+    this.interactomeCollectionId = Objects.requireNonNull(speciesBDbId, "The interactome collection ID is mandatory");
   }
 
   public File getFile() {
@@ -66,6 +68,10 @@ public class PredictomeCreationData {
   public String getName() {
     return "Based on " + getSourceInteractome();
   }
+  
+  public Integer getInteractomeCollectionId() {
+    return interactomeCollectionId;
+  }
 
   @Override
   public String toString() {
@@ -75,7 +81,8 @@ public class PredictomeCreationData {
       .append("\n\tsourceInteractome = ").append(sourceInteractome)
       .append("\n\tconversionDatabase = ").append(conversionDatabase)
       .append("\n\tspeciesADbId = ").append(speciesADbId)
-      .append("\n\tspeciesBDbId = ").append(speciesBDbId);
+      .append("\n\tspeciesBDbId = ").append(speciesBDbId)
+      .append("\n\tinteractomeCollectionId = ").append(interactomeCollectionId);
 
     return sb.toString();
   }

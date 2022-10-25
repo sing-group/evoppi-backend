@@ -8,10 +8,19 @@ DELETE FROM `gene_name`;
 DELETE FROM `gene`;
 DELETE FROM `interactome`;
 DELETE FROM `species`;
+DELETE FROM `interactome_collection`;
 
-INSERT INTO `species` VALUES (1,'Species A',1);
+-- Interactome collections
+
+INSERT INTO `interactome_collection` VALUES (1,'Interactomes C1');
+INSERT INTO `interactome_collection` VALUES (2,'Interactomes C2');
+INSERT INTO `interactome_collection` VALUES (3,'Interactomes C3');
+INSERT INTO `interactome_collection` VALUES (4,'Predictomes P1');
+INSERT INTO `interactome_collection` VALUES (5,'Predictomes P2');
 
 -- Species A
+
+INSERT INTO `species` VALUES (1,'Species A',1);
 
 INSERT INTO `gene` (id, species, defaultName) VALUES (100,1,'GA1'),(101,1,'GB1'),(102,1,'GC1'),(103,1,'GD1'),(104,1,'GE1'),(105,1,'GF1'),(106,1,'GG1'),(107,1,'H'),(108,1,'GI1'),(109,1,'GJ1'),(110,1,'GK1'),(111,1,'GL1'),(112,1,'GM1'),(113,1,'GN1'),(114,1,'GO1');
 
@@ -35,14 +44,14 @@ INSERT INTO `gene_sequence` VALUES (200,1,'GAEMGTKASFYMYQHTPTEWMIIYIHLTFGBCKUSKF
 
 -- Same Species Interactomes
 
-INSERT INTO `interactome` VALUES (1,'Interactome A1',1,1),(2,'Interactome A2',1,1);
-INSERT INTO `interactome_database` VALUES (NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2);
+INSERT INTO `interactome` VALUES (1,'Interactome A1',1,1,1),(2,'Interactome A2',1,1,1),(8,'Interactome A3',1,1,2);
+INSERT INTO `interactome_database` VALUES (NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2),(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,8);
 
 INSERT INTO `gene_in_interactome` VALUES (100,1,1),(101,1,1),(102,1,1),(103,1,1),(104,1,1),(105,1,1),(106,1,1),(107,1,1),(108,1,1),(109,1,1),(110,1,1),(111,1,1),(112,1,1),(113,1,1),(114,1,1),(100,2,1),(101,2,1),(102,2,1),(103,2,1),(104,2,1),(105,2,1),(106,2,1),(107,2,1),(108,2,1),(109,2,1),(110,2,1),(111,2,1),(112,2,1),(113,2,1),(114,2,1);
 
 INSERT INTO `interaction` VALUES (100,101,1,1,1),(100,105,1,1,1),(100,109,1,1,1),(100,112,1,1,1),(101,103,1,1,1),(103,104,1,1,1),(105,107,1,1,1),(107,108,1,1,1),(109,110,1,1,1),(110,111,1,1,1),(112,113,1,1,1),(113,114,1,1,1),(100,102,2,1,1),(100,106,2,1,1),(100,112,2,1,1),(102,103,2,1,1),(103,104,2,1,1),(105,106,2,1,1),(105,107,2,1,1),(107,108,2,1,1),(109,110,2,1,1),(110,111,2,1,1),(112,113,2,1,1),(113,114,2,1,1);
 
-INSERT INTO `interactome` VALUES (3,'Interactome B1',2,2),(4,'Interactome B2',2,2);
+INSERT INTO `interactome` VALUES (3,'Interactome B1',2,2,2),(4,'Interactome B2',2,2,2);
 INSERT INTO `interactome_database` VALUES (NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,3),(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,4);
 
 INSERT INTO `gene_in_interactome` VALUES (200,3,2);
@@ -57,7 +66,7 @@ INSERT INTO `interaction` VALUES(200,201,4,2,2);
 
 -- Inter Species Interactomes
 
-INSERT INTO `interactome` VALUES (5,'Interactome A-B',1,2);
+INSERT INTO `interactome` VALUES (5,'Interactome A-B',1,2,3);
 INSERT INTO `interactome_database` VALUES (NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5);
 
 INSERT INTO `gene_in_interactome` VALUES (100,5,1);
@@ -67,13 +76,14 @@ INSERT INTO `interaction` VALUES(100,200,5,1,2);
 
 -- Predictomes
 
-INSERT INTO `interactome` VALUES (6,'Predictome P1',1,1),(7,'Predictome P2',2,2);
+INSERT INTO `interactome` VALUES (6,'Predictome P1',1,1,4);
 INSERT INTO `predictome` VALUES ('Conversion DB P1','Source Interactome P1',6);
 
 INSERT INTO `gene_in_interactome` VALUES (100,6,1);
 INSERT INTO `gene_in_interactome` VALUES (101,6,1);
 INSERT INTO `interaction` VALUES(100,101,6,1,1);
 
+INSERT INTO `interactome` VALUES (7,'Predictome P2',2,2,5);
 INSERT INTO `predictome` VALUES ('Conversion DB P2','Source Interactome P2',7);
 INSERT INTO `gene_in_interactome` VALUES (200,7,2);
 INSERT INTO `gene_in_interactome` VALUES (201,7,2);

@@ -77,9 +77,9 @@ public class DatabaseInteractome extends Interactome {
     Integer numUniqueOriginalGenes, Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
     Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
-    Species speciesA, Species speciesB
+    Species speciesA, Species speciesB, InteractomeCollection collection
   ) {
-    super(name, speciesA, speciesB);
+    super(name, speciesA, speciesB, collection);
 
     this.dbSourceIdType = dbSourceIdType;
     this.numOriginalInteractions = numOriginalInteractions;

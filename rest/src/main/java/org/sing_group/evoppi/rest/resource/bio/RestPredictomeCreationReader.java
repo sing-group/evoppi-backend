@@ -37,6 +37,7 @@ public class RestPredictomeCreationReader extends MultipartMessageBodyReader<Res
   private Integer speciesBDbId;
   private String sourceInteractome;
   private String conversionDatabase;
+  private Integer interactomeCollectionId;
 
   @Override
   protected void add(String name, String value) {
@@ -46,6 +47,9 @@ public class RestPredictomeCreationReader extends MultipartMessageBodyReader<Res
         break;
       case "speciesBDbId":
         this.speciesBDbId = Integer.valueOf(value);
+        break;
+      case "interactomeCollectionId":
+        this.interactomeCollectionId = Integer.valueOf(value);
         break;
       case "sourceInteractome":
         this.sourceInteractome = value;
@@ -68,7 +72,7 @@ public class RestPredictomeCreationReader extends MultipartMessageBodyReader<Res
   @Override
   protected RestPredictomeCreationData build() {
     return new RestPredictomeCreationData(
-      file, speciesADbId, speciesBDbId, sourceInteractome, conversionDatabase
+      file, speciesADbId, speciesBDbId, sourceInteractome, conversionDatabase, interactomeCollectionId
     );
   }
 
@@ -79,5 +83,6 @@ public class RestPredictomeCreationReader extends MultipartMessageBodyReader<Res
     this.speciesBDbId = null;
     this.sourceInteractome = null;
     this.conversionDatabase = null;
+    this.interactomeCollectionId = null;
   }
 }

@@ -42,27 +42,16 @@ public class DatabaseInteractomeData extends InteractomeData {
   private static final long serialVersionUID = 1L;
 
   private String dbSourceIdType;
-
   private Integer numOriginalInteractions;
-
   private Integer numUniqueOriginalInteractions;
-
   private Integer numUniqueOriginalGenes;
-
   private Integer numInteractionsNotToUniProtKB;
-
   private Integer numGenesNotToUniProtKB;
-
   private Integer numInteractionsNotToGeneId;
-
   private Integer numGenesNotToGeneId;
-
   private Integer numFinalInteractions;
-
   private Integer numFinalGenes;
-
   private Integer numRemovedInterSpeciesInteractions;
-
   private Integer numMultimappedToGeneId;
   
   public DatabaseInteractomeData(
@@ -70,9 +59,10 @@ public class DatabaseInteractomeData extends InteractomeData {
     Integer numUniqueOriginalInteractions, Integer numUniqueOriginalGenes,
     Integer numInteractionsNotToUniProtKB, Integer numGenesNotToUniProtKB,
     Integer numInteractionsNotToGeneId, Integer numGenesNotToGeneId, Integer numFinalInteractions,
-    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId
+    Integer numFinalGenes, Integer numRemovedInterSpeciesInteractions, Integer numMultimappedToGeneId,
+    String interactomeCollection
   ) {
-    super(id, name, speciesA, speciesB, InteractomeType.DATABASE);
+    super(id, name, speciesA, speciesB, InteractomeType.DATABASE, interactomeCollection);
 
     this.dbSourceIdType = dbSourceIdType;
     this.numOriginalInteractions = numOriginalInteractions;

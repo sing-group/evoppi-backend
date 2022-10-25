@@ -50,12 +50,15 @@ import org.sing_group.evoppi.domain.dao.ListingOptions.FilterField;
 import org.sing_group.evoppi.domain.dao.SortDirection;
 import org.sing_group.evoppi.domain.entities.bio.Interactome;
 import org.sing_group.evoppi.domain.entities.bio.InteractomeListingField;
+import org.sing_group.evoppi.rest.entity.bio.InteractomeCollectionData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeData;
 import org.sing_group.evoppi.rest.entity.bio.InteractomeWithInteractionsData;
+import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractomeCollectionMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.bio.InteractomeMapper;
 import org.sing_group.evoppi.rest.entity.mapper.spi.execution.ExecutionMapper;
 import org.sing_group.evoppi.rest.filter.CrossDomain;
 import org.sing_group.evoppi.rest.resource.spi.bio.InteractomeResource;
+import org.sing_group.evoppi.service.spi.bio.InteractomeCollectionService;
 import org.sing_group.evoppi.service.spi.bio.InteractomeService;
 
 import io.swagger.annotations.Api;
@@ -80,7 +83,13 @@ public class DefaultInteractomeResource implements InteractomeResource {
 
   @Inject
   private InteractomeMapper mapper;
+
+  @Inject
+  private InteractomeCollectionService collectionService;
   
+  @Inject
+  private InteractomeCollectionMapper collectionMapper;
+
   @Inject
   private ExecutionMapper executionMapper;
 
@@ -124,7 +133,7 @@ public class DefaultInteractomeResource implements InteractomeResource {
   }
   
   @GET
-  @Path("{id}")
+  @Path("{id : \\d+}")
   @ApiOperation(
     value = "Finds an interactome by identifier. If the query parameter 'includeInteractions' is set to true, the"
       + " 'genes' and 'interactions' fields are returned as part of the result. Otherwise, these fields are not "
@@ -188,5 +197,24 @@ public class DefaultInteractomeResource implements InteractomeResource {
     }
 
     return Response.ok().build();
+  }
+
+  @GET
+  @Path("collections")
+  @ApiOperation(
+    value = "Returns a list with all the available interactome collections.",
+    response = InteractomeCollectionData.class, responseContainer = "List", code = 200
+  )
+  @Override
+  public Response listCollections() {
+    final InteractomeCollectionData[] interactomeCollectionData =
+      this.collectionService
+        .list()
+        .map(this.collectionMapper::toInteractomeCollectionData)
+        .toArray(InteractomeCollectionData[]::new);
+
+    return Response.ok(interactomeCollectionData)
+      .header("X-Total-Count", this.collectionService.count())
+      .build();
   }
 }

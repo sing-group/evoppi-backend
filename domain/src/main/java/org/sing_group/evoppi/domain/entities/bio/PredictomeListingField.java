@@ -31,7 +31,7 @@ import javax.persistence.criteria.Root;
 import org.sing_group.evoppi.domain.dao.EntityListingField;
 
 public enum PredictomeListingField implements EntityListingField<Predictome> {
-  NAME(true), SPECIESA(true), SPECIESB(true), CONVERSION_DATABASE(true), SOURCE_INTERACTOME(true);
+  NAME(true), SPECIESA(true), SPECIESB(true), CONVERSION_DATABASE(true), SOURCE_INTERACTOME(true), COLLECTION(true);
 
   private final boolean supportsFiltering;
 
@@ -49,6 +49,8 @@ public enum PredictomeListingField implements EntityListingField<Predictome> {
     switch (this) {
       case NAME:
         return root.get("name");
+      case COLLECTION:
+        return root.join("collection").get("name");
       case SOURCE_INTERACTOME:
         return root.get("sourceInteractome");
       case CONVERSION_DATABASE:
@@ -76,6 +78,7 @@ public enum PredictomeListingField implements EntityListingField<Predictome> {
       case SPECIESB:
       case SOURCE_INTERACTOME:
       case CONVERSION_DATABASE:
+      case COLLECTION:
         return cb.like(this.getField(cb, query, root).as(String.class), "%" + value + "%");
       default:
         throw new IllegalStateException();

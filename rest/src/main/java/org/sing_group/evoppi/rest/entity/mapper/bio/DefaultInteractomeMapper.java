@@ -68,7 +68,8 @@ public class DefaultInteractomeMapper implements InteractomeMapper {
         interactome.getSpeciesB().getId(),
         pathBuilder.species(interactome.getSpeciesB()).build()
       ),
-      interactome.getInteractomeType()
+      interactome.getInteractomeType(),
+      interactome.getCollection().getName()
     );
   }
 
@@ -101,7 +102,8 @@ public class DefaultInteractomeMapper implements InteractomeMapper {
       ),
       interactome.getInteractomeType(),
       genes,
-      interactions
+      interactions,
+      interactome.getCollection().getName()
     );
   }
 

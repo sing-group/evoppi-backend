@@ -42,14 +42,13 @@ public class PredictomeData extends InteractomeData {
   private static final long serialVersionUID = 1L;
 
   private String sourceInteractome;
-
   private String conversionDatabase;
 
   public PredictomeData(
     int id, String name, IdAndUri speciesA, IdAndUri speciesB,
-    String sourceInteractome, String conversionDatabase
+    String sourceInteractome, String conversionDatabase, String interactomeCollection
   ) {
-    super(id, name, speciesA, speciesB, InteractomeType.PREDICTOME);
+    super(id, name, speciesA, speciesB, InteractomeType.PREDICTOME, interactomeCollection);
 
     this.sourceInteractome = sourceInteractome;
     this.conversionDatabase = conversionDatabase;

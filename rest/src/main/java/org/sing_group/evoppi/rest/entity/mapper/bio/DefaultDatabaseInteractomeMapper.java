@@ -88,7 +88,8 @@ public class DefaultDatabaseInteractomeMapper implements DatabaseInteractomeMapp
         ? dbInteractome.getNumRemovedInterSpeciesInteractions().getAsInt()
         : null,
       dbInteractome.getNumMultimappedToGeneId().isPresent() ? dbInteractome.getNumMultimappedToGeneId().getAsInt()
-        : null
+        : null,
+      dbInteractome.getCollection().getName()
     );
   }
 }

@@ -77,6 +77,10 @@ public class Interactome implements Serializable {
 
   @OneToMany(mappedBy = "interactome", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Interaction> interactions;
+  
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "collection", referencedColumnName = "id", nullable = true)
+  private InteractomeCollection collection;
 
   @Transient
   protected final ReentrantReadWriteLock interactionsLock;
@@ -85,11 +89,12 @@ public class Interactome implements Serializable {
     this.interactionsLock = new ReentrantReadWriteLock();
   }
 
-  protected Interactome(String name, Species speciesA, Species speciesB) {
+  protected Interactome(String name, Species speciesA, Species speciesB, InteractomeCollection collection) {
     this.name = name;
     this.speciesA = speciesA;
     this.speciesB = speciesB;
     this.interactions = new HashSet<>();
+    this.collection = collection;
     this.interactionsLock = new ReentrantReadWriteLock();
   }
 
@@ -111,6 +116,10 @@ public class Interactome implements Serializable {
 
   public Stream<Interaction> getInteractions() {
     return this.interactions.stream();
+  }
+  
+  public InteractomeCollection getCollection() {
+    return collection;
   }
 
   public Optional<Interaction> findInteraction(HasGenePair genePair) {

@@ -33,6 +33,7 @@ public class DatabaseInteractomeCreationData {
   private String name;
 
   private Integer speciesDbId;
+  private Integer interactomeCollectionId;
 
   private UniProtDb dbSource;
   private Integer geneColumn1;
@@ -46,13 +47,14 @@ public class DatabaseInteractomeCreationData {
   private String organismSuffix;
 
   public DatabaseInteractomeCreationData(
-    File file, String name, Integer speciesDbId, UniProtDb dbSource, Integer geneColumn1, Integer geneColumn2,
-    Integer headerLinesCount, String genePrefix, String geneSuffix, Integer organismColumn1, Integer organismColumn2,
-    String organismPrefix, String organismSuffix
+    File file, String name, Integer speciesDbId, Integer interactomeCollectionId, UniProtDb dbSource,
+    Integer geneColumn1, Integer geneColumn2, Integer headerLinesCount, String genePrefix, String geneSuffix,
+    Integer organismColumn1, Integer organismColumn2, String organismPrefix, String organismSuffix
   ) {
     this.file = Objects.requireNonNull(file, "The interactome file is mandatory");
     this.name = Objects.requireNonNull(name, "The interactome name is mandatory");
     this.speciesDbId = Objects.requireNonNull(speciesDbId, "The species ID is mandatory");
+    this.interactomeCollectionId = Objects.requireNonNull(interactomeCollectionId, "The interactome collection ID is mandatory");
     this.dbSource = Objects.requireNonNull(dbSource, "The DB source ID is mandatory");
     this.geneColumn1 = Objects.requireNonNull(geneColumn1, "The gene column 1 is mandatory");
     this.geneColumn2 = Objects.requireNonNull(geneColumn2, "The gene column 2 is mandatory");
@@ -86,6 +88,10 @@ public class DatabaseInteractomeCreationData {
 
   public Integer getSpeciesDbId() {
     return speciesDbId;
+  }
+
+  public Integer getInteractomeCollectionId() {
+    return interactomeCollectionId;
   }
 
   public UniProtDb getDbSource() {
@@ -135,6 +141,7 @@ public class DatabaseInteractomeCreationData {
     sb.append("\n\tfile = ").append(file.getName())
       .append("\n\tname = ").append(name)
       .append("\n\tspeciesDbId = ").append(speciesDbId)
+      .append("\n\tinteractomeCollectionId = ").append(interactomeCollectionId)
       .append("\n\tdbSource = ").append(dbSource)
       .append("\n\tgeneColumn1 = ").append(geneColumn1)
       .append("\n\tgeneColumn2 = ").append(geneColumn2)

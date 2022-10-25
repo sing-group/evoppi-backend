@@ -38,4 +38,6 @@ public interface InteractomeResource {
   public Response getInteractionsAsTsv(int id);
 
   public Response remove(int id);
+
+  public Response listCollections();
 }
