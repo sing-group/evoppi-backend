@@ -24,6 +24,7 @@ package org.sing_group.evoppi.rest.resource.info;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
@@ -46,8 +47,8 @@ import io.swagger.annotations.ApiResponses;
 
 @Path("database")
 @Api("database")
-@Produces({ APPLICATION_JSON, APPLICATION_XML })
-@Consumes({ APPLICATION_JSON, APPLICATION_XML })
+@Produces({ APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN })
+@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_PLAIN })
 @Stateless
 @Default
 @CrossDomain
@@ -81,11 +82,12 @@ public class DefaultStatsResource implements StatsResource {
   
   @GET
   @Path("version")
+  @Produces(TEXT_PLAIN)
   @ApiOperation(
     value = "Provides the current database version.",
     response = String.class,
     code = 200
-    )
+  )
   @ApiResponses({
     @ApiResponse(code = 200, message = "successful operation"),
     @ApiResponse(code = 400, message = "The database version is not available")
