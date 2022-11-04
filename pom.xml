@@ -174,7 +174,7 @@
 		<hamcrest.version>2.0.0.0</hamcrest.version>
 		<jacoco.version>0.8.0</jacoco.version>
 		<junit.version>4.13.1</junit.version>
-		<mysql.connector.java.version>8.0.23</mysql.connector.java.version>
+		<mysql.connector.java.version>8.0.28</mysql.connector.java.version>
 		<slf4j.version>1.5.11</slf4j.version>
 
 		<!-- Plugins versions -->
