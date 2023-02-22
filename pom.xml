@@ -158,7 +158,7 @@
 		<wildfly.version>10.1.0.Final</wildfly.version>
 		<interactomes-parser.version>0.3.0</interactomes-parser.version>
 		<gbff-parser.version>0.1.0</gbff-parser.version>
-		<commons-fileupload.version>1.3.3</commons-fileupload.version>
+		<commons-fileupload.version>1.5</commons-fileupload.version>
 		<seda.version>1.3.0</seda.version>
 
 		<!-- Resteasy specific version required, as it fixes ResourceInfo injection bug -->
